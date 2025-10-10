@@ -1,26 +1,577 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/* Un comment when dark mode is implemented */
+/* @custom-variant dark (&:is(.dark *)); */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* -------------------Primitives---------------------- */
+  /* Colors */
+  --primitives-color-neutral-light-100: #ffffffff;
+  --primitives-color-neutral-mid-400: #b8b8b8ff;
+  --primitives-color-neutral-mid-500: #8f8f8fff;
+  --primitives-color-neutral-mid-600: #666666ff;
+  --primitives-color-neutral-contrast-700: #3d3d3dff;
+  --primitives-color-neutral-contrast-800: #262626ff;
+  --primitives-color-neutral-contrast-900: #000000ff;
+  --primitives-color-primary--100: #e5f2f3ff;
+  --primitives-color-neutral-light-200: #f5f5f5ff;
+  --primitives-color-primary-000: #cce6e8ff;
+  --primitives-color-neutral-light-300: #e0e0e0ff;
+  --primitives-color-base-000: #fbfbfaff;
+  --primitives-color-base-100: #f9f9f7ff;
+  --primitives-color-base-200: #f6f6f4ff;
+  --primitives-color-base-300: #f3f2efff;
+  --primitives-color-base-400: #f0efebff;
+  --primitives-color-semantic-blue-000: #e9f3faff;
+  --primitives-color-semantic-blue-100: #d3e7f6ff;
+  --primitives-color-semantic-blue-200: #a6ceecff;
+  --primitives-color-semantic-blue-300: #67acdfff;
+  --primitives-color-semantic-blue-400: #2185d0ff;
+  --primitives-color-semantic-blue-500: #1a6aa6ff;
+  --primitives-color-semantic-blue-600: #14507dff;
+  --primitives-color-semantic-blue-700: #0d3553ff;
+  --primitives-color-semantic-blue-800: #0a283eff;
+  --primitives-color-semantic-red-000: #fbe9e9ff;
+  --primitives-color-semantic-red-100: #f8d4d4ff;
+  --primitives-color-semantic-red-200: #f1a9a9ff;
+  --primitives-color-semantic-red-300: #e66a6aff;
+  --primitives-color-semantic-red-400: #db2828ff;
+  --primitives-color-semantic-red-500: #af2020ff;
+  --primitives-color-semantic-red-600: #831818ff;
+  --primitives-color-semantic-red-700: #581010ff;
+  --primitives-color-semantic-red-800: #420c0cff;
+  --primitives-color-semantic-orange-000: #fef1e8ff;
+  --primitives-color-semantic-green-000: #e9f8ecff;
+  --primitives-color-semantic-green-100: #d3f1daff;
+  --primitives-color-semantic-green-200: #a6e3b5ff;
+  --primitives-color-semantic-green-300: #7bd690ff;
+  --primitives-color-semantic-green-400: #21ba45ff;
+  --primitives-color-semantic-green-500: #1a9537ff;
+  --primitives-color-semantic-green-600: #147029ff;
+  --primitives-color-semantic-green-700: #0d4a1cff;
+  --primitives-color-semantic-green-800: #0a3815ff;
+  --primitives-color-semantic-orange-100: #fce3d2ff;
+  --primitives-color-semantic-orange-200: #fac6a4ff;
+  --primitives-color-semantic-orange-300: #f6985bff;
+  --primitives-color-semantic-orange-400: #f2711cff;
+  --primitives-color-semantic-orange-500: #c25a16ff;
+  --primitives-color-semantic-orange-600: #914411ff;
+  --primitives-color-semantic-orange-700: #612d0bff;
+  --primitives-color-semantic-orange-800: #492208ff;
+  --primitives-color-primary-100: #99ccd1ff;
+  --primitives-color-primary-200: #66b3b9ff;
+  --primitives-color-primary-300: #3399a2ff;
+  --primitives-color-primary-400: #00808bff;
+  --primitives-color-primary-500: #135d66ff;
+  --primitives-color-primary-600: #004046ff;
+  --primitives-color-primary-700: #00262aff;
+
+  /* Fonts */
+  --primitives-font-family-poppins: Poppins;
+  --primitives-font-family-satoshi: satoshi;
+  --primitives-font-size-900: 64px;
+  --primitives-font-size-800: 52px;
+  --primitives-font-size-700: 40px;
+  --primitives-font-size-600: 32px;
+  --primitives-font-size-500: 24px;
+  --primitives-font-size-400: 20px;
+  --primitives-font-size-300: 18px;
+  --primitives-font-size-200: 16px;
+  --primitives-font-size-100: 14px;
+  --primitives-font-size-75: 13px;
+  --primitives-font-size-50: 12px;
+  --primitives-font-size-25: 10px;
+  --primitives-font-spacing-000: 0px;
+  --primitives-font-spacing-100: 0.15000000596046448px;
+  --primitives-font-spacing-200: 0.25px;
+  --primitives-font-height-000: 12px;
+  --primitives-font-spacing-300: 0.3499999940395355px;
+  --primitives-font-height-100: 15px;
+  --primitives-font-height-200: 18px;
+  --primitives-font-spacing-400: 0.5px;
+  --primitives-font-spacing-500: 0.75px;
+  --primitives-font-height-300: 21px;
+  --primitives-font-height-400: 24px;
+  --primitives-font-height-500: 27px;
+  --primitives-font-height-600: 30px;
+  --primitives-font-weight-regular: Regular;
+  --primitives-font-weight-medium: Medium;
+  --primitives-font-weight-semibold: SemiBold;
+  --primitives-font-weight-bold: Bold;
+
+  /* Border */
+
+  --primitives-border-radius-none: 0px;
+  --primitives-border-radius-xs: 4px;
+  --primitives-border-radius-sm: 8px;
+  --primitives-border-radius-md: 16px;
+  --primitives-border-radius-lg: 24px;
+  --primitives-border-radius-full: 2500px;
+  --primitives-border-weights-none: 0px;
+  --primitives-border-weights-sm: 1px;
+  --primitives-border-weights-md: 1.5px;
+  --primitives-border-weights-lg: 2px;
+  --primitives-border-weights-xl: 4px;
+
+  /* -----------------------Semantics---------------------------- */
+  /* Colors */
+  --color-bg-default: var(--primitives-color-neutral-light-100);
+  --color-bg-subtle: var(--primitives-color-base-000);
+  --color-surface-feedback-error-subtle: var(
+    --primitives-color-semantic-red-000
+  );
+  --color-bg-muted: var(--primitives-color-neutral-light-200);
+  --color-surface-feedback-warning-subtle: var(
+    --primitives-color-semantic-orange-000
+  );
+  --color-surface-feedback-info-subtle: var(
+    --primitives-color-semantic-blue-000
+  );
+  --color-surface-feedback-info-default: var(
+    --primitives-color-semantic-blue-400
+  );
+  --color-surface-feedback-info-hover: var(
+    --primitives-color-semantic-blue-500
+  );
+  --color-border-neutral-default: var(--primitives-color-neutral-light-300);
+  --color-surface-feedback-info-disabled: var(
+    --primitives-color-semantic-blue-200
+  );
+  --color-surface-neutral-default: var(--primitives-color-neutral-light-100);
+  --color-surface-neutral-subtle-bg: var(--primitives-color-base-000);
+  --color-surface-neutral-hover-default: var(
+    --primitives-color-neutral-light-200
+  );
+  --color-surface-neutral-hover-mild: var(--primitives-color-neutral-light-300);
+  --color-surface-neutral-hover-strong: var(
+    --primitives-color-neutral-contrast-700
+  );
+  --color-surface-neutral-disabled: var(--primitives-color-neutral-light-200);
+  --color-surface-primary-default: var(--primitives-color-primary-400);
+  --color-surface-primary-subtle-bg: var(--primitives-color-primary--100);
+  --color-surface-primary-hover-default: var(--primitives-color-primary--100);
+  --color-surface-primary-hover-mild: var(--primitives-color-primary-000);
+  --color-surface-primary-hover-strong: var(--primitives-color-primary-500);
+  --color-surface-primary-disabled: var(--primitives-color-primary-100);
+  --color-border-neutral-mid: var(--primitives-color-neutral-mid-400);
+  --color-border-primary-default: var(--primitives-color-primary-200);
+  --color-surface-feedback-warning-default: var(
+    --primitives-color-semantic-orange-400
+  );
+  --color-border-neutral-strong: var(--primitives-color-neutral-mid-600);
+  --color-surface-feedback-warning-hover: var(
+    --primitives-color-semantic-orange-500
+  );
+  --color-border-primary-strong: var(--primitives-color-primary-400);
+  --color-surface-feedback-warning-disabled: var(
+    --primitives-color-semantic-orange-200
+  );
+  --color-border-feedback-success-default: var(
+    --primitives-color-semantic-green-200
+  );
+  --color-border-feedback-info-default: var(
+    --primitives-color-semantic-blue-200
+  );
+  --color-surface-feedback-error-default: var(
+    --primitives-color-semantic-red-400
+  );
+  --color-border-feedback-success-strong: var(
+    --primitives-color-semantic-green-400
+  );
+  --color-surface-feedback-error-hover: var(
+    --primitives-color-semantic-red-500
+  );
+  --color-surface-feedback-error-disabled: var(
+    --primitives-color-semantic-red-200
+  );
+  --color-surface-feedback-success-subtle: var(
+    --primitives-color-semantic-green-000
+  );
+  --color-surface-feedback-success-default: var(
+    --primitives-color-semantic-green-400
+  );
+  --color-surface-feedback-success-hover: var(
+    --primitives-color-semantic-green-500
+  );
+  --color-surface-feedback-success-disabled: var(
+    --primitives-color-semantic-green-200
+  );
+  --color-overlay-mild: #e0e0e080;
+  --color-overlay-strong: #b8b8b880;
+  --color-text-neutral-default: var(--primitives-color-neutral-contrast-800);
+  --color-text-neutral-secondary: var(--primitives-color-neutral-contrast-700);
+  --color-text-neutral-tertiary: var(--primitives-color-neutral-mid-600);
+  --color-text-neutral-emphasis: var(--primitives-color-neutral-contrast-900);
+  --color-text-neutral-placeholder: var(--primitives-color-neutral-mid-500);
+  --color-text-neutral-disabled: var(--primitives-color-neutral-mid-400);
+  --color-text-neutral-onneutral: var(--primitives-color-neutral-light-100);
+  --color-text-primary-default: var(--primitives-color-primary-400);
+  --color-text-primary-secondary: var(--primitives-color-primary-300);
+  --color-text-feedback-success-default: var(
+    --primitives-color-semantic-green-400
+  );
+  --color-text-feedback-success-muted: var(
+    --primitives-color-semantic-green-300
+  );
+  --color-text-feedback-success-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-text-feedback-warning-default: var(
+    --primitives-color-semantic-orange-400
+  );
+  --color-text-feedback-warning-muted: var(
+    --primitives-color-semantic-orange-300
+  );
+  --color-text-feedback-warning-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-text-feedback-error-default: var(--primitives-color-semantic-red-400);
+  --color-text-feedback-error-muted: var(--primitives-color-semantic-red-300);
+  --color-text-feedback-error-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-text-feedback-info-default: var(--primitives-color-semantic-blue-400);
+  --color-text-feedback-info-muted: var(--primitives-color-semantic-blue-300);
+  --color-text-feedback-info-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-text-primary-tertiary: var(--primitives-color-primary-200);
+  --color-text-primary-emphasis: var(--primitives-color-primary-500);
+  --color-text-primary-placeholder: var(--primitives-color-primary-200);
+  --color-text-primary-disabled: var(--primitives-color-primary-100);
+  --color-text-primary-onprimary: var(--primitives-color-neutral-light-100);
+  --color-icon-primary-default: var(--primitives-color-primary-400);
+  --color-icon-primary-secondary: var(--primitives-color-primary-300);
+  --color-icon-primary-emphasis: var(--primitives-color-primary-500);
+  --color-icon-primary-disabled: var(--primitives-color-primary-100);
+  --color-icon-primary-onprimary: var(--primitives-color-neutral-light-100);
+  --color-icon-neutral-default: var(--primitives-color-neutral-contrast-800);
+  --color-icon-neutral-secondary: var(--primitives-color-neutral-contrast-700);
+  --color-icon-neutral-tertiary: var(--primitives-color-neutral-mid-600);
+  --color-icon-neutral-disabled: var(--primitives-color-neutral-mid-400);
+  --color-icon-neutral-onneutral: var(--primitives-color-neutral-light-100);
+  --color-border-feedback-error-default: var(
+    --primitives-color-semantic-red-200
+  );
+  --color-icon-feedback-success-default: var(
+    --primitives-color-semantic-green-400
+  );
+  --color-border-feedback-error-strong: var(
+    --primitives-color-semantic-red-400
+  );
+  --color-border-feedback-warning-default: var(
+    --primitives-color-semantic-orange-200
+  );
+  --color-icon-feedback-success-muted: var(
+    --primitives-color-semantic-green-300
+  );
+  --color-border-feedback-warning-strong: var(
+    --primitives-color-semantic-orange-400
+  );
+  --color-icon-feedback-success-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-icon-feedback-warning-default: var(
+    --primitives-color-semantic-orange-400
+  );
+  --color-icon-feedback-warning-muted: var(
+    --primitives-color-semantic-orange-300
+  );
+  --color-border-feedback-info-strong: var(
+    --primitives-color-semantic-blue-400
+  );
+  --color-icon-feedback-warning-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-icon-feedback-error-default: var(--primitives-color-semantic-red-400);
+  --color-icon-feedback-error-muted: var(--primitives-color-semantic-red-300);
+  --color-icon-feedback-error-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+  --color-icon-feedback-info-default: var(--primitives-color-semantic-blue-400);
+  --color-icon-feedback-info-muted: var(--primitives-color-semantic-blue-300);
+  --color-icon-feedback-info-ondefault: var(
+    --primitives-color-neutral-light-100
+  );
+
+  /* Fonts */
+  --font-family-brandprimary: var(--primitives-font-family-poppins);
+  --font-family-brandsecondary: var(--primitives-font-family-satoshi);
+  --font-size-label-title: var(--primitives-font-size-75);
+  --font-size-body-large: var(--primitives-font-size-300);
+  --font-size-label-default: var(--primitives-font-size-50);
+  --font-size-label-secondary: var(--primitives-font-size-25);
+  --font-size-body-title: var(--primitives-font-size-200);
+  --font-size-body-default: var(--primitives-font-size-100);
+  --font-size-textblock-subtext: var(--primitives-font-size-100);
+  --font-size-textblock-bodytext: var(--primitives-font-size-200);
+  --font-size-textblock-caption: var(--primitives-font-size-50);
+  --font-size-heading-xxl: var(--primitives-font-size-900);
+  --font-size-heading-xl: var(--primitives-font-size-800);
+  --font-size-heading-lg: var(--primitives-font-size-700);
+  --font-size-heading-md: var(--primitives-font-size-600);
+  --font-size-heading-sm: var(--primitives-font-size-500);
+  --font-size-heading-xs: var(--primitives-font-size-400);
+  --font-weight-regular: Regular;
+  --font-weight-medium: Medium;
+  --font-weight-semibold: SemiBold;
+  --font-tracking-body-default: var(--primitives-font-spacing-100);
+  --font-weight-bold: Bold;
+  --font-tracking-label-default: var(--primitives-font-spacing-200);
+  --font-tracking-body-title: var(--primitives-font-spacing-300);
+  --font-tracking-label-title: var(--primitives-font-spacing-200);
+  --font-tracking-label-secondary: var(--primitives-font-spacing-200);
+  --font-tracking-body-large: var(--primitives-font-spacing-000);
+  --font-line_height-label-default: var(--primitives-font-height-000);
+  --font-line_height-body-default: var(--primitives-font-height-200);
+  --font-line_height-label-title: var(--primitives-font-height-000);
+  --font-line_height-body-title: var(--primitives-font-height-200);
+  --font-line_height-label-secondary: var(--primitives-font-height-000);
+  --font-line_height-body-large: var(--primitives-font-height-300);
+  --font-tracking-textblock-subtext: var(--primitives-font-spacing-100);
+  --font-line_height-textblock-subtext: var(--primitives-font-height-300);
+  --font-tracking-textblock-bodytext: var(--primitives-font-spacing-300);
+  --font-tracking-textblock-caption: var(--primitives-font-spacing-200);
+  --font-line_height-textblock-bodytext: var(--primitives-font-height-400);
+  --font-line_height-textblock-caption: var(--primitives-font-height-200);
+
+  /* Border */
+  --border-weight-none: var(--primitives-border-weights-none);
+  --border-radius-sharp: var(--primitives-border-radius-none);
+  --border-radius-modal: var(--primitives-border-radius-md);
+  --border-radius-small: var(--primitives-border-radius-xs);
+  --border-radius-InteractiveElements: var(--primitives-border-radius-sm);
+  --border-radius-large: var(--primitives-border-radius-lg);
+  --border-radius-round: var(--primitives-border-radius-full);
+  --border-weight-default: var(--primitives-border-weights-sm);
+  --border-weight-IconDefault: var(--primitives-border-weights-md);
+  --border-weight-large: var(--primitives-border-weights-lg);
+  --border-weight-thick: var(--primitives-border-weights-xl);
+
+  /* Tertiary (UI Elements) */
+  /* Buttons */
+  --button-color-primary-default-bg: var(--color-surface-primary-default);
+  --button-color-primary-default-stroke: var(--color-border-primary-default);
+  --button-color-primary-default-text: var(--color-text-primary-onprimary);
+  --button-color-primary-default-icon: var(--color-icon-primary-onprimary);
+  --button-color-primary-hover-bg: var(--color-surface-primary-hover-strong);
+  --button-color-primary-hover-stroke: var(--color-border-primary-default);
+  --button-color-primary-hover-text: var(--color-text-primary-onprimary);
+  --button-color-primary-hover-icon: var(--color-icon-primary-onprimary);
+  --button-color-primary-disabled-bg: var(--color-surface-primary-disabled);
+  --button-color-primary-disabled-stroke: var(--color-border-primary-default);
+  --button-color-primary-disabled-text: var(--color-text-primary-onprimary);
+  --button-color-primary-disabled-icon: var(--color-icon-primary-onprimary);
+  --button-color-neutral-default-bg: var(--color-surface-neutral-subtle-bg);
+  --button-color-neutral-default-stroke: var(--color-border-neutral-default);
+  --button-color-neutral-default-text: var(--color-text-neutral-default);
+  --button-color-neutral-default-icon: var(--color-icon-neutral-default);
+  --button-color-neutral-hover-bg: var(--color-surface-neutral-hover-default);
+  --button-color-neutral-hover-stroke: var(--color-border-neutral-default);
+  --button-color-neutral-hover-text: var(--color-text-neutral-default);
+  --button-color-neutral-hover-icon: var(--color-icon-neutral-default);
+  --button-color-neutral-disabled-bg: var(--color-surface-neutral-subtle-bg);
+  --button-color-neutral-disabled-stroke: var(--color-border-neutral-default);
+  --button-color-neutral-disabled-text: var(--color-text-neutral-disabled);
+  --button-color-neutral-disabled-icon: var(--color-icon-neutral-disabled);
+  --button-color-semantic-red-default-bg: var(--color-surface-feedback-error-default);
+
+
+  --button-color-semantic-red-default-stroke: var(
+    --color-border-feedback-error-default
+  );
+  --button-color-semantic-red-default-text: var(
+    --color-text-feedback-error-ondefault
+  );
+  --button-color-semantic-red-default-icon: var(
+    --color-icon-feedback-error-ondefault
+  );
+  --button-color-semantic-red-hover-bg: var(--color-surface-feedback-error-hover);
+  --button-color-semantic-red-hover-stroke: var(
+    --color-border-feedback-error-default
+  );
+  --button-color-semantic-red-hover-text: var(--color-text-feedback-error-ondefault);
+  --button-color-semantic-red-hover-icon: var(--color-icon-feedback-error-ondefault);
+  --button-color-semantic-red-disabled-bg: var(
+    --color-surface-feedback-error-disabled
+  );
+  --button-color-semantic-red-disabled-stroke: var(
+    --color-border-feedback-error-default
+  );
+  --button-color-semantic-red-disabled-text: var(
+    --color-text-feedback-error-ondefault
+  );
+  --button-color-semantic-red-disabled-icon: var(
+    --color-icon-feedback-error-ondefault
+  );
+  --button-border-radius-default: var(--border-radius-InteractiveElements);
+  --button-border-weight-default: var(--border-weights-default);
+
+  /* Labels */
+  --labels-color-neutral-bg: var(--color-surface-neutral-default);
+  --labels-color-neutral-stroke: var(--color-border-neutral-default);
+  --labels-color-neutral-text: var(--color-text-neutral-default);
+  --labels-color-primary-bg: var(--color-surface-neutral-default);
+  --labels-color-primary-stroke: var(--color-border-primary-default);
+  --labels-color-primary-text: var(--color-text-primary-default);
+  --labels-border-weight-default: var(--border-weights-default);
+  --labels-border-radius-default: var(--border-radius-InteractiveElements);
+
+  /* Number Badges */
+  --number_badges-color-neutral-bg: var(--color-surface-neutral-hover-mild);
+  --number_badges-color-neutral-text: var(--color-text-neutral-default);
+  --number_badges-color-primary-bg: var(--color-surface-primary-hover-mild);
+  --number_badges-color-primary-text: var(--color-text-primary-default);
+  --number_badges-border-radius-small: var(--border-radius-small);
+  --number_badges-border-radius-round: var(--border-radius-round);
+  --number_badges-border-weight-default: var(--border-weight-none);
+
+  /* Toasts */
+  --toast-color-error-text: var(--color-text-neutral-default);
+  --toast-color-error-icon: var(--color-icon-feedback-error-default);
+  --toast-color-error-bg: var(--color-surface-neutral-subtle-bg);
+  --toast-color-error-stroke: var(--color-border-neutral-default);
+  --toast-color-warning-text: var(--color-text-neutral-default);
+  --toast-color-warning-icon: var(--color-icon-feedback-warning-default);
+  --toast-color-warning-bg: var(--color-surface-neutral-subtle-bg);
+  --toast-color-warning-stroke: var(--color-border-neutral-default);
+  --toast-color-info-text: var(--color-text-neutral-default);
+  --toast-color-info-icon: var(--color-icon-feedback-info-default);
+  --toast-color-info-bg: var(--color-surface-neutral-subtle-bg);
+  --toast-color-info-stroke: var(--color-border-neutral-default);
+  --toast-color-success-text: var(--color-text-neutral-default);
+  --toast-color-success-icon: var(--color-icon-feedback-success-default);
+  --toast-color-success-bg: var(--color-surface-neutral-subtle-bg);
+  --toast-color-success-stroke: var(--color-border-neutral-default);
+  --toast-border-weight-default: var(--border-weight-default);
+  --toast-border-radius-default: var(--border-radius-InteractiveElements);
+
+  /* Toggles */
+  --toggle-neutral-default: var(--color-surface-neutral-hover-mild);
+  --toggle-neutral-selected: var(--color-surface-neutral-hover-strong);
+  --toggle-primary-default: var(--color-surface-neutral-hover-mild);
+  --toggle-primary-selected: var(--color-surface-primary-default);
+
+  /* Checkboxes */
+  --checkbox-color-neutral-default: var(--color-border-neutral-default);
+  --checkbox-color-neutral-hover: var(--color-border-neutral-strong);
+  --checkbox-color-neutral-selected: var(--color-surface-neutral-hover-strong);
+  --checkbox-color-neutral-disabled: var(--color-surface-neutral-disabled);
+  --checkbox-color-neutral-tick: var(--color-icon-neutral-onneutral);
+  --checkbox-color-primary-default: var(--color-border-neutral-default);
+  --checkbox-color-primary-hover: var(--color-border-primary-default);
+  --checkbox-color-primary-selected: var(--color-surface-primary-default);
+  --checkbox-color-primary-disabled: var(--color-surface-primary-disabled);
+  --checkbox-color-primary-tick: var(--color-icon-neutral-onneutral);
+  --checkbox-border-radius-default: var(--border-radius-small);
+  --checkbox-border-weight-default: var(--border-weight-default);
+
+  /* Radio Buttons */
+  --radio_button-neutral-default: var(--color-border-neutral-default);
+  --radio_button-neutral-hover: var(--color-border-neutral-mid);
+  --radio_button-neutral-selected: var(--color-surface-neutral-hover-strong);
+  --radio_button-neutral-disabled: var(--color-surface-neutral-hover-mild);
+  --radio_button-primary-default: var(--color-border-neutral-default);
+  --radio_button-primary-hover: var(--color-border-primary-default);
+  --radio_button-primary-selected: var(--color-surface-primary-default);
+  --radio_button-primary-disabled: var(--color-surface-neutral-hover-mild);
+
+  /* Icon Buttons */
+  --icon_button-color-neutral-bg: var(--color-surface-neutral-default);
+  --icon_button-color-neutral-hover: var(--color-surface-neutral-hover-default);
+  --icon_button-color-neutral-stroke: var(--color-border-neutral-default);
+  --icon_button-color-neutral-disabled: var(--color-icon-neutral-disabled);
+  --icon_button-color-neutral-icon: var(--color-icon-neutral-default);
+  --icon_button-color-primary-bg: var(--color-surface-neutral-default);
+  --icon_button-color-primary-hover: var(--color-surface-primary-hover-default);
+  --icon_button-color-primary-stroke: var(--color-border-neutral-default);
+  --icon_button-color-primary-icon: var(--color-icon-primary-default);
+  --icon_button-color-primary-disabled: var(--color-icon-primary-disabled);
+  --icon_button-border-weight-default: var(--border-weight-default);
+  --icon_button-border-radius-default: var(--border-radius-InteractiveElements);
+  --icon_button-border-radius-round: var(--border-radius-round);
+
+  /* Calendar */
+  --calendar-color-text-date: var(--color-text-neutral-default);
+  --calendar-color-text-month: var(--color-text-neutral-default);
+  --calendar-color-text-day: var(--color-text-neutral-tertiary);
+  --calendar-color-text-selected_date: var(--color-text-neutral-onneutral);
+  --calendar-color-bg: var(--color-surface-neutral-default);
+  --calendar-color-navigation: var(--color-icon-neutral-default);
+  --calendar-color-hover: var(--color-surface-primary-hover-default);
+  --calendar-color-selected: var(--color-surface-primary-default);
+  --calendar-color-card_stroke: var(--color-border-neutral-default);
+  --calendar-border-radius-default: var(--border-radius-modal);
+  --calendar-border-weight-default: var(--border-weight-default);
+
+  /* Pagination */
+  --pagination-color-bg: var(--color-surface-neutral-default);
+  --pagination-color-text: var(--color-icon-neutral-default);
+  --pagination-color-stroke: var(--color-border-neutral-default);
+  --pagination-color-selected: var(--color-surface-neutral-hover-default);
+  --pagination-border-radius-default: var(--border-radius-round);
+  --pagination-border-weight-default: var(--border-weight-default);
+
+  /* Options */
+  --option-color-text: var(--color-text-neutral-default);
+  --option-color-icon: var(--color-icon-neutral-default);
+  --option-color-bg: var(--color-surface-neutral-default);
+  --option-color-hover: var(--color-surface-neutral-hover-default);
+  --option-color-subtext: var(--color-icon-neutral-tertiary);
+  --option-color-selected: var(--color-surface-primary-subtle-bg);
+  --option-border-radius-default: var(--border-radius-InteractiveElements);
+  --option-border-weight-default: var(--border-weight-none);
+
+  /* Dropdowns */
+  --dropdown-color-bg: var(--color-surface-neutral-default);
+  --dropdown-color-stroke: var(--color-border-neutral-default);
+  --dropdown-border-radius-default: var(--border-radius-InteractiveElements);
+  --dropdown-border-weight-default: var(--border-weight-default);
+
+  /* Tag Selectors */
+  --tag_selector-color-bg: var(--color-surface-neutral-default);
+  --tag_selector-border-radius-default: var(--border-radius-InteractiveElements);
+  --tag_selector-color-stroke: var(--color-border-neutral-default);
+  --tag_selector-color-textdefault: var(--color-text-neutral-placeholder);
+  --tag_selector-color-textselected: var(--color-text-neutral-secondary);
+  --tag_selector-border-weight-default: var(--border-weight-default);
+
+  /* Confirmation Modals */
+  --confirmation-color-bg: var(--color-surface-neutral-default);
+  --confirmation-color-stroke: var(--color-border-neutral-default);
+  --confirmation-color-titletext: var(--color-text-neutral-default);
+  --confirmation-color-bodytext: var(--color-text-neutral-default);
+  --confirmation-color-icon: var(--color-icon-neutral-tertiary);
+  --confirmation-border-radius-default: var(--border-radius-modal);
+  --confirmation-border-weight-default: var(--border-weight-default);
+
+  /* Alert Cards */
+  --alert_card-color-bg: var(--color-surface-neutral-default);
+  --alert_card-color-stroke: var(--color-border-neutral-default);
+  --alert_card-color-titletext: var(--color-text-neutral-default);
+  --alert_card-color-bodytext: var(--color-text-neutral-default);
+  --alert_card-color-iconprimary: var(--color-icon-neutral-default);
+  --alert_card-color-iconsecondary: var(--color-icon-neutral-tertiary);
+  --alert_card-border-radius-default: var(--border-radius-modal);
+  --alert_card-border-weight-default: var(--border-weight-default);
+
+  /* Text Input */
+  --textinput-color-stroke-default: var(--color-border-neutral-default);
+  --textinput-color-stroke-focus: var(--color-border-primary-strong);
+  --textinput-color-text-default: var(--color-text-neutral-placeholder);
+  --textinput-color-text-active: var(--color-text-neutral-default);
+  --textinput-color-text-label: var(--color-text-neutral-secondary);
+  --textinput-color-text-helper-default: var(--color-text-neutral-tertiary);
+  --textinput-color-text-helper-error: var(--color-text-feedback-error-default);
+  --textinput-color-icon-default: var(--color-text-neutral-placeholder);
+  --textinput-color-icon-active: var(--color-icon-neutral-default);
+  --textinput-bg: var(--color-surface-neutral-default);
+  --textinput-color-icon-error: var(--color-icon-feedback-error-default);
+  --textinput-border-radius-default: var(--border-radius-InteractiveElements);
+  --textinput-border-weight-default: var(--border-weight-default);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* .dark {
+  Coming soon
+} */

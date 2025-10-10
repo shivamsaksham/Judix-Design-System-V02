@@ -1,0 +1,37 @@
+/* Test CSS to verify CSS loading works */
+.storybook-test {
+  background-color: red !important;
+  color: white !important;
+  padding: 16px !important;
+  border: 2px solid blue !important;
+  border-radius: 8px !important;
+}
+
+/* Test Tailwind utilities */
+.bg-red-500 {
+  background-color: #ef4444 !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.border-2 {
+  border-width: 2px !important;
+}
+
+.border-blue-500 {
+  border-color: #3b82f6 !important;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem !important;
+}
+
+.p-4 {
+  padding: 1rem !important;
+}
+
+.m-2 {
+  margin: 0.5rem !important;
+}
