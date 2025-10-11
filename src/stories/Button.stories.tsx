@@ -16,11 +16,11 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+      options: ['primary', 'destructive', 'base'],
     },
     size: {
       control: { type: 'select' },
-      options: ['default', 'sm', 'lg', 'icon', 'icon-sm', 'icon-lg'],
+      options: ['large' , 'medium', 'small', 'extraSmall', 'icon', 'icon-sm', 'icon-lg'],
     },
     asChild: {
       control: { type: 'boolean' },
@@ -50,44 +50,24 @@ export const Destructive: Story = {
   },
 };
 
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Outline',
-  },
-};
 
-export const Secondary: Story = {
+export const Base: Story = {
   args: {
-    variant: 'secondary',
-    children: 'Secondary',
-  },
-};
-
-export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Ghost',
-  },
-};
-
-export const Link: Story = {
-  args: {
-    variant: 'link',
-    children: 'Link',
+    variant: 'base',
+    children: 'Base',
   },
 };
 
 export const Small: Story = {
   args: {
-    size: 'sm',
+    size: 'small',
     children: 'Small',
   },
 };
 
 export const Large: Story = {
   args: {
-    size: 'lg',
+    size: 'large',
     children: 'Large',
   },
 };
