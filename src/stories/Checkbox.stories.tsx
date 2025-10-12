@@ -133,11 +133,3 @@ export const Disabled: Story = {
   },
 };
 
-export const Disabled_Checked: Story = {
-  args: {
-    disabled: true,
-    checked: true,
-    variant: 'primary',
-    size: 'medium',
-  },
-};
