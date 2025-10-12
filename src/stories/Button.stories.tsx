@@ -257,10 +257,10 @@ export const CustomIconSize: Story = {
     prefixIcon: "Heart",
     suffixIcon: "Star",
     children: "Custom Size Icons",
-    iconSize: 20,
     iconStrokeWidth: 3,
     variant: "primary",
     size: "large",
+    iconClassName: "size-6" // Custom class to adjust icon size
   },
 };
 

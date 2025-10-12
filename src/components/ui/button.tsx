@@ -11,7 +11,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-button-color-primary-default-bg text-button-color-primary-default-text disabled:to-button-color-primary-disabled-bg disabled:text-button-color-primary-disabled-text hover:bg-button-color-primary-hover-bg hover:text-button-color-primary-hover-text",
+        primary: "bg-button-color-primary-default-bg text-button-color-primary-default-text disabled:bg-button-color-primary-disabled-bg disabled:text-button-color-primary-disabled-text hover:bg-button-color-primary-hover-bg hover:text-button-color-primary-hover-text",
         neutral:
           "bg-button-color-neutral-default-bg text-button-color-neutral-default-text button-border-weight-default border-button-color-neutral-default-stroke hover:bg-button-color-neutral-hover-bg hover:text-button-color-neutral-hover-text hover:border-button-color-neutral-hover-stroke disabled:bg-button-color-neutral-disabled-bg disabled:text-button-color-neutral-disabled-text disabled:border-button-color-neutral-disabled-stroke",
         destructive:
@@ -22,9 +22,29 @@ const buttonVariants = cva(
         medium: "rounded-button-border-radius-default button-font-medium h-10 py-2 px-4",
         small: "rounded-button-border-radius-default button-font-small h-9 py-2 px-4",
         extraSmall: "rounded-button-border-radius-default button-font-extra-small h-8 py-1.5 px-3",
-        icon: "size-9",
-        "icon-sm": "size-8",
-        "icon-lg": "size-10",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "large",
+    },
+  }
+)
+
+const iconVariants = cva(
+  "transition-colors",
+  {
+    variants: {
+      variant: {
+        primary: "text-button-color-primary-default-icon group-hover:text-button-color-primary-hover-icon group-disabled:text-button-color-primary-disabled-icon",
+        neutral: "text-button-color-neutral-default-icon group-hover:text-button-color-neutral-hover-icon group-disabled:text-button-color-neutral-disabled-icon",
+        destructive: "text-button-color-error-default-icon group-hover:text-button-color-error-hover-icon group-disabled:text-button-color-error-disabled-icon",
+      },
+      size: {
+        large: "w-4 h-4",
+        medium: "w-4 h-4",
+        small: "w-[14px] h-[14px]",
+        extraSmall: "w-[14px] h-[14px]",
       },
     },
     defaultVariants: {
@@ -36,21 +56,21 @@ const buttonVariants = cva(
 
 export interface ButtonProps extends React.ComponentProps<"button">,
   VariantProps<typeof buttonVariants> {
+  iconClassName?: string
   asChild?: boolean
   prefixIcon?: IconProps['name']
   suffixIcon?: IconProps['name']
-  iconSize?: number
   iconStrokeWidth?: number
 }
 
 function Button({
   className,
+  iconClassName,
   variant,
   size,
   asChild = false,
   prefixIcon,
   suffixIcon,
-  iconSize = 16,
   iconStrokeWidth = 2,
   children,
   ...props
@@ -73,22 +93,24 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, className }), "group")}
       {...props}
     >
       {prefixIcon && (
-        <Icon 
-          name={prefixIcon} 
-          size={iconSize} 
+
+        <Icon
+          name={prefixIcon}
           strokeWidth={iconStrokeWidth}
+          className={cn(iconVariants({ variant, size }), iconClassName)}
         />
+
       )}
       {children}
       {suffixIcon && (
-        <Icon 
-          name={suffixIcon} 
-          size={iconSize} 
+        <Icon
+          name={suffixIcon}
           strokeWidth={iconStrokeWidth}
+          className={cn(iconVariants({ variant, size }), iconClassName)}
         />
       )}
     </Comp>
