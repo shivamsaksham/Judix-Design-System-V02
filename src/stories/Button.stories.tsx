@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 import { Button } from '@/components/ui/button';
+import { Icon } from "judix-icon";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof Button> = {
@@ -20,7 +21,7 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       control: { type: 'select' },
-      options: ['large' , 'medium', 'small', 'extraSmall', 'icon', 'icon-sm', 'icon-lg'],
+      options: ['large', 'medium', 'small', 'extraSmall', 'icon', 'icon-sm', 'icon-lg'],
     },
     asChild: {
       control: { type: 'boolean' },
@@ -37,61 +38,149 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Default: Story = {
+export const Primary_Large: Story = {
   args: {
-    children: 'Button',
+    children: 'Primary Large',
+    variant: 'primary',
+    size: 'large',
   },
 };
 
-export const Destructive: Story = {
+export const Primary_Medium: Story = {
+  args: {
+    children: 'Primary Medium',
+    variant: 'primary',
+    size: 'medium',
+  },
+};
+
+export const PrimarySmall: Story = {
+  args: {
+    children: "Primary Small",
+    variant: "primary",
+    size: "small"
+  }
+};
+
+export const PrimaryExtraSmall: Story = {
+  args: {
+    children: "Primary ExtraSmall",
+    variant: "primary",
+    size: "extraSmall"
+  }
+};
+
+export const Primary_Large_Icon: Story = {
+  args: {
+    prefixIcon: "Document",
+    children: 'Primary Large Icon',
+    variant: 'primary',
+    size: 'large',
+  },
+};
+
+export const Neutral_Large: Story = {
+  args: {
+    children: 'Neutral Large',
+    variant: 'neutral',
+    size: 'large',
+  },
+};
+
+
+
+
+export const NeutralMedium: Story = {
+  args: {
+    children: "Neutral Medium",
+    variant: "neutral",
+    size: "medium"
+  }
+};
+
+
+
+
+
+
+
+export const NeutralSmall: Story = {
+  args: {
+    children: "Neutral Small",
+    variant: "neutral",
+    size: "small"
+  }
+};
+
+
+
+
+
+
+
+export const NeutralExtraSmall: Story = {
+  args: {
+    children: "Neutral Extra Small",
+    variant: "neutral",
+    size: "extraSmall"
+  }
+};
+
+
+export const Destructive_Large: Story = {
   args: {
     variant: 'destructive',
-    children: 'Delete',
-  },
-};
-
-
-export const Base: Story = {
-  args: {
-    variant: 'base',
-    children: 'Base',
-  },
-};
-
-export const Small: Story = {
-  args: {
-    size: 'small',
-    children: 'Small',
-  },
-};
-
-export const Large: Story = {
-  args: {
     size: 'large',
-    children: 'Large',
+    children: "Destructive Large",
   },
 };
 
-export const Icon: Story = {
+
+
+export const DestructiveMedium: Story = {
   args: {
-    size: 'icon',
-    children: '🔍',
-  },
+    variant: "destructive",
+    size: "medium",
+    children: "Destructive Medium"
+  }
 };
 
-export const IconSmall: Story = {
+
+
+
+
+
+
+
+
+
+
+export const DestrcutiveSmall: Story = {
   args: {
-    size: 'icon-sm',
-    children: '✓',
-  },
+    variant: "destructive",
+    size: "small",
+    children: "Destructive Small"
+  }
 };
 
-export const IconLarge: Story = {
+
+
+
+
+
+
+
+
+
+
+export const DestructiveExtraSmall: Story = {
   args: {
-    size: 'icon-lg',
-    children: '⚙️',
-  },
+    variant: "destructive",
+    size: "extraSmall",
+    children: "Destructive Extra Small"
+  }
 };
+
 
 export const Disabled: Story = {
   args: {
@@ -100,29 +189,6 @@ export const Disabled: Story = {
   },
 };
 
-export const WithIcon: Story = {
-  args: {
-    children: (
-      <>
-        <svg
-          className="size-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Add Item
-      </>
-    ),
-  },
-};
 
 export const AsChild: Story = {
   args: {
@@ -131,42 +197,91 @@ export const AsChild: Story = {
   },
 };
 
-export const Loading: Story = {
+// New Stories demonstrating prefix and suffix icons
+export const WithPrefixIcon: Story = {
   args: {
-    disabled: true,
-    children: (
-      <>
-        <svg
-          className="size-4 animate-spin"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83"
-          />
-        </svg>
-        Loading...
-      </>
-    ),
+    prefixIcon: "Document",
+    children: "Download File",
+    variant: "primary",
+    size: "large",
   },
 };
 
-export const TailwindTest: Story = {
+export const WithSuffixIcon: Story = {
   args: {
-    className: "bg-red-500 text-white border-2 border-blue-500 rounded-lg p-4 m-2",
-    children: "Tailwind Test",
+    suffixIcon: "ArrowRight",
+    children: "Continue",
+    variant: "primary",
+    size: "large",
   },
 };
 
-export const CSSTest: Story = {
+export const WithBothIcons: Story = {
   args: {
-    className: "storybook-test",
-    children: "CSS Test",
+    prefixIcon: "SearchNormal",
+    suffixIcon: "ArrowRight",
+    children: "Search and Navigate",
+    variant: "primary",
+    size: "large",
   },
 };
+
+export const PrefixIconMedium: Story = {
+  args: {
+    prefixIcon: "Add",
+    children: "Add Item",
+    variant: "primary",
+    size: "medium",
+  },
+};
+
+export const SuffixIconSmall: Story = {
+  args: {
+    suffixIcon: "Check",
+    children: "Complete",
+    variant: "neutral",
+    size: "small",
+  },
+};
+
+export const DestructiveWithIcon: Story = {
+  args: {
+    prefixIcon: "Trash",
+    children: "Delete",
+    variant: "destructive",
+    size: "large",
+  },
+};
+
+export const CustomIconSize: Story = {
+  args: {
+    prefixIcon: "Heart",
+    suffixIcon: "Star",
+    children: "Custom Size Icons",
+    iconSize: 20,
+    iconStrokeWidth: 3,
+    variant: "primary",
+    size: "large",
+  },
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

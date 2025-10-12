@@ -1032,7 +1032,8 @@
   line-height: var(--font-line_height-label-secondary);
 }
 
-/* Ui Elements Test Styles */
+/* ----------- Ui Elements Test Styles ---------- */
+/* Button Component Text Styles */
 @utility button-font-large{
   @apply text-style-body-large-emphasis;
 }
@@ -1047,4 +1048,94 @@
 
 @utility button-font-extra-small{
   @apply text-style-label-default-emphasis;
+}
+
+/* Alert Card Text Styles */
+@utility alert_card-font-title{
+  @apply text-style-body-title-regular;
+}
+@utility alert_card-font-content{
+  @apply text-style-textblock-primary-subtext-regular;
+}
+
+/* Calendar Text Styles */
+@utility calendar-font-month{
+  @apply text-style-body-default-regular;
+}
+@utility calendar-font-day{
+  @apply text-style-label-secondary-regular;
+}
+@utility calendar-font-date{
+  @apply text-style-label-default-regular;
+}
+
+/* Confirmation Text Styles */
+@utility confirmation-font-title{
+  @apply text-style-body-title-regular;
+}
+@utility confirmation-font-content{
+  @apply text-style-textblock-primary-subtext-regular;
+}
+
+/* Label Text Styles */
+@utility labels-font-small{
+  @apply text-style-label-title-emphasis;
+}
+@utility labels-font-medium{
+  @apply text-style-body-default-regular;
+}
+@utility labels-font-large{
+  @apply text-style-body-title-regular;
+}
+
+/* Number Badge Text Styles */
+@utility number_badge-font-large{
+  @apply text-style-body-title-regular;
+}
+@utility number_badge-font-medium{
+  @apply text-style-body-default-regular;
+}
+@utility number_badge-font-small{
+  @apply text-style-label-title-regular;
+}
+
+/* Option Text Styles */
+@utility option-font-title{
+  @apply text-style-body-default-regular;
+}
+@utility option-font-subtext{
+  @apply text-style-textblock-secondary-caption-emphasis;
+}
+
+/* Pagination Text Styles */
+@utility pagination-font-default{
+  @apply text-style-body-default-emphasis;
+}
+
+/* TagSelector Text Styles */
+@utility tag_selector-font-search{
+  @apply text-style-body-default-regular;
+}
+
+/* Toast Text Styles */
+@utility toast-font-default{
+  @apply text-style-body-default-regular;
+}
+
+/* Text Input Text Styles */
+@utility textinput-font-label{
+  @apply text-style-body-default-regular;
+}
+@utility  textinput-font-helper{
+  @apply text-style-label-default-regular;
+}
+/* Text Input Placeholder Text Styles */
+@utility textinput-font-placeholder-large{
+  @apply text-style-body-title-regular;
+}
+@utility textinput-font-placeholder-medium{
+  @apply text-style-body-default-regular;
+}
+@utility textinput-font-placeholder-small{
+  @apply text-style-body-default-regular;
 }
