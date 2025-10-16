@@ -55,7 +55,6 @@ export const AllStyles: Story = {
       <div className="flex flex-col gap-8">
         {(['primary', 'subtle', 'outline', 'ghost'] as const).map((variant) => (
           <div key={variant} className="flex items-center gap-4">
-            <IconButton {...args} variant={variant} colorScheme="neutral" shape="rounded" />
             <IconButton {...args} variant={variant} colorScheme="primary" shape="rounded" />
             <IconButton {...args} variant={variant} colorScheme="neutral" shape="circle" />
             <IconButton {...args} variant={variant} colorScheme="primary" shape="circle" />
@@ -71,12 +70,16 @@ export const AllStyles: Story = {
 export const Disabled: Story = {
     name: "Disabled States",
     render: (args) => (
-      <div className="flex items-center gap-4">
-          <IconButton {...args} variant="primary" disabled />
-          <IconButton {...args} variant="subtle" disabled />
-          <IconButton {...args} variant="outline" disabled />
-          <IconButton {...args} variant="ghost" disabled />
+        <div className="flex flex-col gap-8">
+        {(['primary', 'subtle', 'outline', 'ghost'] as const).map((variant) => (
+          <div key={variant} className="flex items-center gap-4">
+            <IconButton {...args} variant={variant} colorScheme="primary" shape="rounded" disabled/>
+            <IconButton {...args} variant={variant} colorScheme="neutral" shape="circle" disabled/>
+            <IconButton {...args} variant={variant} colorScheme="primary" shape="circle" disabled/>
+          </div>
+        ))}
       </div>
+        
     ),
     args: {
       size: 'large',

@@ -32,10 +32,10 @@ const iconButtonVariants = cva(
       },
     },
     compoundVariants: [
-      {
-        variant: "primary",
-        className: "bg-button-color-primary-default-bg hover:bg-button-color-primary-hover-bg",
-      },
+    //   {
+    //     variant: "primary",
+    //     className: "bg-button-color-primary-default-bg hover:bg-button-color-primary-hover-bg",
+    //   },
       {
         variant: "subtle",
         colorScheme: "primary",
@@ -49,7 +49,7 @@ const iconButtonVariants = cva(
       {
         variant: "outline",
         colorScheme: "primary",
-        className: "border-color-border-primary-strong text-color-text-primary-default hover:bg-color-surface-primary-hover_default",
+        className: "border-button-color-neutral-default-stroke text-color-text-primary-default hover:bg-color-surface-primary-hover_default",
       },
       {
         variant: "outline",
