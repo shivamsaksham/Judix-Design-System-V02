@@ -33,7 +33,7 @@ const meta: Meta<typeof IconButton> = {
     },
   },
   args: {
-    icon: 'Document',
+    icon: 'ClipboardText',
     disabled: false,
     variant: 'subtle',
     colorScheme: 'neutral',
