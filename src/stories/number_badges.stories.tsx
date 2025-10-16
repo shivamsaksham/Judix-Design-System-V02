@@ -12,15 +12,15 @@ const meta: Meta<typeof NumberBadge> = {
   argTypes: {
     variant: {
       control: 'radio',
-      options: ['solid', 'subtle'],
+      options: ['primary', 'neutral'],
     },
     shape: {
       control: 'radio',
-      options: ['rounded', 'circle'],
+      options: ['sharp', 'rounded'],
     },
     size: {
       control: 'select',
-      options: ['large', 'medium', 'small'],
+      options: ['xs', 's', 'md'],
     },
     children: {
       control: 'text',
@@ -28,9 +28,9 @@ const meta: Meta<typeof NumberBadge> = {
   },
   args: {
     children: '5',
-    variant: 'subtle',
-    shape: 'rounded',
-    size: 'large',
+    variant: 'primary',
+    shape: 'sharp',
+    size: 'md',
   },
 };
 
@@ -47,9 +47,9 @@ export const DesignGallery: Story = {
   name: "Full Design Gallery",
   render: (args) => (
     <div className="grid grid-cols-4 grid-rows-3 gap-4 p-4 bg-gray-50 rounded-lg">
-      {(['large', 'medium', 'small'] as const).flatMap((size) =>
-        (['subtle', 'solid'] as const).flatMap((variant) =>
-          (['rounded', 'circle'] as const).map((shape) => (
+      {(['md', 's', 'xs'] as const).flatMap((size) =>
+        (['neutral', 'primary'] as const).flatMap((variant) =>
+          (['sharp', 'rounded'] as const).map((shape) => (
             <NumberBadge
               key={`${size}-${variant}-${shape}`}
               {...args}

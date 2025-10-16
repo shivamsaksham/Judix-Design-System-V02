@@ -51,8 +51,8 @@ const Label = React.forwardRef<HTMLDivElement, LabelProps>(
         <span>{children}</span>
         {badgeContent && (
           <NumberBadge
-            variant={colorScheme === 'primary' ? 'solid' : 'subtle'}
-            size={size === 'large' ? 'medium' : 'small'}
+            variant={colorScheme === 'primary' ? 'primary' : 'neutral'}
+            size={size === 'large' ? 'md' : 's'}
             shape="rounded"
           >
             {badgeContent}
