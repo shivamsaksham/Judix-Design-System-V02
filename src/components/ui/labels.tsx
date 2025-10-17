@@ -10,8 +10,8 @@ const labelVariants = cva(
   {
     variants: {
       colorScheme: {
-        primary: "bg-[var(--color-labels-color-primary-bg)] border-[var(--color-labels-color-primary-stroke)] text-[var(--color-labels-color-primary-text)]",
-        neutral: "bg-[var(--color-labels-color-neutral-bg)] border-[var(--color-labels-color-neutral-stroke)] text-[var(--color-labels-color-neutral-text)]",
+        primary: "bg-color-labels-color-primary-bg border-[var(--color-labels-color-primary-stroke)] text-color-labels-color-primary-text",
+        neutral: "bg-color-labels-color-neutral-bg border-[var(--color-labels-color-neutral-stroke)] text-color-labels-color-neutral-text",
       },
       size: {
         large: "h-8 px-3 labels-font-large",
