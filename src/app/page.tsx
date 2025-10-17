@@ -1,6 +1,8 @@
+
 import { Toggle } from "@/components/ui/toggle";
 import { Icon } from "judix-icon";
 import Image from "next/image";
+import { use } from "react";
 
 export default function Home() {
   return (
@@ -8,6 +10,7 @@ export default function Home() {
       <div className="text-style-label-title-emphasis">This is the test for font</div>
       {/* <Icon name="Document" /> */}
       <Toggle state="off" color="primary" size="small"/>
+      {/* <Switch  /> */}
     </div>
   );
 }
