@@ -1,7 +1,6 @@
 'use client'
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -22,7 +21,7 @@ function PaginationContent({
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex flex-row items-center font-poppins flex-wrap justify-center gap-2 sm:gap-0", className)}
+      className={cn("flex flex-row items-center flex-wrap justify-center gap-1 md:gap-2", className)}
       {...props}
     />
   )
@@ -35,13 +34,11 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 type PaginationLinkProps = {
   isActive?: boolean
   style?: React.CSSProperties
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">
+} & React.ComponentProps<"a">
 
 function PaginationLink({
   className,
   isActive,
-  size = "small",
   ...props
 }: PaginationLinkProps) {
   return (
@@ -50,23 +47,23 @@ function PaginationLink({
       data-slot="pagination-link"
       data-active={isActive}
       className={cn(
-        "flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 text-xs sm:text-sm text-[#262626] border hover:bg-gray-100 transition-colors cursor-pointer select-none",
+        "flex items-center justify-center w-8 h-8 md:w-9 md:h-9 text-sm md:text-base border transition-colors cursor-pointer select-none",
         className
       )}
       style={{
         padding: "6px 7px",
         boxSizing: "border-box",
-        fontFamily: "var(--font-poppins)",
-        fontWeight: 500,
+        fontFamily: "var(--primitives-font-family-poppins)",
+        fontWeight: "var(--primitives-font-weight-medium)",
         color: "var(--primitives-color-neutral-contrast-800)",
         borderWidth: "var(--primitives-border-weight-sm)",
         borderColor: isActive
           ? "var(--primitives-color-neutral-light-300)"
-          : "white",
-        borderRadius: "var(--border-radius-round)",
+          : "var(--primitives-color-neutral-light-100)",
+        borderRadius: "var(--primitives-border-radius-full)",
         backgroundColor: isActive
           ? "var(--primitives-color-neutral-light-200)"
-          : "var(--primitives-color-neutral-100)",
+          : "var(--primitives-color-neutral-light-100)",
         textAlign: "center",
       }}
       {...props}
@@ -81,11 +78,11 @@ function PaginationPrevious({
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      className={cn("w-7 h-7 sm:w-8 sm:h-8 p-1.5 sm:p-2", className)}
+      className={cn("w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5", className)}
       style={{
         padding: "8px",
         boxSizing: "border-box",
-        borderRadius: "var(--border-radius-round)",
+        borderRadius: "var(--primitives-border-radius-full)",
         borderColor: "var(--primitives-color-neutral-light-300)",
       }}
       {...props}
@@ -93,7 +90,7 @@ function PaginationPrevious({
       <img
         src="/LeftArrow.svg"
         alt="Previous"
-        className="w-[7px] h-[7.5px] sm:w-[8.99px] sm:h-[9px]"
+        className="w-2.5 h-2.5 md:w-3 md:h-3"
       />
     </PaginationLink>
   )
@@ -106,11 +103,11 @@ function PaginationNext({
   return (
     <PaginationLink
       aria-label="Go to next page"
-      className={cn("w-7 h-7 sm:w-8 sm:h-8 p-1.5 sm:p-2", className)}
+      className={cn("w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5", className)}
       style={{
         padding: "8px",
         boxSizing: "border-box",
-        borderRadius: "var(--border-radius-round)",
+        borderRadius: "var(--primitives-border-radius-full)",
         borderColor: "var(--primitives-color-neutral-light-300)",
       }}
       {...props}
@@ -118,7 +115,7 @@ function PaginationNext({
       <img
         src="/RightArrow.svg"
         alt="Next"
-        className="w-[7px] h-[7.5px] sm:w-[8.99px] sm:h-[9px]"
+        className="w-2.5 h-2.5 md:w-3 md:h-3"
       />
     </PaginationLink>
   )
@@ -133,10 +130,15 @@ function PaginationEllipsis({
       aria-hidden
       data-slot="pagination-ellipsis"
       className={cn(
-        "flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 text-xs sm:text-sm text-[#262626]",
+        "flex items-center justify-center w-8 h-8 md:w-9 md:h-9 text-sm md:text-base",
         className
       )}
-      style={{ padding: "6px 7px" }}
+      style={{
+        padding: "6px 7px",
+        fontFamily: "var(--primitives-font-family-poppins)",
+        fontWeight: "var(--primitives-font-weight-medium)",
+        color: "var(--primitives-color-neutral-contrast-800)",
+      }}
       {...props}
     >
       <span>...</span>
@@ -145,34 +147,42 @@ function PaginationEllipsis({
   )
 }
 
-// Generate pagination items based on current page
 function getPaginationItems(currentPage: number, totalPages: number) {
   const items: (number | 'ellipsis')[] = []
   
-  // Always show first page
-  items.push(1)
-  
   if (totalPages <= 7) {
-    // Show all pages if total is 7 or less
-    for (let i = 2; i <= totalPages; i++) {
+    for (let i = 1; i <= totalPages; i++) {
       items.push(i)
     }
   } else {
-    // Complex pagination logic for more than 7 pages
-    if (currentPage <= 3) {
-      // Near the beginning
-      items.push(2, 3, 4, 'ellipsis', totalPages)
-    } else if (currentPage >= totalPages - 2) {
-      // Near the end
-      items.push('ellipsis', totalPages - 3, totalPages - 2, totalPages - 1, totalPages)
-    } else {
-      // In the middle
-      items.push('ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages)
+    items.push(1)
+    if (currentPage > 3) {
+      items.push('ellipsis')
     }
+    if (currentPage === totalPages) {
+       items.push(currentPage-2)
+    }
+    if (currentPage > 2) {
+      items.push(currentPage - 1)
+    }
+    if (currentPage !== 1 && currentPage !== totalPages) {
+      items.push(currentPage)
+    }
+    if (currentPage < totalPages - 1) {
+      items.push(currentPage + 1)
+    }
+     if (currentPage === 1) {
+       items.push(currentPage+2)
+    }
+    if (currentPage < totalPages - 2) {
+      items.push('ellipsis')
+    }
+    items.push(totalPages)
   }
   
-  return items
+  return [...new Set(items)];
 }
+
 
 export default function PaginationView() {
   const totalPages = 10
@@ -198,12 +208,12 @@ export default function PaginationView() {
 
   return (
     <Pagination>
-      <PaginationContent className="flex items-center">
+      <PaginationContent>
         <PaginationItem>
           <PaginationPrevious onClick={handlePrevious} />
         </PaginationItem>
 
-        <div className="flex items-center ml-4 sm:ml-[32px] gap-1 sm:gap-[4px]">
+        <div className="flex items-center mx-2 md:mx-4 gap-1 md:gap-2">
           {paginationItems.map((item, index) => (
             <PaginationItem key={`${item}-${index}`}>
               {item === 'ellipsis' ? (
@@ -220,7 +230,7 @@ export default function PaginationView() {
           ))}
         </div>
 
-        <PaginationItem className="ml-4 sm:ml-[32px]">
+        <PaginationItem>
           <PaginationNext onClick={handleNext} />
         </PaginationItem>
       </PaginationContent>
