@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import * as React from "react"
@@ -7,7 +5,6 @@ import * as SwitchPrimitive from "@radix-ui/react-switch"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { PrimaryExtraSmall } from "@/stories/Button.stories"
 
 
 const toggleVariants = cva(
@@ -61,7 +58,7 @@ export interface SwitchProps
     }
 
 
-function Switch({
+function Toggle({
     variant,
     size,
   className,
@@ -86,5 +83,5 @@ function Switch({
   )
 }
 
-export { Switch }
+export { Toggle }
 
