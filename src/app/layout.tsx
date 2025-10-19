@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import localfont from "next/font/local"
+import localFont from "next/font/local"
 import "./globals.css";
 
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "A design system for JudiX",
 };
 
-const Satoshi = localfont({
+const satoshi = localFont({
   src: "./fonts/Satoshi-Variable.woff2",
   variable: "--font-satoshi"
 })
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${Satoshi.variable} antialiased`}
+        className={`${poppins.variable} ${satoshi.variable} antialiased`}
       >
         {children}
       </body>
