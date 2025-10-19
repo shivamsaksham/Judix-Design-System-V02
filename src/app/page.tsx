@@ -1,7 +1,6 @@
-
-// import { Toggle } from "@/components/ui/toggle";
 "use client";
 import { Toggle } from "@/components/ui/toggle";
+
 
 
 export default function Home() {
@@ -13,6 +12,7 @@ export default function Home() {
       <div className="text-style-label-title-emphasis">This is the test for font</div>
       
       <Toggle  variant="primary" onCheckedChange={switchState}/>
+
     </div>
   );
 }
