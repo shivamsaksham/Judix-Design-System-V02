@@ -2,21 +2,21 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { IconButton } from "@/components/ui/icon_button"
 import { NumberBadge } from "./number_badges"
+import { Icon } from "judix-icon"
 
 const labelVariants = cva(
-  "inline-flex items-center justify-center gap-2 border rounded-[var(--radius-labels-border-radius-default)] labels-border-weight-default",
+  "inline-flex items-center justify-center gap-2 border rounded-label-border-radius-default label-border-weight-default",
   {
     variants: {
       colorScheme: {
-        primary: "bg-color-labels-color-primary-bg border-[var(--color-labels-color-primary-stroke)] text-color-labels-color-primary-text",
-        neutral: "bg-color-labels-color-neutral-bg border-[var(--color-labels-color-neutral-stroke)] text-color-labels-color-neutral-text",
+        primary: "bg-color-label-color-primary-bg border-label-color-primary-stroke text-label-color-primary-text",
+        neutral: "bg-color-label-color-neutral-bg border-label-color-neutral-stroke text-label-color-neutral-text",
       },
       size: {
-        large: "h-8 px-3 labels-font-large",
-        medium: "h-7 px-2.5 labels-font-medium",
-        small: "h-6 px-2 labels-font-small",
+        large: "h-8 px-3 py-2 label-font-large",
+        medium: "h-7 px-2.5 py-2 label-font-medium",
+        small: "h-6 px-2 py-2 label-font-small",
       },
     },
     defaultVariants: {
@@ -26,9 +26,23 @@ const labelVariants = cva(
   }
 )
 
+const iconVariants = cva("", {
+  variants: {
+    colorScheme: {
+      primary: "text-label-color-primary-text",
+      neutral: "text-label-color-neutral-text",
+    },
+    size: {
+      large: "h-3 w-3",
+      medium: "h-3 w-3",
+      small: "h-2.5 w-2.5",
+    }
+  }
+})
+
 export interface LabelProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof labelVariants> {
+  VariantProps<typeof labelVariants> {
   showDot?: boolean;
   badgeContent?: string | number;
   onRemove?: () => void;
@@ -36,6 +50,7 @@ export interface LabelProps
 
 const Label = React.forwardRef<HTMLDivElement, LabelProps>(
   ({ className, colorScheme, size, children, showDot = false, badgeContent, onRemove, ...props }, ref) => {
+
     return (
       <div
         className={cn(labelVariants({ colorScheme, size, className }))}
@@ -44,29 +59,25 @@ const Label = React.forwardRef<HTMLDivElement, LabelProps>(
       >
         {showDot && (
           <span className={cn("h-1.5 w-1.5 rounded-full", {
-            "bg-[var(--color-color-text-primary-default)]": colorScheme === "primary",
-            "bg-[var(--color-color-text-neutral-default)]": colorScheme === "neutral",
+            "bg-label-color-primary-text": colorScheme === "primary",
+            "bg-label-color-neutral-text": colorScheme === "neutral",
           })} />
         )}
         <span>{children}</span>
         {badgeContent && (
           <NumberBadge
             variant={colorScheme === 'primary' ? 'primary' : 'neutral'}
-            size={size === 'large' ? 'md' : 's'}
+            size={size === 'large' ? 'md' : size === 'medium' ? 's' : 'xs'}
             shape="rounded"
           >
             {badgeContent}
           </NumberBadge>
         )}
         {onRemove && (
-          <IconButton
-            variant="ghost"
-            colorScheme={colorScheme}
-            size="extraSmall"
-            shape="circle"
-            icon="Cross"
+          <Icon
+            name="Cross"
             onClick={onRemove}
-            className="-my-2 -mr-1 h-5 w-5"
+            className={cn(iconVariants({ colorScheme, size}) , "cursor-pointer")}
           />
         )}
       </div>

@@ -10,68 +10,29 @@ const iconButtonVariants = cva(
   "inline-flex items-center justify-center shrink-0 cursor-pointer font-semibold transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   {
     variants: {
+      boundary: {
+        stroked: "border icon_button-border-weight-default",
+        none: "border-0",
+      },
       variant: {
-        primary: "text-button-color-primary-default-text",
-        subtle: "",
-        outline: "border bg-transparent",
-        ghost: "bg-transparent",
+        primary: "bg-icon_button-color-primary-bg text-icon_button-color-primary-icon border-icon_button-color-primary-stroke disabled:bg-icon_button-color-primary-bg disabled:text-icon_button-color-primary-disabled hover:bg-icon_button-color-neutral-hover hover:icon_button-color-primary-icon",
+        neutral: "bg-icon_button-color-neutral-bg text-icon_button-color-neutral-icon border-icon_button-color-neutral-stroke disabled:bg-icon_button-color-neutral-bg disabled:text-icon_button-color-neutral-disabled hover:bg-icon_button-color-neutral-hover hover:icon_button-color-neutral-icon",
+        primary_2_tone: "bg-icon_button-color-primary-bg text-icon_button-color-primary-icon border-icon_button-color-primary-stroke disabled:bg-icon_button-color-primary-hover disabled:text-icon_button-color-primary-disabled hover:bg-icon_button-color-primary-hover hover:text-icon_button-color-primary-icon",
       },
-      colorScheme: {
-        primary: "",
-        neutral: "",
-      },
-      shape: {
-        rounded: "rounded-lg",
-        circle: "rounded-full",
+      corner: {
+        rounded: "rounded-icon_button-border-radius-round",
+        sharp: "rounded-icon_button-border-radius-sharp",
       },
       size: {
-        large: "h-12 w-12",
-        medium: "h-10 w-10",
-        small: "h-8 w-8",
-        extraSmall: "h-7 w-7",
+        large: "h-10 w-10 p-2",
+        medium: "h-[34px] w-[34px] p-2",
       },
     },
-    compoundVariants: [
-    //   {
-    //     variant: "primary",
-    //     className: "bg-button-color-primary-default-bg hover:bg-button-color-primary-hover-bg",
-    //   },
-      {
-        variant: "subtle",
-        colorScheme: "primary",
-        className: "bg-color-surface-primary-subtle_bg text-color-text-primary-default hover:bg-color-surface-primary-hover_mild",
-      },
-      {
-        variant: "subtle",
-        colorScheme: "neutral",
-        className: "bg-color-surface-neutral-hover_default text-button-color-neutral-default-text hover:bg-color-surface-neutral-hover_mild",
-      },
-      {
-        variant: "outline",
-        colorScheme: "primary",
-        className: "border-button-color-neutral-default-stroke text-color-text-primary-default hover:bg-color-surface-primary-hover_default",
-      },
-      {
-        variant: "outline",
-        colorScheme: "neutral",
-        className: "border-button-color-neutral-default-stroke text-button-color-neutral-default-text hover:bg-button-color-neutral-hover-bg",
-      },
-      {
-        variant: "ghost",
-        colorScheme: "primary",
-        className: "text-color-text-primary-default hover:bg-color-surface-primary-hover_default",
-      },
-      {
-        variant: "ghost",
-        colorScheme: "neutral",
-        className: "text-button-color-neutral-default-text hover:bg-button-color-neutral-hover-bg",
-      },
-    ],
     defaultVariants: {
       variant: "primary",
-      colorScheme: "primary",
       size: "medium",
-      shape: "rounded",
+      corner: "rounded",
+      boundary: "none",
     },
   }
 )
@@ -99,11 +60,11 @@ export interface IconButtonProps
 }
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ className, variant, size, shape, colorScheme, asChild = false, icon, iconClassName, ...props }, ref) => {
+  ({ className, variant, size, corner , boundary, asChild = false, icon, iconClassName, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(iconButtonVariants({ variant, size, shape, colorScheme, className }))}
+        className={cn(iconButtonVariants({ variant, size, corner, boundary, className }))}
         ref={ref}
         {...props}
       >
