@@ -1,5 +1,5 @@
 import * as React from "react"
-
+import { Icon } from "judix-icon"
 import { cn } from "@/lib/utils"
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
@@ -7,7 +7,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-alert_card-color-stroke py-6 shadow-sm  md:w-1/2  2xl:w-1/3",
         className
       )}
       {...props}
