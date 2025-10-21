@@ -6,7 +6,7 @@ import { Label } from "../ui/labels"
 import { NumberBadge } from "../ui/number_badges"
 
 const tagSelectorVariants = cva(
-  "border bg-tag_selector-color-bg border-tag_selector-color-stroke rounded-tag_selector-border-radius-default tag_selector-border-weight-default w-full flex flex-col",
+  "border bg-tag_selector-color-bg border-tag_selector-color-stroke rounded-tag_selector-border-radius-default tag_selector-border-weight-default w-[384px] h-[185px] flex flex-col",
   {
     variants: {},
     defaultVariants: {},

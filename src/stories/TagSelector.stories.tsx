@@ -11,10 +11,8 @@ const meta: Meta<typeof TagSelector> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      // Removed the wrapper div to let the component use its own fixed size
-      <div className="w-[384px] flex flex-wrap">
-        <Story />
-      </div>
+      // Removed the wrapper div, the component now sizes itself
+      <Story />
     ),
   ],
   argTypes: {

@@ -1,0 +1,110 @@
+import * as React from "react"
+import type { Meta, StoryObj } from "@storybook/nextjs-vite"
+import { TextInput } from "@/components/ui/text-input"
+import { Icon } from "judix-icon"
+
+const meta: Meta<typeof TextInput> = {
+  title: "Components/TextInput",
+  component: TextInput,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <div className="w-96">
+        <Story />
+      </div>
+    ),
+  ],
+  argTypes: {
+    variant: {
+      control: false,
+    },
+    label: {
+      control: "text",
+    },
+    placeholder: {
+      control: "text",
+    },
+    helperText: {
+      control: "text",
+    },
+    errorMessage: {
+      control: "text",
+    },
+    leadingIcon: {
+      control: false,
+    },
+    trailingAccessory: {
+      control: false,
+    },
+    selectedLabels: {
+      control: false,
+    },
+    disabled: {
+      control: "boolean",
+    },
+  },
+  args: {
+    label: "Label",
+    placeholder: "Placeholder text",
+  },
+}
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const DefaultWithHelperText: Story = {
+  name: "Row 1: Default w/ Helper Text",
+  args: {
+    helperText: "Helper text goes here",
+  },
+}
+
+export const DefaultWithInfoIcon: Story = {
+  name: "Row 1: Default w/ Info Icon",
+  args: {
+    helperText: "Helper text goes here",
+    trailingAccessory: <Icon name="InfoCircle" />,
+  },
+}
+
+export const Error: Story = {
+  name: "Row 2: Error",
+  args: {
+    errorMessage: "Error message",
+    trailingAccessory: <Icon name="InfoCircle" />,
+  },
+}
+
+export const WithSelectedLabels: Story = {
+  name: "Row 3: With Selected Labels (Below)",
+  args: {
+    selectedLabels: [
+      { text: "Label", onRemove: () => {} },
+      { text: "Label", onRemove: () => {} },
+      { text: "Label", onRemove: () => {} },
+    ],
+    placeholder: "Placeholder text",
+  },
+}
+
+export const Disabled: Story = {
+  name: "Row 4: Disabled w/ Info Icon",
+  args: {
+    helperText: "Helper text goes here",
+    trailingAccessory: <Icon name="InfoCircle" />,
+    disabled: true,
+  },
+}
+
+export const Focus: Story = {
+  name: "Row 5: Focus",
+  args: {
+    helperText: "Helper text goes here",
+  },
+  parameters: {
+    pseudo: { focusWithin: true },
+  },
+}
