@@ -104,7 +104,7 @@ export const Interactive: Story = {
         onSelect={handleSelect}
         onDeselect={handleDeselect}
         onCreateTag={handleCreateTag}
-        badgeCount={available.length}
+        badgeCount={selected.length}
       />
     )
   },
