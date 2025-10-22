@@ -8,16 +8,11 @@ const firstDayOfMonth = (year: number, month: number) => {
     return new Date(year, month, 1).getDay();
 };
 
-const ChevronLeft = () => (
-    <img src="./arrow-left.svg" alt="" />);
-
-const ChevronRight = () => (
-    <img src="./arrow-left.svg" alt="" />);
-
-
 // --- Main Calendar Component ---
 const Calender = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
+    // --- New state for selected date ---
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth(); // 0-indexed (0 for January)
@@ -33,38 +28,76 @@ const Calender = () => {
         setCurrentDate(new Date(year, month + 1, 1));
     };
 
+    // --- New click handler for day selection ---
+    const handleDayClick = (date: Date) => {
+        setSelectedDate(date);
+    };
+
+    // Get today's date components once for efficiency
+    const today = new Date();
+    const todayDate = today.getDate();
+    const todayMonth = today.getMonth();
+    const todayYear = today.getFullYear();
+
     // --- Calendar Grid Generation ---
     const renderCalendarGrid = () => {
         const days = [];
         const totalDaysInMonth = daysInMonth(year, month);
         const firstDay = firstDayOfMonth(year, month);
 
-        // Add blank cells for the days before the first day of the month
         for (let i = 0; i < firstDay; i++) {
-            // Each cell has a 'day-cell' and 'other-month-day' class for styling
-            days.push(<div key={`empty-start-${i}`} className="day-cell other-month-day"></div>);
+            days.push(<div key={`empty-start-${i}`} className="day-cell other-month-day w-8 h-8 p-[3.11px]"></div>);
         }
 
         // Add cells for each day of the current month
         for (let day = 1; day <= totalDaysInMonth; day++) {
-            const today = new Date();
-            const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+            const fullDayDate = new Date(year, month, day);
+
+            // Check if this day is 'today'
+            const isToday = day === todayDate && month === todayMonth && year === todayYear;
             
-            // Add a specific 'today' class if the day is the current date
-            const dayCellClasses = `day-cell ${isToday ? 'today' : ''}`;
+            // Check if this day is 'selected'
+            const isSelected = selectedDate &&
+                day === selectedDate.getDate() &&
+                month === selectedDate.getMonth() &&
+                year === selectedDate.getFullYear();
+
+            const dayCellClasses = `
+                day-cell rounded-full cursor-pointer
+                flex items-center justify-center  
+                w-8 h-8 p-[3.11px] 
+                ${isSelected
+                    ? 'bg-calendar-color-selected' // Selected style
+                    : isToday
+                        ? 'today bg-neutral-200' // Today's date style
+                        : 'hover:bg-calendar-color-hover' // Default hover
+                }
+            `;
+            
+            const dayNumberClasses = `
+                day-number calendar-font-date
+                ${isSelected
+                    ? 'text-calendar-color-text-selected_date' // Selected text color
+                    : 'text-calendar-color-text-date' // Default text color
+                }
+            `;
 
             days.push(
-                <div key={`day-${day}`} className={dayCellClasses}>
-                    {/* The 'day-number' class is for styling the number itself */}
-                    <span className="day-number">{day}</span>
+                <div 
+                    key={`day-${day}`} 
+                    className={dayCellClasses}
+                    onClick={() => handleDayClick(fullDayDate)}
+                >
+                    <span className={dayNumberClasses}>{day}</span>
                 </div>
             );
         }
 
-        // Fill the remaining grid cells to ensure a consistent 6-week layout
-        const totalCells = 42; // 6 rows * 7 columns
-        while (days.length < totalCells) {
-             days.push(<div key={`empty-end-${days.length}`} className="day-cell other-month-day"></div>);
+        const totalSlotsUsed = firstDay + totalDaysInMonth;
+        
+        const totalCellsToRender = Math.ceil(totalSlotsUsed / 7) * 7;
+        while (days.length < totalCellsToRender) {
+             days.push(<div key={`empty-end-${days.length}`} className="day-cell other-month-day w-8 h-8 p-[3.11px]"></div>);
         }
 
         return days;
@@ -73,43 +106,34 @@ const Calender = () => {
     const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
     return (
-        <div className="bg-gray-100 flex items-center justify-center min-h-screen font-family-brandprimary p-4">
-            {/* This code below has calender */}
-            <div className="calendar-container bg-calendar-color-bg border rounded-calendar-border-radius-default border-calendar-color-card_stroke border-calendar-border-radius-default p-4  w-full max-w-md">
+        <div className="bg-gray-100 flex items-center justify-center min-h-screen font-family-brandprimary">
+            <div className="calendar-container bg-calendar-color-bg border rounded-calendar-border-radius-default border-calendar-color-card_stroke border-calendar-border-radius-default p-4  w-full min-w-[304px] max-w-[352px]">
                 
-                {/* The header contains the navigation arrows and the month/year display.
-                  Each element has its own class for individual styling.
-                */}
-                <div className="calendar-header flex items-center justify-between mb-4 p-[6.22px]">
-                    {/* Left navigation arrow */}
-                    <button onClick={handlePrevMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100"> 
-                        <img src="./arrow-left.svg" alt="" />
+                {/* Header with navigation and month/year */}
+                <div className="calendar-header flex items-center justify-between mb-4 p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
+                    <button onClick={handlePrevMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100 cursor-pointer"> 
+                        <img src="./arrow-left.svg" alt="Previous Month" />
                     </button>
                     
-                    {/* Month and Year Display */}
-                    <h2 className="month-year-display text-lg font-semibold text-calendar-color-text-month text-size-body-default box-sizing mt-[3px] mb-[3px]" >
+                    <h2 className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center" >
                         {monthName} {year}
                     </h2>
 
-                    {/* Right navigation arrow */}
-                    <button onClick={handleNextMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100">
-                        <img src="./arrow-right.svg" alt="" />
+                    <button onClick={handleNextMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100 cursor-pointer">
+                        <img src="./arrow-right.svg" alt="Next Month" />
                     </button>
                 </div>
 
-                {/* Container for the days of the week (e.g., SUN, MON).
-                  Each day name has a 'weekday-label' class.
-                */}
-                <div className="weekdays-grid grid grid-cols-7 gap-[3px] text-center text-calendar-color-text-day mb-[10px]">
+                <div className="calendar-grid grid grid-cols-7 gap-x-[3px] gap-y-[10px] text-center min-w-[272px] max-w-[350px] justify-items-center">
+                    
+                    {/* Weekday labels */}
                     {weekdays.map(day => (
-                        <div key={day} className="weekday-label p-2 text-size-label-secondary">{day}</div>
+                        <div key={day} className="weekday-label p-2 calendar-font-day text-calendar-color-text-day text-center">
+                            {day}
+                        </div>
                     ))}
-                </div>
 
-                {/* This is the main grid for the dates.
-                  It's filled dynamically by the renderCalendarGrid function.
-                */}
-                <div className="calendar-grid grid grid-cols-7 gap-1 text-center">
+                    {/* The date cells (now dynamic: 28, 35, or 42) */}
                     {renderCalendarGrid()}
                 </div>
             </div>
@@ -119,4 +143,3 @@ const Calender = () => {
 };
 
 export default Calender;
-
