@@ -1,178 +1,194 @@
 'use client';
 import React, { useState } from 'react';
-import RadioButton, { type RadioSize, type RadioColor } from '@/components/ui/radiobuttons';
+import { RadioButton, RadioButtonProps } from '../ui/radiobuttons';
 
-const RadioButtonDemo: React.FC = () => {
-  const [demoSize, setDemoSize] = useState<RadioSize>('medium');
-  const [demoColor, setDemoColor] = useState<RadioColor>('primary');
-  const [selectedOption, setSelectedOption] = useState<string>('option1');
+type Size = 'small' | 'medium' | 'large';
+type Color = 'primary' | 'neutral';
 
-  const containerStyle : React.CSSProperties = {
-    padding: '2rem',
-    minHeight: '100vh',
-    backgroundColor: 'var(--primitives-color-base-100)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2.5rem',
-  };
+const ControlGroup: React.FC<{ title: string; children: React.ReactNode }> = ({
+  title,
+  children,
+}) => (
+  <div style={{ marginBottom: '1rem' }}>
+    <p style={{ fontWeight: 600, marginBottom: '0.5rem', color: '#333' }}>
+      {title}
+    </p>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      {children}
+    </div>
+  </div>
+);
 
-  const headingStyle = {
-    fontFamily: 'var(--primitives-font-family-poppins)',
-    fontSize: 'var(--primitives-font-size-700)',
-    fontWeight: 'var(--primitives-font-weight-bold)',
-    color: 'var(--primitives-color-neutral-contrast-800)',
-    marginBottom: '1rem',
-  };
+const RadioWithLabel: React.FC<
+  RadioButtonProps & { label: string; onClick?: () => void }
+> = ({ label, ...props }) => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      cursor: props.disabled ? 'not-allowed' : 'pointer',
+    }}
+    // Make the label clickable
+    onClick={() => !props.disabled && props.onChange?.()}
+  >
+    <RadioButton {...props} />
+    <label
+      style={{
+        userSelect: 'none',
+        color: props.disabled ? '#aaa' : '#000',
+        cursor: 'inherit',
+      }}
+    >
+      {label}
+    </label>
+  </div>
+);
 
-  const sectionStyle = {
-    backgroundColor: 'var(--primitives-color-base-000)',
-    padding: '1.5rem',
-    borderRadius: 'var(--primitives-border-radius-lg)',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '1.5rem',
-  };
-
-  const sectionTitleStyle = {
-    fontFamily: 'var(--primitives-font-family-poppins)',
-    fontSize: 'var(--primitives-font-size-400)',
-    fontWeight: 'var(--primitives-font-weight-semibold)',
-    color: 'var(--primitives-color-neutral-contrast-800)',
-  };
-
-  const labelStyle = {
-    fontFamily: 'var(--primitives-font-family-poppins)',
-    fontSize: 'var(--primitives-font-size-200)',
-    color: 'var(--primitives-color-neutral-contrast-700)',
-  };
-
-  const buttonStyle = (active: boolean) => ({
-    fontFamily: 'var(--primitives-font-family-poppins)',
-    fontSize: 'var(--primitives-font-size-200)',
-    padding: '0.375rem 0.75rem',
-    borderRadius: 'var(--primitives-border-radius-sm)',
-    border: 'none',
-    cursor: 'pointer',
-    backgroundColor: active ? 'var(--primitives-color-primary-400)' : 'var(--primitives-color-base-200)',
-    color: active ? 'var(--primitives-color-base-000)' : 'var(--primitives-color-neutral-contrast-700)',
-  });
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-    gap: '1.5rem',
-  };
-
-  const flexStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    flexWrap: 'wrap' as const,
-  };
+export const RadioButtonDemo: React.FC = () => {
+  // --- State for the interactive demo ---
+  const [functionalChoice, setFunctionalChoice] = useState('one');
+  
+  // --- State for the controls ---
+  const [size, setSize] = useState<Size>('medium');
+  const [color, setColor] = useState<Color>('primary');
+  const [isDisabled, setIsDisabled] = useState(false);
 
   return (
-    <div style={containerStyle}>
-      <h1 style={headingStyle}>RadioButton Demo</h1>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 2fr',
+        gap: '2rem',
+        padding: '2rem',
+        fontFamily: 'sans-serif',
+      }}
+    >
+      {/* --- COLUMN 1: CONTROLS --- */}
+      <div
+        style={{
+          border: '1px solid #e0e0e0',
+          borderRadius: '8px',
+          padding: '1.5rem',
+          backgroundColor: '#fcfcfc',
+        }}
+      >
+        <h2
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            marginBottom: '1.5rem',
+            borderBottom: '1px solid #eee',
+            paddingBottom: '1rem',
+          }}
+        >
+          Controls
+        </h2>
 
-      {/* States Showcase */}
-      <div style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>States</h2>
-        <div style={gridStyle}>
-          {[
-            { label: 'Active / Checked', state: 'active', checked: true },
-            { label: 'Hover (Simulated)', state: 'hover', checked: false },
-            { label: 'Disabled Unchecked', state: 'disabled', checked: false },
-            { label: 'Disabled Checked', state: 'disabled', checked: true },
-          ].map(({ label, state, checked }) => (
-            <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>{label}</span>
-              <RadioButton state={state as any} checked={checked} color="primary" />
-            </div>
-          ))}
-        </div>
+        {/* --- Size Control --- */}
+        <ControlGroup title="Size">
+          <RadioWithLabel
+            label="Small"
+            name="size-control"
+            checked={size === 'small'}
+            onChange={() => setSize('small')}
+          />
+          <RadioWithLabel
+            label="Medium"
+            name="size-control"
+            checked={size === 'medium'}
+            onChange={() => setSize('medium')}
+          />
+          <RadioWithLabel
+            label="Large"
+            name="size-control"
+            checked={size === 'large'}
+            onChange={() => setSize('large')}
+          />
+        </ControlGroup>
+
+        {/* --- Color Control --- */}
+        <ControlGroup title="Color">
+          <RadioWithLabel
+            label="Primary"
+            name="color-control"
+            checked={color === 'primary'}
+            onChange={() => setColor('primary')}
+          />
+          <RadioWithLabel
+            label="Neutral"
+            name="color-control"
+            checked={color === 'neutral'}
+            onChange={() => setColor('neutral')}
+          />
+        </ControlGroup>
+
+        {/* --- Disabled Control --- */}
+        <ControlGroup title="State">
+          {/* We use a simple checkbox for this toggle */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={isDisabled}
+              onChange={(e) => setIsDisabled(e.target.checked)}
+            />
+            Disabled
+          </label>
+        </ControlGroup>
       </div>
 
-      {/* Sizes Showcase */}
-      <div style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>Sizes</h2>
-        <div style={flexStyle}>
-          {['small', 'medium', 'large'].map((size) => (
-            <div key={size} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>{size.charAt(0).toUpperCase() + size.slice(1)}</span>
-              <RadioButton size={size as RadioSize} checked />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Colors Showcase */}
-      <div style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>Colors</h2>
-        <div style={flexStyle}>
-          {['primary', 'neutral'].map((color) => (
-            <div key={color} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>{color.charAt(0).toUpperCase() + color.slice(1)}</span>
-              <RadioButton size="medium" checked color={color as RadioColor} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Interactive Demo */}
-      <div style={sectionStyle}>
-        <h2 style={sectionTitleStyle}>Interactive Demo</h2>
+      {/* --- COLUMN 2: RESULT --- */}
+      <div style={{ padding: '0 1.5rem' }}>
+        <h2
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            marginBottom: '1.5rem',
+          }}
+        >
+          Interactive Result
+        </h2>
+        <p style={{ marginBottom: '2rem', color: '#555' }}>
+          This radio group is now controlled by the settings on the left.
+          Try hovering, clicking, and changing the controls.
+        </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>Select an option:</span>
-          {['option1', 'option2', 'option3'].map((opt) => (
-            <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
-              <RadioButton
-                size={demoSize}
-                color={demoColor}
-                checked={selectedOption === opt}
-                onChange={() => setSelectedOption(opt)}
-                name="interactive"
-                value={opt}
-              />
-              <span style={labelStyle}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</span>
-            </label>
-          ))}
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'not-allowed', opacity: 0.5 }}>
-            <RadioButton size={demoSize} color={demoColor} disabled />
-            <span style={labelStyle}>Disabled Option</span>
-          </label>
+          <RadioWithLabel
+            label="Option One"
+            name="functional-group"
+            value="one"
+            size={size}
+            color={color}
+            disabled={isDisabled}
+            checked={functionalChoice === 'one'}
+            onChange={() => setFunctionalChoice('one')}
+          />
+          <RadioWithLabel
+            label="Option Two"
+            name="functional-group"
+            value="two"
+            size={size}
+            color={color}
+            disabled={isDisabled}
+            checked={functionalChoice === 'two'}
+            onChange={() => setFunctionalChoice('two')}
+          />
+          <RadioWithLabel
+            label="Option Three"
+            name="functional-group"
+            value="three"
+            size={size}
+            color={color}
+            disabled={isDisabled}
+            checked={functionalChoice === 'three'}
+            onChange={() => setFunctionalChoice('three')}
+          />
         </div>
-
-        <div style={flexStyle}>
-          {/* Size buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>Size</span>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {(['small', 'medium', 'large'] as RadioSize[]).map((size) => (
-                <button key={size} style={buttonStyle(demoSize === size)} onClick={() => setDemoSize(size)}>
-                  {size.charAt(0).toUpperCase() + size.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Color buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <span style={{ ...labelStyle, fontWeight: 'var(--primitives-font-weight-medium)' }}>Color</span>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {(['primary', 'neutral'] as RadioColor[]).map((color) => (
-                <button key={color} style={buttonStyle(demoColor === color)} onClick={() => setDemoColor(color)}>
-                  {color.charAt(0).toUpperCase() + color.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <span style={{ ...labelStyle, fontSize: 'var(--primitives-font-size-100)', color: 'var(--primitives-color-neutral-mid-600)' }}>
-          Selected: <span style={{ fontWeight: 'var(--primitives-font-weight-medium)' }}>{selectedOption}</span>
-        </span>
+        
+        <p style={{ marginTop: '2rem', fontFamily: 'monospace', backgroundColor: '#f4f4f4', padding: '1rem', borderRadius: '4px' }}>
+          Current Selection: {functionalChoice}
+        </p>
       </div>
     </div>
   );

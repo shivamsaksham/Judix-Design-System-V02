@@ -8,6 +8,7 @@ export default function ToastDemo() {
   const simulateNetworkRequest = () => {
     return new Promise<string>((resolve, reject) => {
       setTimeout(() => {
+        // I'll use the rejected string directly in the error message
         if (Math.random() > 0.4) resolve("Data loaded successfully!");
         else reject("Network error occurred.");
       }, 2000);
@@ -18,7 +19,7 @@ export default function ToastDemo() {
     showToast.promise(simulateNetworkRequest(), {
       loading: "Loading data...",
       success: "Data loaded successfully!",
-      error: (err : unknown) => `Error: ${err}`,
+      error: "Error: Network error occurred.", 
     });
   };
 
@@ -34,7 +35,7 @@ export default function ToastDemo() {
   };
 
   return (
-    <div style={{ padding: "40px", fontFamily: "var(--primitives-font-family-satoshi)" }}>
+    <div className="font-family-primarybranding"style={{ padding: "40px", fontFamily: "var(--primitives-font-family-satoshi)" }}>
       {/* Toast container */}
       <ToastContainer position="top-right" />
 
@@ -45,7 +46,7 @@ export default function ToastDemo() {
       <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "300px" }}>
         <button
           style={{ ...buttonStyle, backgroundColor: "var(--primitives-color-semantic-green-400)" }}
-          onClick={() => showToast.success("Operation completed successfully")}
+          onClick={() => showToast.success("Search query enhanced")}
         >
           Show Success Toast
         </button>
@@ -59,14 +60,14 @@ export default function ToastDemo() {
 
         <button
           style={{ ...buttonStyle, backgroundColor: "var(--primitives-color-semantic-orange-400)" }}
-          onClick={() => showToast.notice("Please review your changes")}
+          onClick={() => showToast.notice("Upgrade to access this feature")}
         >
           Show Notice Toast
         </button>
 
         <button
           style={{ ...buttonStyle, backgroundColor: "var(--primitives-color-semantic-blue-400)" }}
-          onClick={() => showToast.info("New updates available")}
+          onClick={() => showToast.info("Shared with Adv. Saket Sharma")}
         >
           Show Info Toast
         </button>

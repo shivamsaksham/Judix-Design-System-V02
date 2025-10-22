@@ -1,142 +1,208 @@
 'use client';
 import React, { useState } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-export type RadioSize = 'small' | 'medium' | 'large';
-export type RadioState = 'default' | 'hover' | 'active' | 'disabled';
-export type RadioColor = 'primary' | 'neutral';
 
-interface RadioButtonProps {
-  size?: RadioSize;
-  state?: RadioState;
-  color?: RadioColor;
+const radioContainerVariants = cva(
+  'inline-flex items-center justify-center',
+  {
+    variants: {
+      size: {
+        small: 'h-3.5 w-3.5',
+        medium: 'h-4 w-4',
+        large: 'h-5 w-5',
+      },
+      disabled: {
+        true: 'cursor-not-allowed opacity-60',
+        false: 'cursor-pointer',
+      },
+    },
+    defaultVariants: {
+      size: 'medium',
+      disabled: false,
+    },
+  },
+);
+
+const radioOuterCircleVariants = cva(
+  'transition-colors',
+  {
+    variants: {
+      color: {
+        primary: '',
+        neutral: '',
+      },
+      state: {
+        default: '',
+        hover: '',
+        active: '', // active maps to selected in css
+        disabled: '',
+      },
+    },
+    compoundVariants: [
+      {
+        color: 'primary',
+        state: 'default',
+        className: 'stroke-radio_button-color-primary-default',
+      },
+      {
+        color: 'primary',
+        state: 'hover',
+        className: 'stroke-radio_button-color-primary-hover',
+      },
+      {
+        color: 'primary',
+        state: 'active',
+        className: 'stroke-radio_button-color-primary-selected',
+      },
+      {
+        color: 'primary',
+        state: 'disabled',
+        className: 'stroke-radio_button-color-primary-disabled',
+      },
+      {
+        color: 'neutral',
+        state: 'default',
+        className: 'stroke-radio_button-color-neutral-default',
+      },
+      {
+        color: 'neutral',
+        state: 'hover',
+        className: 'stroke-radio_button-color-neutral-hover',
+      },
+      {
+        color: 'neutral',
+        state: 'active',
+        className: 'stroke-radio_button-color-neutral-selected',
+      },
+      {
+        color: 'neutral',
+        state: 'disabled',
+        className: 'stroke-radio_button-color-neutral-disabled',
+      },
+    ],
+  },
+);
+
+const radioInnerCircleVariants = cva(
+  // Base styles for the inner dot
+  'transition-colors',
+  {
+    variants: {
+      color: {
+        primary: '',
+        neutral: '',
+      },
+      state: {
+        active: '',
+        disabled: '',
+      },
+    },
+    compoundVariants: [
+      {
+        color: 'primary',
+        state: 'active',
+        className: 'fill-radio_button-color-primary-selected',
+      },
+      {
+        color: 'primary',
+        state: 'disabled',
+        className: 'fill-radio_button-color-primary-disabled',
+      },
+      {
+        color: 'neutral',
+        state: 'active',
+        className: 'fill-radio_button-color-neutral-selected',
+      },
+      {
+        color: 'neutral',
+        state: 'disabled',
+        className: 'fill-radio_button-color-neutral-disabled',
+      },
+    ],
+  },
+);
+
+export interface RadioButtonProps extends VariantProps<typeof radioContainerVariants> {
+  color?: 'primary' | 'neutral';
   checked?: boolean;
   disabled?: boolean;
   onChange?: () => void;
   name?: string;
   value?: string;
+  className?: string; // Allow custom classes
 }
 
-const RadioButton: React.FC<RadioButtonProps> = ({
+
+export const RadioButton: React.FC<RadioButtonProps> = ({
   size = 'medium',
-  state = 'default',
   color = 'primary',
   checked = false,
   disabled = false,
   onChange,
   name,
   value,
+  className,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = () => {
-    if (disabled || state === 'disabled') return;
-    onChange?.();
-  };
-
   const sizeConfig = {
     small: {
-      radioButton: { height: '0.875rem', width: '0.875rem' },
+      radioButton: { width: '0.875rem' },
       ellipse2: { borderWidth: '0.0625rem' },
       ellipse3: { radius: '0.21875rem' },
     },
     medium: {
-      radioButton: { height: '1rem', width: '1rem' },
+      radioButton: { width: '1rem' },
       ellipse2: { borderWidth: '0.09375rem' },
       ellipse3: { radius: '0.25rem' },
     },
     large: {
-      radioButton: { height: '1.25rem', width: '1.25rem' },
+      radioButton: { width: '1.25rem' },
       ellipse2: { borderWidth: '0.125rem' },
       ellipse3: { radius: '0.3125rem' },
     },
   };
 
- const colorConfig = {
-  primary: {
-    active: { borderColor: 'var(--primitives-color-primary-400)', backgroundColor: 'var(--primitives-color-primary-400)' },
-    hover: { borderColor: 'var(--primitives-color-primary-200)', backgroundColor: 'var(--primitives-color-primary-50)' }, // add backgroundColor
-    disabled: { borderColor: 'var(--primitives-color-neutral-light-300)', backgroundColor: 'var(--primitives-color-neutral-light-300)' },
-    default: { borderColor: 'var(--primitives-color-neutral-light-300)' },
-  },
-  neutral: {
-    active: { borderColor: 'var(--primitives-color-neutral-contrast-700)', backgroundColor: 'var(--primitives-color-neutral-contrast-700)' },
-    hover: { borderColor: 'var(--primitives-color-primary-200)', backgroundColor: 'var(--primitives-color-neutral-light-100)' }, // add backgroundColor
-    disabled: { borderColor: 'var(--primitives-color-neutral-light-300)', backgroundColor: 'var(--primitives-color-neutral-light-300)' },
-    default: { borderColor: 'var(--primitives-color-neutral-light-300)' },
-  },
-} as const;
+  const config = sizeConfig[size ?? 'medium'];
 
-  const config = sizeConfig[size];
-  const colorScheme = colorConfig[color];
-
-  const getCurrentState = () => {
-    if (state === 'disabled' || disabled) return 'disabled';
-    if (state === 'active' || checked) return 'active';
-    if (state === 'hover' || isHovered) return 'hover';
-    return 'default';
-  };
-
-  const currentState = getCurrentState();
-  const isDisabled = currentState === 'disabled';
-  const isSelected = currentState === 'active';
-  const isHover = currentState === 'hover';
-
-  const getBorderColor = () => {
-    if (isDisabled) return colorScheme.disabled.borderColor;
-    if (isSelected) return colorScheme.active.borderColor;
-    if (isHover) return colorScheme.hover.borderColor;
-    return colorScheme.default.borderColor;
-  };
-
-  const getBackgroundColor = () => {
-    if (isDisabled && isSelected) return colorScheme.disabled.backgroundColor;
-    if (isSelected) return colorScheme.active.backgroundColor;
-    if (isHover) return colorScheme.hover.backgroundColor || 'transparent';
-    return 'transparent';
-  };
+  const isDisabled = disabled;
+  const currentState = isDisabled ? 'disabled' : checked ? 'active' : isHovered ? 'hover' : 'default';
+  const isSelected = checked;
 
   const widthInRem = parseFloat(config.radioButton.width);
   const borderWidthInRem = parseFloat(config.ellipse2.borderWidth);
   const innerRadiusInRem = parseFloat(config.ellipse3.radius);
-
   const viewBoxSize = 24;
   const outerRadius = viewBoxSize / 2;
+
+  const handleClick = () => {
+    if (isDisabled) return;
+    onChange?.();
+  };
 
   return (
     <div
       onClick={handleClick}
       onMouseEnter={() => !isDisabled && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: isDisabled ? 'not-allowed' : 'pointer',
-        opacity: isDisabled ? 0.6 : 1,
-        width: config.radioButton.width,
-        height: config.radioButton.height,
-      }}
+      className={radioContainerVariants({ size, disabled, className })}
     >
-      <svg
-        width="100%"
-        height="100%"
-        viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg width="100%" height="100%" viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`} xmlns="http://www.w3.org/2000/svg">
         <circle
           cx={outerRadius}
           cy={outerRadius}
           r={outerRadius - (borderWidthInRem / widthInRem) * outerRadius}
           fill="none"
-          stroke={getBorderColor()}
           strokeWidth={(borderWidthInRem / widthInRem) * viewBoxSize}
+          className={radioOuterCircleVariants({ color, state: currentState })}
         />
         {isSelected && (
           <circle
             cx={outerRadius}
             cy={outerRadius}
             r={(innerRadiusInRem / widthInRem) * viewBoxSize}
-            fill={getBackgroundColor()}
+            className={radioInnerCircleVariants({ color, state: isDisabled ? 'disabled' : isSelected ? 'active' : undefined })}
           />
         )}
       </svg>
@@ -146,7 +212,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
           name={name}
           value={value}
           checked={checked}
-          onChange={() => {}}
+          onChange={() => { }}
           style={{ display: 'none' }}
           disabled={isDisabled}
         />

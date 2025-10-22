@@ -33,7 +33,6 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean
-  style?: React.CSSProperties
 } & React.ComponentProps<"a">
 
 function PaginationLink({
@@ -48,24 +47,17 @@ function PaginationLink({
       data-active={isActive}
       className={cn(
         "flex items-center justify-center w-8 h-8 md:w-9 md:h-9 text-sm md:text-base border transition-colors cursor-pointer select-none",
+        "py-1.5 px-[7px]",
+        "font-family-brandprimary font-medium", 
+        "text-color-pagination-color-text", 
+        "border-sm", 
+        "rounded-pagination-border-radius-default",
+        "text-center", 
+        isActive
+          ? "border-pagination-color-stroke bg-pagination-color-selected" // Active state
+          : "bg-neutral-light-100 border-pagination-color-bg", // Inactive state
         className
       )}
-      style={{
-        padding: "6px 7px",
-        boxSizing: "border-box",
-        fontFamily: "var(--primitives-font-family-poppins)",
-        fontWeight: "var(--primitives-font-weight-medium)",
-        color: "var(--primitives-color-neutral-contrast-800)",
-        borderWidth: "var(--primitives-border-weight-sm)",
-        borderColor: isActive
-          ? "var(--primitives-color-neutral-light-300)"
-          : "var(--primitives-color-neutral-light-100)",
-        borderRadius: "var(--primitives-border-radius-full)",
-        backgroundColor: isActive
-          ? "var(--primitives-color-neutral-light-200)"
-          : "var(--primitives-color-neutral-light-100)",
-        textAlign: "center",
-      }}
       {...props}
     />
   )
@@ -78,13 +70,13 @@ function PaginationPrevious({
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      className={cn("w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5", className)}
-      style={{
-        padding: "8px",
-        boxSizing: "border-box",
-        borderRadius: "var(--primitives-border-radius-full)",
-        borderColor: "var(--primitives-color-neutral-light-300)",
-      }}
+      className={cn(
+        "w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5",
+        "box-border", 
+        "rounded-pagination-border-radius-default", 
+        "border-pagination-color-stroke", 
+        className
+      )}
       {...props}
     >
       <img
@@ -103,13 +95,13 @@ function PaginationNext({
   return (
     <PaginationLink
       aria-label="Go to next page"
-      className={cn("w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5", className)}
-      style={{
-        padding: "8px",
-        boxSizing: "border-box",
-        borderRadius: "var(--primitives-border-radius-full)",
-        borderColor: "var(--primitives-color-neutral-light-300)",
-      }}
+      className={cn(
+        "w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5",
+        "box-border",
+        "rounded-pagination-border-radius-default", 
+        "border-pagination-color-stroke", 
+        className
+      )}
       {...props}
     >
       <img
@@ -131,14 +123,11 @@ function PaginationEllipsis({
       data-slot="pagination-ellipsis"
       className={cn(
         "flex items-center justify-center w-8 h-8 md:w-9 md:h-9 text-sm md:text-base",
+        "py-1.5 px-[7px]",
+        "font-family-brandprimary font-medium",
+        "text-color-pagination-color-text",
         className
       )}
-      style={{
-        padding: "6px 7px",
-        fontFamily: "var(--primitives-font-family-poppins)",
-        fontWeight: "var(--primitives-font-weight-medium)",
-        color: "var(--primitives-color-neutral-contrast-800)",
-      }}
       {...props}
     >
       <span>...</span>
@@ -220,7 +209,7 @@ export default function PaginationView() {
                 <PaginationEllipsis />
               ) : (
                 <PaginationLink
-                  onClick={() => handlePageClick(item)}
+                  onClick={() => handlePageClick(item as number)}
                   isActive={currentPage === item}
                 >
                   {item}
