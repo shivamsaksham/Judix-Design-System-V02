@@ -14,20 +14,31 @@ import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
 import { Icon } from "judix-icon"
 import AlertCard from "@/components/block/alert-card";
+import Confirmation from "@/components/block/confirmation";
 
 
 
 export default function Home() {
-  const switchState = (checked: boolean) => {
-    console.log(checked);
+  const cancle = () => {
+    console.log("Cancled");
+  };
+  const confirm = () => {
+    console.log("confirmed");
   };
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
-      <div className="text-style-label-title-emphasis">This is the test for font</div>
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 ">
+      
+      <div className="text-style-label-title-emphasis ">This is the test for font</div>
 
-      <AlertCard>
+      <AlertCard onButtonClick={confirm}>
+
         This project is no longer associated with your profile. Request the admin to share.
       </AlertCard>
+
+      <Confirmation onConfirmClick={confirm} onCancelClick={cancle}>
+        This project is no longer associated with your profile.
+      </Confirmation>
+     
       
 
     </div>

@@ -11,27 +11,32 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/labels'
 
+export interface AlertCardProps {
+  onButtonClick: () => void;
+}
 
-function AlertCard({children}: React.PropsWithChildren ) {
-    const [hidden, setHidden] = React.useState(false);
+function AlertCard( {onButtonClick, children}: AlertCardProps & {children: React.ReactNode}) {
+  const [hidden, setHidden] = React.useState(false);
    
   return (
-    <Card className={`${hidden ? 'hidden' : ''}`}>
+    <Card className={`${hidden ? 'hidden' : ''}rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke `} >
         <CardHeader >
-          <CardTitle className='flex flex-row gap-1 font-family-brandprimary text-style-body-title-bold'>
+          <CardTitle className='flex flex-row gap-1 alert_card-font-title'>
             <Icon name="Danger" ></Icon>
              Alert
           </CardTitle>
-          
           <CardAction className='hover:cursor-pointer'onClick={()=>{setHidden((e)=>!e)}} ><Icon name="Cross"></Icon></CardAction>
         </CardHeader>
+
         <CardContent>
           {children} 
           
         </CardContent>
+
         <CardFooter >
-          <Button className="tracking-tracking-body-default px-3 py-1 border-2 rounded-label-border-radius-default border-label-color-primary-stroke bg-label-color-primary-bg text-label-color-primary-text" >Request access</Button>
+          <Label colorScheme='primary' size="medium" className='cursor-pointer ' onClick={onButtonClick}>Requesr access</Label>
         </CardFooter>
     </Card>
   )
