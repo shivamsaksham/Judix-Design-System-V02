@@ -11,20 +11,20 @@ const meta: Meta<typeof TagSelector> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      // Removed the wrapper div, the component now sizes itself
       <Story />
     ),
   ],
   argTypes: {
     onSelect: { action: "selected" },
     onDeselect: { action: "deselected" },
+    onCreateTag: { action: "created" },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-const allTagsList = [
+const initialTagsList = [
   "Civil",
   "Documents",
   "Tax",
@@ -39,8 +39,8 @@ const allTagsList = [
 
 export const Default: Story = {
   args: {
-    label: "Select or create tags",
-    availableTags: allTagsList,
+    placeholder: "Select or create tags",
+    availableTags: initialTagsList,
     selectedTags: [],
     badgeCount: undefined,
   },
@@ -48,7 +48,7 @@ export const Default: Story = {
 
 export const WithSelectedTags: Story = {
   args: {
-    label: "Select or create tags",
+    placeholder: "Select or create tags",
     availableTags: [
       "Tax",
       "Criminal",
@@ -66,15 +66,16 @@ export const WithSelectedTags: Story = {
 
 export const Interactive: Story = {
   args: {
-    label: "Select or create tags",
+    placeholder: "Select or create tags",
   },
   render: (args) => {
+    const [allTags, setAllTags] = React.useState(initialTagsList)
     const [selected, setSelected] = React.useState<string[]>([
       "Civil",
       "Documents",
     ])
 
-    const available = allTagsList.filter((tag) => !selected.includes(tag))
+    const available = allTags.filter((tag) => !selected.includes(tag))
 
     const handleSelect = (tag: string) => {
       if (!selected.includes(tag)) {
@@ -85,6 +86,15 @@ export const Interactive: Story = {
     const handleDeselect = (tag: string) => {
       setSelected(selected.filter((t) => t !== tag))
     }
+    
+    const handleCreateTag = (tag: string) => {
+      if (!allTags.includes(tag)) {
+        setAllTags([...allTags, tag])
+      }
+      if (!selected.includes(tag)) {
+        setSelected([...selected, tag])
+      }
+    }
 
     return (
       <TagSelector
@@ -93,6 +103,7 @@ export const Interactive: Story = {
         availableTags={available}
         onSelect={handleSelect}
         onDeselect={handleDeselect}
+        onCreateTag={handleCreateTag}
         badgeCount={available.length}
       />
     )
@@ -101,9 +112,9 @@ export const Interactive: Story = {
 
 export const Overflow: Story = {
   args: {
-    label: "Select or create tags",
+    placeholder: "Select or create tags",
     availableTags: [
-      ...allTagsList,
+      ...initialTagsList,
       "Family Law",
       "Arbitration",
       "Litigation",

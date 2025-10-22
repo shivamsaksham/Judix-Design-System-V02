@@ -10,10 +10,8 @@ const meta: Meta<typeof Option> = {
   title: 'UI/Option',
   component: Option,
   argTypes: {
-    state: {
-      control: 'select',
-      options: ['default', 'hover', 'selected'],
-    },
+    selected: { control: 'boolean' },
+    disabled: { control: 'boolean' },
     title: { control: 'text' },
     subtext: { control: 'text' },
     shape: {
@@ -23,7 +21,8 @@ const meta: Meta<typeof Option> = {
   },
   args: {
     title: 'Option Title',
-    state: 'default',
+    selected: false,
+    disabled: false,
     shape: 'rounded',
   },
   parameters: {
@@ -54,7 +53,9 @@ export const Hover: Story = {
   name: "State: Hover",
   args: {
     title: 'Option',
-    state: 'hover',
+  },
+  parameters: {
+    pseudo: { hover: true },
   },
 };
 
@@ -62,7 +63,15 @@ export const Selected: Story = {
   name: "State: Selected",
   args: {
     title: 'Option',
-    state: 'selected',
+    selected: true,
+  },
+};
+
+export const Disabled: Story = {
+  name: "State: Disabled",
+  args: {
+    title: 'Option',
+    disabled: true,
   },
 };
 
@@ -87,7 +96,9 @@ export const WithSubtextHover: Story = {
   name: "Content: With Subtext (Hover)",
   args: {
     ...WithSubtext.args,
-    state: 'hover',
+  },
+  parameters: {
+    pseudo: { hover: true },
   },
 };
 
@@ -95,10 +106,17 @@ export const WithSubtextSelected: Story = {
   name: "Content: With Subtext (Selected)",
   args: {
     ...WithSubtext.args,
-    state: 'selected',
+    selected: true,
   },
 };
 
+export const WithSubtextDisabled: Story = {
+  name: "Content: With Subtext (Disabled)",
+  args: {
+    ...WithSubtext.args,
+    disabled: true,
+  },
+};
 
 // --- Simple Option + Accessories ---
 export const WithLeadingIcon: Story = {
@@ -192,7 +210,9 @@ export const FullOptionHover: Story = {
   name: "Full Variant: Hover",
   args: {
     ...FullOption.args,
-    state: 'hover',
+  },
+  parameters: {
+    pseudo: { hover: true },
   },
 };
 
@@ -200,6 +220,66 @@ export const FullOptionSelected: Story = {
   name: "Full Variant: Selected",
   args: {
     ...FullOption.args,
-    state: 'selected',
+    selected: true,
   },
+};
+
+export const FullOptionDisabled: Story = {
+  name: "Full Variant: Disabled",
+  args: {
+    ...FullOption.args,
+    disabled: true,
+  },
+};
+
+
+// --- ALL VARIANTS STORY ---
+
+const simpleProps = {
+  title: 'Option',
+};
+const subtextProps = {
+  title: 'Option title',
+  subtext: 'Subtext',
+};
+const fullProps = {
+  title: 'Option title',
+  subtext: 'Subtext',
+  leadingIcon: <Icon name="ClipboardText" />,
+  trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+};
+
+export const AllVariants: Story = {
+  name: "All Variants (Kitchen Sink)",
+  parameters: {
+    layout: 'padded',
+  },
+  decorators: [], // Remove the centered, fixed-width decorator
+  render: () => (
+    <div className="w-[800px] grid grid-cols-4 gap-4 p-4">
+      <h3 className="font-bold col-span-4 text-lg">States</h3>
+      <h4 className="font-semibold">Default</h4>
+      <h4 className="font-semibold">Hover</h4>
+      <h4 className="font-semibold">Selected</h4>
+      <h4 className="font-semibold">Disabled</h4>
+
+      {/* Row 1: Simple */}
+      <Option {...simpleProps} />
+      <Option {...simpleProps} data-pseudo-hover />
+      <Option {...simpleProps} selected />
+      <Option {...simpleProps} disabled />
+
+      {/* Row 2: With Subtext */}
+      <Option {...subtextProps} />
+      <Option {...subtextProps} data-pseudo-hover />
+      <Option {...subtextProps} selected />
+      <Option {...subtextProps} disabled />
+
+      {/* Row 3: Full Option */}
+      <Option {...fullProps} />
+      <Option {...fullProps} data-pseudo-hover />
+      <Option {...fullProps} selected />
+      <Option {...fullProps} disabled />
+    </div>
+  ),
 };

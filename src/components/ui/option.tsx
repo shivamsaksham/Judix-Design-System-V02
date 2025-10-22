@@ -4,21 +4,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const optionVariants = cva(
-  "flex items-center p-2 cursor-pointer transition-colors duration-200",
+  "flex items-center p-2 cursor-pointer transition-colors duration-200 bg-option-color-bg text-option-color-text hover:bg-option-color-hover hover:text-option-color-text",
   {
     variants: {
-      state: {
-        default: "bg-option-color-bg text-option-color-text",
-        hover: "bg-option-color-hover text-option-color-text",
-        selected: "bg-option-color-selected text-option-color-text",
+      selected: {
+        true: "bg-option-color-selected text-option-color-text",
+      },
+      disabled: {
+        true: "opacity-50 cursor-not-allowed pointer-events-none",
       },
       shape: {
-          rounded: "rounded-option-border-radius-default",
-          sharp: "rounded-none",
+        rounded: "rounded-option-border-radius-default",
+        sharp: "rounded-none",
       }
     },
     defaultVariants: {
-      state: "default",
       shape: "rounded",
     },
   }
@@ -31,13 +31,15 @@ export interface OptionProps
   subtext?: string
   leadingIcon?: React.ReactNode
   trailingAccessory?: React.ReactNode
+  selected?: boolean
+  disabled?: boolean
 }
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, state, shape, title, subtext, leadingIcon, trailingAccessory, ...props }, ref) => {
+  ({ className, selected, disabled, shape, title, subtext, leadingIcon, trailingAccessory, ...props }, ref) => {
     return (
       <div
-        className={cn(optionVariants({ state, shape, className }))}
+        className={cn(optionVariants({ selected, disabled, shape, className }))}
         ref={ref}
         {...props}
       >
