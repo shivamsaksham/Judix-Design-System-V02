@@ -9,34 +9,56 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+
+} from '@/components/ui/dialog'
 
 export interface ConfirmationProps {
+        mainText:string;
+        subText:string;
         onConfirmClick: () => void;
         onCancelClick: () => void;
 }   
 
-function Confirmation({onConfirmClick, onCancelClick ,children}: ConfirmationProps & {children: React.ReactNode}) {
+function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,children}: ConfirmationProps & {children: React.ReactNode}) {
 
     const [hidden, setHidden] = React.useState(false);
   return (
-    <Card className={`${hidden ? 'hidden' : ''} rounded-confirmation-border-radius-default bg-confirmation-color-bg border-confirmation-color-stroke `} >
-        <CardHeader >
-          <CardTitle className='confirmation-font-title'>
-            Confirmation
-          </CardTitle>
-          <CardAction className='hover:cursor-pointer'onClick={()=>{setHidden((e)=>!e)}} ><Icon name="Cross"></Icon></CardAction>
-        </CardHeader>
-
-        <CardContent className='confirmation-font-content'>
-          {children} 
-          
-        </CardContent>
-
-        <CardFooter className='justify-end gap-2' >
-            <Button variant="neutral" onClick={onCancelClick}>Cancle</Button>
-            <Button variant="primary" onClick={onConfirmClick}>Confirm</Button>
-        </CardFooter>
-    </Card>
+    
+    <Dialog >
+      <DialogTrigger>
+        {children}
+      </DialogTrigger>
+      <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg">
+        <DialogHeader className='flex-row justify-between'>
+          <DialogTitle>Confirmation</DialogTitle>
+          <DialogClose className='cursor-pointer'>
+            <Icon name="Cross"></Icon>
+          </DialogClose>
+        </DialogHeader>
+        
+        <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext'>
+          {mainText}
+          <div className='mt-3 font-family-brandprimary  text-color-text-neutral-tertiary font-family-brand-primary'>
+            {subText}
+          </div>
+        </DialogDescription>
+        <DialogFooter>
+          <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancle</Button>
+          <Button size="extraSmall" onClick={onConfirmClick}>Confirm</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

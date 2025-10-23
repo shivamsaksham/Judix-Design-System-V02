@@ -15,6 +15,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { Icon } from "judix-icon"
 import AlertCard from "@/components/block/alert-card";
 import Confirmation from "@/components/block/confirmation";
+import { Dialog } from "@radix-ui/react-dialog";
 
 
 
@@ -30,14 +31,16 @@ export default function Home() {
       
       <div className="text-style-label-title-emphasis ">This is the test for font</div>
 
-      <AlertCard onButtonClick={confirm}>
+      {/* <AlertCard onButtonClick={confirm}>
 
         This project is no longer associated with your profile. Request the admin to share.
-      </AlertCard>
+      </AlertCard> */}
 
-      <Confirmation onConfirmClick={confirm} onCancelClick={cancle}>
-        This project is no longer associated with your profile.
+      <Confirmation onConfirmClick={confirm} onCancelClick={cancle} mainText={"Are you please confirm your submission"} subText={"This is the warning subtext."}>
+        <Button size="small">Button</Button>
       </Confirmation>
+
+      
      
       
 
