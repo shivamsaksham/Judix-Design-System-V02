@@ -29,6 +29,10 @@ export interface OptionProps
     VariantProps<typeof optionVariants> {
   title: string
   subtext?: string
+  icon?: React.ReactNode
+  label?: React.ReactNode
+  checkbox?: React.ReactNode
+  numberbadge?: React.ReactNode
   leadingIcon?: React.ReactNode
   trailingAccessory?: React.ReactNode
   selected?: boolean
@@ -36,19 +40,23 @@ export interface OptionProps
 }
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, disabled, shape, title, subtext, leadingIcon, trailingAccessory, ...props }, ref) => {
+  ({ className, selected, disabled, shape, title, subtext, leadingIcon, trailingAccessory, icon, label, checkbox, numberbadge, ...props }, ref) => {
     return (
       <div
         className={cn(optionVariants({ selected, disabled, shape, className }))}
         ref={ref}
         {...props}
       >
-        {leadingIcon && <div className="mr-3 text-option-color-icon">{leadingIcon}</div>}
+        {icon && checkbox == null && <div className="mr-3 text-option-color-icon">{icon}</div>}
+        {checkbox && icon == null && <div className="mr-3 text-option-color-checkbox">{checkbox}</div>}
+        {checkbox && icon && <div className="mr-3 text-option-color-checkbox-icon">{checkbox}</div>}
         <div className="flex-grow">
           <div className="option-font-title">{title}</div>
           {subtext && <div className="text-option-color-subtext option-font-subtext">{subtext}</div>}
         </div>
-        {trailingAccessory && <div className="ml-3">{trailingAccessory}</div>}
+        {label && <div className="text-option-color-label">{label}</div>}
+        {numberbadge && <div className="text-option-color-numberbadge">{numberbadge}</div>}
+        {checkbox && icon && <div className="ml-3 text-option-color-checkbox-icon">{icon}</div>}
       </div>
     )
   }

@@ -81,12 +81,27 @@ export const Error: Story = {
 export const WithSelectedLabels: Story = {
   name: "Row 3: With Selected Labels (Below)",
   args: {
-    selectedLabels: [
-      { text: "Label", onRemove: () => {} },
-      { text: "Label", onRemove: () => {} },
-      { text: "Label", onRemove: () => {} },
-    ],
     placeholder: "Placeholder text",
+  },
+  render: (args) => {
+    const [currentLabels, setCurrentLabels] = React.useState([
+      "Apples",
+      "Bananas",
+      "Cherries",
+    ]);
+
+    const handleRemoveLabel = (labelToRemove: string) => {
+      setCurrentLabels(prevLabels =>
+        prevLabels.filter(label => label !== labelToRemove)
+      );
+    };
+
+    const selectedLabelsProp = currentLabels.map((label) => ({
+      text: label,
+      onRemove: () => handleRemoveLabel(label),
+    }));
+
+    return <TextInput {...args} selectedLabels={selectedLabelsProp} />;
   },
 }
 

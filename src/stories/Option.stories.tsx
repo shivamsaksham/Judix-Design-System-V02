@@ -1,10 +1,11 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { Option, OptionProps } from '../components/ui/option';
+import { Option } from '../components/ui/option';
 import { Label } from '@/components/ui/labels';
 import { Checkbox } from '../components/ui/checkbox';
 import { NumberBadge } from '@/components/ui/number_badges';
 import { Icon } from 'judix-icon';
+import { title } from 'process';
 
 const meta: Meta<typeof Option> = {
   title: 'UI/Option',
@@ -245,41 +246,80 @@ const subtextProps = {
 const fullProps = {
   title: 'Option title',
   subtext: 'Subtext',
-  leadingIcon: <Icon name="ClipboardText" />,
-  trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+  icon: <Icon name="ClipboardText" />,
+  numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
 };
+const checkboxProps = {
+  title: "Option title",
+  checkbox: <Checkbox id="option-checkbox" />,
+};
+const fullCheckboxProps = {
+  title: "Option title",
+  checkbox: <Checkbox id="option-checkbox" />,
+  subtext: 'Subtext',
+  leadingIcon: <Icon name="ClipboardText" />,
+};
+const labelProps = {
+  title : "Option title",
+  label: <Label size="small">Label</Label>,
+  subtext: 'Subtext',
+  leadingIcon: <Icon name="ClipboardText" />,
+}
+const checkboxIconProps = {
+  title: "Option title",
+  checkbox: <Checkbox id="option-checkbox" />,
+  icon: <Icon name="ClipboardText" />,
+  subtext: 'Subtext',
+}
 
 export const AllVariants: Story = {
   name: "All Variants (Kitchen Sink)",
   parameters: {
     layout: 'padded',
   },
-  decorators: [], // Remove the centered, fixed-width decorator
+  decorators: [],
   render: () => (
-    <div className="w-[800px] grid grid-cols-4 gap-4 p-4">
+    <div className="w-[1000px] grid grid-cols-4 gap-4 p-4">
       <h3 className="font-bold col-span-4 text-lg">States</h3>
       <h4 className="font-semibold">Default</h4>
       <h4 className="font-semibold">Hover</h4>
       <h4 className="font-semibold">Selected</h4>
       <h4 className="font-semibold">Disabled</h4>
 
-      {/* Row 1: Simple */}
       <Option {...simpleProps} />
       <Option {...simpleProps} data-pseudo-hover />
       <Option {...simpleProps} selected />
       <Option {...simpleProps} disabled />
 
-      {/* Row 2: With Subtext */}
       <Option {...subtextProps} />
       <Option {...subtextProps} data-pseudo-hover />
       <Option {...subtextProps} selected />
       <Option {...subtextProps} disabled />
 
-      {/* Row 3: Full Option */}
       <Option {...fullProps} />
       <Option {...fullProps} data-pseudo-hover />
       <Option {...fullProps} selected />
       <Option {...fullProps} disabled />
+
+      <Option {...fullCheckboxProps} />
+      <Option {...fullCheckboxProps} data-pseudo-hover />
+      <Option {...fullCheckboxProps} selected />
+      <Option {...fullCheckboxProps} disabled />
+
+      <Option {...checkboxProps} />
+      <Option {...checkboxProps} data-pseudo-hover />
+      <Option {...checkboxProps} selected />
+      <Option {...checkboxProps} disabled />
+
+      <Option {...labelProps} />
+      <Option {...labelProps} data-pseudo-hover />
+      <Option {...labelProps} selected />
+      <Option {...labelProps} disabled />
+
+      <Option {...checkboxIconProps} />
+      <Option {...checkboxIconProps} data-pseudo-hover />
+      <Option {...checkboxIconProps} selected />
+      <Option {...checkboxIconProps} disabled />
     </div>
   ),
 };
