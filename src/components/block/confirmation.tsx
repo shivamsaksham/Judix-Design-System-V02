@@ -19,7 +19,7 @@ function Confirmation({onConfirmClick, onCancelClick ,children}: ConfirmationPro
 
     const [hidden, setHidden] = React.useState(false);
   return (
-    <Card className={`${hidden ? 'hidden' : ''} rounded-confirmation-border-radius-default bg-confirmation-color-bg border-confirmation-color-stroke `} >
+    <Card className={`${hidden ? 'hidden' : ''} w-[366px] min-w-0 rounded-confirmation-border-radius-default bg-confirmation-color-bg border-confirmation-color-stroke `} >
         <CardHeader >
           <CardTitle className='confirmation-font-title'>
             Confirmation
@@ -29,12 +29,11 @@ function Confirmation({onConfirmClick, onCancelClick ,children}: ConfirmationPro
 
         <CardContent className='confirmation-font-content'>
           {children} 
-          
         </CardContent>
 
         <CardFooter className='justify-end gap-2' >
-            <Button variant="neutral" onClick={onCancelClick}>Cancle</Button>
-            <Button variant="primary" onClick={onConfirmClick}>Confirm</Button>
+            <Button variant="neutral" size={'extraSmall'} onClick={onCancelClick}>Cancel</Button>
+            <Button variant="primary" size={'extraSmall'} onClick={onConfirmClick}>Confirm</Button>
         </CardFooter>
     </Card>
   )

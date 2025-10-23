@@ -21,7 +21,7 @@ function AlertCard( {onButtonClick, children}: AlertCardProps & {children: React
   const [hidden, setHidden] = React.useState(false);
    
   return (
-    <Card className={`${hidden ? 'hidden' : ''}rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke `} >
+    <Card className={`${hidden ? 'hidden' : ''} rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke `} >
         <CardHeader >
           <CardTitle className='flex flex-row gap-1 alert_card-font-title'>
             <Icon name="Danger" ></Icon>

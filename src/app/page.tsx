@@ -36,7 +36,7 @@ export default function Home() {
       </AlertCard>
 
       <Confirmation onConfirmClick={confirm} onCancelClick={cancle}>
-        This project is no longer associated with your profile.
+        Are you sure you want to delete this project?
       </Confirmation>
      
       
