@@ -13,6 +13,10 @@ const Calender = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     // --- New state for selected date ---
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    // --- New state for view mode (calendar or year picker) ---
+    const [viewMode, setViewMode] = useState<'calendar' | 'year'>('calendar');
+    // --- Year range state for year picker ---
+    const [yearRangeStart, setYearRangeStart] = useState(2001);
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth(); // 0-indexed (0 for January)
@@ -31,6 +35,39 @@ const Calender = () => {
     // --- New click handler for day selection ---
     const handleDayClick = (date: Date) => {
         setSelectedDate(date);
+    };
+
+    // --- Year Picker Handlers ---
+    const handleYearClick = () => {
+        const currentYear = currentDate.getFullYear();
+        // Set the year range to show current year in the middle
+        setYearRangeStart(currentYear - 12);
+        setViewMode('year');
+    };
+
+    const handleYearSelect = (selectedYear: number) => {
+        setCurrentDate(new Date(selectedYear, month, 1));
+        setViewMode('calendar');
+    };
+
+    const handlePrevYearRange = () => {
+        const newStart = yearRangeStart - 25;
+        // Don't go below 1950
+        if (newStart >= 1950) {
+            setYearRangeStart(newStart);
+        } else {
+            setYearRangeStart(1950);
+        }
+    };
+
+    const handleNextYearRange = () => {
+        const newStart = yearRangeStart + 25;
+        const maxYear = todayYear;
+        // Allow advancing if the new range will show at least one valid year
+        // Stop only if the entire new range would be beyond current year
+        if (newStart <= maxYear) {
+            setYearRangeStart(newStart);
+        }
     };
 
     // Get today's date components once for efficiency
@@ -55,7 +92,7 @@ const Calender = () => {
 
             // Check if this day is 'today'
             const isToday = day === todayDate && month === todayMonth && year === todayYear;
-            
+
             // Check if this day is 'selected'
             const isSelected = selectedDate &&
                 day === selectedDate.getDate() &&
@@ -73,7 +110,7 @@ const Calender = () => {
                         : 'hover:bg-calendar-color-hover' // Default hover
                 }
             `;
-            
+
             const dayNumberClasses = `
                 day-number calendar-font-date
                 ${isSelected
@@ -83,8 +120,8 @@ const Calender = () => {
             `;
 
             days.push(
-                <div 
-                    key={`day-${day}`} 
+                <div
+                    key={`day-${day}`}
                     className={dayCellClasses}
                     onClick={() => handleDayClick(fullDayDate)}
                 >
@@ -95,45 +132,121 @@ const Calender = () => {
 
         // --- (THIS IS THE STABLE LOGIC) ---
         // Always render 42 cells (6 rows) to ensure a stable height
-        const totalCells = 42; 
+        const totalCells = 42;
         while (days.length < totalCells) {
-             days.push(<div key={`empty-end-${days.length}`} className="day-cell other-month-day w-8 h-8 p-[3.11px]"></div>);
+            days.push(<div key={`empty-end-${days.length}`} className="day-cell other-month-day w-8 h-8 p-[3.11px]"></div>);
         }
 
         return days;
     };
-    
+
+    // --- Year Grid Generation ---
+    const renderYearGrid = () => {
+        const years = [];
+        const maxYear = todayYear;
+        const minYear = 1950;
+        
+        // Generate 25 years (5 rows × 5 columns) like in the image
+        for (let i = 0; i < 25; i++) {
+            const yearValue = yearRangeStart + i;
+            
+            // Only render years between 1950 and current year
+            if (yearValue >= minYear && yearValue <= maxYear) {
+                const isCurrentYear = yearValue === todayYear;
+                const isSelectedYear = yearValue === year;
+
+                const yearCellClasses = `
+                    year-cell rounded-lg cursor-pointer
+                    flex items-center justify-center
+                    p-3 min-w-[48px] min-h-[40px]
+                    ${isSelectedYear
+                        ? 'bg-calendar-color-selected text-calendar-color-text-selected_date'
+                        : isCurrentYear
+                            ? 'bg-neutral-200 text-calendar-color-text-date'
+                            : 'text-calendar-color-text-date hover:bg-calendar-color-hover'
+                    }
+                `;
+
+                years.push(
+                    <div
+                        key={yearValue}
+                        className={yearCellClasses}
+                        onClick={() => handleYearSelect(yearValue)}
+                    >
+                        <span className="calendar-font-date">{yearValue}</span>
+                    </div>
+                );
+            } else {
+                // Empty cell for out-of-range years
+                years.push(
+                    <div key={`empty-${i}`} className="year-cell min-w-[48px] min-h-[40px]"></div>
+                );
+            }
+        }
+        return years;
+    };
+
     const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
     return (
-        <div className="calendar-container bg-calendar-color-bg border rounded-calendar-border-radius-default border-calendar-color-card_stroke border-calendar-border-radius-default p-4  w-full min-w-[304px] max-w-[352px] font-family-brandprimary">
-            
-            {/* Header with navigation and month/year */}
-            <div className="calendar-header flex items-center justify-between mb-4 p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
-                <button onClick={handlePrevMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100 cursor-pointer"> 
-                    <img src="./arrow-left.svg" alt="Previous Month" />
-                </button>
-                
-                <h2 className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center" >
-                    {monthName} {year}
-                </h2>
+        <div className="bg-calendar-color-bg border rounded-calendar-border-radius-default border-calendar-color-card_stroke p-4  w-full min-w-[304px] max-w-[352px] font-family-brandprimary">
+            <div className='flex gap-4 flex-col'>
+                {viewMode === 'calendar' ? (
+                    <>
+                        {/* Header with navigation and month/year */}
+                        <div className="calendar-header flex items-center justify-between p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
+                            <button onClick={handlePrevMonth} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
+                                <img src="./arrow-left.svg" alt="Previous Month" />
+                            </button>
 
-                <button onClick={handleNextMonth} className="nav-button p-2 rounded-full hover:bg-neutral-100 cursor-pointer">
-                    <img src="./arrow-right.svg" alt="Next Month" />
-                </button>
-            </div>
+                            <h2 
+                                className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center cursor-pointer hover:text-color-text-primary-default px-3 py-1 rounded" 
+                                onClick={handleYearClick}
+                            >
+                                {monthName} {year}
+                            </h2>
 
-            <div className="calendar-grid grid grid-cols-7 gap-x-[3px] gap-y-[10px] text-center min-w-[272px] max-w-[352px] justify-items-center">
-                
-                {/* Weekday labels */}
-                {weekdays.map(day => (
-                    <div key={day} className="weekday-label p-2 calendar-font-day text-calendar-color-text-day text-center">
-                        {day}
-                    </div>
-                ))}
+                            <button onClick={handleNextMonth} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
+                                <img src="./arrow-right.svg" alt="Next Month" />
+                            </button>
+                        </div>
 
-                {/* The date cells (now *always* 42 cells) */}
-                {renderCalendarGrid()}
+                        <div className="calendar-grid grid grid-cols-7 gap-x-[3px] gap-y-[10px] text-center min-w-[272px] max-w-[352px] justify-items-center">
+
+                            {/* Weekday labels */}
+                            {weekdays.map(day => (
+                                <div key={day} className="p-2 calendar-font-day text-calendar-color-text-day text-center">
+                                    {day}
+                                </div>
+                            ))}
+
+                            {/* The date cells (now *always* 42 cells) */}
+                            {renderCalendarGrid()}
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        {/* Year Picker Header */}
+                        <div className="calendar-header flex items-center justify-between p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
+                            <button onClick={handlePrevYearRange} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
+                                <img src="./arrow-left.svg" alt="Previous Years" />
+                            </button>
+
+                            <h2 className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center">
+                                Year
+                            </h2>
+
+                            <button onClick={handleNextYearRange} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
+                                <img src="./arrow-right.svg" alt="Next Years" />
+                            </button>
+                        </div>
+
+                        {/* Year Grid (5 columns × 5 rows) - Height matched to calendar grid */}
+                        <div className="year-grid grid grid-cols-5 gap-x-3 gap-y-[10px] text-center min-w-[272px] max-w-[352px] justify-items-center py-2">
+                            {renderYearGrid()}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
