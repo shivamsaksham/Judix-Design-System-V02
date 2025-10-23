@@ -4,7 +4,9 @@ import RadioButtonDemo from "@/components/examples/RadioButtonDemo";
 import ToastDemo from "@/components/examples/ToastDemo";
 import Calender from "@/components/ui/calender";
 import PaginationView from "@/components/ui/pagination";
+import { useState } from "react";
 export default function App() {
+  const [date, setDate] = useState(new Date());
   return (
     // <RadioButtonDemo/>
     <div className="flex min-h-screen justify-center items-center">
@@ -14,7 +16,10 @@ export default function App() {
       </div> */}
     {/* <RadioButtonDemo/> */}
     {/* <ToastDemo/> */}
-      <Calender/>
+      <Calender 
+      onDateSelected={date} 
+      onDateChange={setDate} // <-- Now you are giving it the function it needs
+    />
       </div>
   );
 }
