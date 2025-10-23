@@ -33,14 +33,12 @@ export interface OptionProps
   label?: React.ReactNode
   checkbox?: React.ReactNode
   numberbadge?: React.ReactNode
-  leadingIcon?: React.ReactNode
-  trailingAccessory?: React.ReactNode
   selected?: boolean
   disabled?: boolean
 }
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, disabled, shape, title, subtext, leadingIcon, trailingAccessory, icon, label, checkbox, numberbadge, ...props }, ref) => {
+  ({ className, selected, disabled, shape, title, subtext, icon, label, checkbox, numberbadge, ...props }, ref) => {
     return (
       <div
         className={cn(optionVariants({ selected, disabled, shape, className }))}

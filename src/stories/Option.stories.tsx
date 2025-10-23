@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/labels';
 import { Checkbox } from '../components/ui/checkbox';
 import { NumberBadge } from '@/components/ui/number_badges';
 import { Icon } from 'judix-icon';
-import { title } from 'process';
 
 const meta: Meta<typeof Option> = {
   title: 'UI/Option',
@@ -124,7 +123,7 @@ export const WithLeadingIcon: Story = {
   name: "Accessory: Leading Icon",
   args: {
     title: 'Option',
-    leadingIcon: <Icon name="ClipboardText" />,
+    icon: <Icon name="ClipboardText" />,
   },
 };
 
@@ -132,7 +131,7 @@ export const WithTrailingLabel: Story = {
   name: "Accessory: Trailing Label",
   args: {
     title: 'Option',
-    trailingAccessory: <Label size="small">Label</Label>,
+    label: <Label size="small">Label</Label>,
   },
 };
 
@@ -140,7 +139,7 @@ export const WithTrailingNumberBadge: Story = {
   name: "Accessory: Trailing NumberBadge",
   args: {
     title: 'Option',
-    trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
@@ -148,7 +147,7 @@ export const WithTrailingCheckbox: Story = {
   name: "Accessory: Trailing Checkbox",
   args: {
     title: 'Option',
-    trailingAccessory: <Checkbox id="option-checkbox" />,
+    checkbox: <Checkbox id="option-checkbox" />,
   },
 };
 
@@ -156,8 +155,8 @@ export const WithLeadingIconAndTrailingNumber: Story = {
   name: "Accessory: Leading Icon + Trailing Number",
   args: {
     title: 'Option',
-    leadingIcon: <Icon name="ClipboardText" />,
-    trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    icon: <Icon name="ClipboardText" />,
+    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
@@ -167,7 +166,7 @@ export const WithSubtextAndLeadingIcon: Story = {
   name: "Accessory: Subtext + Leading Icon",
   args: {
     ...WithSubtext.args,
-    leadingIcon: <Icon name="ClipboardText" />,
+    icon: <Icon name="ClipboardText" />,
   },
 };
 
@@ -175,7 +174,7 @@ export const WithSubtextAndTrailingLabel: Story = {
   name: "Accessory: Subtext + Trailing Label",
   args: {
     ...WithSubtext.args,
-    trailingAccessory: <Label size="small">Label</Label>,
+    label: <Label size="small">Label</Label>,
   },
 };
 
@@ -183,7 +182,7 @@ export const WithSubtextAndTrailingNumber: Story = {
   name: "Accessory: Subtext + Trailing Number",
   args: {
     ...WithSubtext.args,
-    trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
@@ -191,7 +190,7 @@ export const WithSubtextAndTrailingCheckbox: Story = {
   name: "Accessory: Subtext + Trailing Checkbox",
   args: {
     ...WithSubtext.args,
-    trailingAccessory: <Checkbox id="option-checkbox-subtext" />,
+    checkbox: <Checkbox id="option-checkbox-subtext" />,
   },
 };
 
@@ -202,8 +201,8 @@ export const FullOption: Story = {
   args: {
     title: 'Option title',
     subtext: 'Subtext',
-    leadingIcon: <Icon name="ClipboardText" />,
-    trailingAccessory: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    icon: <Icon name="ClipboardText" />,
+    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
@@ -257,7 +256,7 @@ const fullCheckboxProps = {
   title: "Option title",
   checkbox: <Checkbox id="option-checkbox" />,
   subtext: 'Subtext',
-  leadingIcon: <Icon name="ClipboardText" />,
+  leadingIcon: <Icon name="DocumentText" />,
 };
 const labelProps = {
   title : "Option title",
@@ -268,7 +267,7 @@ const labelProps = {
 const checkboxIconProps = {
   title: "Option title",
   checkbox: <Checkbox id="option-checkbox" />,
-  icon: <Icon name="ClipboardText" />,
+  icon: <Icon name="DocumentText" />,
   subtext: 'Subtext',
 }
 
