@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Dropdown, type DropdownOption } from '../ui/dropdown';
 
 // This is your main App component
-export default function OptionDemo() {
+export default function DropdownDemo() {
   
   // 2. Define state for EACH dropdown you want to use.
   //    The parent (App) holds the state.

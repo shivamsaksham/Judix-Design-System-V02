@@ -4,8 +4,9 @@ import RadioButtonDemo from "@/components/examples/RadioButtonDemo";
 import ToastDemo from "@/components/examples/ToastDemo";
 import Calender from "@/components/ui/calender";
 import PaginationView from "@/components/ui/pagination";
-import OptionDemo from "@/components/examples/OptionDemo";
+import DropdownDemo from "@/components/examples/DropdownDemo";
 import { useState } from "react";
+import { TextInput } from "@/components/ui/text-input";
 export default function App() {
   const [date, setDate] = useState(new Date());
   return (
@@ -23,6 +24,7 @@ export default function App() {
     // />
       // </div>
 
-    <OptionDemo/>
+    <DropdownDemo/>
+
   );
 }

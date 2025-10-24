@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Option } from './option'; 
-
+import { TextInput,inputVariants } from './text-input';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
@@ -41,38 +41,30 @@ export const Dropdown = ({
 
   const renderSearchBar = () => {
     if (searchbar === "attached") {
-      // Variant 1: "Search in here"
       return (
-        <div className="relative border-b border-textinput-color-stroke-default border-textinput-border-weight-default">
-          <div className="ml-6 mr-4 my-[15px] p-1">
-            <input
-              type="text"
-              placeholder={placeholder}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-0 py-0 border-none outline-none focus:outline-none focus:ring-0 placeholder:textinput-font-placeholder-medium placeholder:text-textinput-color-text-active"
-              style={{ boxShadow: 'none' }}
-            />
-          </div>
+        <div className="border-b border-textinput-color-stroke-default text-">
+          <TextInput
+            label="" // Hide the label
+            placeholder={placeholder}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            inputSize="default"
+            variant="default"
+            className="px-6 py-2 border-t-0 border-x-0 rounded-t-none rounded-b-none border-textinput-bg placeholder:text-red-100"
+          />
         </div>
       );
     }
  if (searchbar === "integrated") {
-      // Variant 3: "Placeholder text"
+      // Variant 3: Integrated Search Bar
       return (
-        <div className={cn(
-          "relative bg-textinput-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default",
-          "w-72"
-        )}>
-          <input
-            type="text"
-            placeholder={placeholder}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full mx-3 my-2 p-1 border-none outline-none focus:outline-none focus:ring-0 placeholder:textinput-font-placeholder-medium placeholder:text-textinput-color-text-active"
-            style={{ boxShadow: 'none' }}
-          />
-        </div>
+        <TextInput
+          label=""
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-72 bg-textinput-bg"
+        />
       );
     }
     return null;
