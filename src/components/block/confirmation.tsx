@@ -39,17 +39,17 @@ function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,childre
       <DialogTrigger>
         {children}
       </DialogTrigger>
-      <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg">
+      <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke">
         <DialogHeader className='flex-row justify-between'>
-          <DialogTitle>Confirmation</DialogTitle>
+          <DialogTitle className='confirmation-font-title'>Confirmation</DialogTitle>
           <DialogClose className='cursor-pointer'>
             <Icon name="Cross"></Icon>
           </DialogClose>
         </DialogHeader>
         
-        <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext'>
+        <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext '>
           {mainText}
-          <div className='mt-3 font-family-brandprimary  text-color-text-neutral-tertiary font-family-brand-primary'>
+          <div className='mt-3 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
             {subText}
           </div>
         </DialogDescription>
