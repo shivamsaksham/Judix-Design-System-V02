@@ -18,7 +18,7 @@ export default function Home() {
       <div className="text-style-label-title-emphasis">This is the test for font</div>
       
       {/* <Toggle  variant="primary" onCheckedChange={switchState}/> */}
-        <Option title="Profile Settings" />
+        {/* <Option title="Profile Settings" />
 
       <Option
         title="Profile Settings"
@@ -60,12 +60,13 @@ export default function Home() {
       <Option
         title="Click me"
         onClick={() => alert("Option clicked!")}
-      />
+      /> */}
 
         {/* <Confirmation >
           <Button>Click me</Button>
         </Confirmation> */}
 
+        
 
     </div>
   );
