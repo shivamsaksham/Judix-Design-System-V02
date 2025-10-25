@@ -4,6 +4,7 @@ import toast, { Toaster, ToastBar } from 'react-hot-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AlertTriangle, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Check, Danger, Icon, TickCircle } from 'judix-icon';
 
 const toastVariants = cva(
   "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
@@ -29,7 +30,7 @@ const toastIconVariants = cva(
     variants: {
       type: {
         loading: "text-gray-500 animate-spin",
-        alert: "text-toast-color-warning-icon",
+        alert: "text-toast-color-error-icon",
         success: "text-toast-color-success-icon",
         notice: "text-toast-color-warning-icon",
         info: "",
@@ -65,9 +66,9 @@ const CustomInfoIcon = ({ className }: { className?: string }) => (
 
 const iconMap = {
   loading: Loader2,
-  alert: AlertTriangle,
-  success: CheckCircle,
-  notice: AlertCircle,
+  alert: Danger,
+  success: TickCircle,
+  notice: Danger,
   info: CustomInfoIcon,
 };
 
@@ -124,8 +125,8 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: any }) 
 
         const getIcon = () => {
           if (t.type === 'loading') return <Loader2 className="h-6 w-6 shrink-0 text-gray-500 animate-spin" />;
-          if (t.type === 'success') return <CheckCircle className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
-          if (t.type === 'error') return <AlertTriangle className="h-6 w-6 shrink-0 text-toast-color-warning-icon" />;
+          if (t.type === 'success') return <Icon name='TickCircle' className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
+          if (t.type === 'error') return <Danger className="h-6 w-6 shrink-0 text-toast-color-warning-icon" />;
           return <AlertCircle className="h-6 w-6 shrink-0" />;
         };
 
