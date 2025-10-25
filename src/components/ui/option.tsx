@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const optionVariants = cva(
-  "flex items-center p-2 cursor-pointer transition-colors duration-200 bg-option-color-bg text-option-color-text hover:bg-option-color-hover hover:text-option-color-text",
+  "flex flex-col p-2 cursor-pointer transition-colors duration-200 bg-option-color-bg text-option-color-text hover:bg-option-color-hover hover:text-option-color-text w-[200px] justify-between",
   {
     variants: {
       selected: {
@@ -35,26 +35,34 @@ export interface OptionProps
   numberbadge?: React.ReactNode
   selected?: boolean
   disabled?: boolean
-}
+  prefixSlot?:React.ReactNode
+  suffixSlot?:React.ReactNode
+} 
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, disabled, shape, title, subtext, icon, label, checkbox, numberbadge, ...props }, ref) => {
+  ({ className, selected, disabled, shape, title, subtext, icon, label, checkbox, numberbadge, prefixSlot, suffixSlot, ...props }, ref) => {
     return (
       <div
         className={cn(optionVariants({ selected, disabled, shape, className }))}
         ref={ref}
         {...props}
       >
-        {icon && checkbox == null && <div className="mr-3 text-option-color-icon">{icon}</div>}
-        {checkbox && icon == null && <div className="mr-3 text-option-color-checkbox">{checkbox}</div>}
-        {checkbox && icon && <div className="mr-3 text-option-color-checkbox-icon">{checkbox}</div>}
-        <div className="flex-grow">
-          <div className="option-font-title">{title}</div>
-          {subtext && <div className="text-option-color-subtext option-font-subtext">{subtext}</div>}
+        
+        {/* {checkbox && icon == null && <div className="text-option-color-checkbox">{checkbox}</div>} */}
+        {/* {checkbox && icon && <div className="mr-3 text-option-color-checkbox-icon">{checkbox}</div>} */}
+        <div className="flex-grow flex flex-row justify-between gap-1 p-1">
+          <div className="flex gap-1">
+            <div className="text-option-color-icon">
+              {prefixSlot}
+            </div>
+            <div className="option-font-title">{title}</div>
+          </div>
+          <div className="border-checkbox-color-neutral-default option-font-title">{suffixSlot}</div>
         </div>
-        {label && <div className="text-option-color-label">{label}</div>}
+        {subtext && <div className="text-option-color-subtext option-font-subtext pl-2">{subtext}</div>}
+        {/* {label && <div className="text-option-color-label">{label}</div>}
         {numberbadge && <div className="text-option-color-numberbadge">{numberbadge}</div>}
-        {checkbox && icon && <div className="ml-3 text-option-color-checkbox-icon">{icon}</div>}
+        {checkbox && icon && <div className="ml-3 text-option-color-checkbox-icon">{icon}</div>} */}
       </div>
     )
   }
