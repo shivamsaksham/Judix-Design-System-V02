@@ -31,10 +31,10 @@ export default function Home() {
       
       <div className="text-style-label-title-emphasis ">This is the test for font</div>
 
-      {/* <AlertCard onButtonClick={confirm}>
+      <AlertCard onButtonClick={confirm} hideAble={false}>
 
         This project is no longer associated with your profile. Request the admin to share.
-      </AlertCard> */}
+      </AlertCard>
 
       <Confirmation onConfirmClick={confirm} onCancelClick={cancle} mainText={"Are you please confirm your submission"} subText={"This is the warning subtext."}>
         <Button size="small">Button</Button>

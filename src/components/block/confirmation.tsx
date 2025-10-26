@@ -39,7 +39,7 @@ function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,childre
       <DialogTrigger>
         {children}
       </DialogTrigger>
-      <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke">
+      <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke w-[366px]">
         <DialogHeader className='flex-row justify-between'>
           <DialogTitle className='confirmation-font-title'>Confirmation</DialogTitle>
           <DialogClose className='cursor-pointer'>
@@ -53,7 +53,7 @@ function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,childre
             {subText}
           </div>
         </DialogDescription>
-        <DialogFooter>
+        <DialogFooter className=' '>
           <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancle</Button>
           <Button size="extraSmall" onClick={onConfirmClick}>Confirm</Button>
         </DialogFooter>

@@ -14,20 +14,29 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/labels'
 
 export interface AlertCardProps {
+  hideAble: boolean,
   onButtonClick: () => void;
 }
 
-function AlertCard( {onButtonClick, children}: AlertCardProps & {children: React.ReactNode}) {
+function AlertCard( {onButtonClick=()=>{}, hideAble=true, children}: AlertCardProps & {children: React.ReactNode}) {
   const [hidden, setHidden] = React.useState(false);
+
+  const hideAlert = ()=>{
+    if(hideAble){
+      setHidden((e)=>!e)
+    }else{
+      alert("you can't cross this alert")
+    }
+  }
    
   return (
-    <Card className={`${hidden ? 'hidden' : ''} rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke `} >
+    <Card className={`${hidden ? 'hidden' : ''} rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke sm:max-w-[493px]`} >
         <CardHeader >
           <CardTitle className='flex flex-row gap-1 alert_card-font-title'>
             <Icon name="Danger" ></Icon>
              Alert
           </CardTitle>
-          <CardAction className='hover:cursor-pointer'onClick={()=>{setHidden((e)=>!e)}} ><Icon name="Cross"></Icon></CardAction>
+          <CardAction className='hover:cursor-pointer'onClick={hideAlert} ><Icon name="Cross"></Icon></CardAction>
         </CardHeader>
 
         <CardContent>
@@ -36,7 +45,7 @@ function AlertCard( {onButtonClick, children}: AlertCardProps & {children: React
         </CardContent>
 
         <CardFooter >
-          <Label colorScheme='primary' size="medium" className='cursor-pointer ' onClick={onButtonClick}>Requesr access</Label>
+          <Label colorScheme='primary' size="medium" className='cursor-pointer ' onClick={onButtonClick}>Request access</Label>
         </CardFooter>
     </Card>
   )
