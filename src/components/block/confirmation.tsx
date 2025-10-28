@@ -52,7 +52,6 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
           <span className='p-1 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
             {subText}
           </span>
-          </span>
         </DialogDescription>
         <DialogFooter className=' '>
           <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancle</Button>
