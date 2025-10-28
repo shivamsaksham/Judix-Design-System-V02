@@ -29,10 +29,6 @@ export interface OptionProps
     VariantProps<typeof optionVariants> {
   title: string
   subtext?: string
-  icon?: React.ReactNode
-  label?: React.ReactNode
-  checkbox?: React.ReactNode
-  numberbadge?: React.ReactNode
   selected?: boolean
   disabled?: boolean
   prefixSlot?:React.ReactNode
@@ -40,7 +36,7 @@ export interface OptionProps
 } 
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, disabled, shape, title, subtext, icon, label, checkbox, numberbadge, prefixSlot, suffixSlot, ...props }, ref) => {
+  ({ className, selected, disabled, shape, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
     return (
       <div
         className={cn(optionVariants({ selected, disabled, shape, className }))}
@@ -48,21 +44,22 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
         {...props}
       >
         
-        {/* {checkbox && icon == null && <div className="text-option-color-checkbox">{checkbox}</div>} */}
-        {/* {checkbox && icon && <div className="mr-3 text-option-color-checkbox-icon">{checkbox}</div>} */}
+        
         <div className="flex-grow flex flex-row justify-between gap-1 p-1">
           <div className="flex gap-1">
             <div className="text-option-color-icon">
               {prefixSlot}
             </div>
-            <div className="option-font-title">{title}</div>
+            <div className="option-font-title p-1">
+              {title}
+            </div>
           </div>
-          <div className="border-checkbox-color-neutral-default option-font-title">{suffixSlot}</div>
+          <div className="border-checkbox-color-neutral-default option-font-title">
+            {suffixSlot}
+          </div>
         </div>
-        {subtext && <div className="text-option-color-subtext option-font-subtext pl-2">{subtext}</div>}
-        {/* {label && <div className="text-option-color-label">{label}</div>}
-        {numberbadge && <div className="text-option-color-numberbadge">{numberbadge}</div>}
-        {checkbox && icon && <div className="ml-3 text-option-color-checkbox-icon">{icon}</div>} */}
+        {subtext && <div className="text-option-color-subtext option-font-subtext p-1">{subtext}</div>}
+        
       </div>
     )
   }

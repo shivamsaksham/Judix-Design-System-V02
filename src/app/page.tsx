@@ -17,8 +17,8 @@ export default function Home() {
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
       <div className="text-style-label-title-emphasis">This is the test for font</div>
       
-      {/* <Toggle  variant="primary" onCheckedChange={switchState}/> */}
-        {/* <Option title="Profile Settings" />
+      
+        <Option title="Profile Settings" />
 
       <Option
         title="Profile Settings"
@@ -29,14 +29,13 @@ export default function Home() {
         prefixSlot={<Icon name="DocumentText" size={18}></Icon>}
         title="User"
         subtext="Manage your"
-        label={<Label>Admin</Label>}
       />
 
       <Option
         prefixSlot={<Icon name='Box'></Icon>}
         title="Selected Option"
         suffixSlot ={<Checkbox variant='primary' size={'medium'}></Checkbox>}
-        selected
+        // selected
         subtext="Subtext"
         shape="rounded"
       />
@@ -45,7 +44,6 @@ export default function Home() {
         suffixSlot = {<Label size="small">Admin</Label>}
         title="Option Title"
         prefixSlot ={<Checkbox variant='primary' size={'small'}></Checkbox>}
-        
         selected
         subtext="Subtext"
         shape="rounded"
@@ -60,11 +58,9 @@ export default function Home() {
       <Option
         title="Click me"
         onClick={() => alert("Option clicked!")}
-      /> */}
+      />
 
-        {/* <Confirmation >
-          <Button>Click me</Button>
-        </Confirmation> */}
+      
 
         
 
