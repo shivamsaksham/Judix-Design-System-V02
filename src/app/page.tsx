@@ -32,7 +32,6 @@ export default function Home() {
       <div className="text-style-label-title-emphasis ">This is the test for font</div>
 
       <AlertCard onButtonClick={confirm} hideAble={false}>
-
         This project is no longer associated with your profile. Request the admin to share.
       </AlertCard>
 

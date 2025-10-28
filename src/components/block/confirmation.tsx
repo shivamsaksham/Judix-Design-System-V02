@@ -1,12 +1,12 @@
 import React from 'react'
 import { Icon } from 'judix-icon'
 import {
-  Card, 
-    CardAction,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import {
@@ -24,19 +24,18 @@ import {
 } from '@/components/ui/dialog'
 
 export interface ConfirmationProps {
-        mainText:string;
-        subText:string;
-        onConfirmClick: () => void;
-        onCancelClick: () => void;
-}   
+  mainText: string;
+  subText: string;
+  onConfirmClick: () => void;
+  onCancelClick: () => void;
+}
 
-function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,children}: ConfirmationProps & {children: React.ReactNode}) {
-
-    const [hidden, setHidden] = React.useState(false);
+function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children }: ConfirmationProps & { children: React.ReactElement }) {
   return (
-    
+
     <Dialog >
-      <DialogTrigger>
+      {/* asChild is used in order to treat the children prop to be the parent component type */}
+      <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke w-[366px]">
@@ -46,12 +45,13 @@ function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,childre
             <Icon name="Cross"></Icon>
           </DialogClose>
         </DialogHeader>
-        
+
         <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext '>
-          {mainText}
-          <div className='mt-3 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
+          {/* <div> should not be used inside DialogDescription as it is <p> wrapper */}
+          <span className='block'>{mainText}</span>
+          <span className='mt-3 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
             {subText}
-          </div>
+          </span>
         </DialogDescription>
         <DialogFooter className=' '>
           <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancle</Button>
