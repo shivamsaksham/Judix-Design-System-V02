@@ -1,12 +1,12 @@
 import React from 'react'
 import { Icon } from 'judix-icon'
 import {
-  Card, 
-    CardAction,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import {
@@ -24,17 +24,15 @@ import {
 } from '@/components/ui/dialog'
 
 export interface ConfirmationProps {
-        mainText:string;
-        subText:string;
-        onConfirmClick: () => void;
-        onCancelClick: () => void;
-}   
+  mainText: string;
+  subText: string;
+  onConfirmClick: () => void;
+  onCancelClick: () => void;
+}
 
-function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,children}: ConfirmationProps & {children: React.ReactNode}) {
-
-    const [hidden, setHidden] = React.useState(false);
+function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children }: ConfirmationProps & { children: React.ReactElement }) {
   return (
-    
+
     <Dialog >
       <DialogTrigger asChild>
         {children}
@@ -53,6 +51,7 @@ function Confirmation({onConfirmClick, onCancelClick, mainText, subText ,childre
           </span>
           <span className='p-1 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
             {subText}
+          </span>
           </span>
         </DialogDescription>
         <DialogFooter className=' '>
