@@ -1,50 +1,30 @@
-"use client";
-
-// import {
-//   Card,
-//   CardAction,
-//   CardContent,
-//   CardDescription,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card"
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
-
-import { Icon } from "judix-icon"
+'use client'
 import AlertCard from "@/components/block/alert-card";
-import Confirmation from "@/components/block/confirmation";
-import { Dialog } from "@radix-ui/react-dialog";
-
-
-
-
-export default function Home() {
-  const cancle = () => {
-    console.log("Cancled");
-  };
-  const confirm = () => {
-    console.log("confirmed");
-  };
+import RadioButtonDemo from "@/components/examples/RadioButtonDemo";
+import ToastDemo from "@/components/examples/ToastDemo";
+import Calender from "@/components/ui/calender";
+import PaginationView from "@/components/ui/pagination";
+import DropdownDemo from "@/components/examples/DropdownDemo";
+import { useState } from "react";
+import { TextInput } from "@/components/ui/text-input";
+export default function App() {
+  const [date, setDate] = useState(new Date());
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 ">
-      
-      <div className="text-style-label-title-emphasis ">This is the test for font</div>
+    // <RadioButtonDemo/>
+    // <div className="flex min-h-screen justify-center items-center">
+    // <div className="bg-white p-6 rounded-lg shadow-md">
+    //     <h1 className="text-2xl font-bold mb-4">Pagination Demo</h1>
+    //     <PaginationView />
+    //   </div>
+    // {/* <RadioButtonDemo/> */}
+    //  <ToastDemo/> 
+    //   <Calender 
+    //   onDateSelected={date} 
+    //   onDateChange={setDate}
+    // />
+      // </div>
 
-      <AlertCard onButtonClick={confirm} hideAble={false}>
-        This project is no longer associated with your profile. Request the admin to share.
-      </AlertCard>
+    <DropdownDemo/>
 
-      <Confirmation onConfirmClick={confirm} onCancelClick={cancle} mainText={"Are you please confirm your submission"} subText={"This is the warning subtext."}>
-        <Button size="small">Button</Button>
-      </Confirmation>
-
-      
-     
-      
-
-    </div>
   );
 }
