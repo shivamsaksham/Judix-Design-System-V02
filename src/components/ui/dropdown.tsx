@@ -78,8 +78,8 @@ export const Dropdown = ({
             key={option.value}
             title={option.title}
             subtext={option.subtext}
-            leadingIcon={option.leadingIcon}
-            trailingAccessory={option.trailingAccessory}
+            prefixSlot={option.leadingIcon}
+            suffixSlot={option.trailingAccessory}
             selected={value === option.value}
             onClick={() => {
               onChange(option.value);
