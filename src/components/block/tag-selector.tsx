@@ -2,7 +2,7 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { Label } from "../ui/labels"
+import { Label } from "../ui/label"
 import { NumberBadge } from "../ui/number_badges"
 import { TextInput } from "../ui/text-input"
 

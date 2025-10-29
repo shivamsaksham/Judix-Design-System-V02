@@ -527,11 +527,17 @@
 
   /* label */
   --color-label-color-neutral-bg: var(--color-color-surface-neutral-default);
+  --color-label-color-neutral-hover: var(--color-color-surface-neutral-hover_default);
+  --color-label-color-neutral-selected: var(--color-color-surface-neutral-hover_default);
   --color-label-color-neutral-stroke: var(--color-color-border-neutral-default);
   --color-label-color-neutral-text: var(--color-color-text-neutral-default);
+  --color-label-color-neutral-selectedtext: var(--color-color-text-neutral-default);
   --color-label-color-primary-bg: var(--color-color-surface-neutral-default);
+  --color-label-color-primary-hover: var(--color-color-surface-primary-hover_default);
+  --color-label-color-primary-selected: var(--color-color-surface-primary-hover_default);
   --color-label-color-primary-stroke: var(--color-color-border-primary-default);
   --color-label-color-primary-text: var(--color-color-text-primary-default);
+  --color-label-color-primary-selectedtext: var(--color-color-text-primary-default);
   /* label Border Radius */
   --radius-label-border-radius-default: var(--border-radius-InteractiveElements);
   /* label Border Weight - Un-tokenized : should be used directly as class `label-border-weight-default`  */
@@ -679,6 +685,7 @@
   --color-confirmation-color-stroke: var(--color-color-border-neutral-default);
   --color-confirmation-color-titletext: var(--color-color-text-neutral-default);
   --color-confirmation-color-bodytext: var(--color-color-text-neutral-default);
+  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary)
   --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
   /* Confirmation Modals Border Radius */
   --radius-confirmation-border-radius-default: var(--border-radius-modal);
@@ -1075,6 +1082,10 @@
 }
 @utility confirmation-font-content{
   @apply text-style-textblock-primary-subtext-regular;
+}
+
+@utility confirmation-font-subtext{
+  @apply text-style-label-default-regular;
 }
 
 /* Label Text Styles */

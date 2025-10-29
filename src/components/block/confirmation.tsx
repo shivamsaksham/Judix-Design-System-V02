@@ -1,13 +1,5 @@
 import React from 'react'
 import { Icon } from 'judix-icon'
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,8 +8,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 
@@ -49,7 +39,7 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
            <span className='p-1'>
             {mainText}
           </span>
-          <span className='p-1 font-family-brandprimary text-color-text-neutral-tertiary font-family-brand-primary'>
+          <span className='p-1  text-confirmation-color-subtext confirmation-font-subtext'>
             {subText}
           </span>
         </DialogDescription>

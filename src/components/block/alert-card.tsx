@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/labels'
+import { Label } from '@/components/ui/label'
 
 export interface AlertCardProps {
   hideAble: boolean,

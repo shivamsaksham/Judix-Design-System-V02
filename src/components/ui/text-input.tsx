@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
-import { Label as CustomLabel } from "@/components/ui/labels"
+import { Label as CustomLabel } from "@/components/ui/label"
 
 const inputVariants = cva(
   "flex w-full rounded-textinput-border-radius-default textinput-border-weight-default border bg-color-textinput-bg transition-colors duration-200 py-2 px-3",

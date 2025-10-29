@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { fn } from 'storybook/test';
-import { Label } from '@/components/ui/labels';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof Label> = {
   title: 'UI/Label',
