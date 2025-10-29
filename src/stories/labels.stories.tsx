@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { fn } from 'storybook/test';
-import { Label } from '@/components/ui/labels';
+import { Label } from '@/components/ui/label';
 
 const meta: Meta<typeof Label> = {
   title: 'UI/Label',
@@ -22,6 +22,7 @@ const meta: Meta<typeof Label> = {
     },
     showDot: { control: 'boolean' },
     badgeContent: { control: 'text' },
+    selected: { control: 'boolean' },
   },
   args: {
     children: 'Label',
@@ -30,6 +31,9 @@ const meta: Meta<typeof Label> = {
     showDot: false,
     badgeContent: '',
     onRemove: fn(),
+    onSelect: fn(),
+    onClick: fn(),
+    selected: false,
   },
 };
 
@@ -46,14 +50,82 @@ export const DesignGallery: Story = {
         <div key={colorScheme} className="flex flex-col gap-2">
           {(['large', 'medium', 'small'] as const).map(size => (
             <div key={size} className="flex items-center gap-3">
-              <Label {...args} colorScheme={colorScheme} size={size} badgeContent={undefined} onRemove={undefined} showDot={false} />
-              <Label {...args} colorScheme={colorScheme} size={size} badgeContent="5" onRemove={undefined} showDot={false}/>
-              <Label {...args} colorScheme={colorScheme} size={size} onRemove={() => {}} badgeContent={undefined} showDot={false} />
-              <Label {...args} colorScheme={colorScheme} size={size} showDot badgeContent={undefined} onRemove={undefined} />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected={false}
+                badgeContent={undefined}
+                onRemove={undefined}
+                showDot={false}
+              />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected
+                badgeContent={undefined}
+                onRemove={undefined}
+                showDot={false}
+              />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected={false}
+                badgeContent="5"
+                onRemove={undefined}
+                showDot={false}
+              />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected
+                badgeContent="5"
+                onRemove={undefined}
+                showDot={false}
+              />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected={false}
+                showDot
+                badgeContent={undefined}
+                onRemove={undefined}
+              />
+              <Label
+                {...args}
+                colorScheme={colorScheme}
+                size={size}
+                selected
+                showDot
+                badgeContent={undefined}
+                onRemove={undefined}
+              />
             </div>
           ))}
         </div>
       ))}
     </div>
   ),
+};
+
+export const Selectable: Story = {
+  name: 'Selectable Example',
+  render: (args) => {
+    const [isSelected, setIsSelected] = React.useState(args.selected ?? false);
+
+    return (
+      <Label
+        {...args}
+        selected={isSelected}
+        onSelect={() => {
+          setIsSelected((prev) => !prev);
+          args.onSelect?.();
+        }}
+      />
+    );
+  },
 };

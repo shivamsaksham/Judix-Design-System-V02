@@ -1,18 +1,30 @@
-"use client";
-import { Toggle } from "@/components/ui/toggle";
-
-
-
-export default function Home() {
-  const switchState = (checked: boolean) => {
-    console.log(checked);
-  };
+'use client'
+import AlertCard from "@/components/block/alert-card";
+import RadioButtonDemo from "@/components/examples/RadioButtonDemo";
+import ToastDemo from "@/components/examples/ToastDemo";
+import Calender from "@/components/ui/calender";
+import PaginationView from "@/components/ui/pagination";
+import DropdownDemo from "@/components/examples/DropdownDemo";
+import { useState } from "react";
+import { TextInput } from "@/components/ui/text-input";
+export default function App() {
+  const [date, setDate] = useState(new Date());
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
-      <div className="text-style-label-title-emphasis">This is the test for font</div>
-      
-      <Toggle  variant="primary" onCheckedChange={switchState}/>
+    // <RadioButtonDemo/>
+    // <div className="flex min-h-screen justify-center items-center">
+    // <div className="bg-white p-6 rounded-lg shadow-md">
+    //     <h1 className="text-2xl font-bold mb-4">Pagination Demo</h1>
+    //     <PaginationView />
+    //   </div>
+    // {/* <RadioButtonDemo/> */}
+    //  <ToastDemo/> 
+    //   <Calender 
+    //   onDateSelected={date} 
+    //   onDateChange={setDate}
+    // />
+      // </div>
 
-    </div>
+    <DropdownDemo/>
+
   );
 }
