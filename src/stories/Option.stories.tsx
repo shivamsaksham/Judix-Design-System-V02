@@ -123,7 +123,7 @@ export const WithLeadingIcon: Story = {
   name: "Accessory: Leading Icon",
   args: {
     title: 'Option',
-    icon: <Icon name="ClipboardText" />,
+    prefixSlot: <Icon name="ClipboardText" />,
   },
 };
 
@@ -131,7 +131,7 @@ export const WithTrailingLabel: Story = {
   name: "Accessory: Trailing Label",
   args: {
     title: 'Option',
-    label: <Label size="small">Label</Label>,
+    suffixSlot: <Label size="small">Label</Label>,
   },
 };
 
@@ -139,24 +139,17 @@ export const WithTrailingNumberBadge: Story = {
   name: "Accessory: Trailing NumberBadge",
   args: {
     title: 'Option',
-    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    suffixSlot: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
-export const WithTrailingCheckbox: Story = {
-  name: "Accessory: Trailing Checkbox",
-  args: {
-    title: 'Option',
-    checkbox: <Checkbox id="option-checkbox" />,
-  },
-};
 
 export const WithLeadingIconAndTrailingNumber: Story = {
   name: "Accessory: Leading Icon + Trailing Number",
   args: {
     title: 'Option',
-    icon: <Icon name="ClipboardText" />,
-    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    prefixSlot: <Icon name="ClipboardText" />,
+    suffixSlot: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
@@ -166,7 +159,7 @@ export const WithSubtextAndLeadingIcon: Story = {
   name: "Accessory: Subtext + Leading Icon",
   args: {
     ...WithSubtext.args,
-    icon: <Icon name="ClipboardText" />,
+    prefixSlot: <Icon name="ClipboardText" />,
   },
 };
 
@@ -174,7 +167,7 @@ export const WithSubtextAndTrailingLabel: Story = {
   name: "Accessory: Subtext + Trailing Label",
   args: {
     ...WithSubtext.args,
-    label: <Label size="small">Label</Label>,
+    suffixSlot: <Label size="small">Label</Label>,
   },
 };
 
@@ -182,17 +175,11 @@ export const WithSubtextAndTrailingNumber: Story = {
   name: "Accessory: Subtext + Trailing Number",
   args: {
     ...WithSubtext.args,
-    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    suffixSlot: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 
-export const WithSubtextAndTrailingCheckbox: Story = {
-  name: "Accessory: Subtext + Trailing Checkbox",
-  args: {
-    ...WithSubtext.args,
-    checkbox: <Checkbox id="option-checkbox-subtext" />,
-  },
-};
+
 
 // --- Full Option ---
 
@@ -201,8 +188,8 @@ export const FullOption: Story = {
   args: {
     title: 'Option title',
     subtext: 'Subtext',
-    icon: <Icon name="ClipboardText" />,
-    numberbadge: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
+    prefixSlot: <Icon name="ClipboardText" />,
+    suffixSlot: <NumberBadge variant="neutral" size="s">5</NumberBadge>,
   },
 };
 

@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const optionVariants = cva(
-  "flex flex-col p-2 cursor-pointer transition-colors duration-200 bg-option-color-bg text-option-color-text hover:bg-option-color-hover hover:text-option-color-text w-[200px] justify-between",
+  "flex flex-col p-2 px-3 cursor-pointer transition-colors duration-200 bg-option-color-bg text-option-color-text hover:bg-option-color-hover hover:text-option-color-text w-[200px] justify-between",
   {
     variants: {
       selected: {
@@ -26,14 +26,14 @@ const optionVariants = cva(
 
 export interface OptionProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof optionVariants> {
+  VariantProps<typeof optionVariants> {
   title: string
   subtext?: string
   selected?: boolean
   disabled?: boolean
-  prefixSlot?:React.ReactNode
-  suffixSlot?:React.ReactNode
-} 
+  prefixSlot?: React.ReactNode
+  suffixSlot?: React.ReactNode
+}
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
   ({ className, selected, disabled, shape, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
@@ -43,23 +43,27 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
         ref={ref}
         {...props}
       >
-        
-        
-        <div className="flex-grow flex flex-row justify-between gap-1 p-1">
-          <div className="flex gap-1">
-            <div className="text-option-color-icon">
-              {prefixSlot}
-            </div>
+
+
+        <div className="flex-grow flex flex-row justify-between">
+          <div className="flex justify-center items-center gap-1">
+            {prefixSlot &&
+              <div className="text-option-color-icon">
+                {prefixSlot}
+              </div>
+            }
             <div className="option-font-title p-1">
               {title}
             </div>
           </div>
-          <div className="border-checkbox-color-neutral-default option-font-title">
-            {suffixSlot}
-          </div>
+          {suffixSlot &&
+            <div className="border-checkbox-color-neutral-default">
+              {suffixSlot}
+            </div>
+          }
         </div>
         {subtext && <div className="text-option-color-subtext option-font-subtext p-1">{subtext}</div>}
-        
+
       </div>
     )
   }
