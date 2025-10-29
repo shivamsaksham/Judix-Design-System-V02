@@ -1,20 +1,7 @@
 import type { Preview } from '@storybook/nextjs-vite'
-import { Poppins } from 'next/font/google'
-import localfont from 'next/font/local'
 import '../src/app/globals.css'
 import './test.css'
-
-// Configure fonts
-const poppins = Poppins({ 
-  subsets: ['latin'], 
-  variable: '--font-poppins', 
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] 
-})
-
-const satoshi = localfont({
-  src: '../src/app/fonts/Satoshi-Variable.woff2',
-  variable: '--font-satoshi'
-})
+import './storybook-fonts.css'
 
 const preview: Preview = {
   parameters: {
@@ -40,7 +27,7 @@ const preview: Preview = {
     (Story) => {
       // Apply font variables to the body element
       if (typeof document !== 'undefined') {
-        document.body.className = `${poppins.variable} ${satoshi.variable} ${document.body.className}`;
+        document.body.classList.add('font-poppins', 'font-satoshi');
       }
       return Story();
     },

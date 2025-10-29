@@ -525,17 +525,17 @@
   /* Button Border Weight - Un-tokenized : should be used directly as class `button-border-weight-default`  */
   --button-border-weight-default: var(--border-weight-default);
 
-  /* Labels */
-  --color-labels-color-neutral-bg: var(--color-color-surface-neutral-default);
-  --color-labels-color-neutral-stroke: var(--color-color-border-neutral-default);
-  --color-labels-color-neutral-text: var(--color-color-text-neutral-default);
-  --color-labels-color-primary-bg: var(--color-color-surface-neutral-default);
-  --color-labels-color-primary-stroke: var(--color-color-border-primary-default);
-  --color-labels-color-primary-text: var(--color-color-text-primary-default);
-  /* Labels Border Radius */
-  --radius-labels-border-radius-default: var(--border-radius-InteractiveElements);
-  /* Labels Border Weight - Un-tokenized : should be used directly as class `labels-border-weight-default`  */
-  --labels-border-weight-default: var(--border-weight-default);
+  /* label */
+  --color-label-color-neutral-bg: var(--color-color-surface-neutral-default);
+  --color-label-color-neutral-stroke: var(--color-color-border-neutral-default);
+  --color-label-color-neutral-text: var(--color-color-text-neutral-default);
+  --color-label-color-primary-bg: var(--color-color-surface-neutral-default);
+  --color-label-color-primary-stroke: var(--color-color-border-primary-default);
+  --color-label-color-primary-text: var(--color-color-text-primary-default);
+  /* label Border Radius */
+  --radius-label-border-radius-default: var(--border-radius-InteractiveElements);
+  /* label Border Weight - Un-tokenized : should be used directly as class `label-border-weight-default`  */
+  --label-border-weight-default: var(--border-weight-default);
 
   /* Number Badges */
   --color-number_badges-color-neutral-bg: var(--color-color-surface-neutral-hover_mild);
@@ -719,8 +719,8 @@
   border-width: var(--button-border-weight-default);
 }
 
-@utility labels-border-weight-default {
-  border-width: var(--labels-border-weight-default);
+@utility label-border-weight-default {
+  border-width: var(--label-border-weight-default);
 }
 
 @utility number_badges-border-weight-default {
@@ -1078,13 +1078,13 @@
 }
 
 /* Label Text Styles */
-@utility labels-font-small{
+@utility label-font-small{
   @apply text-style-label-title-emphasis;
 }
-@utility labels-font-medium{
+@utility label-font-medium{
   @apply text-style-body-default-regular;
 }
-@utility labels-font-large{
+@utility label-font-large{
   @apply text-style-body-title-regular;
 }
 
