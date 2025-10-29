@@ -1,68 +1,49 @@
 "use client";
+
+// import {
+//   Card,
+//   CardAction,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
-import {Option} from '@/components/ui/option'
-import { Check, User } from "lucide-react"
-import { Icon } from 'judix-icon'
-import {Label} from '@/components/ui/labels'
+
+import { Icon } from "judix-icon"
+import AlertCard from "@/components/block/alert-card";
 import Confirmation from "@/components/block/confirmation";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog } from "@radix-ui/react-dialog";
+
 
 
 
 export default function Home() {
-  const switchState = (checked: boolean) => {
-    console.log(checked);
+  const cancle = () => {
+    console.log("Cancled");
+  };
+  const confirm = () => {
+    console.log("confirmed");
   };
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
-      <div className="text-style-label-title-emphasis">This is the test for font</div>
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 ">
       
-      
-        <Option title="Profile Settings" />
+      <div className="text-style-label-title-emphasis ">This is the test for font</div>
 
-      <Option
-        title="Profile Settings"
-        subtext="your personal "
-      />
+      <AlertCard onButtonClick={confirm} hideAble={false}>
+        This project is no longer associated with your profile. Request the admin to share.
+      </AlertCard>
 
-      <Option
-        prefixSlot={<Icon name="DocumentText" size={18}></Icon>}
-        title="User"
-        subtext="Manage your"
-      />
-
-      <Option
-        prefixSlot={<Icon name='Box'></Icon>}
-        title="Selected Option"
-        suffixSlot ={<Checkbox variant='primary' size={'medium'}></Checkbox>}
-        // selected
-        subtext="Subtext"
-        shape="rounded"
-      />
-      <Option
-        // suffixSlot={<Icon name='Box' ></Icon>}
-        suffixSlot = {<Label size="small">Admin</Label>}
-        title="Option Title"
-        prefixSlot ={<Checkbox variant='primary' size={'small'}></Checkbox>}
-        selected
-        subtext="Subtext"
-        shape="rounded"
-      />
-
-      <Option
-        title="Disabled Option"
-        subtext="You can’t click this"
-        
-      /> 
-
-      <Option
-        title="Click me"
-        onClick={() => alert("Option clicked!")}
-      />
+      <Confirmation onConfirmClick={confirm} onCancelClick={cancle} mainText={"Are you please confirm your submission"} subText={"This is the warning subtext."}>
+        <Button size="small">Button</Button>
+      </Confirmation>
 
       
-
-        
+     
+      
 
     </div>
   );
