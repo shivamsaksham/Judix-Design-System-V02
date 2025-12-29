@@ -1,12 +1,12 @@
 'use client'
-import AlertCard from "@/components/block/alert-card";
+import AlertCard from "@/components/block/alertCard";
 import RadioButtonDemo from "@/components/examples/RadioButtonDemo";
 import ToastDemo from "@/components/examples/ToastDemo";
 import Calender from "@/components/ui/calender";
 import PaginationView from "@/components/ui/pagination";
 import DropdownDemo from "@/components/examples/DropdownDemo";
 import { useState } from "react";
-import { TextInput } from "@/components/ui/text-input";
+import { TextInput } from "@/components/ui/textInput";
 export default function App() {
   const [date, setDate] = useState(new Date());
   return (

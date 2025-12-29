@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { RadioButton, RadioButtonProps } from '../ui/radiobuttons';
+import { RadioButton, RadioButtonProps } from '../ui/radioButtons';
 
 type Size = 'small' | 'medium' | 'large';
 type Color = 'primary' | 'neutral';

@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { TextInput } from "@/components/ui/text-input"
+import { TextInput } from "@/components/ui/textInput"
 import { Icon } from "judix-icon"
 
 const meta: Meta<typeof TextInput> = {

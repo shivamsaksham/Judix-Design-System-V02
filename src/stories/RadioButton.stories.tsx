@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { useState } from 'react';
-import { RadioButton, type RadioButtonProps } from '@/components/ui/radiobuttons';
+import { RadioButton, type RadioButtonProps } from '@/components/ui/radioButtons';
 
 const meta: Meta<typeof RadioButton> = {
   title: 'UI/RadioButton',
