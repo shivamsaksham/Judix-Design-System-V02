@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Dropdown, DropdownOption } from '../ui';
 // 1. Import your component and its types
-import { Dropdown, type DropdownOption } from '../ui/dropdown';
+
 
 // This is your main App component
 export default function DropdownDemo() {

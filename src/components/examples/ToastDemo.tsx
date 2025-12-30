@@ -1,7 +1,7 @@
 'use client'
 
 import React from "react";
-import { ToastContainer, showToast } from "@/components/ui/toast";
+import { showToast, ToastContainer } from "../ui";
 
 export default function ToastDemo() {
   // Simulate a network request for promise toast
