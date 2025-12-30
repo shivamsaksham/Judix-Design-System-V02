@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { Option } from './option'; 
-import { TextInput,inputVariants } from './textInput';
+import { Option } from './option';
+import { TextInput, inputVariants } from './textInput';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
@@ -21,6 +21,7 @@ export interface DropdownProps {
   value: string | null;
   onChange: (value: string) => void;
   searchbar?: "attached" | "integrated" | "off";
+  size?: "medium" | "small";
   placeholder?: string;
   className?: string;
 }
@@ -30,6 +31,7 @@ export const Dropdown = ({
   value,
   onChange,
   searchbar = "off",
+  size = "medium",
   placeholder = "Search...",
   className
 }: DropdownProps) => {
@@ -55,7 +57,7 @@ export const Dropdown = ({
         </div>
       );
     }
- if (searchbar === "integrated") {
+    if (searchbar === "integrated") {
       // Variant 3: Integrated Search Bar
       return (
         <TextInput
@@ -94,29 +96,29 @@ export const Dropdown = ({
       )}
     </div>
   );
-  
+
   // Base container styles
   const containerClasses = cn(
     "bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default",
     className
   );
-  
+
   if (searchbar === "off") {
-      return (
-          <div className={cn("w-[216px] ", containerClasses)}>
-              <div className="p-3">
-                {renderOptions()}
-              </div>
-          </div>
-      );
+    return (
+      <div className={cn("w-[216px] ", containerClasses)}>
+        <div className={size === "small" ? "p-2" : "p-3"}>
+          {renderOptions()}
+        </div>
+      </div>
+    );
   }
-if (searchbar === "integrated") {
+  if (searchbar === "integrated") {
     return (
       <div className="w-72">
-        {renderSearchBar()} 
+        {renderSearchBar()}
         <div className="mt-[3px]" />
-        <div className={containerClasses}> 
-          <div className="p-3">
+        <div className={containerClasses}>
+          <div className={size === "small" ? "p-2" : "p-3"}>
             {renderOptions()}
           </div>
         </div>
@@ -127,7 +129,7 @@ if (searchbar === "integrated") {
   return (
     <div className={cn("w-72", containerClasses)}>
       {renderSearchBar()}
-      <div className="p-3">
+      <div className={size === "small" ? "p-2" : "p-3"}>
         {renderOptions()}
       </div>
     </div>
