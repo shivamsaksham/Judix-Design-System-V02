@@ -48,7 +48,7 @@ const RadioWithLabel: React.FC<
 export const RadioButtonDemo: React.FC = () => {
   // --- State for the interactive demo ---
   const [functionalChoice, setFunctionalChoice] = useState('one');
-  
+
   // --- State for the controls ---
   const [size, setSize] = useState<Size>('medium');
   const [color, setColor] = useState<Color>('primary');
@@ -185,7 +185,7 @@ export const RadioButtonDemo: React.FC = () => {
             onChange={() => setFunctionalChoice('three')}
           />
         </div>
-        
+
         <p style={{ marginTop: '2rem', fontFamily: 'monospace', backgroundColor: '#f4f4f4', padding: '1rem', borderRadius: '4px' }}>
           Current Selection: {functionalChoice}
         </p>

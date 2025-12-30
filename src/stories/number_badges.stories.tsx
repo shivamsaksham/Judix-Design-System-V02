@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
-import { NumberBadge } from '@/components/ui/numberBadges';
+import { NumberBadge } from '@/components/ui/number-badges';
 
 const meta: Meta<typeof NumberBadge> = {
   title: 'UI/NumberBadge',
