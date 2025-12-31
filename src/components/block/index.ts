@@ -1,3 +1,3 @@
-export * from './alertCard'
+export * from './alert-card'
 export * from './confirmation'
-export * from './tagSelector'
+export * from './tag-selector'

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Option } from '../components/ui/option';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
-import { NumberBadge } from '@/components/ui/numberBadges';
+import { NumberBadge } from '@/components/ui/number-badges';
 import { Icon } from 'judix-icon';
 
 const meta: Meta<typeof Option> = {

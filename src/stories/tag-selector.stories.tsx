@@ -1,6 +1,6 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
-import { TagSelector } from "@/components/block/tagSelector"
+import { TagSelector } from "@/components/block/tag-selector"
 
 const meta: Meta<typeof TagSelector> = {
   title: "Components/TagSelector",

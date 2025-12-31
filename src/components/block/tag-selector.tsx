@@ -3,8 +3,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { Label } from "../ui/label"
-import { NumberBadge } from "../ui/numberBadges"
-import { TextInput } from "../ui/textInput"
+import { NumberBadge } from "../ui/number-badges"
+import { TextInput } from "../ui/text-input"
 
 const tagSelectorVariants = cva(
   "border bg-tag_selector-color-bg border-tag_selector-color-stroke rounded-tag_selector-border-radius-default tag_selector-border-weight-default w-[384px] flex flex-col",

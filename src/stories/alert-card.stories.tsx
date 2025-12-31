@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
-import AlertCard from '@/components/block/alertCard';
+import AlertCard from '@/components/block/alert-card';
 
 const meta: Meta<typeof AlertCard> = {
   title: 'Block/AlertCard',

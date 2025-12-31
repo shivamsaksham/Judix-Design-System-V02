@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Option } from './option'; 
-import { TextInput,inputVariants } from './textInput';
+import { TextInput,inputVariants } from './text-input';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
