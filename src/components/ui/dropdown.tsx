@@ -55,7 +55,7 @@ export const Dropdown = ({
         </div>
       );
     }
- if (searchbar === "integrated") {
+    if (searchbar === "integrated") {
       // Variant 3: Integrated Search Bar
       return (
         <TextInput
@@ -94,29 +94,29 @@ export const Dropdown = ({
       )}
     </div>
   );
-  
+
   // Base container styles
   const containerClasses = cn(
     "bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default",
     className
   );
-  
+
   if (searchbar === "off") {
-      return (
-          <div className={cn("w-[216px] ", containerClasses)}>
-              <div className="p-3">
-                {renderOptions()}
-              </div>
-          </div>
-      );
+    return (
+      <div className={cn("w-[216px] ", containerClasses)}>
+        <div className="p-2">
+          {renderOptions()}
+        </div>
+      </div>
+    );
   }
-if (searchbar === "integrated") {
+  if (searchbar === "integrated") {
     return (
       <div className="w-72">
-        {renderSearchBar()} 
+        {renderSearchBar()}
         <div className="mt-[3px]" />
-        <div className={containerClasses}> 
-          <div className="p-3">
+        <div className={containerClasses}>
+          <div className="p-2">
             {renderOptions()}
           </div>
         </div>
@@ -127,7 +127,7 @@ if (searchbar === "integrated") {
   return (
     <div className={cn("w-72", containerClasses)}>
       {renderSearchBar()}
-      <div className="p-3">
+      <div className="p-2">
         {renderOptions()}
       </div>
     </div>
