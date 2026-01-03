@@ -42,13 +42,14 @@ const inputFieldVariants = cva(
 
 export interface TextInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-    VariantProps<typeof inputVariants> {
+  VariantProps<typeof inputVariants> {
   label: string
   helperText?: string
   errorMessage?: string
   leadingIcon?: React.ReactNode
   trailingAccessory?: React.ReactNode
   selectedLabels?: { text: string; onRemove: () => void }[]
+  showLabelsInline?: boolean
   inputSize?: "default";
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
@@ -64,6 +65,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       leadingIcon,
       trailingAccessory,
       selectedLabels,
+      showLabelsInline = false,
       variant: propVariant,
       inputSize = "default",
       onFocus,
@@ -82,7 +84,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     } else if (isFocused) {
       currentVariant = "focus"
     }
-    
+
     const showHelperText = helperText && !errorMessage;
     const showError = !!errorMessage;
     const hasLabels = selectedLabels && selectedLabels.length > 0;
@@ -115,7 +117,24 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               {leadingIcon}
             </div>
           )}
-          
+
+          {/* Inline selected labels */}
+          {hasLabels && showLabelsInline && (
+            <div className="flex flex-wrap items-center gap-1.5 pl-1">
+              {selectedLabels.map((item, index) => (
+                <CustomLabel
+                  key={index}
+                  colorScheme="primary"
+                  size="small"
+                  selected={true}
+                  onRemove={item.onRemove}
+                >
+                  {item.text}
+                </CustomLabel>
+              ))}
+            </div>
+          )}
+
           <input
             ref={ref}
             className={cn(inputFieldVariants({ size: inputSize }),
@@ -123,6 +142,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
               {
                 "pl-3": leadingIcon,
                 "pr-3": trailingAccessory,
+                "pl-2": hasLabels && showLabelsInline,
               }
             )}
             onFocus={handleFocus}
@@ -140,7 +160,8 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           )}
         </div>
 
-        {hasLabels && (
+        {/* External selected labels (below input) */}
+        {hasLabels && !showLabelsInline && (
           <div className="flex flex-wrap items-center gap-2 pt-2">
             {selectedLabels.map((item, index) => (
               <CustomLabel
