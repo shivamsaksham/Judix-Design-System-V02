@@ -27,6 +27,13 @@ const meta: Meta<typeof HistorySidebar> = {
     parameters: {
         layout: 'fullscreen',
     },
+    decorators: [
+        (Story) => (
+            <div className="bg-gray-100 min-h-screen">
+                <Story />
+            </div>
+        ),
+    ],
     args: {
         chatHistory: sampleChatHistory,
         usageStats: sampleUsageStats,
@@ -89,5 +96,17 @@ export const PremiumUser: Story = {
 export const EmptyChatList: Story = {
     args: {
         chatHistory: [],
+    },
+};
+
+export const Collapsed: Story = {
+    args: {
+        isExpanded: false,
+    },
+};
+
+export const Expanded: Story = {
+    args: {
+        isExpanded: true,
     },
 };

@@ -29,7 +29,7 @@ export const Default: Story = {
         },
     },
     render: (args) => (
-        <div className="w-[280px] h-[400px] bg-gray-100 rounded-lg">
+        <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
             <ChatSection {...args} />
         </div>
     ),
@@ -42,7 +42,7 @@ export const Empty: Story = {
         onMenuClick: () => { },
     },
     render: (args) => (
-        <div className="w-[280px] h-[400px] bg-gray-100 rounded-lg">
+        <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
             <ChatSection {...args} />
         </div>
     ),
@@ -59,7 +59,7 @@ export const ManyChats: Story = {
         onMenuClick: (chatId) => console.log('Menu:', chatId),
     },
     render: (args) => (
-        <div className="w-[280px] h-[400px] bg-gray-100 rounded-lg">
+        <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
             <ChatSection {...args} />
         </div>
     ),

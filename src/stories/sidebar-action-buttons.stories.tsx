@@ -7,6 +7,13 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
+    decorators: [
+        (Story) => (
+            <div className="p-4 bg-dropdown-color-bg w-[300px] border border-dropdown-color-stroke rounded-lg">
+                <Story />
+            </div>
+        ),
+    ],
     tags: ['autodocs'],
 } satisfies Meta<typeof SidebarActionButtons>;
 
@@ -19,16 +26,4 @@ export const Default: Story = {
         onNotes: () => console.log('Notes clicked'),
         onProjects: () => console.log('Projects clicked'),
     },
-};
-
-export const Interactive: Story = {
-    render: () => (
-        <div className="w-[280px] bg-gray-100 p-4 rounded-lg">
-            <SidebarActionButtons
-                onNewChat={() => alert('New chat!')}
-                onNotes={() => alert('Notes!')}
-                onProjects={() => alert('Projects!')}
-            />
-        </div>
-    ),
 };

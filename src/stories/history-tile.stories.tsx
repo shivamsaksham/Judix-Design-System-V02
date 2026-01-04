@@ -8,6 +8,13 @@ const meta: Meta<typeof HistoryTile> = {
     parameters: {
         layout: 'centered',
     },
+    decorators: [
+        (Story) => (
+            <div className="p-4 bg-dropdown-color-bg w-[300px] rounded-lg border border-dropdown-color-stroke">
+                <Story />
+            </div>
+        ),
+    ],
     args: {
         title: 'Anticipatory bail in domestic violence cases',
         onClick: () => console.log('Tile clicked'),

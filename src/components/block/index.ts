@@ -1,3 +1,6 @@
 export * from './alert-card'
 export * from './confirmation'
 export * from './tag-selector'
+export * from './chat-history-menu'
+export * from './user-menu'
+export * from './history-tile'
