@@ -1,3 +1,6 @@
 export * from './alert-card'
+export * from './bookmark-dialog'
 export * from './confirmation'
+export * from './rename-dialog'
+export * from './share-search-dialog'
 export * from './tag-selector'

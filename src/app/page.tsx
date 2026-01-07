@@ -1,4 +1,4 @@
-import DropdownDemo from "@/components/examples/DropdownDemo";
+import DropdownDemo from "@/components/examples/dropdown-demo";
 
 export default function App() {
   return (

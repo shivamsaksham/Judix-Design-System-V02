@@ -105,6 +105,90 @@ export const WithSelectedLabels: Story = {
   },
 }
 
+export const WithInlineLabels: Story = {
+  name: "Row 3.5: With Inline Labels (Inside Input)",
+  args: {
+    placeholder: "Placeholder text",
+  },
+  render: (args) => {
+    const [currentLabels, setCurrentLabels] = React.useState([
+      "Selected info",
+      "Another tag",
+    ]);
+
+    const handleRemoveLabel = (labelToRemove: string) => {
+      setCurrentLabels(prevLabels =>
+        prevLabels.filter(label => label !== labelToRemove)
+      );
+    };
+
+    const selectedLabelsProp = currentLabels.map((label) => ({
+      text: label,
+      onRemove: () => handleRemoveLabel(label),
+    }));
+
+    return <TextInput {...args} selectedLabels={selectedLabelsProp} showLabelsInline={true} />;
+  },
+}
+
+export const InlineLabelsOnComma: Story = {
+  name: "Row 3.6: Inline Labels via Comma",
+  args: {
+    placeholder: "Type a value and press comma",
+  },
+  render: (args) => {
+    const [currentLabels, setCurrentLabels] = React.useState<string[]>([]);
+    const [inputValue, setInputValue] = React.useState("");
+
+    const addLabel = (rawValue: string) => {
+      const trimmed = rawValue.trim();
+      if (!trimmed) return;
+      setCurrentLabels(prev => (prev.includes(trimmed) ? prev : [...prev, trimmed]));
+    };
+
+    const handleRemoveLabel = (labelToRemove: string) => {
+      setCurrentLabels(prevLabels => prevLabels.filter(label => label !== labelToRemove));
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(event.target.value);
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === ",") {
+        event.preventDefault();
+        addLabel(inputValue);
+        setInputValue("");
+      }
+    };
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+      if (inputValue.trim()) {
+        addLabel(inputValue);
+        setInputValue("");
+      }
+      args.onBlur?.(event);
+    };
+
+    const selectedLabelsProp = currentLabels.map((label) => ({
+      text: label,
+      onRemove: () => handleRemoveLabel(label),
+    }));
+
+    return (
+      <TextInput
+        {...args}
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        selectedLabels={selectedLabelsProp}
+        showLabelsInline
+      />
+    );
+  },
+}
+
 export const Disabled: Story = {
   name: "Row 4: Disabled w/ Info Icon",
   args: {
