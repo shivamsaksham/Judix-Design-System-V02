@@ -45,7 +45,7 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
       >
 
 
-        <div className="flex-grow flex flex-row justify-between">
+        <div className="flex-grow flex flex-row justify-between items-center">
           <div className="flex justify-center items-center gap-1">
             {prefixSlot &&
               <div className="text-option-color-icon">
