@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { Option } from './option'; 
-import { TextInput,inputVariants } from './text-input';
+import { Option } from './option';
+import { TextInput, inputVariants } from './text-input';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
@@ -13,6 +13,7 @@ export interface DropdownOption {
   subtext?: string;
   leadingIcon?: React.ReactNode;
   trailingAccessory?: React.ReactNode;
+  className?: string;
 }
 
 // Define the props for the main Dropdown
@@ -85,6 +86,7 @@ export const Dropdown = ({
               onChange(option.value);
               setSearchTerm("");
             }}
+            className={option.className}
           />
         ))
       ) : (

@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import { Dropdown, DropdownOption } from '../ui';
 // 1. Import your component and its types
