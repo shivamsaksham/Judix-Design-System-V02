@@ -62,12 +62,14 @@ export default function AddToContext({
                 <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label">
                     Add to context
                 </h2>
-                <button
+                <Button
                     onClick={handleClose}
-                    className="p-[3.33px] rounded cursor-pointer"
-                >
-                    <Icon name="Cross" className="w-4 h-4 text-color-icon-neutral-default" />
-                </button>
+                    variant="neutral"
+                    size="small"
+                    prefixIcon="Cross"
+                    className='border-none p-[3.33px] h-0'
+                    iconClassName="w-4 h-4 relative"
+                />
             </div>
 
             {/* Title Input */}
