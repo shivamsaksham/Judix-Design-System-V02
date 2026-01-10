@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Option } from "../ui/option";
 import { TextInput } from "../ui/text-input";
+import { ProjectList } from "./project-list";
 
 
 export interface Project {
@@ -30,42 +31,6 @@ export interface BookmarkDialogProps {
     onSave: (projects: Project[]) => void;
     onCreateNewProject: () => void;
     className?: string;
-}
-
-export interface ProjectListProps {
-    projects: Project[];
-    selectedProjects: Project[];
-    onSelect: (project: Project) => void;
-}
-
-export function ProjectList({ projects, selectedProjects, onSelect }: ProjectListProps) {
-    return (
-        <div
-            className="absolute top-full left-0 right-0 mt-1 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg shadow-lg max-h-[300px] overflow-y-auto z-50 p-2 flex flex-col gap-1"
-        >
-            {projects.length > 0 ? (
-                projects.map((project) => (
-                    <Option
-                        key={project.id}
-                        title={project.name}
-                        subtext={project.description}
-                        selected={!!selectedProjects.find(p => p.id === project.id)}
-                        onClick={() => onSelect(project)}
-                        prefixSlot={
-                            <Icon
-                                name="DocumentText1"
-                                className="h-4 w-4"
-                            />
-                        }
-                    />
-                ))
-            ) : (
-                <div className="p-3 text-sm text-color-text-neutral-tertiary text-center">
-                    No projects found
-                </div>
-            )}
-        </div>
-    );
 }
 
 function BookmarkDialog({
@@ -133,7 +98,7 @@ function BookmarkDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className={cn("sm:max-w-[480px] p-6 rounded-2xl gap-6 bg-color-surface-neutral-default", className)}
+                className={cn("sm:max-w-[480px] p-6 rounded-2xl gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
                 <DialogHeader className="flex-row items-center gap-2">
@@ -141,7 +106,7 @@ function BookmarkDialog({
                         name="DocumentText1"
                         className="h-5 w-5 text-icon_button-color-primary-icon"
                     />
-                    <DialogTitle>Bookmark</DialogTitle>
+                    <DialogTitle className="text-style-body-title-regular">Bookmark</DialogTitle>
                 </DialogHeader>
 
                 <div className="flex flex-col gap-2">
@@ -172,7 +137,7 @@ function BookmarkDialog({
                                 onRemove: () => handleRemoveProject(project.id)
                             }))}
                             showLabelsInline={true}
-                            className="bg-color-textinput-bg"
+                            className="bg-color-textinput-bg text-style-body-default-regular px-3 py-2 h-12 items-center"
                         />
 
                         {isDropdownOpen && (
@@ -185,7 +150,7 @@ function BookmarkDialog({
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <span className="text-xs text-color-text-neutral-secondary">
+                        <span className="text-style-label-default-regular text-color-text-neutral-secondary">
                             Recent projects
                         </span>
                         <div className="flex flex-wrap gap-2">
@@ -212,7 +177,7 @@ function BookmarkDialog({
                         variant="neutral"
                         size="medium"
                         onClick={onCreateNewProject}
-                        className="p-2 rounded-lg text-sm"
+                        className="p-2 rounded-lg text-style-body-default-regular"
                     >
                         Create new project
                     </Button>
@@ -221,7 +186,7 @@ function BookmarkDialog({
                             variant="neutral"
                             size="medium"
                             onClick={() => onOpenChange(false)}
-                            className="h-auto text-sm"
+                            className="h-auto text-style-body-default-regular"
                         >
                             Cancel
                         </Button>
@@ -230,7 +195,7 @@ function BookmarkDialog({
                             size="medium"
                             onClick={handleSave}
                             disabled={selectedProjects.length === 0}
-                            className="h-auto text-sm"
+                            className="h-auto"
                         >
                             Save
                         </Button>

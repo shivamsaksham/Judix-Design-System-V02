@@ -133,7 +133,7 @@ function ShareSearchDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className={cn("sm:max-w-[600px] p-6 rounded-2xl gap-6 bg-color-surface-neutral-default", className)}
+                className={cn("sm:max-w-[600px] p-6 rounded-2xl gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
                 <DialogHeader className="flex-row items-center gap-2">
@@ -141,14 +141,14 @@ function ShareSearchDialog({
                         name="Share"
                         className="h-5 w-5 text-icon_button-color-primary-icon"
                     />
-                    <DialogTitle>Share this search</DialogTitle>
+                    <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
                 </DialogHeader>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <TextInput
                             label=""
-                            className="h-[42px] items-center"
+                            className="h-[42px] items-center px-3 py-2"
                             type="email"
                             placeholder="Email ID"
                             value={emailInput}
@@ -185,7 +185,7 @@ function ShareSearchDialog({
                                                 : undefined
                                         }
                                         className={cn({
-                                            "cursor-pointer": !recipient.isConfirmed
+                                            "cursor-pointer text-style-body-default-regular": !recipient.isConfirmed
                                         })}
                                     >
                                         {recipient.name}
@@ -208,15 +208,15 @@ function ShareSearchDialog({
                                     className="h-4 w-4 text-color-text-neutral-secondary"
                                 />
                             }
-                            className="border-none bg-transparent shadow-none focus-within:border-none p-0 h-[42px] items-center"
+                            className="border-none bg-transparent shadow-none focus-within:border-none p-0 h-[24px] items-center text-style-label-title-regular"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1">
                         <TextInput
                             label=""
                             value={shareLink}
-                            className="h-[42px] items-center"
+                            className="h-[42px] items-center text-style-body-default-regular px-3 py-2"
                             readOnly
                             trailingAccessory={
                                 <Button
@@ -227,12 +227,13 @@ function ShareSearchDialog({
                                         onCopyLink();
                                         showToast.success("Link copied");
                                     }}
+                                    className="p-2 w-[79px] h-[24px]"
                                 >
                                     Copy link
                                 </Button>
                             }
                         />
-                        <span className="text-sm text-color-text-neutral-tertiary">
+                        <span className="text-style-body-default-regular text-color-text-neutral-tertiary">
                             Anyone with the link can view
                         </span>
                     </div>
@@ -243,7 +244,7 @@ function ShareSearchDialog({
                         onClick={onDownloadPdf}
                         prefixIcon="DocumentDownload"
                         size="extraSmall"
-                        className="w-full justify-center sm:w-auto self-start"
+                        className="w-full justify-center sm:w-auto self-start text-style-label-title-regular"
                     >
                         Download as PDF
                     </Button>
