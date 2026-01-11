@@ -13,6 +13,7 @@ export interface DropdownOption {
   subtext?: string;
   leadingIcon?: React.ReactNode;
   trailingAccessory?: React.ReactNode;
+  className?: string;
 }
 
 // Define the props for the main Dropdown
@@ -85,6 +86,7 @@ export const Dropdown = ({
               onChange(option.value);
               setSearchTerm("");
             }}
+            className={option.className}
           />
         ))
       ) : (
