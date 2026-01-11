@@ -75,12 +75,10 @@ export function JudgmentTile({
                 </span>
             </div>
 
-            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <button className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors text-color-icon-neutral-default">
-                            <IconButton size="medium" icon="Add" className="bg-transparent" variant={'neutral'} />
-                        </button>
+                        <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
                         <ContextActionMenu
