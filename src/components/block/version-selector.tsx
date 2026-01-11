@@ -53,7 +53,7 @@ export function VersionSelector({
                 <div
                     className={cn(
                         "group flex items-center justify-between gap-2 p-1 rounded-lg cursor-pointer transition-all duration-200 select-none",
-                        "text-sm font-medium text-color-text-neutral-default",
+                        "text-style-label-title-regular text-color-text-neutral-default",
                         "hover:bg-color-surface-neutral-hover_default",
                         open ? "bg-color-surface-neutral-hover_default" : "bg-transparent",
                         className

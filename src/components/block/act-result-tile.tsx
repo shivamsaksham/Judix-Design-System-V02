@@ -4,8 +4,10 @@ import * as React from "react";
 import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ContextActionMenu } from "./context-action-menu";
+import { IconButton } from "../ui";
 
 export interface ActResultTileProps {
     title: string;
@@ -58,10 +60,10 @@ export function ActResultTile({
         )}>
 
             <div className="flex flex-col gap-1 pr-8">
-                <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1 text-sm">
+                <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
                     {title}
                 </h3>
-                <span className="text-color-text-neutral-tertiary text-style-label-default-regular text-xs">
+                <span className="text-color-text-neutral-tertiary text-style-label-default-regular">
                     {section}
                 </span>
             </div>
@@ -70,7 +72,7 @@ export function ActResultTile({
             <p
                 ref={descriptionRef}
                 className={cn(
-                    "text-color-text-neutral-default text-sm",
+                    "text-style-textblock-primary-subtext-regular text-color-color-text-neutral-default",
                     !expanded && "line-clamp-3"
                 )}>
                 {description}
@@ -79,26 +81,26 @@ export function ActResultTile({
 
             <div className="flex items-center gap-2">
                 {showReadMore && (
-                    <Button
-                        variant="neutral"
-                        size="extraSmall"
-                        className="h-6 px-2 bg-label-color-neutral-bg hover:bg-color-surface-neutral-hover_default font-medium"
+                    <Label
+                        colorScheme="neutral"
+                        size="small"
+                        className="cursor-pointer"
                         onClick={() => setExpanded(!expanded)}
-                        suffixIcon="ArrowDown"
-                        iconClassName={cn("transition-transform duration-200", expanded && "rotate-180")}
                     >
-                        {expanded ? "Show less" : "Read more"}
-                    </Button>
+                        <span className="flex items-center gap-1">
+                            {expanded ? "Show less" : "Read more"}
+                            <Icon name="ArrowDown" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
+                        </span>
+                    </Label>
                 )}
-
-                <Button
-                    variant="primary"
-                    size="extraSmall"
-                    className="h-6 px-2 bg-label-color-primary-bg border text-label-color-primary-text"
+                <Label
+                    colorScheme="primary"
+                    size="small"
+                    className="cursor-pointer"
                     onClick={onViewDetails}
                 >
                     View Details
-                </Button>
+                </Label>
             </div>
 
 
@@ -106,7 +108,7 @@ export function ActResultTile({
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <button className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors text-color-icon-neutral-default">
-                            <Icon name="Add" className="w-5 h-5" />
+                            <IconButton size="medium" icon="Add" className="bg-transparent" variant={'neutral'} />
                         </button>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">

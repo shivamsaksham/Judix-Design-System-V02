@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ContextActionMenu } from "./context-action-menu";
+import { IconButton } from "../ui";
 
 export interface JudgmentTileProps {
     title: string;
@@ -61,7 +62,7 @@ export function JudgmentTile({
                 </Label>
             </div>
 
-            <p className="text-color-text-neutral-default text-sm">
+            <p className="text-color-text-neutral-default text-style-textblock-secondary-subtext-regular">
                 {description}
             </p>
 
@@ -69,7 +70,7 @@ export function JudgmentTile({
                 <Label colorScheme="neutral" className="h-6 px-2 rounded-md bg-white border border-color-border-neutral-default text-color-label-color-neutral-text">
                     {year}
                 </Label>
-                <span className="text-color-text-neutral-tertiary text-sm">
+                <span className="text-color-text-neutral-tertiary text-style-label-default-regular">
                     {court}
                 </span>
             </div>
@@ -78,7 +79,7 @@ export function JudgmentTile({
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <button className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors text-color-icon-neutral-default">
-                            <Icon name="Add" className="w-5 h-5" />
+                            <IconButton size="medium" icon="Add" className="bg-transparent" variant={'neutral'} />
                         </button>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">

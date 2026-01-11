@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
-import { Badge } from "../ui/badge";
+import { Label } from "../ui/label";
 import { Dropdown } from "../ui/dropdown";
 
 export interface ContextActionMenuProps {
@@ -34,9 +34,9 @@ export function ContextActionMenu({
             title: "Add to context",
             value: "add",
             trailingAccessory: isAdded ? (
-                <Badge variant="secondary" className="h-5 px-1 text-xs font-normal bg-label-color-primary-selected text-label-color-primary-selectedtext border-label-color-primary-stroke">
+                <Label colorScheme="primary" selected={true} size="small" className="w-[61px] h-[24px] px-2">
                     Added
-                </Badge>
+                </Label>
             ) : undefined
         },
         {
@@ -59,7 +59,7 @@ export function ContextActionMenu({
 
     return (
         <div className={cn(
-            "flex flex-col w-[200px] bg-dropdown-color-bg rounded-xl border border-dropdown-color-stroke overflow-hidden",
+            "flex flex-col w-[216px] bg-dropdown-color-bg rounded-xl border border-dropdown-color-stroke overflow-hidden",
             className
         )}>
             <Dropdown
@@ -71,7 +71,7 @@ export function ContextActionMenu({
                     if (val === "mention") handleMention();
                 }}
                 searchbar="off"
-                className="w-full border-none shadow-none items-center"
+                className="w-full border-none shadow-none items-center text-style-body-default-regular"
             />
         </div>
     );

@@ -83,7 +83,7 @@ export function SearchSection({
 
 
             <div className="flex items-center justify-between">
-                <h2 className="text-base font-medium text-color-text-neutral-default">
+                <h2 className="text-style-body-title-regular text-color-text-neutral-default">
                     {title}
                 </h2>
 
