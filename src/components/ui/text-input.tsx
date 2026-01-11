@@ -108,6 +108,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
         )}
         <div className={cn(inputVariants({ variant: currentVariant, className }), {
           "border-textinput-color-stroke-focus": isFocused && !showError && !props.disabled,
+          "flex-wrap h-auto gap-2": hasLabels && showLabelsInline,
         })}>
           {leadingIcon && (
             <div className={cn("flex items-center", {
@@ -143,6 +144,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 "pl-3": leadingIcon,
                 "pr-3": trailingAccessory,
                 "pl-2": hasLabels && showLabelsInline,
+                "min-w-[120px] h-6 py-0": hasLabels && showLabelsInline,
               }
             )}
             onFocus={handleFocus}
