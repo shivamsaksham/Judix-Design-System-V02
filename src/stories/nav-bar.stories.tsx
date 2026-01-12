@@ -1,0 +1,33 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import NavBar from '@/components/block/nav-bar';
+
+const meta: Meta<typeof NavBar> = {
+    title: 'Block/NavBar',
+    component: NavBar,
+    tags: ['autodocs'],
+    parameters: {
+        layout: 'fullscreen',
+    },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+    args: {
+        onIndependentClick: () => console.log('Independent clicked'),
+        onContextClick: () => console.log('Context clicked'),
+        onShareClick: () => console.log('Share clicked'),
+        onMenuClick: () => console.log('Menu clicked'),
+    },
+};
+
+export const WithCustomClass: Story = {
+    args: {
+        className: 'shadow-lg',
+        onIndependentClick: () => console.log('Independent clicked'),
+        onContextClick: () => console.log('Context clicked'),
+        onShareClick: () => console.log('Share clicked'),
+        onMenuClick: () => console.log('Menu clicked'),
+    },
+};
