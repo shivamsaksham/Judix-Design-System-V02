@@ -1,8 +1,7 @@
-import DropdownDemo from "@/components/examples/dropdown-demo";
+import NavBar  from "@/components/block/nav-bar";
 
-import HistorySidebarDemo from "@/components/examples/history-sidebar-demo";
 export default function App() {
   return (
-    <HistorySidebarDemo />
-  );
+    <NavBar /> 
+ );
 }

@@ -36,7 +36,7 @@ function AlertCard({ onButtonClick = () => { }, hideAble = true, children }: Ale
           <Icon name="Danger"></Icon>
           Alert
         </CardTitle>
-        <CardAction className='hover:cursor-pointer' onClick={hideAlert} ><Icon name="Cross"></Icon></CardAction>
+        <CardAction className='hover:cursor-pointer' onClick={hideAlert} ><Icon name="Cross" className='w-5 h-5 relative'></Icon></CardAction>
       </CardHeader>
 
       <CardContent>

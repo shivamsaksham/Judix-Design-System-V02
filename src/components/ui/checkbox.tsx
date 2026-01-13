@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 type Size = "large" | "medium" | "small" | "extraSmall"
 
 export const checkboxVariants = cva(
-  "peer shrink-0 border outline-none transition-all disabled:cursor-not-allowed flex items-center justify-center rounded-checkbox-border-radius-default checkbox-border-weight-default text-checkbox-color-primary-tick",
+  "peer shrink-0 border outline-none transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center rounded-checkbox-border-radius-default checkbox-border-weight-default text-checkbox-color-primary-tick",
   {
     variants: {
       variant: {

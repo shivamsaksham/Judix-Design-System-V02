@@ -19,7 +19,7 @@ export interface DropdownOption {
 // Define the props for the main Dropdown
 export interface DropdownProps {
   options: DropdownOption[];
-  value: string | string[] | null;
+  value: string | null;
   onChange: (value: string) => void;
   searchbar?: "attached" | "integrated" | "off";
   placeholder?: string;
@@ -81,7 +81,7 @@ export const Dropdown = ({
             subtext={option.subtext}
             prefixSlot={option.leadingIcon}
             suffixSlot={option.trailingAccessory}
-            selected={Array.isArray(value) ? value.includes(option.value) : value === option.value}
+            selected={value === option.value}
             onClick={() => {
               onChange(option.value);
               setSearchTerm("");
