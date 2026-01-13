@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from "@/components/ui/card";
+import { TableRow } from './table-row';
 
 export interface CaseCitedData {
   citationNumber: string;
@@ -18,49 +19,31 @@ export interface CasesCitedProps {
   className?: string;
 }
 
-const Row = ({ 
-  citationNumber, 
-  judicialConsideration, 
-  caseLaw, 
-  isLast, 
-  isHeader 
-}: { 
-  citationNumber: React.ReactNode; 
-  judicialConsideration: React.ReactNode; 
-  caseLaw: React.ReactNode; 
-  isLast?: boolean; 
-  isHeader?: boolean 
-}) => (
-  <div className={cn("grid grid-cols-[auto_auto_1fr] border-b border-color-border-neutral-default last:border-0", isLast && "border-b-0")}>
-    <div className={cn("border-r border-color-border-neutral-default pl-2 pt-2 pb-2 text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default min-w-50", isHeader && "text-style-textblock-secondary-bodytext-emphasis")}>
-      <div className="p-1">{citationNumber}</div>
-    </div>
-    <div className={cn("border-r border-color-border-neutral-default pl-2 pt-2 pb-2 text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default min-w-60", isHeader && "text-style-textblock-secondary-bodytext-emphasis")}>
-      <div className="p-1">{judicialConsideration}</div>
-    </div>
-    <div className={cn("p-2 pr-6 text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default max-w-[310px] overflow-hidden", isHeader && "text-style-textblock-secondary-bodytext-emphasis")}>
-      <div className="p-1 truncate">{caseLaw}</div>
-    </div>
-  </div>
-);
-
 export function CasesCited({ data, headers, className }: CasesCitedProps) {
   return (
     <div className={cn("w-full max-w-4xl bg-color-surface-neutral-default p-2", className)}>
       <Card className="rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0">
         <CardContent>
-          <Row 
-            citationNumber={headers.citationNumber} 
-            judicialConsideration={headers.judicialConsideration} 
-            caseLaw={headers.caseLaw} 
+          <TableRow 
+            columns={[
+              { content: headers.citationNumber, minWidth: "min-w-50" },
+              { content: headers.judicialConsideration, minWidth: "min-w-60" },
+              { content: headers.caseLaw, maxWidth: "max-w-[310px]", className: "pr-6 overflow-hidden" }
+            ]}
             isHeader 
           />
           {data.map((item, index) => (
-            <Row 
-              key={index} 
-              citationNumber={item.citationNumber} 
-              judicialConsideration={item.judicialConsideration} 
-              caseLaw={item.caseLaw} 
+            <TableRow 
+              key={index}
+              columns={[
+                { content: item.citationNumber, minWidth: "min-w-50" },
+                { content: item.judicialConsideration, minWidth: "min-w-60" },
+                { 
+                  content: <div className="truncate">{item.caseLaw}</div>, 
+                  maxWidth: "max-w-[310px]", 
+                  className: "pr-6 overflow-hidden" 
+                }
+              ]}
               isLast={index === data.length - 1} 
             />
           ))}
