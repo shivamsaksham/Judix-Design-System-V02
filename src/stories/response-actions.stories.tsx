@@ -67,7 +67,7 @@ export const Interactive: Story = {
                     onRefresh={() => console.log('Refreshed')}
                     onCopy={handleCopy}
                 />
-                <div className="text-sm text-gray-600 text-center">
+                <div className="text-center">
                     {copyText === 'Copied!' && <span className="text-green-600">{copyText}</span>}
                 </div>
             </div>

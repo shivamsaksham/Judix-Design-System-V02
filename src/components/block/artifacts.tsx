@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from 'judix-icon';
+import { DocumentTextB } from '@judix/icon';
 import { Label } from '@/components/ui/label';
 
 export interface ArtifactsProps {
@@ -21,7 +21,7 @@ export const Artifacts = ({
 }: ArtifactsProps) => {
 
     return (
-        <div className={cn('inline-block', className)}>
+        <div className={cn('inline-block cursor-pointer', className)}>
             {isResult && (
                 <div className="mb-1">
                     <Label colorScheme="neutral" size="medium" className='bg-label-color-neutral-hover'>
@@ -53,8 +53,8 @@ export const Artifacts = ({
 
                     {/* Icon */}
                     <div className="flex-shrink-0 m-auto">
-                        <Icon
-                            name="DocumentText"
+                        <DocumentTextB
+                            color='color-icon-neutral-tertiary'
                             className="w-8 h-8 text-color-icon-neutral-tertiary"
                         />
                     </div>

@@ -27,12 +27,10 @@ export const UserQuery = ({
 
     useEffect(() => {
         if (isEditing && textareaRef.current) {
-            // Set initial text content only when entering edit mode
             if (textareaRef.current.textContent !== editedQuery) {
                 textareaRef.current.textContent = editedQuery;
             }
             textareaRef.current.focus();
-            // Move cursor to end of text
             const range = document.createRange();
             const selection = window.getSelection();
             if (textareaRef.current.childNodes.length > 0) {
@@ -43,8 +41,19 @@ export const UserQuery = ({
                 selection?.removeAllRanges();
                 selection?.addRange(range);
             }
+
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') {
+                    handleCancel();
+                }
+            };
+
+            textareaRef.current.addEventListener('keydown', handleKeyDown);
+            return () => {
+                textareaRef.current?.removeEventListener('keydown', handleKeyDown);
+            };
         }
-    }, [isEditing]);
+    }, [isEditing])
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {
@@ -76,8 +85,8 @@ export const UserQuery = ({
     return (
         <div
             className={cn(
-                'relative border-b',
-                'border-l-color-border-primary-default border-b-color-border-neutral-default',
+                'relative border-b text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default',
+                'border-l-color-border-primary-default border-b-color-border-neutral-default  ',
                 'transition-all duration-200',
                 className
             )}
@@ -96,7 +105,6 @@ export const UserQuery = ({
                         {isEditable && (
                             <div
                                 className={cn(
-                                    'text-style-textblock-secondary-bodytext-largetext-emphasis text-color-text-neutral-default',
                                     'absolute bottom-0 right-0 flex items-center gap-4 p-2 transition-opacity duration-200 mr-2',
                                     isHovered ? 'opacity-100' : 'opacity-0'
                                 )}
