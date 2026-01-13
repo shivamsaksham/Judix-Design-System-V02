@@ -1,7 +1,8 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { showToast } from '@/components/ui/toast';
 
 export interface ResponseActionsProps {
     onDislike?: () => void;
@@ -11,6 +12,7 @@ export interface ResponseActionsProps {
     className?: string;
     isLiked?: boolean;
     isDisliked?: boolean;
+    contentToCopy?: string;
 }
 
 export const ResponseActions = ({
@@ -19,9 +21,61 @@ export const ResponseActions = ({
     onRefresh,
     onCopy,
     className,
-    isLiked = false,
-    isDisliked = false,
+    isLiked: externalIsLiked,
+    isDisliked: externalIsDisliked,
+    contentToCopy,
 }: ResponseActionsProps) => {
+    const [internalIsLiked, setInternalIsLiked] = useState(false);
+    const [internalIsDisliked, setInternalIsDisliked] = useState(false);
+
+    // Use external state if provided, otherwise use internal state
+    const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
+    const isDisliked = externalIsDisliked !== undefined ? externalIsDisliked : internalIsDisliked;
+
+    const handleLike = () => {
+        if (onLike) {
+            onLike();
+        } else {
+            setInternalIsLiked(!internalIsLiked);
+            if (internalIsDisliked) setInternalIsDisliked(false);
+        }
+    };
+
+    const handleDislike = () => {
+        if (onDislike) {
+            onDislike();
+        } else {
+            setInternalIsDisliked(!internalIsDisliked);
+            if (internalIsLiked) setInternalIsLiked(false);
+        }
+    };
+
+    const handleCopy = async () => {
+        if (onCopy) {
+            onCopy();
+        } else {
+            try {
+                if (contentToCopy) {
+                    await navigator.clipboard.writeText(contentToCopy);
+                    showToast.success('Copied to clipboard');
+                } else {
+                    showToast.alert('No content to copy');
+                }
+            } catch (error) {
+                showToast.alert('Failed to copy');
+            }
+        }
+    };
+
+    const handleRefresh = () => {
+        if (onRefresh) {
+            onRefresh();
+        } else {
+            // Default behavior: just log (parent should handle actual refresh)
+            console.log('Refresh clicked - implement refresh logic in parent component');
+        }
+    };
+
     return (
         <div
             className={cn(
@@ -32,7 +86,7 @@ export const ResponseActions = ({
         >
             {/* Dislike Button */}
             <Button
-                onClick={onDislike}
+                onClick={handleDislike}
                 variant="neutral"
                 size="small"
                 prefixIcon="Dislike"
@@ -46,7 +100,7 @@ export const ResponseActions = ({
 
             {/* Like Button */}
             <Button
-                onClick={onLike}
+                onClick={handleLike}
                 variant="neutral"
                 size="small"
                 prefixIcon="Like1"
@@ -60,7 +114,7 @@ export const ResponseActions = ({
 
             {/* Refresh Button */}
             <Button
-                onClick={onRefresh}
+                onClick={handleRefresh}
                 variant="neutral"
                 size="small"
                 prefixIcon="Refresh2"
@@ -71,7 +125,7 @@ export const ResponseActions = ({
 
             {/* Copy Button */}
             <Button
-                onClick={onCopy}
+                onClick={handleCopy}
                 variant="neutral"
                 size="small"
                 prefixIcon="Copy"

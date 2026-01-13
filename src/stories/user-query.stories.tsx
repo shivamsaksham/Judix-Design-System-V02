@@ -109,13 +109,13 @@ export const Interactive: Story = {
                     onCopy={handleCopy}
                 />
                 {copyMessage && (
-                    <p className="text-sm text-color-text-feedback-success-default">
+                    <p className="">
                         {copyMessage}
                     </p>
                 )}
                 <div className="mt-4 p-4 bg-color-surface-neutral-hover_default rounded-lg">
-                    <p className="text-sm text-color-text-neutral-secondary mb-2">Current Query:</p>
-                    <p className="text-sm text-color-text-neutral-default">{query}</p>
+                    <p className=" text-color-text-neutral-secondary mb-2">Current Query:</p>
+                    <p className=" text-color-text-neutral-default">{query}</p>
                 </div>
             </div>
         );
