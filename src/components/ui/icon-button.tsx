@@ -26,6 +26,8 @@ const iconButtonVariants = cva(
       size: {
         large: "h-10 w-10 p-2",
         medium: "h-[34px] w-[34px] p-2",
+        small: "h-7 w-7 p-1.5",
+        extraSmall: "h-6 w-6 p-1",
       },
     },
     defaultVariants: {
@@ -38,29 +40,29 @@ const iconButtonVariants = cva(
 )
 
 const iconVariants = cva("", {
-    variants: {
-        size: {
-            large: "h-6 w-6",
-            medium: "h-5 w-5",
-            small: "h-4 w-4",
-            extraSmall: "h-3.5 w-3.5",
-        }
-    },
-    defaultVariants: {
-        size: "medium"
+  variants: {
+    size: {
+      large: "h-6 w-6",
+      medium: "h-5 w-5",
+      small: "h-4 w-4",
+      extraSmall: "h-3.5 w-3.5",
     }
+  },
+  defaultVariants: {
+    size: "medium"
+  }
 })
 
 export interface IconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof iconButtonVariants> {
+  VariantProps<typeof iconButtonVariants> {
   icon: IconProps["name"]
   asChild?: boolean
   iconClassName?: string
 }
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ className, variant, size, corner , boundary, asChild = false, icon, iconClassName, ...props }, ref) => {
+  ({ className, variant, size, corner, boundary, asChild = false, icon, iconClassName, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
@@ -68,7 +70,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         {...props}
       >
-        <Icon name={icon} className={cn(iconVariants({size}), iconClassName)} />
+        <Icon name={icon} className={cn(iconVariants({ size }), iconClassName)} />
       </Comp>
     )
   }
