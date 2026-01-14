@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import React from 'react';
 import { HistoryTile, type HistoryTileProps } from '@/components/block/history-tile';
 
 const meta: Meta<typeof HistoryTile> = {
@@ -10,7 +11,7 @@ const meta: Meta<typeof HistoryTile> = {
     },
     decorators: [
         (Story) => (
-            <div className="p-4 bg-dropdown-color-bg w-[300px] rounded-lg border border-dropdown-color-stroke">
+            <div>
                 <Story />
             </div>
         ),
@@ -48,6 +49,18 @@ export const ShortText: Story = {
     args: {
         title: 'Hello',
     },
+};
+
+export const Hovered: Story = {
+    render: () => (
+        <div className="[&_button]:!opacity-100 [&_button]:!block">
+            <HistoryTile
+                title="Anticipatory bail in domestic violence cases"
+                onClick={() => console.log('Tile clicked')}
+                onMenuClick={() => console.log('Menu clicked')}
+            />
+        </div>
+    ),
 };
 
 export const MultipleTiles: Story = {

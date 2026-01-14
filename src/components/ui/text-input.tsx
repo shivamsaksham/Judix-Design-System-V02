@@ -43,7 +43,7 @@ const inputFieldVariants = cva(
 export interface TextInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
   VariantProps<typeof inputVariants> {
-  label: string
+  label?: string
   helperText?: string
   errorMessage?: string
   leadingIcon?: React.ReactNode
