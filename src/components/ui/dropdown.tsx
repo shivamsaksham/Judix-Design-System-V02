@@ -72,7 +72,7 @@ export const Dropdown = ({
   };
 
   const renderOptions = () => (
-    <div className="space-y-1 max-h-60 overflow-y-auto ">
+    <div className="space-y-1 max-h-60 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {filteredOptions.length > 0 ? (
         filteredOptions.map(option => (
           <Option
