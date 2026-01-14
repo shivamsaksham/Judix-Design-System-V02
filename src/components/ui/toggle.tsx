@@ -36,7 +36,7 @@ const frameVariants = cva(
         primary: "bg-white",
         neutral: "bg-white",
         destructive: "bg-white",
-      },  
+      },
       size: {
         large: "rounded-full w-5.5 h-5.5",
         medium: "rounded-full w-4.5 h-4.5",
@@ -52,15 +52,15 @@ const frameVariants = cva(
 
 export interface SwitchProps
   extends React.ComponentProps<typeof SwitchPrimitive.Root>,
-    VariantProps<typeof toggleVariants> {
-      varient?: "primary" | "neutral"
-      size?: "large" | "medium" | "small"
-    }
+  VariantProps<typeof toggleVariants> {
+  varient?: "primary" | "neutral"
+  size?: "large" | "medium" | "small"
+}
 
 
 function Toggle({
-    variant,
-    size,
+  variant,
+  size,
   className,
   ...props
 }: SwitchProps) {
@@ -68,16 +68,16 @@ function Toggle({
     <SwitchPrimitive.Root
       data-slot="switch"
       className={cn(
-        toggleVariants({variant, size}),
+        toggleVariants({ variant, size }),
         className
       )}
       {...props}
     >
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
-        className={cn(frameVariants({variant, size}),
-        className
-    )}{...props}
+        className={cn(frameVariants({ variant, size }),
+          className
+        )}{...props}
       />
     </SwitchPrimitive.Root>
   )

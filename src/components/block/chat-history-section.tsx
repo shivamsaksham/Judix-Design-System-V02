@@ -8,20 +8,26 @@ export interface ChatItem {
     onClick?: () => void;
 }
 
-export interface ChatSectionProps {
+export interface ChatHistorySectionProps {
     chatHistory: ChatItem[];
     activeChatId: string | null | undefined;
     onMenuClick: (chatId: string, event: React.MouseEvent) => void;
     className?: string;
 }
 
-export const ChatSection = ({ chatHistory, activeChatId, onMenuClick, className }: ChatSectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className }: ChatHistorySectionProps) => {
+
     return (
-        <div className={`flex-1 flex flex-col p-1 mt-2 ${className || ''}`}>
-            <h3 className="p-3 text-style-body-default-emphasis text-color-text-neutral-tertiary opacity-60 mb-1">
+        <div className={`flex flex-col h-full ${className || ''}`}>
+            {/* Fixed Heading */}
+            <h3 className="flex-shrink-0 p-3 text-style-body-default-emphasis text-color-text-neutral-tertiary opacity-60">
                 Chats
             </h3>
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
+
+            {/* Scrollable Content */}
+            <div
+                className="flex-1 overflow-y-auto p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
                 {chatHistory.map((chat) => (
                     <HistoryTile
                         key={chat.id}
