@@ -17,7 +17,6 @@ export type JudgementDetailsProps = {
   className?: string;
 };
 
-
 function JudgementDetails({
   caseTitle,
   status,
@@ -28,8 +27,10 @@ function JudgementDetails({
   className,
 }: JudgementDetailsProps) {
   return (
-    <div className="flex w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
-    rounded-modal bg-color-surface-neutral-default">
+    <div
+      className="flex w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
+    rounded-modal bg-color-surface-neutral-default"
+    >
       {/* main */}
       <div className="flex flex-col items-start gap-4 flex-1 self-stretch">
         {/* Frame 6083 */}
@@ -42,8 +43,10 @@ function JudgementDetails({
 
             <div className="flex p-1 content-center items-center gap-2 self-stretch">
               {/* Frame 6071 */}
-              <p className="flex-1 line-clamp-1 overflow-hidden text-ellipsis 
-              text-color-text-neutral-default text-style-body-title-regular">
+              <p
+                className="flex-1 line-clamp-1 overflow-hidden text-ellipsis 
+              text-color-text-neutral-default text-style-body-title-regular"
+              >
                 {caseTitle}
               </p>
             </div>
@@ -51,33 +54,48 @@ function JudgementDetails({
             <div className="flex items-center gap-1">
               {/* Frame 5968 */}
 
-              {status && <Label 
-                size="medium" 
-                color="neutral" 
-                className="flex h-8 items-center justify-center gap-2 px-3 py-2 
+              {status && (
+                <Label
+                  size="medium"
+                  color="neutral"
+                  className="flex h-8 items-center justify-center gap-2 px-3 py-2 
                 rounded-label-border-radius-default label-border-weight-default 
                 border-color-border-feedback-error-strong bg-color-label-color-neutral-bg"
-              >
-                <p className="text-color-text-feedback-error-default text-style-body-default-regular">{status}</p>
-              </Label>}
-              
+                >
+                  <p className="text-color-text-feedback-error-default text-style-body-default-regular">
+                    {status}
+                  </p>
+                </Label>
+              )}
+
               {/* TODO: Add Correct Icons Names from the new icon pack*/}
-              <Icon name="Export2" color="neutral" 
+              <Icon
+                name="Export2"
+                color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default" />
+                aspect-square rounded-icon_button-border-radius-default"
+              />
 
-              <Icon name="Export2" color="neutral" 
+              <Icon
+                name="Export2"
+                color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default" />
+                aspect-square rounded-icon_button-border-radius-default"
+              />
 
-              <Icon name="Export2" color="neutral" 
+              <Icon
+                name="Export2"
+                color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default" />
-                
-              <Icon name="Export2" color="neutral" 
-                className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default" />
+                aspect-square rounded-icon_button-border-radius-default"
+              />
 
+              <Icon
+                name="Export2"
+                color="neutral"
+                className="flex w-8 h-8 items-center gap-2 p-2 
+                aspect-square rounded-icon_button-border-radius-default"
+              />
             </div>
           </div>
 
@@ -88,26 +106,18 @@ function JudgementDetails({
 
         <div className="flex items-start gap-2 flex-1 self-stretch">
           {/* Frame 6082 */}
-          {contentSections && (
-            <ContentTree sections={contentSections} />
-          )}
+          {contentSections && <ContentTree sections={contentSections} />}
 
           <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default">
-  {content ? (
-    content.map((section) => (
-      <div key={section.title}>
-        {/* future content rendering */}
-      </div>
-    ))
-  ) : (
-    <p>
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-    </p>
-  )}
-</main>
-
+            {content ? (
+              content.map((section) => (
+                <div key={section.title}>{/* future content rendering */}</div>
+              ))
+            ) : (
+              <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+            )}
+          </main>
         </div>
-
       </div>
     </div>
   );

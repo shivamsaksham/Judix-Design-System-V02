@@ -34,9 +34,7 @@ function ScoreBox({ title, score, subtitle }: ScoreBoxProps) {
                     aspect-square text-color-icon-primary-default"  />
                 </div>
             </div>
-
-
-
+            
             <div className="flex p-1 content-center items-center gap-2">
                 {/* 5971 */}
                 <p className="text-color-color-text-neutral-secondary text-style-label-title-regular">{subtitle}</p>
