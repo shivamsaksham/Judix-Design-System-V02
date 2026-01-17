@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ChatSection } from '@/components/block/chat-section';
+import { ChatHistorySection } from '@/components/block/chat-history-section';
 
 const meta = {
     title: 'Block/Chat Section',
-    component: ChatSection,
+    component: ChatHistorySection,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof ChatSection>;
+} satisfies Meta<typeof ChatHistorySection>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -30,7 +30,7 @@ export const Default: Story = {
     },
     render: (args) => (
         <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
-            <ChatSection {...args} />
+            <ChatHistorySection {...args} />
         </div>
     ),
 };
@@ -43,7 +43,7 @@ export const Empty: Story = {
     },
     render: (args) => (
         <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
-            <ChatSection {...args} />
+            <ChatHistorySection {...args} />
         </div>
     ),
 };
@@ -60,7 +60,7 @@ export const ManyChats: Story = {
     },
     render: (args) => (
         <div className="w-[280px] h-[400px] bg-dropdown-color-bg rounded-lg border border-dropdown-color-stroke">
-            <ChatSection {...args} />
+            <ChatHistorySection {...args} />
         </div>
     ),
 };

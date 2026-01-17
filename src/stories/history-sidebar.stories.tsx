@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useState } from 'react';
 import { HistorySidebar, type HistorySidebarProps } from '@/components/block/history-sidebar';
 
 const sampleChatHistory: HistorySidebarProps['chatHistory'] = [
@@ -108,5 +109,79 @@ export const Collapsed: Story = {
 export const Expanded: Story = {
     args: {
         isExpanded: true,
+    },
+};
+
+export const SideBySide: Story = {
+    render: () => (
+        <div className="flex gap-4 p-4">
+            {/* Collapsed Version */}
+            <div className="flex flex-col">
+                <h3 className="text-sm font-semibold mb-2 text-gray-700">Collapsed</h3>
+                <HistorySidebar
+                    chatHistory={sampleChatHistory}
+                    usageStats={sampleUsageStats}
+                    userProfile={sampleUserProfile}
+                    activeChatId="2"
+                    isExpanded={false}
+                    onNewChat={() => console.log('New Chat clicked')}
+                    onNotes={() => console.log('Notes clicked')}
+                    onProjects={() => console.log('Projects clicked')}
+                    onResetChat={() => console.log('Reset Chat clicked')}
+                    onUpgrade={() => console.log('Upgrade clicked')}
+                    onRename={(id) => console.log('Rename chat:', id)}
+                    onShare={(id) => console.log('Share chat:', id)}
+                    onDelete={(id) => console.log('Delete chat:', id)}
+                />
+            </div>
+
+            {/* Expanded Version */}
+            <div className="flex flex-col">
+                <h3 className="text-sm font-semibold mb-2 text-gray-700">Expanded</h3>
+                <HistorySidebar
+                    chatHistory={sampleChatHistory}
+                    usageStats={sampleUsageStats}
+                    userProfile={sampleUserProfile}
+                    activeChatId="2"
+                    isExpanded={true}
+                    onNewChat={() => console.log('New Chat clicked')}
+                    onNotes={() => console.log('Notes clicked')}
+                    onProjects={() => console.log('Projects clicked')}
+                    onResetChat={() => console.log('Reset Chat clicked')}
+                    onUpgrade={() => console.log('Upgrade clicked')}
+                    onRename={(id) => console.log('Rename chat:', id)}
+                    onShare={(id) => console.log('Share chat:', id)}
+                    onDelete={(id) => console.log('Delete chat:', id)}
+                />
+            </div>
+        </div>
+    ),
+};
+
+export const Interactive: Story = {
+    render: () => {
+        const [activeChatId, setActiveChatId] = useState<string>('2');
+
+        const interactiveChatHistory = sampleChatHistory.map(chat => ({
+            ...chat,
+            onClick: () => setActiveChatId(chat.id),
+        }));
+
+        return (
+            <HistorySidebar
+                chatHistory={interactiveChatHistory}
+                usageStats={sampleUsageStats}
+                userProfile={sampleUserProfile}
+                activeChatId={activeChatId}
+                onNewChat={() => console.log('New Chat clicked')}
+                onNotes={() => console.log('Notes clicked')}
+                onProjects={() => console.log('Projects clicked')}
+                onResetChat={() => console.log('Reset Chat clicked')}
+                onUpgrade={() => console.log('Upgrade clicked')}
+                onRename={(id) => console.log('Rename chat:', id)}
+                onShare={(id) => console.log('Share chat:', id)}
+                onDelete={(id) => console.log('Delete chat:', id)}
+            />
+        );
     },
 };
