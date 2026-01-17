@@ -8,23 +8,33 @@ export type ContentTreeSection = {
 
 export type ContentTreeProps = {
   sections: ContentTreeSection[];
+  activeItem?: string;
+  onItemClick?: (sectionTitle: string, item: string) => void;
   className?: string;
 };
 
-function ContentTree({ sections, className }: ContentTreeProps) {
+function ContentTree({
+  sections,
+  activeItem,
+  onItemClick,
+  className,
+}: ContentTreeProps) {
   return (
     <div
       className={cn(
         `inline-flex w-[175px] flex-col items-end gap-2 pr-2 
         border-r-2 border-color-border-neutral-default 
-        bg-color-surface-neutral-default`
+        bg-color-surface-neutral-default`,
       )}
     >
       <div
         className={cn("flex flex-col items-start w-[166px] gap-2", className)}
       >
         {sections.map((section) => (
-          <div className="flex w-[166px] flex-col items-start">
+          <div
+            key={section.title}
+            className="flex w-[166px] flex-col items-start"
+          >
             <div className="flex items-center gap-2 p-1 self-stretch">
               <p className="text-color-text-neutral-default text-style-body-default-regular">
                 {section.title}
@@ -34,21 +44,30 @@ function ContentTree({ sections, className }: ContentTreeProps) {
             <div className="flex p-2 content-end items-center gap-2 self-stretch ">
               <div className="flex ml-auto w-[132px] flex-col items-start gap-1">
                 {/*  tabs  */}
-                {section.items.map((item) => (
-                  <div
-                    key={item}
-                    title={item}
-                    className="flex w-[132px] flex-col items-start gap-2 p-1 
-                    cursor-pointer transition-colors rounded-[4px] 
-                    hover:bg-color-surface-neutral-hover_default"
-                  >
-                    <div className="flex items-center gap-2 p-1 self-stretch">
-                      <p className="p-1 text-color-color-text-neutral-secondary text-style-label-title-regular">
-                        {item}
-                      </p>
+                {section.items.map((item) => {
+                  const isActive = item === activeItem;
+
+                  return (
+                    <div
+                      key={item}
+                      title={item}
+                      onClick={() => onItemClick?.(section.title, item)}
+                      className={cn(
+                        `flex w-[132px] cursor-pointer flex-col items-start gap-2 
+                         rounded-[4px] p-1 transition-colors`,
+                        isActive
+                          ? "bg-color-surface-neutral-hover_default"
+                          : "hover:bg-color-surface-neutral-hover_default",
+                      )}
+                    >
+                      <div className="flex items-center gap-2 p-1 self-stretch">
+                        <p className="p-1 text-color-color-text-neutral-secondary text-style-label-title-regular">
+                          {item}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -85,3 +85,19 @@ export const NarrowContainer: Story = {
     ),
   ],
 };
+
+export const WithActiveItem: Story = {
+  args: {
+    sections: DEFAULT_SECTIONS,
+    activeItem: "Summary",
+  },
+};
+
+export const Clickable: Story = {
+  args: {
+    sections: DEFAULT_SECTIONS,
+    onItemClick: (section, item) => {
+      console.log("Clicked:", section, item);
+    },
+  },
+};
