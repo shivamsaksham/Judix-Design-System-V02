@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 export interface FileBarProps {
     data: FileTreeNodeType[];
     activeId?: string;
-    onSelect?: (node: FileItem) => void;
+    activeIds?: string[];
+    onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
     onCreateNew?: (type: "chat" | "note") => void;
     onEdit?: () => void;
@@ -22,6 +23,7 @@ export interface FileBarProps {
 export function FileBar({
     data,
     activeId,
+    activeIds,
     onSelect,
     className,
     onCreateNew,
@@ -97,6 +99,7 @@ export function FileBar({
                 <FileTree
                     data={data}
                     activeId={activeId}
+                    activeIds={activeIds}
                     onSelect={onSelect}
                     className="p-2"
                 />

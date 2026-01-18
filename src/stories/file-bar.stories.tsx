@@ -117,3 +117,36 @@ export const SelectedItem: Story = {
         className: "w-[400px] h-[600px]  rounded-xl",
     },
 };
+
+export const FolderAndFileSelected: Story = {
+    render: (args) => {
+        const [activeIds, setActiveIds] = React.useState<string[] | undefined>(args.activeIds);
+        return (
+            <FileBar
+                {...args}
+                activeIds={activeIds}
+                onSelect={(node) => {
+                    const newIds = node.type === "folder"
+                        ? [...(activeIds || []).filter(id => id !== node.id), node.id]
+                        : [node.id, ...(activeIds || []).filter(id => !id.includes(node.id) && !node.id.startsWith(id.split('-')[0]))];
+
+                    if (node.type === "folder") {
+                        if (activeIds?.includes(node.id)) {
+                            setActiveIds(activeIds.filter(id => id !== node.id));
+                        } else {
+                            setActiveIds([...(activeIds || []), node.id]);
+                        }
+                    } else {
+                        setActiveIds([...(activeIds || []), node.id]);
+                    }
+                    args.onSelect?.(node);
+                }}
+            />
+        );
+    },
+    args: {
+        data: generateMockData(),
+        activeIds: ["project-1", "project-1-chat-1"],
+        className: "w-[400px] h-[600px] rounded-xl",
+    },
+};
