@@ -1,21 +1,27 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
+export type ContentTreeItem = {
+  id: string;
+  label: string;
+};
+
 export type ContentTreeSection = {
+  id: string;
   title: string;
-  items: string[];
+  items: ContentTreeItem[];
 };
 
 export type ContentTreeProps = {
   sections: ContentTreeSection[];
-  activeItem?: string;
-  onItemClick?: (sectionTitle: string, item: string) => void;
+  activeItemId?: string;
+  onItemClick?: (sectionId: string, itemId: string) => void;
   className?: string;
 };
 
 function ContentTree({
   sections,
-  activeItem,
+  activeItemId,
   onItemClick,
   className,
 }: ContentTreeProps) {
@@ -32,7 +38,7 @@ function ContentTree({
       >
         {sections.map((section) => (
           <div
-            key={section.title}
+            key={section.id}
             className="flex w-[166px] flex-col items-start"
           >
             <div className="flex items-center gap-2 p-1 self-stretch">
@@ -45,13 +51,13 @@ function ContentTree({
               <div className="flex ml-auto w-[132px] flex-col items-start gap-1">
                 {/*  tabs  */}
                 {section.items.map((item) => {
-                  const isActive = item === activeItem;
+                  const isActive = item.id === activeItemId;
 
                   return (
                     <div
-                      key={item}
-                      title={item}
-                      onClick={() => onItemClick?.(section.title, item)}
+                      key={item.id}
+                      title={item.label}
+                      onClick={() => onItemClick?.(section.id, item.id)}
                       className={cn(
                         `flex w-[132px] cursor-pointer flex-col items-start gap-2 
                          rounded-[4px] p-1 transition-colors`,
@@ -62,7 +68,7 @@ function ContentTree({
                     >
                       <div className="flex items-center gap-2 p-1 self-stretch">
                         <p className="p-1 text-color-color-text-neutral-secondary text-style-label-title-regular">
-                          {item}
+                          {item.label}
                         </p>
                       </div>
                     </div>

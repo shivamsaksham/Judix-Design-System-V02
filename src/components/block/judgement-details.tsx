@@ -28,7 +28,7 @@ function JudgementDetails({
 }: JudgementDetailsProps) {
   return (
     <div
-      className="flex w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
+      className="flex w-full max-w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
     rounded-modal bg-color-surface-neutral-default"
     >
       {/* main */}
@@ -102,7 +102,7 @@ function JudgementDetails({
           <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
         </div>
 
-        <hr className="w-[1168px] h-[1px] border-color-border-neutral-default" />
+        <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
 
         <div className="flex items-start gap-2 flex-1 self-stretch">
           {/* Frame 6082 */}
