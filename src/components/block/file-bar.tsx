@@ -77,15 +77,15 @@ export function FileBar({
                     </Button>
 
                     <IconButton
-                        icon="Edit"
-                        size="small"
+                        icon="Edit2"
+                        size="medium"
                         variant="neutral"
                         onClick={onEdit}
                         className="hover:bg-color-surface-neutral-subtle_bg"
                     />
                     <IconButton
                         icon="Trash"
-                        size="small"
+                        size="medium"
                         variant="neutral"
                         onClick={onDelete}
                         className="hover:bg-color-surface-neutral-subtle_bg"
