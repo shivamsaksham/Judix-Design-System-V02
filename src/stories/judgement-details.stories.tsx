@@ -4,23 +4,33 @@ import { ContentTreeSection } from "../components/block/content-tree";
 
 const contentTreeMock: ContentTreeSection[] = [
   {
+    id: "summaries",
     title: "Summaries",
     items: [
-      "Overall summary",
-      "Issue",
-      "Facts",
-      "Arguments",
-      "Reasoning",
-      "Decision",
+      { id: "overall-summary", label: "Overall summary" },
+      { id: "issue", label: "Issue" },
+      { id: "facts", label: "Facts" },
+      { id: "arguments", label: "Arguments" },
+      { id: "reasoning", label: "Reasoning" },
+      { id: "decision", label: "Decision" },
     ],
   },
   {
+    id: "case-data",
     title: "Case data",
-    items: ["Metadata", "Acts & Sections", "Keywords"],
+    items: [
+      { id: "metadata", label: "Metadata" },
+      { id: "acts-sections", label: "Acts & Sections" },
+      { id: "keywords", label: "Keywords" },
+    ],
   },
   {
+    id: "citation-details",
     title: "Citation details",
-    items: ["Metadata", "Cases cited"],
+    items: [
+      { id: "citation-metadata", label: "Metadata" },
+      { id: "cases-cited", label: "Cases cited" },
+    ],
   },
 ];
 
@@ -36,8 +46,6 @@ export default meta;
 
 type Story = StoryObj<typeof JudgementDetails>;
 
-/* ---------------- Default ---------------- */
-
 export const Default: Story = {
   args: {
     caseTitle:
@@ -48,8 +56,6 @@ export const Default: Story = {
     contentSections: contentTreeMock,
   },
 };
-
-/* ---------------- High Score ---------------- */
 
 export const HighScore: Story = {
   args: {
@@ -62,8 +68,6 @@ export const HighScore: Story = {
   },
 };
 
-/* ---------------- Low Score ---------------- */
-
 export const LowScore: Story = {
   args: {
     caseTitle:
@@ -74,8 +78,6 @@ export const LowScore: Story = {
     contentSections: contentTreeMock,
   },
 };
-
-/* ---------------- Without Status ---------------- */
 
 export const WithoutStatus: Story = {
   args: {
@@ -88,22 +90,19 @@ export const WithoutStatus: Story = {
   },
 };
 
-/* ---------------- Long Case Title ---------------- */
-
 export const LongCaseTitle: Story = {
   args: {
-    caseTitle:
-      `State of Maharashtra and Another VS Indian Hotel and Restaurants 
+    caseTitle: `
+      State of Maharashtra and Another VS Indian Hotel and Restaurants 
       Association (AHAR) and Others, along with various interconnected 
-      parties including the Ministry of Consumer Affairs`,
+      parties including the Ministry of Consumer Affairs
+    `,
     status: "Overruled",
     score: "87.75%",
     scoreSubtitle: "Moderately Similar",
     contentSections: contentTreeMock,
   },
 };
-
-/* ---------------- Short Case Title ---------------- */
 
 export const ShortCaseTitle: Story = {
   args: {

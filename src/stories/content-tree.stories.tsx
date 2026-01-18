@@ -1,25 +1,37 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import ContentTree, { type ContentTreeSection } from "@/components/block/content-tree";
+import ContentTree, {
+  type ContentTreeSection,
+} from "@/components/block/content-tree";
 
 const DEFAULT_SECTIONS: ContentTreeSection[] = [
   {
+    id: "summaries",
     title: "Summaries",
     items: [
-      "Summary",
-      "Issue",
-      "Facts",
-      "Arguments",
-      "Reasoning",
-      "Decision",
+      { id: "summary", label: "Summary" },
+      { id: "issue", label: "Issue" },
+      { id: "facts", label: "Facts" },
+      { id: "arguments", label: "Arguments" },
+      { id: "reasoning", label: "Reasoning" },
+      { id: "decision", label: "Decision" },
     ],
   },
   {
+    id: "case-data",
     title: "Case data",
-    items: ["Metadata", "Acts & Sections", "Keywords"],
+    items: [
+      { id: "metadata", label: "Metadata" },
+      { id: "acts-sections", label: "Acts & Sections" },
+      { id: "keywords", label: "Keywords" },
+    ],
   },
   {
+    id: "citation-details",
     title: "Citation details",
-    items: ["Metadata", "Cases cited"],
+    items: [
+      { id: "citation-metadata", label: "Metadata" },
+      { id: "cases-cited", label: "Cases cited" },
+    ],
   },
 ];
 
@@ -58,8 +70,12 @@ export const SingleSection: Story = {
   args: {
     sections: [
       {
+        id: "summaries",
         title: "Summaries",
-        items: ["Overview", "Decision"],
+        items: [
+          { id: "overview", label: "Overview" },
+          { id: "decision", label: "Decision" },
+        ],
       },
     ],
   },
@@ -69,8 +85,12 @@ export const LongContent: Story = {
   args: {
     sections: [
       {
+        id: "summaries",
         title: "Summaries",
-        items: Array.from({ length: 20 }, (_, i) => `Item ${i + 1}`),
+        items: Array.from({ length: 20 }, (_, i) => ({
+          id: `item-${i + 1}`,
+          label: `Item ${i + 1}`,
+        })),
       },
     ],
   },
@@ -89,15 +109,15 @@ export const NarrowContainer: Story = {
 export const WithActiveItem: Story = {
   args: {
     sections: DEFAULT_SECTIONS,
-    activeItem: "Summary",
+    activeItemId: "summary",
   },
 };
 
 export const Clickable: Story = {
   args: {
     sections: DEFAULT_SECTIONS,
-    onItemClick: (section, item) => {
-      console.log("Clicked:", section, item);
+    onItemClick: (sectionId, itemId) => {
+      console.log("Clicked:", sectionId, itemId);
     },
   },
 };
