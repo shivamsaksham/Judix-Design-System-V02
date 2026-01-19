@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { CourtSelector } from "../components/block/court-selector"
-import { useState } from "react"
+import type { Meta, StoryObj } from "@storybook/react";
+import { CourtSelector } from "../components/block/court-selector";
+import { useState } from "react";
 
 const meta: Meta<typeof CourtSelector> = {
     title: "Block/CourtSelector",
@@ -9,10 +9,10 @@ const meta: Meta<typeof CourtSelector> = {
         layout: "centered",
     },
     tags: ["autodocs"],
-}
+};
 
-export default meta
-type Story = StoryObj<typeof CourtSelector>
+export default meta;
+type Story = StoryObj<typeof CourtSelector>;
 
 export const Default: Story = {
     render: () => {
@@ -28,7 +28,7 @@ export const Default: Story = {
             />
         )
     },
-}
+};
 
 export const WithSelection: Story = {
     render: () => {
@@ -47,7 +47,7 @@ export const WithSelection: Story = {
             />
         )
     },
-}
+};
 
 export const AllSelected: Story = {
     render: () => {
@@ -69,4 +69,4 @@ export const AllSelected: Story = {
             />
         )
     },
-}
+};

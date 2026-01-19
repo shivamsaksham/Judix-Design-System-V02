@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { HistorySidebar, type HistorySidebarProps } from '@/components/block/history-sidebar';
 
 const sampleChatHistory: HistorySidebarProps['chatHistory'] = [
