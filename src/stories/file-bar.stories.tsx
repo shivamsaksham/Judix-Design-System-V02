@@ -1,10 +1,11 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { FileTree, FolderItem, FileItem } from "../components/block/file-tree";
+import { FileBar } from "@/components/block/file-bar";
+import { FolderItem, FileItem } from "@/components/block/file-tree";
 
-const meta: Meta<typeof FileTree> = {
-    title: "Block/FileTree",
-    component: FileTree,
+const meta: Meta<typeof FileBar> = {
+    title: "Block/FileBar",
+    component: FileBar,
     parameters: {
         layout: "padded",
     },
@@ -12,7 +13,7 @@ const meta: Meta<typeof FileTree> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof FileTree>;
+type Story = StoryObj<typeof FileBar>;
 
 const generateMockData = (): (FolderItem | FileItem)[] => {
     const createSubFolders = (idPrefix: string) => [
@@ -80,7 +81,7 @@ export const Default: Story = {
     render: (args) => {
         const [activeId, setActiveId] = React.useState<string | undefined>(args.activeId);
         return (
-            <FileTree
+            <FileBar
                 {...args}
                 activeId={activeId}
                 onSelect={(node) => {
@@ -92,7 +93,7 @@ export const Default: Story = {
     },
     args: {
         data: generateMockData(),
-        className: "w-[365px] max-h-[820px] h-full border border-color-border-neutral-default rounded-xl p-2",
+        className: "w-[342px] max-h-[660px] overflow-y-auto",
     },
 };
 
@@ -100,7 +101,7 @@ export const SelectedItem: Story = {
     render: (args) => {
         const [activeId, setActiveId] = React.useState<string | undefined>(args.activeId);
         return (
-            <FileTree
+            <FileBar
                 {...args}
                 activeId={activeId}
                 onSelect={(node) => {
@@ -113,39 +114,22 @@ export const SelectedItem: Story = {
     args: {
         data: generateMockData(),
         activeId: "proj1-chat-1",
-        className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
+        className: "w-[400px] h-[600px]  rounded-xl",
     },
 };
 
-export const SelectedFolder: Story = {
-    render: (args) => {
-        const [activeId, setActiveId] = React.useState<string | undefined>(args.activeId);
-        return (
-            <FileTree
-                {...args}
-                activeId={activeId}
-                onSelect={(node) => {
-                    setActiveId(node.id);
-                    args.onSelect?.(node);
-                }}
-            />
-        );
-    },
-    args: {
-        data: generateMockData(),
-        activeId: "project-1",
-        className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
-    },
-};
-
-export const FolderandFileSelected: Story = {
+export const FolderAndFileSelected: Story = {
     render: (args) => {
         const [activeIds, setActiveIds] = React.useState<string[] | undefined>(args.activeIds);
         return (
-            <FileTree
+            <FileBar
                 {...args}
                 activeIds={activeIds}
                 onSelect={(node) => {
+                    const newIds = node.type === "folder"
+                        ? [...(activeIds || []).filter(id => id !== node.id), node.id]
+                        : [node.id, ...(activeIds || []).filter(id => !id.includes(node.id) && !node.id.startsWith(id.split('-')[0]))];
+
                     if (node.type === "folder") {
                         if (activeIds?.includes(node.id)) {
                             setActiveIds(activeIds.filter(id => id !== node.id));
@@ -163,6 +147,6 @@ export const FolderandFileSelected: Story = {
     args: {
         data: generateMockData(),
         activeIds: ["project-1", "project-1-chat-1"],
-        className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
+        className: "w-[400px] h-[600px] rounded-xl",
     },
 };
