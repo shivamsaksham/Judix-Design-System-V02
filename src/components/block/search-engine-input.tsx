@@ -932,7 +932,46 @@ function SearchEngineInput({
                     onCourtSelect={(court) => {
                       if (!selectedCourts.includes(court)) {
                         setSelectedCourts((prev) => [...prev, court]);
-                        handleOptionSelect(`Court:${court}`, true);
+                        // Create court token directly without calling handleOptionSelect to prevent dropdown close
+                        const div = textareaRef.current;
+                        if (div) {
+                          const selection = window.getSelection();
+                          if (selection) {
+                            const range = document.createRange();
+                            range.selectNodeContents(div);
+                            range.collapse(false);
+
+                            const wrapper = document.createElement("span");
+                            wrapper.className = "static-data-wrapper";
+                            wrapper.style.color = "var(--color-color-text-primary-default)";
+                            wrapper.style.fontWeight = "400";
+                            wrapper.contentEditable = "false";
+                            wrapper.setAttribute("data-type", "Court");
+
+                            const prefix = document.createElement("span");
+                            prefix.textContent = "[Court:-";
+                            wrapper.appendChild(prefix);
+
+                            const inputSpan = document.createElement("span");
+                            inputSpan.className = "static-value-input";
+                            inputSpan.contentEditable = "true";
+                            inputSpan.style.outline = "none";
+                            inputSpan.style.minWidth = "10px";
+                            inputSpan.style.display = "inline-block";
+                            inputSpan.textContent = court;
+                            wrapper.appendChild(inputSpan);
+
+                            const suffix = document.createElement("span");
+                            suffix.textContent = "]";
+                            wrapper.appendChild(suffix);
+
+                            range.insertNode(wrapper);
+                            const space = document.createTextNode("\u00A0");
+                            wrapper.after(space);
+
+                            setInput(div.innerText);
+                          }
+                        }
                         console.log(`Court selected: ${court}`);
                       }
                     }}
@@ -946,6 +985,7 @@ function SearchEngineInput({
             />
           ) : activeDropdown === "settings" ? (
             <SearchScopeSelector
+              availableScopes={scopes}
               selectedScopes={selectedScopes}
               onScopeSelect={(scope) => {
                 if (!selectedScopes.includes(scope)) {
