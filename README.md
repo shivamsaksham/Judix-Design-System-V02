@@ -1,4 +1,4 @@
-# Judix Design System Docs Index
+# Design System Docs Index
 
 This project exposes component documentation under the `docs/` directory. Use the links below to jump directly to an individual guide.
 

@@ -1,8 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '../ui';
-import Image from 'next/image';
+import { Icon } from 'judix-icon';
 
 export interface HistoryTileProps {
     title: string;
@@ -31,9 +30,7 @@ export const HistoryTile = ({
             className={cn(
                 'group relative flex items-center justify-between',
                 'p-2 rounded-lg cursor-pointer transition-colors duration-200',
-                isActive
-                    ? 'bg-option-color-selected hover:bg-option-color-selected'
-                    : 'bg-transparent hover:bg-option-color-hover',
+                isActive ? 'bg-option-color-selected' : 'bg-transparent hover:bg-option-color-hover',
                 className
             )}
             onClick={onClick}
@@ -52,21 +49,18 @@ export const HistoryTile = ({
                 {title}
             </span>
 
-            <Button
+            {/* Three-dot menu icon - always present but invisible when not hovered */}
+            <button
                 onClick={handleMenuClick}
-                variant="neutral"
                 className={cn(
-                    'flex-shrink-0 p-0 h-fit border-none rounded-md',
+                    'flex-shrink-0 p-1 rounded-md hover:bg-option-color-hover',
                     'transition-all duration-200',
-                    isActive
-                        ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'
-                        : 'bg-transparent hover:bg-option-color-hover',
                     isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
                 aria-label="Menu"
             >
-                <Image src="ellipsis.svg" alt="ellipsis" width={4} height={12} className="p-1 text-color-icon-neutral-default w-5 h-5" />
-            </Button>
+                <Icon name="More" className="text-color-icon-neutral-default w-5 h-5 flex items-center justify-center m-1" />
+            </button>
         </div>
     );
 };

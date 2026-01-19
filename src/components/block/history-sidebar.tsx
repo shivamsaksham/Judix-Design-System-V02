@@ -1,16 +1,14 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Icon, Profile } from 'judix-icon';
+import { Icon } from 'judix-icon';
 import { HistoryTile } from './history-tile';
 import { SidebarActionButtons } from './sidebar-action-buttons';
-import { ChatHistorySection } from './chat-history-section';
+import { ChatSection } from './chat-section';
 import { ChatHistoryMenu } from './chat-history-menu';
-import { UserMenu, type UserMenuItem } from './user-menu';
+import { UserMenu } from './user-menu';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Button } from '../ui';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export interface ChatHistoryItem {
     id: string;
@@ -120,116 +118,32 @@ export const HistorySidebar = ({
         if (action === 'delete' && onDelete) onDelete(chatId);
     };
 
-    const userMenuItems: UserMenuItem[] = [
-        {
-            id: 'zoom',
-            label: 'Zoom',
-            icon: <Icon name="SearchZoomIn" />,
-            badge: '100%',
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Zoom clicked');
-            },
-        },
-        {
-            id: 'account',
-            label: 'My Account',
-            icon: <Icon name="ProfileCircle" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('My Account clicked');
-            },
-        },
-        {
-            id: 'projects',
-            label: 'Projects',
-            icon: <Icon name="DocumentCopy" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Projects clicked');
-            },
-        },
-        {
-            id: 'subscriptions',
-            label: 'Subscriptions',
-            icon: <Icon name="EmptyWalletChange" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Subscriptions clicked');
-            },
-        },
-        {
-            id: 'settings',
-            label: 'Settings',
-            icon: <Icon name="Setting" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Settings clicked');
-            },
-            dividerAfter: true,
-        },
-        {
-            id: 'refer',
-            label: 'Refer and Earn',
-            icon: <Icon name="Gift" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Refer and Earn clicked');
-            },
-        },
-        {
-            id: 'help',
-            label: 'Help & Support',
-            icon: <Icon name="Call" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Help & Support clicked');
-            },
-            dividerAfter: true,
-        },
-        {
-            id: 'logout',
-            label: 'Logout',
-            icon: <Icon name="Logout" className='text-red-400' />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Logout clicked');
-            },
-            variant: 'danger',
-        },
-    ];
-
     return (
         <div
             className={cn(
-                'flex flex-col h-screen overflow-hidden',
+                'flex flex-col h-screen transition-all duration-300',
                 isExpanded ? 'w-[256px]' : 'w-[56px]',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
                 className
             )}
-            style={{
-                transition: 'width 350ms ease-in-out',
-                willChange: 'width'
-            }}
         >
             {isExpanded ? (
                 <>
                     {/* Header Section */}
-                    <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
-                        <Button
+                    <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke">
+                        <button
                             onClick={handleToggle}
-                            variant="neutral"
-                            className="p-2 h-fit border-none bg-color-neutral-default rounded-lg hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
+                            className="p-2 rounded-lg hover:bg-option-color-hover transition-colors"
                             aria-label="Toggle Sidebar"
-                            prefixIcon='SidebarLeft'
-                            iconClassName='text-font-label-title-regular self-stretch self-stretch relative'
-                        />
+                        >
+                            <Icon name="SidebarLeft" className="text-font-label-title-regular self-stretch self-stretch" />
+                        </button>
                         <Label
                             colorScheme="neutral"
                             size="small"
                             onClick={onResetChat}
-                            className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
+                            className="cursor-pointer"
                         >
                             Reset Chat
                         </Label>
@@ -240,11 +154,10 @@ export const HistorySidebar = ({
                         onNewChat={onNewChat}
                         onNotes={onNotes}
                         onProjects={onProjects}
-                        className="sidebar-fade-in-up-1"
                     />
 
                     {/* Chats Section */}
-                    <ChatHistorySection
+                    <ChatSection
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
                         onMenuClick={handleMenuClick}
@@ -252,7 +165,7 @@ export const HistorySidebar = ({
                     />
 
                     {/* Usage Section */}
-                    <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
+                    <div className="px-2 py-3 border-t border-dropdown-color-stroke">
                         <div className="flex items-center gap-2 mb-3 ">
                             <span className=" p-1 
                                             text-style-body-default-regular
@@ -271,16 +184,16 @@ export const HistorySidebar = ({
                                 style={{ width: `${(usageStats.current / usageStats.total) * 100}%` }}
                             />
                         </div>
-                        <div className="flex items-center justify-between min-w-0">
-                            <span className="text-color-text-neutral-tertiary p-1 text-style-label-title-regular whitespace-nowrap">{usageStats.label}</span>
-                            <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
+                        <div className="flex items-center justify-between ">
+                            <span className="text-color-text-neutral-tertiary p-1 text-style-label-title-regular">{usageStats.label}</span>
+                            <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1">
                                 {usageStats.current}/{usageStats.total}
                             </span>
                         </div>
                     </div>
 
                     {/* User Profile Section */}
-                    <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-up-3">
+                    <div className="py-3 px-2 border-t border-dropdown-color-stroke ">
                         <div
                             className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
                             onClick={(e) => {
@@ -292,15 +205,15 @@ export const HistorySidebar = ({
                                 setIsUserMenuOpen(!isUserMenuOpen);
                             }}
                         >
-                            <div className="flex items-center min-w-0 flex-1">
-                                <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center flex-shrink-0">
+                            <div className="flex items-center">
+                                <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center">
                                     <Icon name="Profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
-                                <div className="flex flex-col py-1 flex-1 min-w-0">
-                                    <span className="text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
+                                <div className="flex flex-col py-1">
+                                    <span className="text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 ">
                                         {userProfile.name}
                                     </span>
-                                    <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
+                                    <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5">
                                         {userProfile.tier}
                                     </span>
                                 </div>
@@ -366,7 +279,84 @@ export const HistorySidebar = ({
                             }}
                         >
                             <UserMenu
-                                items={userMenuItems}
+                                items={[
+                                    {
+                                        id: 'zoom',
+                                        label: 'Zoom',
+                                        icon: <Icon name="SearchZoomIn" />,
+                                        badge: '100%',
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Zoom clicked');
+                                        },
+                                    },
+                                    {
+                                        id: 'account',
+                                        label: 'My Account',
+                                        icon: <Icon name="ProfileCircle" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('My Account clicked');
+                                        },
+                                    },
+                                    {
+                                        id: 'projects',
+                                        label: 'Projects',
+                                        icon: <Icon name="DocumentCopy" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Projects clicked');
+                                        },
+                                    },
+                                    {
+                                        id: 'subscriptions',
+                                        label: 'Subscriptions',
+                                        icon: <Icon name="EmptyWalletChange" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Subscriptions clicked');
+                                        },
+                                    },
+                                    {
+                                        id: 'settings',
+                                        label: 'Settings',
+                                        icon: <Icon name="Setting" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Settings clicked');
+                                        },
+                                        dividerAfter: true,
+                                    },
+                                    {
+                                        id: 'refer',
+                                        label: 'Refer and Earn',
+                                        icon: <Icon name="Gift" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Refer and Earn clicked');
+                                        },
+                                    },
+                                    {
+                                        id: 'help',
+                                        label: 'Help & Support',
+                                        icon: <Icon name="Call" />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Help & Support clicked');
+                                        },
+                                        dividerAfter: true,
+                                    },
+                                    {
+                                        id: 'logout',
+                                        label: 'Logout',
+                                        icon: <Icon name="Logout" className='text-red-400' />,
+                                        onClick: () => {
+                                            setIsUserMenuOpen(false);
+                                            console.log('Logout clicked');
+                                        },
+                                        variant: 'danger',
+                                    },
+                                ]}
                             />
                         </div>
                     )}
@@ -376,90 +366,49 @@ export const HistorySidebar = ({
                     {/* Collapsed State */}
                     <div className="flex flex-col items-center h-full">
                         {/* Toggle Icon */}
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    onClick={handleToggle}
-                                    variant="neutral"
-                                    className="mt-4 mx-3 mb-2 p-2 h-fit border-none bg-color-neutral-default rounded-lg hover:bg-option-color-hover transition-colors mb-2"
-                                    prefixIcon='SidebarRight'
-                                    iconClassName='text-icon_button-color-neutral-icon relative'
-                                    aria-label="Toggle Sidebar"
-                                />
-                            </TooltipTrigger>
-                            <TooltipContent side="right">
-                                Expand Sidebar
-                            </TooltipContent>
-                        </Tooltip>
+                        <button
+                            onClick={handleToggle}
+                            className="mt-4 mx-3 mb-2 py-2 rounded-lg hover:bg-option-color-hover transition-colors mb-2"
+                            aria-label="Toggle Sidebar"
+                        >
+                            <Icon name="SidebarRight" className="text-icon_button-color-neutral-icon self-stretch self-stretch relative" />
+                        </button>
 
                         {/* Action Icons */}
                         <div className="flex flex-col gap-0 mx-1 p-1">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onNewChat}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="New Chat"
-                                        prefixIcon='Edit'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative'
-                                    />
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    New Chat
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onNotes}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="Notes"
-                                        prefixIcon='Note1'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative'
-                                    />
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    Notes
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onProjects}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="Projects"
-                                        prefixIcon='DocumentText'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative '
-                                    />
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    Projects
-                                </TooltipContent>
-                            </Tooltip>
+                            <button
+                                onClick={onNewChat}
+                                className="p-3 rounded-lg hover:bg-option-color-hover transition-colors "
+                                aria-label="New Chat"
+                            >
+                                <Icon name="Edit" className="text-icon_button-color-neutral-icon self-stretch self-stretch relative" />
+                            </button>
+                            <button
+                                onClick={onNotes}
+                                className="p-3 rounded-lg hover:bg-option-color-hover transition-colors "
+                                aria-label="Notes"
+                            >
+                                <Icon name="Note1" className="text-icon_button-color-neutral-icon self-stretch self-stretch relative" />
+                            </button>
+                            <button
+                                onClick={onProjects}
+                                className="p-3 rounded-lg hover:bg-option-color-hover transition-colors "
+                                aria-label="Projects"
+                            >
+                                <Icon name="DocumentText" className="text-icon_button-color-neutral-icon self-stretch self-stretch relative" />
+                            </button>
                         </div>
 
                         {/* Spacer */}
                         <div className="flex-1"></div>
 
                         {/* Profile Icon */}
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    className="my-3 mx-1 p-2 rounded-lg bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
-                                    aria-label="Profile"
-                                    variant="neutral"
-                                    size="small"
-                                    prefixIcon="Profile"
-                                    iconClassName='w-6 h-6 relative'
-                                />
-                            </TooltipTrigger>
-                            <TooltipContent side="right">
-                                Profile
-                            </TooltipContent>
-                        </Tooltip>
+                        <button
+                            className="my-3 mx-1 p-2 rounded-lg hover:bg-option-color-hover transition-colors"
+                            aria-label="Profile"
+                        >
+                            <Icon name="Profile" className="text-icon_button-color-neutral-icon w-6 h-6 relative" />
+                        </button>
                     </div>
                 </>
             )}

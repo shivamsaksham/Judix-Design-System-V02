@@ -24,6 +24,7 @@ export interface DropdownProps {
   searchbar?: "attached" | "integrated" | "off";
   placeholder?: string;
   className?: string;
+  activeIndex?: number | null;
 }
 
 export const Dropdown = ({
@@ -32,7 +33,8 @@ export const Dropdown = ({
   onChange,
   searchbar = "off",
   placeholder = "Search...",
-  className
+  className,
+  activeIndex = null
 }: DropdownProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -71,10 +73,22 @@ export const Dropdown = ({
     return null;
   };
 
+  const listRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (activeIndex !== null && listRef.current) {
+      const activeElement = listRef.current.children[activeIndex] as HTMLElement;
+      if (activeElement) {
+        // Use scrollIntoView with block: 'nearest' to minimize disruptive scrolling
+        activeElement.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [activeIndex]);
+
   const renderOptions = () => (
-    <div className="space-y-1 max-h-60 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div ref={listRef} className="space-y-1 max-h-60 overflow-y-auto ">
       {filteredOptions.length > 0 ? (
-        filteredOptions.map(option => (
+        filteredOptions.map((option, index) => (
           <Option
             key={option.value}
             title={option.title}
@@ -82,6 +96,7 @@ export const Dropdown = ({
             prefixSlot={option.leadingIcon}
             suffixSlot={option.trailingAccessory}
             selected={value === option.value}
+            highlighted={index === activeIndex}
             onClick={() => {
               onChange(option.value);
               setSearchTerm("");
@@ -105,7 +120,7 @@ export const Dropdown = ({
 
   if (searchbar === "off") {
     return (
-      <div className={cn("w-[216px] ", containerClasses)}>
+      <div className={cn("w-fit max-w-[400px]", containerClasses)}>
         <div className="p-2">
           {renderOptions()}
         </div>

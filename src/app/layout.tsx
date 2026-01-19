@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local"
 import "./globals.css";
-import { ToastContainer } from "@/components/ui/toast";
 
 
-const poppins = Poppins({ subsets: ["latin"], variable: "--font-poppins", weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
+const poppins = Poppins({ subsets: ["latin"], variable: "--font-poppins", weight: ["100","200","300","400", "500", "600", "700","800","900"]});
 
 export const metadata: Metadata = {
   title: "Judix - Design System",
@@ -28,7 +27,6 @@ export default function RootLayout({
         className={`${poppins.variable} ${satoshi.variable} antialiased`}
       >
         {children}
-        <ToastContainer position="top-center" />
       </body>
     </html>
   );

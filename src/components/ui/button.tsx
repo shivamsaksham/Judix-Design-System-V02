@@ -71,7 +71,7 @@ function Button({
   asChild = false,
   prefixIcon,
   suffixIcon,
-  iconStrokeWidth = 1.5,
+  iconStrokeWidth = 2,
   children,
   ...props
 }: ButtonProps) {
