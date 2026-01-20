@@ -13,7 +13,7 @@ import {
 import { createPortal } from "react-dom";
 import NestedDropdown from "./custom-dropdown-helper";
 import { SearchScopeSelector } from "./search-scope-selector";
-import { ContextWindow, ContextItem } from "./context-window";
+import { ContextItem } from "./context-window";
 import { CourtSelector, CourtCategory } from "./court-selector";
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
@@ -141,9 +141,13 @@ interface SearchEngineInputProps {
     staticData?: StaticDataConfig;
     tokenConfig?: Record<string, TokenStructure>;
     onSubmit?: (payload: SearchPayload) => void;
+    children?: React.ReactNode;
+    heading?: string | null;
+    onOptionClick?: (value: string, currentContent?: string) => boolean | void;
 }
 
 function SearchEngineInput({
+    placeholder,
     helperText,
     scopes = [],
     courtCategories = [],
@@ -153,7 +157,9 @@ function SearchEngineInput({
     triggers = {},
     staticData = {},
     tokenConfig = DEFAULT_TOKEN_CONFIG,
-    onSubmit
+    onSubmit,
+    heading,
+    onOptionClick
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
     const [isCentered, setIsCentered] = useState(true);
@@ -733,6 +739,20 @@ function SearchEngineInput({
     };
 
     const handleOptionSelect = (option: string, isManual: boolean = false) => {
+        if (onOptionClick) {
+            // Get current parsed query to pass to handler
+            const currentPayload = getParsedPayload();
+            const currentQuery = currentPayload.query || "";
+
+            const handled = onOptionClick(option, currentQuery);
+            if (handled) {
+                setActiveDropdown(null);
+                setTriggerStartIndex(null);
+                setSearchQuery("");
+                setActiveIndex(null);
+                return;
+            }
+        }
         const div = textareaRef.current;
 
         const selection = window.getSelection();
@@ -1033,25 +1053,7 @@ function SearchEngineInput({
                             }}
                             activeIndex={activeIndex}
                             customComponents={{
-                                add_context: (
-                                    <ContextWindow
-                                        items={contextItems}
-                                        selectedItems={selectedContextItems}
-                                        onSelectionChange={(ids) => {
-                                            setSelectedContextItems(ids);
-                                            console.log("Context items selected:", ids);
-                                        }}
-                                        mode={contextMode}
-                                        onModeChange={(mode) => {
-                                            setContextMode(mode);
-                                            if (mode === "self-managed") {
-                                                setSelectedContextItems([]);
-                                            } else {
-                                                setSelectedContextItems(contextItems.slice(0, 10).map((i) => i.id));
-                                            }
-                                        }}
-                                    />
-                                ),
+                                // Removed add_context legacy component
                             }}
                         />
                     ) : activeDropdown === "settings" ? (
@@ -1093,19 +1095,23 @@ function SearchEngineInput({
 
     return (
         <div
-            className={`flex flex-col h-screen transition-all items-center ${isCentered ? "justify-center" : "justify-end"
+            className={`flex flex-col w-full h-full transition-all items-center ${isCentered ? "justify-center" : "justify-end"
                 }`}
         >
             <div className="relative w-full flex flex-col items-center min-h-fit">
+                <h1 className="text-3xl md:text-4xl font-normal text-center text-[#00808b] mb-8 block w-full">
+                    {heading}
+                </h1>
+
                 {helperText && (
                     <div
-                        className="absolute w-full max-w-3xl h-full z-0 rounded-t-2xl px-4 py-2 text-sm bg-color-surface-primary-subtle_bg"
+                        className="absolute w-full h-full z-0 rounded-t-2xl px-4 py-2 text-sm bg-color-surface-primary-subtle_bg"
                         style={{ bottom: 34 }}
                     >
                         <span>{helperText}</span>
                     </div>
                 )}
-                <div className="relative w-full z-10 max-w-3xl border border-gray-300 rounded-2xl px-6 py-4 mb-4 flex flex-col gap-3 items-center justify-around bg-white">
+                <div className="relative w-full z-10 border border-gray-300 rounded-2xl px-6 py-4 mb-4 flex flex-col gap-3 items-center justify-around bg-white">
                     <div
                         contentEditable={true}
                         ref={(node) => {
@@ -1178,7 +1184,7 @@ function SearchEngineInput({
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
-                                disabled={!input.trim() || input.trim().split(" ").length < 3}
+                                disabled={!input.trim() || input.trim().split(/\s+/).length < 3}
                             />
                         </div>
                     </div>

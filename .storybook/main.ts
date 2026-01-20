@@ -28,12 +28,12 @@ const config: StorybookConfig = {
         "@": path.resolve(__dirname, "../src"),
       };
     }
-    
+
     // Ensure PostCSS processes Tailwind CSS v4
     if (config.css) {
       config.css.postcss = path.resolve(__dirname, "../postcss.config.mjs");
     }
-    
+
     return config;
   }
 };

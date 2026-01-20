@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { Icon } from 'judix-icon';
-import ContextWindowDropdown from './context-window-dropdown';
+import ContextWindowDropdown, { ContextItem } from './context-window-dropdown';
 import { Button } from '../ui';
 
 export interface NavBarProps {
@@ -13,6 +12,17 @@ export interface NavBarProps {
     onShareClick?: () => void;
     onMenuClick?: () => void;
     className?: string;
+
+    // Context Window Props
+    contextItems?: ContextItem[];
+    isAutoContext?: boolean;
+    onContextItemToggle?: (id: string, checked: boolean) => void;
+    onAutoContextChange?: (value: boolean) => void;
+    isSessionContextChecked?: boolean;
+    onSessionContextToggle?: (checked: boolean) => void;
+
+    // Layout Props
+    isResultPanelOpen?: boolean;
 }
 
 export default function NavBar({
@@ -21,6 +31,13 @@ export default function NavBar({
     onShareClick,
     onMenuClick,
     className,
+    contextItems = [],
+    isAutoContext = true,
+    onContextItemToggle,
+    onAutoContextChange,
+    isResultPanelOpen = false,
+    isSessionContextChecked = false,
+    onSessionContextToggle,
 }: NavBarProps) {
     const [showContextDropdown, setShowContextDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -29,6 +46,12 @@ export default function NavBar({
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            // Ignore clicks inside dialogs (like the Info dialog)
+            if (target.closest('[role="dialog"]')) {
+                return;
+            }
+
             if (
                 dropdownRef.current &&
                 !dropdownRef.current.contains(event.target as Node) &&
@@ -53,47 +76,16 @@ export default function NavBar({
         onContextClick?.();
     };
 
-    const contextWindowItems = [
-        {
-            id: '1',
-            title: 'Deepak Singh Alias vs Mukesh Kumar & Ors',
-            description: '2024 3 SCR 231',
-            checked: false,
-        },
-        {
-            id: '2',
-            title: 'Query #1',
-            description: 'This is the demo summary of the first query of the session. This is the demo summary of the first query',
-            checked: false,
-        },
-        {
-            id: '3',
-            title: 'Deepak Singh Alias vs Mukesh Kumar & Ors',
-            description: '2024 2 SCR 472',
-            checked: false,
-        },
-        {
-            id: '4',
-            title: 'Indian Penal Code, 1961',
-            description: 'Section 498A, 499',
-            checked: false,
-        },
-        {
-            id: '5',
-            title: 'Query #2',
-            description: 'This is the demo summary of the first query of the session. This is the demo summary of the first query',
-            checked: false,
-        },
-    ];
-
     return (
         <nav
             className={cn(
                 'flex items-center justify-between',
                 'px-5 py-2',
                 'bg-color-surface-neutral-default',
+                'transition-all duration-300 ease-in-out',
                 className
             )}
+            style={{ paddingRight: isResultPanelOpen ? '450px' : '1.25rem' }} // 1.25rem = px-5
         >
             <div className="flex items-center justify-between w-full my-[6px]">
                 {/* Left Section - Logo */}
@@ -143,7 +135,12 @@ export default function NavBar({
                                 className="absolute top-full right-0 mt-2 z-50"
                             >
                                 <ContextWindowDropdown
-                                    items={contextWindowItems}
+                                    items={contextItems}
+                                    defaultAutoContext={isAutoContext}
+                                    onItemToggle={onContextItemToggle}
+                                    onModeChange={onAutoContextChange}
+                                    isSessionContextChecked={isSessionContextChecked}
+                                    onSessionContextToggle={onSessionContextToggle}
                                 />
                             </div>
                         )}
@@ -177,12 +174,12 @@ export default function NavBar({
                                 alt="Menu"
                                 width={20}
                                 height={20}
-                            aria-label="More options"
-                        />
+                                aria-label="More options"
+                            />
                         </Button>
                     </div>
                 </div>
             </div>
         </nav>
     );
-};
+}

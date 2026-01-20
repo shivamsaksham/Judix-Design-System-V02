@@ -22,6 +22,8 @@ export interface ContextWindowDropdownProps {
     onModeChange?: (isAutoContext: boolean) => void;
     defaultAutoContext?: boolean;
     className?: string;
+    isSessionContextChecked?: boolean;
+    onSessionContextToggle?: (checked: boolean) => void;
 }
 
 export default function ContextWindowDropdown({
@@ -30,10 +32,12 @@ export default function ContextWindowDropdown({
     onModeChange,
     defaultAutoContext = true,
     className,
+    isSessionContextChecked = false,
+    onSessionContextToggle,
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);
     const [showInfo, setShowInfo] = useState(false);
-    const [sessionContextChecked, setSessionContextChecked] = useState(false);
+    // Removed internal storage of sessionContextChecked to use controlled prop
     const [items, setItems] = useState(externalItems);
 
     // Update internal state when external items change
@@ -41,9 +45,17 @@ export default function ContextWindowDropdown({
         setItems(externalItems);
     }, [externalItems]);
 
+    // Update internal auto context state if default changes (optional, but good practice)
+    useEffect(() => {
+        setIsAutoContext(defaultAutoContext);
+    }, [defaultAutoContext]);
+
     const handleModeToggle = (checked: boolean) => {
-        setIsAutoContext(checked);
-        onModeChange?.(checked);
+        // Toggle checked = true means Self-Managed selected.
+        // So isAutoContext should be false.
+        const newAutoState = !checked;
+        setIsAutoContext(newAutoState);
+        onModeChange?.(newAutoState);
     };
 
     const handleItemCheck = (id: string, checked: boolean) => {
@@ -56,14 +68,14 @@ export default function ContextWindowDropdown({
         onItemToggle?.(id, checked);
     };
 
-    const handleSessionContextToggle = (checked: boolean) => {
-        setSessionContextChecked(checked as boolean);
+    const handleSessionContextToggleInternal = (checked: boolean) => {
+        onSessionContextToggle?.(checked);
     };
 
     return (
         <div
             className={cn(
-                'w-[400px] p-2',
+                'w-[400px] max-h-[554px] flex flex-col',
                 'bg-color-surface-neutral-default',
                 'border border-color-border-neutral-default',
                 'rounded-lg',
@@ -71,7 +83,7 @@ export default function ContextWindowDropdown({
             )}
         >
             {/* Header with Toggle */}
-            <div className="p-4">
+            <div className="p-4 flex-shrink-0">
                 {/* Title and Info Icon */}
                 <div className="flex items-center justify-between mb-2">
                     <h3 className="p-1 text-style-body-large-default text-color-text-neutral-default">
@@ -91,37 +103,40 @@ export default function ContextWindowDropdown({
                 <div className="flex items-center gap-3">
                     <span className={cn(
                         "p-1 text-style-body-default-regular",
-                        !isAutoContext ? "text-color-text-primary-default" : "text-color-text-neutral-placeholder"
+                        isAutoContext ? "text-color-text-primary-default" : "text-color-text-neutral-placeholder"
                     )}>
                         Auto context
                     </span>
                     <Toggle
-                        checked={isAutoContext}
-                        onCheckedChange={handleModeToggle}
+                        checked={!isAutoContext}
+                        onCheckedChange={(checked) => handleModeToggle(checked)}
                         size="medium"
                     />
                     <span className={cn(
                         "p-1 text-style-body-default-regular",
-                        isAutoContext ? "text-color-text-primary-default" : "text-color-text-neutral-placeholder"
+                        !isAutoContext ? "text-color-text-primary-default" : "text-color-text-neutral-placeholder"
                     )}>
                         Self-managed
                     </span>
                 </div>
             </div>
 
-            <div className="mb-2 border-b border-color-border-neutral-default" />
+            <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
 
-            {/* Session Context Section */}
-            <div>
+            {/* Scrollable Content Section */}
+            <div className="overflow-y-auto flex-1 p-2">
+                {/* Session Context Section */}
                 <Option
                     title="Session context"
                     subtext="Text added by you using add to context feature acting as session context"
-                    onClick={() => handleSessionContextToggle(!sessionContextChecked)}
+                    onClick={() => !isAutoContext && handleSessionContextToggleInternal(!isSessionContextChecked)}
+                    disabled={isAutoContext}
                     prefixSlot={
                         <Checkbox
                             id="session-context"
-                            checked={sessionContextChecked}
-                            onCheckedChange={handleSessionContextToggle}
+                            checked={isSessionContextChecked}
+                            onCheckedChange={handleSessionContextToggleInternal}
+                            disabled={isAutoContext}
                         />
                     }
                     className="mb-3"
@@ -134,12 +149,14 @@ export default function ContextWindowDropdown({
                             key={item.id}
                             title={item.title}
                             subtext={item.description}
-                            onClick={() => handleItemCheck(item.id, !item.checked)}
+                            onClick={() => !isAutoContext && handleItemCheck(item.id, !item.checked)}
+                            disabled={isAutoContext}
                             prefixSlot={
                                 <Checkbox
                                     id={item.id}
                                     checked={item.checked}
                                     onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                                    disabled={isAutoContext}
                                 />
                             }
                         />

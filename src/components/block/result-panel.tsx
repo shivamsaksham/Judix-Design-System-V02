@@ -16,6 +16,8 @@ export interface ResultPanelProps {
     onJudgmentFilter?: () => void;
     onJudgmentPrint?: () => void;
     onActPrint?: () => void;
+    onJudgmentClick?: (judgment: JudgmentTileProps) => void;
+    onActClick?: (act: ActResultTileProps) => void;
     className?: string;
 }
 
@@ -25,6 +27,8 @@ export function ResultPanel({
     onJudgmentFilter,
     onJudgmentPrint,
     onActPrint,
+    onJudgmentClick,
+    onActClick,
     className
 }: ResultPanelProps) {
     const [viewMode, setViewMode] = React.useState<"judgments" | "acts">("judgments");
@@ -92,37 +96,43 @@ export function ResultPanel({
     );
 
     return (
-        <div className={cn("flex justify-center p-4 bg-color-surface-base-default h-full", className)}>
-            <div className="flex flex-col w-[400px] h-[769px] bg-white rounded-xl border border-color-border-neutral-default overflow-hidden">
-                <SearchSection
-                    title={currentTitle}
-                    version={version}
-                    onVersionChange={setVersion}
-                    versionOptions={versionOptions}
-                    dropdownLabel={currentDropdownLabel}
-                    dropdownOptions={viewOptions}
-                    dropdownValue={viewMode}
-                    onDropdownChange={handleDropdownChange}
-                    searchValue={search}
-                    onSearchChange={(e) => setSearch(e.target.value)}
-                    actions={actions}
-                    className="shrink-0"
-                />
+        <div className={cn("flex flex-col h-full bg-white", className)}>
+            <SearchSection
+                title={currentTitle}
+                version={version}
+                onVersionChange={setVersion}
+                versionOptions={versionOptions}
+                dropdownLabel={currentDropdownLabel}
+                dropdownOptions={viewOptions}
+                dropdownValue={viewMode}
+                onDropdownChange={handleDropdownChange}
+                searchValue={search}
+                onSearchChange={(e) => setSearch(e.target.value)}
+                actions={actions}
+                className="shrink-0"
+            />
 
-                <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg">
-                    <div className="flex flex-col gap-2 p-2">
-                        {isJudgments ? (
-                            judgments.map((judgment, index) => (
-                                <JudgmentTile key={index} {...judgment} />
-                            ))
-                        ) : (
-                            acts.map((act, index) => (
-                                <ActResultTile key={index} {...act} />
-                            ))
-                        )}
-                    </div>
-                </ScrollArea>
-            </div>
+            <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg">
+                <div className="flex flex-col gap-2 p-2">
+                    {isJudgments ? (
+                        judgments.map((judgment, index) => (
+                            <JudgmentTile
+                                key={index}
+                                {...judgment}
+                                onClick={() => onJudgmentClick?.(judgment)}
+                            />
+                        ))
+                    ) : (
+                        acts.map((act, index) => (
+                            <ActResultTile
+                                key={index}
+                                {...act}
+                                onClick={() => onActClick?.(act)}
+                            />
+                        ))
+                    )}
+                </div>
+            </ScrollArea>
         </div>
     );
 }

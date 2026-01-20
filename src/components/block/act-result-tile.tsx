@@ -20,6 +20,7 @@ export interface ActResultTileProps {
     onAdd?: () => void;
     onBookmark?: () => void;
     onMention?: () => void;
+    onClick?: () => void;
     className?: string;
 }
 
@@ -34,6 +35,7 @@ export function ActResultTile({
     onAdd,
     onBookmark,
     onMention,
+    onClick,
     className
 }: ActResultTileProps) {
     const [open, setOpen] = React.useState(false);
@@ -57,7 +59,9 @@ export function ActResultTile({
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
             "transition-colors duration-200",
             className
-        )}>
+        )}
+            onClick={onClick}
+        >
 
             <div className="flex flex-col gap-1 pr-8">
                 <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
@@ -85,7 +89,10 @@ export function ActResultTile({
                         colorScheme="neutral"
                         size="small"
                         className="cursor-pointer"
-                        onClick={() => setExpanded(!expanded)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setExpanded(!expanded);
+                        }}
                     >
                         <span className="flex items-center gap-1">
                             {expanded ? "Show less" : "Read more"}
@@ -97,7 +104,10 @@ export function ActResultTile({
                     colorScheme="primary"
                     size="small"
                     className="cursor-pointer"
-                    onClick={onViewDetails}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onViewDetails?.();
+                    }}
                 >
                     View Details
                 </Label>
@@ -107,7 +117,9 @@ export function ActResultTile({
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        </div>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
                         <ContextActionMenu
