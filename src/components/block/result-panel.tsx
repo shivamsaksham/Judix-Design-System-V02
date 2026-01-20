@@ -18,7 +18,11 @@ export interface ResultPanelProps {
     onActPrint?: () => void;
     onJudgmentClick?: (judgment: JudgmentTileProps) => void;
     onActClick?: (act: ActResultTileProps) => void;
+    activeJudgmentId?: string | null;
+    activeActId?: string | null;
     className?: string;
+    viewMode?: "judgments" | "acts";
+    onViewModeChange?: (mode: "judgments" | "acts") => void;
 }
 
 export function ResultPanel({
@@ -29,11 +33,45 @@ export function ResultPanel({
     onActPrint,
     onJudgmentClick,
     onActClick,
-    className
+    activeJudgmentId,
+    activeActId,
+    className,
+    viewMode = "judgments",
+    onViewModeChange
 }: ResultPanelProps) {
-    const [viewMode, setViewMode] = React.useState<"judgments" | "acts">("judgments");
+    // const [viewMode, setViewMode] = React.useState<"judgments" | "acts">("judgments"); // Managed by parent now
     const [search, setSearch] = React.useState("");
+    const [debouncedSearch, setDebouncedSearch] = React.useState("");
     const [version, setVersion] = React.useState("v4");
+
+    // Debounce search
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    // Filter content
+    const filteredJudgments = React.useMemo(() => {
+        if (!debouncedSearch) return judgments;
+        const lowercaseSearch = debouncedSearch.toLowerCase();
+        return judgments.filter(j =>
+            j.title.toLowerCase().includes(lowercaseSearch) ||
+            j.description.toLowerCase().includes(lowercaseSearch)
+        );
+    }, [judgments, debouncedSearch]);
+
+    const filteredActs = React.useMemo(() => {
+        if (!debouncedSearch) return acts;
+        const lowercaseSearch = debouncedSearch.toLowerCase();
+        return acts.filter(a =>
+            a.title.toLowerCase().includes(lowercaseSearch) ||
+            (a.description && a.description.toLowerCase().includes(lowercaseSearch)) ||
+            (a.section && a.section.toLowerCase().includes(lowercaseSearch))
+        );
+    }, [acts, debouncedSearch]);
 
     // Combined dropdown options
     const viewOptions: DropdownOption[] = [
@@ -50,7 +88,7 @@ export function ResultPanel({
 
     const handleDropdownChange = (value: string) => {
         if (value === "judgments" || value === "acts") {
-            setViewMode(value);
+            onViewModeChange?.(value);
         }
     };
 
@@ -115,19 +153,27 @@ export function ResultPanel({
             <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg">
                 <div className="flex flex-col gap-2 p-2">
                     {isJudgments ? (
-                        judgments.map((judgment, index) => (
+                        filteredJudgments.map((judgment, index) => (
                             <JudgmentTile
                                 key={index}
                                 {...judgment}
-                                onClick={() => onJudgmentClick?.(judgment)}
+                                isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
+                                onClick={() => {
+                                    setSearch(judgment.title);
+                                    onJudgmentClick?.(judgment);
+                                }}
                             />
                         ))
                     ) : (
-                        acts.map((act, index) => (
+                        filteredActs.map((act, index) => (
                             <ActResultTile
                                 key={index}
                                 {...act}
-                                onClick={() => onActClick?.(act)}
+                                isSelected={activeActId ? act.id === activeActId : false}
+                                onClick={() => {
+                                    setSearch(act.title);
+                                    onActClick?.(act);
+                                }}
                             />
                         ))
                     )}

@@ -20,6 +20,7 @@ export interface RichTextEditorProps {
 
 export function TextEditor({ content = "", onChange, className, placeholder, onEditorReady }: RichTextEditorProps) {
     const editor = useEditor({
+        immediatelyRender: false,
         extensions: [
             StarterKit,
             Placeholder.configure({

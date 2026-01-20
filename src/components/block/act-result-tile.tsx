@@ -21,6 +21,8 @@ export interface ActResultTileProps {
     onBookmark?: () => void;
     onMention?: () => void;
     onClick?: () => void;
+    isSelected?: boolean;
+    id?: string;
     className?: string;
 }
 
@@ -36,6 +38,7 @@ export function ActResultTile({
     onBookmark,
     onMention,
     onClick,
+    isSelected,
     className
 }: ActResultTileProps) {
     const [open, setOpen] = React.useState(false);
@@ -54,9 +57,10 @@ export function ActResultTile({
 
     return (
         <div className={cn(
-            "group relative flex flex-col gap-3 p-3 w-full",
-            "border border-color-border-neutral-default rounded-lg",
+            "group relative flex flex-col gap-3 p-3 w-full cursor-pointer",
+            "rounded-lg",
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
             "transition-colors duration-200",
             className
         )}

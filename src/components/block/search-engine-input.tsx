@@ -144,6 +144,9 @@ interface SearchEngineInputProps {
     children?: React.ReactNode;
     heading?: string | null;
     onOptionClick?: (value: string, currentContent?: string) => boolean | void;
+    // Controlled props for courts
+    selectedCourts?: string[];
+    onCourtsChange?: (courts: string[]) => void;
 }
 
 function SearchEngineInput({
@@ -159,13 +162,28 @@ function SearchEngineInput({
     tokenConfig = DEFAULT_TOKEN_CONFIG,
     onSubmit,
     heading,
-    onOptionClick
+    onOptionClick,
+    selectedCourts: propSelectedCourts,
+    onCourtsChange
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
-    const [selectedCourts, setSelectedCourts] = useState<string[]>([]);
+    // Internal state for courts if not controlled
+    const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
+
+    const effectiveSelectedCourts = propSelectedCourts !== undefined ? propSelectedCourts : internalSelectedCourts;
+
+    const handleCourtsChange = (newCourts: string[]) => {
+        if (onCourtsChange) {
+            onCourtsChange(newCourts);
+        }
+        if (propSelectedCourts === undefined) {
+            setInternalSelectedCourts(newCourts);
+        }
+    };
+
     const [selectedContextItems, setSelectedContextItems] = useState<string[]>([]);
     const [contextMode, setContextMode] = useState<"auto" | "self-managed">("self-managed");
     const [activeDropdown, setActiveDropdown] = useState<
@@ -418,13 +436,13 @@ function SearchEngineInput({
 
         filters.scopes = selectedScopes;
         filters.contextItems = selectedContextItems;
-        filters.courts = selectedCourts;
+        filters.courts = effectiveSelectedCourts;
 
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
             filters
         };
-    }, [selectedScopes, tokenConfig, selectedContextItems, selectedCourts]);
+    }, [selectedScopes, tokenConfig, selectedContextItems, effectiveSelectedCourts]);
 
     const handleSubmit = useCallback(() => {
         const payload = getParsedPayload();
@@ -543,7 +561,7 @@ function SearchEngineInput({
             }
         }
 
-        if (e.key === "Enter" && !e.shiftKey && input.trim() !== "") {
+        if (e.key === "Enter" && !e.shiftKey && input.trim() !== "" && input.trim().split(/\s+/).length >= 3) {
             e.preventDefault();
             handleSubmit();
             return;
@@ -1073,16 +1091,14 @@ function SearchEngineInput({
                         <div className="w-[350px]">
                             <CourtSelector
                                 categories={courtCategories}
-                                selectedCourts={selectedCourts}
+                                selectedCourts={effectiveSelectedCourts}
                                 onCourtSelect={(court) => {
-                                    if (!selectedCourts.includes(court)) {
-                                        setSelectedCourts((prev) => [...prev, court]);
-                                        console.log(`Court selected: ${court}`);
-                                    }
+                                    const newCourts = [...effectiveSelectedCourts, court];
+                                    handleCourtsChange(newCourts);
                                 }}
                                 onCourtDeselect={(court) => {
-                                    setSelectedCourts((prev) => prev.filter((c) => c !== court));
-                                    console.log(`Court deselected: ${court}`);
+                                    const newCourts = effectiveSelectedCourts.filter((c) => c !== court);
+                                    handleCourtsChange(newCourts);
                                 }}
                             />
                         </div>

@@ -148,6 +148,7 @@ const mockFileTreeData: FileTreeNodeType[] = [
 
 export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     defaultExpanded?: boolean;
+    defaultEnlarged?: boolean;
     title?: string;
     children?: React.ReactNode;
     onExpandChange?: (expanded: boolean) => void;
@@ -166,6 +167,7 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function NotesCard({
     className,
     defaultExpanded = false,
+    defaultEnlarged = false,
     title = "Notes",
     children,
     onExpandChange,
@@ -183,7 +185,7 @@ export function NotesCard({
 }: NotesCardProps) {
     const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
     const [isMaximized, setIsMaximized] = React.useState(false);
-    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(false);
+    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(defaultEnlarged);
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>("note-2");
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState("");
@@ -361,7 +363,7 @@ export function NotesCard({
                                         boundary="none"
                                         onClick={() => {
                                             setIsEnlargeOpen(false);
-                                            onSend?.(false);
+                                            onCancel?.();
                                         }}
                                     />
                                 </div>
