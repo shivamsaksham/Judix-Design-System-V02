@@ -144,7 +144,6 @@ interface SearchEngineInputProps {
     children?: React.ReactNode;
     heading?: string | null;
     onOptionClick?: (value: string, currentContent?: string) => boolean | void;
-    // Controlled props for courts
     selectedCourts?: string[];
     onCourtsChange?: (courts: string[]) => void;
 }
@@ -170,7 +169,6 @@ function SearchEngineInput({
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
-    // Internal state for courts if not controlled
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
 
     const effectiveSelectedCourts = propSelectedCourts !== undefined ? propSelectedCourts : internalSelectedCourts;
@@ -327,9 +325,6 @@ function SearchEngineInput({
 
     const filteredTriggerOptions = useMemo(() => {
         if (!triggerOptions) return [];
-        if (!searchQuery) return triggerOptions;
-
-
         const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, "");
         const normalizedQuery = normalize(searchQuery);
 
@@ -340,7 +335,6 @@ function SearchEngineInput({
         });
     }, [triggerOptions, searchQuery]);
 
-    // Refs for event handlers to access latest state
     const optionsRef = useRef(filteredTriggerOptions);
     const activeIndexRef = useRef(activeIndex);
 
@@ -384,9 +378,6 @@ function SearchEngineInput({
 
             const config = tokenConfig[type] || DEFAULT_TOKEN_CONFIG[type];
 
-            // Special handling for legacy/specific parsing logic if needed,
-            // but trying to make it generic based on config
-
             if (type === "Year") {
                 const value = valInputs[0].textContent?.trim() || "";
                 if (value.includes(":")) {
@@ -408,13 +399,11 @@ function SearchEngineInput({
                 return;
             }
 
-            // Generic parsing
             if (config && config.inputs.length === 1 && config.inputs[0].key) {
                 const key = config.inputs[0].key;
                 const val = valInputs[0].textContent?.trim();
                 if (val) filters[key] = val;
             } else if (config) {
-                // Fallback or complex types not covered by specific overrides
                 config.inputs.forEach((inputConfig, idx) => {
                     if (inputConfig.key && valInputs[idx]) {
                         const val = valInputs[idx].textContent?.trim();
@@ -758,7 +747,6 @@ function SearchEngineInput({
 
     const handleOptionSelect = (option: string, isManual: boolean = false) => {
         if (onOptionClick) {
-            // Get current parsed query to pass to handler
             const currentPayload = getParsedPayload();
             const currentQuery = currentPayload.query || "";
 

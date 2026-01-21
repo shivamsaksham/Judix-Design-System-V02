@@ -15,7 +15,6 @@ export interface ContentProps {
     onCaseLawsClick?: () => void;
     onActsClick?: () => void;
     onQueryEdit?: (newQuery: string) => void;
-    // Response Actions callbacks
     onLike?: () => void;
     onDislike?: () => void;
     onRefresh?: () => void;
@@ -43,14 +42,12 @@ export const Content = ({
 }: ContentProps) => {
     return (
         <div className={cn('flex flex-col max-w-4xl mx-auto', className)}>
-            {/* User Query Section */}
             <UserQuery
                 query={query}
                 onEdit={onQueryEdit}
                 className='mb-6'
             />
 
-            {/* Results Section */}
             <div className='p-1'>
                 <div className="mb-6">
                     <Artifacts
@@ -66,7 +63,6 @@ export const Content = ({
                     />
                 </div>
 
-                {/* Markdown Content Section */}
                 <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
@@ -92,7 +88,6 @@ export const Content = ({
                     </ReactMarkdown>
                 </div>
 
-                {/* Response Actions */}
                 <ResponseActions
                     className='w-fit'
                     onLike={onLike}

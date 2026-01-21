@@ -73,7 +73,6 @@ export const HistorySidebar = ({
     const userMenuRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Use controlled or internal state
     const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded;
 
     const handleToggle = () => {
@@ -84,7 +83,6 @@ export const HistorySidebar = ({
         }
     };
 
-    // Close menus when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -215,7 +213,6 @@ export const HistorySidebar = ({
         >
             {isExpanded ? (
                 <>
-                    {/* Header Section */}
                     <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
                         <Button
                             onClick={handleToggle}
@@ -235,7 +232,6 @@ export const HistorySidebar = ({
                         </Label>
                     </div>
 
-                    {/* Action Buttons */}
                     <SidebarActionButtons
                         onNewChat={onNewChat}
                         onNotes={onNotes}
@@ -243,7 +239,6 @@ export const HistorySidebar = ({
                         className="sidebar-fade-in-up-1"
                     />
 
-                    {/* Chats Section */}
                     <ChatHistorySection
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
@@ -251,7 +246,6 @@ export const HistorySidebar = ({
                         className="ml-1 mr-3"
                     />
 
-                    {/* Usage Section */}
                     <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
                         <div className="flex items-center gap-2 mb-3 ">
                             <span className=" p-1 
@@ -259,7 +253,6 @@ export const HistorySidebar = ({
                                             text-color-text-neutral-default">Usage</span>
                             <Icon name="InfoCircle" className="text-color-icon-neutral-tertiary w-4 h-4" />
                         </div>
-                        {/* Progress Bar */}
                         <div className="w-full 
                                         bg-button-color-neutral-disabled-stroke 
                                         rounded-full h-2 mb-1">
@@ -279,7 +272,6 @@ export const HistorySidebar = ({
                         </div>
                     </div>
 
-                    {/* User Profile Section */}
                     <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-up-3">
                         <div
                             className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
@@ -319,7 +311,6 @@ export const HistorySidebar = ({
                         </div>
                     </div>
 
-                    {/* ChatHistoryMenu Popup */}
                     {openMenuChatId && (
                         <div
                             ref={menuRef}
@@ -355,7 +346,6 @@ export const HistorySidebar = ({
                         </div>
                     )}
 
-                    {/* UserMenu Popup */}
                     {isUserMenuOpen && (
                         <div
                             ref={userMenuRef}
@@ -373,9 +363,7 @@ export const HistorySidebar = ({
                 </>
             ) : (
                 <>
-                    {/* Collapsed State */}
                     <div className="flex flex-col items-center h-full">
-                        {/* Toggle Icon */}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
@@ -392,7 +380,6 @@ export const HistorySidebar = ({
                             </TooltipContent>
                         </Tooltip>
 
-                        {/* Action Icons */}
                         <div className="flex flex-col gap-0 mx-1 p-1">
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -441,10 +428,8 @@ export const HistorySidebar = ({
                             </Tooltip>
                         </div>
 
-                        {/* Spacer */}
                         <div className="flex-1"></div>
 
-                        {/* Profile Icon */}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button

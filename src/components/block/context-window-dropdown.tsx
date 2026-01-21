@@ -37,29 +37,23 @@ export default function ContextWindowDropdown({
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);
     const [showInfo, setShowInfo] = useState(false);
-    // Removed internal storage of sessionContextChecked to use controlled prop
     const [items, setItems] = useState(externalItems);
 
-    // Update internal state when external items change
     useEffect(() => {
         setItems(externalItems);
     }, [externalItems]);
 
-    // Update internal auto context state if default changes (optional, but good practice)
     useEffect(() => {
         setIsAutoContext(defaultAutoContext);
     }, [defaultAutoContext]);
 
     const handleModeToggle = (checked: boolean) => {
-        // Toggle checked = true means Self-Managed selected.
-        // So isAutoContext should be false.
         const newAutoState = !checked;
         setIsAutoContext(newAutoState);
         onModeChange?.(newAutoState);
     };
 
     const handleItemCheck = (id: string, checked: boolean) => {
-        //  internal state now changes
         setItems(prevItems =>
             prevItems.map(item =>
                 item.id === id ? { ...item, checked } : item
@@ -82,9 +76,7 @@ export default function ContextWindowDropdown({
                 className
             )}
         >
-            {/* Header with Toggle */}
             <div className="p-4 flex-shrink-0">
-                {/* Title and Info Icon */}
                 <div className="flex items-center justify-between mb-2">
                     <h3 className="p-1 text-style-body-large-default text-color-text-neutral-default">
                         Context Window
@@ -99,7 +91,6 @@ export default function ContextWindowDropdown({
                     />
                 </div>
 
-                {/* Toggle Section */}
                 <div className="flex items-center gap-3">
                     <span className={cn(
                         "p-1 text-style-body-default-regular",
@@ -123,9 +114,9 @@ export default function ContextWindowDropdown({
 
             <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
 
-            {/* Scrollable Content Section */}
+            <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
+
             <div className="overflow-y-auto flex-1 p-2">
-                {/* Session Context Section */}
                 <Option
                     title="Session context"
                     subtext="Text added by you using add to context feature acting as session context"
@@ -142,7 +133,8 @@ export default function ContextWindowDropdown({
                     className="mb-3"
                 />
 
-                {/* Context Items List */}
+
+
                 <div className="space-y-2">
                     {items.map((item) => (
                         <Option
@@ -164,12 +156,13 @@ export default function ContextWindowDropdown({
                 </div>
             </div>
 
-            {/* Info Dialog */}
+
+
             <Dialog open={showInfo} onOpenChange={setShowInfo}>
                 <DialogContent className="max-w-2xl p-0 border-none" showCloseButton={false}>
                     <ContextWindowInfo onCloseClick={() => setShowInfo(false)} />
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     );
 }

@@ -13,7 +13,6 @@ export interface NavBarProps {
     onMenuClick?: () => void;
     className?: string;
 
-    // Context Window Props
     contextItems?: ContextItem[];
     isAutoContext?: boolean;
     onContextItemToggle?: (id: string, checked: boolean) => void;
@@ -21,7 +20,6 @@ export interface NavBarProps {
     isSessionContextChecked?: boolean;
     onSessionContextToggle?: (checked: boolean) => void;
 
-    // Layout Props
     isResultPanelOpen?: boolean;
 }
 
@@ -43,11 +41,9 @@ export default function NavBar({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const contextLabelRef = useRef<HTMLDivElement>(null);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Element;
-            // Ignore clicks inside dialogs (like the Info dialog)
             if (target.closest('[role="dialog"]')) {
                 return;
             }
@@ -85,10 +81,9 @@ export default function NavBar({
                 'transition-all duration-300 ease-in-out',
                 className
             )}
-            style={{ paddingRight: isResultPanelOpen ? '450px' : '1.25rem' }} // 1.25rem = px-5
+            style={{ paddingRight: isResultPanelOpen ? '450px' : '1.25rem' }}
         >
             <div className="flex items-center justify-between w-full my-[6px]">
-                {/* Left Section - Logo */}
                 <div className="flex items-center py-[2.16px] cursor-pointer">
                     <Image
                         src="/logo.svg"
@@ -99,8 +94,8 @@ export default function NavBar({
                     />
                 </div>
 
-                {/* Right Section - Actions */}
                 <div className="flex items-center">
+
 
                     <div className="flex items-center  mr-[10px]">
                         <Image src="/add-connector.svg" alt="Add" className="text-color-icon-primary-default -mr-[3px]" width={41} height={24} />
@@ -115,7 +110,6 @@ export default function NavBar({
                     </div>
 
 
-                    {/* Context Label */}
                     <div className="relative">
                         <Label
                             ref={contextLabelRef}
@@ -127,8 +121,6 @@ export default function NavBar({
                         >
                             Context
                         </Label>
-
-                        {/* Context Window Dropdown */}
                         {showContextDropdown && (
                             <div
                                 ref={dropdownRef}
@@ -147,9 +139,7 @@ export default function NavBar({
                     </div>
 
 
-                    {/* Share and Menu Group */}
                     <div className="flex items-center gap-3 ">
-                        {/* Share Button */}
                         <Button
                             onClick={onShareClick}
                             variant="neutral"
@@ -161,7 +151,6 @@ export default function NavBar({
                             <span className="p-1 text-style-body-default-regular">Share</span>
                         </Button>
 
-                        {/* Three Dot Menu */}
                         <Button
                             onClick={onMenuClick}
                             variant="neutral"

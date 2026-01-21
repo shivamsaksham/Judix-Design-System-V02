@@ -39,12 +39,11 @@ export function ResultPanel({
     viewMode = "judgments",
     onViewModeChange
 }: ResultPanelProps) {
-    // const [viewMode, setViewMode] = React.useState<"judgments" | "acts">("judgments"); // Managed by parent now
     const [search, setSearch] = React.useState("");
     const [debouncedSearch, setDebouncedSearch] = React.useState("");
     const [version, setVersion] = React.useState("v4");
 
-    // Debounce search
+
     React.useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(search);
@@ -53,7 +52,7 @@ export function ResultPanel({
         return () => clearTimeout(timer);
     }, [search]);
 
-    // Filter content
+
     const filteredJudgments = React.useMemo(() => {
         if (!debouncedSearch) return judgments;
         const lowercaseSearch = debouncedSearch.toLowerCase();
@@ -73,7 +72,7 @@ export function ResultPanel({
         );
     }, [acts, debouncedSearch]);
 
-    // Combined dropdown options
+
     const viewOptions: DropdownOption[] = [
         { value: "judgments", title: "Supreme Court" },
         { value: "acts", title: "Central Acts" },
@@ -96,7 +95,7 @@ export function ResultPanel({
     const currentTitle = isJudgments ? "Relevant Judgments" : "Acts & Sections";
     const currentDropdownLabel = viewOptions.find(o => o.value === viewMode)?.title || "Supreme Court";
 
-    // Determine which actions to show
+
     const actions = isJudgments ? (
         <>
             <IconButton
