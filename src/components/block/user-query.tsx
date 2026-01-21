@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from 'judix-icon';
+import { Icon } from '@judix/icon';
 import { Button } from '@/components/ui/button';
 import { showToast } from '@/components/ui/toast';
 
@@ -85,10 +85,9 @@ export const UserQuery = ({
     return (
         <div
             className={cn(
-                'relative border-b text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default',
+                'relative border-b',
                 'border-l-color-border-primary-default border-b-color-border-neutral-default  ',
                 'transition-all duration-200',
-                className
             )}
             onMouseEnter={() => !isEditing && setIsHovered(true)}
             onMouseLeave={() => !isEditing && setIsHovered(false)}
@@ -97,7 +96,7 @@ export const UserQuery = ({
                 <>
                     {/* Default/Hover State */}
                     <div className="relative p-1 pb-5 ">
-                        <p className="p-1 pr-20 break-words">
+                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
                             {query}
                         </p>
 
@@ -116,7 +115,7 @@ export const UserQuery = ({
                                     className="border-none p-0 bg-transparent hover:bg-transparent"
                                     aria-label="Copy query"
                                 >
-                                    <Icon name="Copy" className="text-color-icon-neutral-default w-5 h-5 relative" />
+                                    <Icon name="copy" className="text-color-icon-neutral-default w-5 h-5 relative" />
                                 </Button>
                                 <Button
                                     onClick={handleEdit}
@@ -125,7 +124,7 @@ export const UserQuery = ({
                                     className="border-none p-0 bg-transparent hover:bg-transparent"
                                     aria-label="Edit query"
                                 >
-                                    <Icon name="Edit" className="text-color-icon-neutral-default w-5 h-5 relative" />
+                                    <Icon name="edit-a" className="text-color-icon-neutral-default w-5 h-5 relative" />
                                 </Button>
                             </div>
                         )}
@@ -148,11 +147,7 @@ export const UserQuery = ({
                                     e.preventDefault();
                                 }
                             }}
-                            className={cn(
-                                'w-full max-w-full p-1 pr-20 outline-none',
-                                'whitespace-pre-wrap break-words overflow-wrap-anywhere',
-                                'bg-transparent',
-                            )}
+                            className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap break-words overflow-wrap-anywhere bg-transparent"
                         />
 
                         {/* Action Buttons - Positioned at bottom right */}

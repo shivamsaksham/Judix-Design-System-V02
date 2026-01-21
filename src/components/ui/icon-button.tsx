@@ -1,13 +1,13 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { Icon } from "judix-icon"
-import type { IconProps } from "judix-icon/dist/Icon"
+import { Icon } from "@judix/icon"
+import type { IconProps } from "@judix/icon"
 
 import { cn } from "@/lib/utils"
 
 const iconButtonVariants = cva(
-  "inline-flex items-center justify-center shrink-0 cursor-pointer font-semibold transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+  "p-2 inline-flex items-center justify-center shrink-0 cursor-pointer font-semibold transition-colors duration-200 ease-in-out disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   {
     variants: {
       boundary: {
@@ -24,10 +24,8 @@ const iconButtonVariants = cva(
         sharp: "rounded-icon_button-border-radius-sharp",
       },
       size: {
-        large: "h-10 w-10 p-2",
-        medium: "h-[34px] w-[34px] p-2",
-        small: "h-7 w-7 p-1.5",
-        extraSmall: "h-6 w-6 p-1",
+        large: "h-10 w-10",
+        medium: "h-8 w-8",
       },
     },
     defaultVariants: {
@@ -43,7 +41,7 @@ const iconVariants = cva("", {
   variants: {
     size: {
       large: "h-6 w-6",
-      medium: "h-5 w-5",
+      medium: "h-4 w-4",
       small: "h-4 w-4",
       extraSmall: "h-3.5 w-3.5",
     }
@@ -56,13 +54,14 @@ const iconVariants = cva("", {
 export interface IconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
   VariantProps<typeof iconButtonVariants> {
-  icon: IconProps["name"]
+  icon?: React.ComponentProps<typeof Icon>["name"]
   asChild?: boolean
   iconClassName?: string
+  children?: React.ReactNode
 }
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ className, variant, size, corner, boundary, asChild = false, icon, iconClassName, ...props }, ref) => {
+  ({ className, variant, size, corner, boundary, asChild = false, icon, iconClassName, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
@@ -70,7 +69,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         {...props}
       >
-        <Icon name={icon} className={cn(iconVariants({ size }), iconClassName)} />
+        {children ? children : icon ? <Icon name={icon} className={cn(iconVariants({ size }), iconClassName)} /> : null}
       </Comp>
     )
   }

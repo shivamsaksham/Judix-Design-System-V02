@@ -111,8 +111,8 @@ export default function ContextWindowDropdown({
 
             <div className="mb-2 border-b border-color-border-neutral-default" />
 
-            {/* Session Context Section */}
-            <div>
+            {/* Session Context Section - Scrollable */}
+            <div className="max-h-[400px] overflow-y-auto">
                 <Option
                     title="Session context"
                     subtext="Text added by you using add to context feature acting as session context"
@@ -124,27 +124,26 @@ export default function ContextWindowDropdown({
                             onCheckedChange={handleSessionContextToggle}
                         />
                     }
-                    className="mb-3"
                 />
 
                 {/* Context Items List */}
-                <div className="space-y-2">
-                    {items.map((item) => (
-                        <Option
-                            key={item.id}
-                            title={item.title}
-                            subtext={item.description}
-                            onClick={() => handleItemCheck(item.id, !item.checked)}
-                            prefixSlot={
-                                <Checkbox
-                                    id={item.id}
-                                    checked={item.checked}
-                                    onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
-                                />
-                            }
-                        />
-                    ))}
-                </div>
+
+                {items.map((item) => (
+                    <Option
+                        key={item.id}
+                        title={item.title}
+                        subtext={item.description}
+                        onClick={() => handleItemCheck(item.id, !item.checked)}
+                        prefixSlot={
+                            <Checkbox
+                                id={item.id}
+                                checked={item.checked}
+                                onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                            />
+                        }
+                    />
+                ))}
+
             </div>
 
             {/* Info Dialog */}

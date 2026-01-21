@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { Icon } from 'judix-icon';
 import ContextWindowDropdown from './context-window-dropdown';
+import { IconButton } from '../ui/icon-button';
 import { Button } from '../ui';
 
 export interface NavBarProps {
@@ -12,6 +12,8 @@ export interface NavBarProps {
     onContextClick?: () => void;
     onShareClick?: () => void;
     onMenuClick?: () => void;
+    showBackToResearch?: boolean;
+    showMenu?: boolean;
     className?: string;
 }
 
@@ -20,6 +22,8 @@ export default function NavBar({
     onContextClick,
     onShareClick,
     onMenuClick,
+    showBackToResearch = false,
+    showMenu = true,
     className,
 }: NavBarProps) {
     const [showContextDropdown, setShowContextDropdown] = useState(false);
@@ -90,7 +94,7 @@ export default function NavBar({
         <nav
             className={cn(
                 'flex items-center justify-between',
-                'px-5 py-2',
+                'px-5 py-[14px]',
                 'bg-color-surface-neutral-default',
                 className
             )}
@@ -152,34 +156,38 @@ export default function NavBar({
 
                     {/* Share and Menu Group */}
                     <div className="flex items-center gap-3 ">
-                        {/* Share Button */}
-                        <Button
-                            onClick={onShareClick}
-                            variant="neutral"
-                            size="small"
-                            prefixIcon="Export"
-                            className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
-                            iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
-                        >
-                            <span className="p-1 text-style-body-default-regular">Share</span>
-                        </Button>
+                        {/* Back to Research Button */}
+                        {showBackToResearch && (
+                            <Button
+                                onClick={onShareClick}
+                                variant="neutral"
+                                size="small"
+                                prefixIcon="BackSquare"
+                                className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
+                                iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
+                            >
+                                <span className="p-1 text-style-body-default-regular">Back to Research</span>
+                            </Button>
+                        )}
 
                         {/* Three Dot Menu */}
-                        <Button
-                            onClick={onMenuClick}
-                            variant="neutral"
-                            size="small"
-                            className='border-none p-2 bg-color-surface-neutral-default m-[1px] gap-1 h-fit'
-                            iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
-                        >
-                            <Image
-                                src="/ellipsis.svg"
-                                alt="Menu"
-                                width={20}
-                                height={20}
-                            aria-label="More options"
-                        />
-                        </Button>
+                        {showMenu && (
+                            <IconButton
+                                onClick={onMenuClick}
+                                variant="neutral"
+                                size="medium"
+                                corner='sharp'
+                                className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-[1px] h-fit"
+                            >
+                                <Image
+                                    src="/ellipsis.svg"
+                                    alt="Menu"
+                                    width={20}
+                                    height={20}
+                                    aria-label="More options"
+                                />
+                            </IconButton>
+                        )}
                     </div>
                 </div>
             </div>

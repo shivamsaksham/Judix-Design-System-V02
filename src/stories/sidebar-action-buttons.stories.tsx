@@ -9,8 +9,8 @@ const meta = {
     },
     decorators: [
         (Story) => (
-            <div className="p-4 bg-dropdown-color-bg w-[300px] border border-dropdown-color-stroke rounded-lg">
-                <Story />
+            <div >
+                <Story  />
             </div>
         ),
     ],

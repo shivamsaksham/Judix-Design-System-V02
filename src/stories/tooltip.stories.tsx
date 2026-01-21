@@ -29,6 +29,65 @@ export const Default: Story = {
     ),
 };
 
+export const Rename: Story = {
+    render: () => (
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="neutral" size="small">Hover to see action</Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p>Rename</p>
+                </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
+    ),
+};
+
+export const AllPositions: Story = {
+    render: () => (
+        <TooltipProvider>
+            <div className="flex gap-8 items-center justify-center p-20">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="neutral" size="small">Top</Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                        <p>Tooltip on top</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="neutral" size="small">Right</Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        <p>Tooltip on right</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="neutral" size="small">Bottom</Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Tooltip on bottom</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="neutral" size="small">Left</Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">
+                        <p>Tooltip on left</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        </TooltipProvider>
+    ),
+};
+
 export const WithIcon: Story = {
     render: () => (
         <TooltipProvider>
