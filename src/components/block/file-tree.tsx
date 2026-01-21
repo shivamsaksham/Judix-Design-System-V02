@@ -28,14 +28,33 @@ interface FileTreeNodeProps {
     node: FileTreeNodeType;
     level?: number;
     activeId?: string;
-    onSelect?: (node: FileItem) => void;
+    activeIds?: string[];
+    onSelect?: (node: FileTreeNodeType) => void;
     onToggle?: (node: FolderItem) => void;
 }
+
+const hasActiveDescendant = (
+    node: FileTreeNodeType,
+    activeId?: string,
+    activeIds?: string[]
+): boolean => {
+    if (node.type !== "folder") return false;
+
+    return node.children.some(child => {
+        const isChildActive = child.id === activeId || activeIds?.includes(child.id);
+        if (isChildActive) return true;
+        if (child.type === "folder") {
+            return hasActiveDescendant(child, activeId, activeIds);
+        }
+        return false;
+    });
+};
 
 const FileTreeNode = ({
     node,
     level = 0,
     activeId,
+    activeIds,
     onSelect,
     onToggle,
 }: FileTreeNodeProps) => {
@@ -48,6 +67,7 @@ const FileTreeNode = ({
         if (node.type === "folder") {
             setIsOpen(!isOpen);
             onToggle?.(node);
+            onSelect?.(node);
         }
     };
 
@@ -74,7 +94,19 @@ const FileTreeNode = ({
         }
     };
 
-    const isActive = activeId === node.id;
+    const isActive = React.useMemo(() => {
+        if (node.type === "folder" && level > 0) {
+            return false;
+        }
+
+        const isSelfActive = activeId === node.id || activeIds?.includes(node.id);
+        if (isSelfActive) return true;
+
+        if (node.type === "folder" && level === 0) {
+            return hasActiveDescendant(node, activeId, activeIds);
+        }
+        return false;
+    }, [activeId, activeIds, node, level]);
 
     return (
         <div className="select-none">
@@ -82,7 +114,9 @@ const FileTreeNode = ({
                 className={cn(
                     "group flex items-center gap-2 py-1.5 px-2 rounded-lg cursor-pointer transition-colors duration-200",
                     isActive
-                        ? "bg-color-surface-primary-subtle_bg text-color-text-neutral-default"
+                        ? node.type === "folder"
+                            ? "bg-color-surface-neutral-subtle_bg text-color-text-neutral-default"
+                            : "bg-color-surface-primary-subtle_bg text-color-text-neutral-default"
                         : "text-color-text-neutral-default hover:bg-color-surface-neutral-subtle_bg",
                     "w-full"
                 )}
@@ -129,6 +163,7 @@ const FileTreeNode = ({
                                     node={child}
                                     level={level + 1}
                                     activeId={activeId}
+                                    activeIds={activeIds}
                                     onSelect={onSelect}
                                     onToggle={onToggle}
                                 />
@@ -144,11 +179,12 @@ const FileTreeNode = ({
 export interface FileTreeProps {
     data: FileTreeNodeType[];
     activeId?: string;
-    onSelect?: (node: FileItem) => void;
+    activeIds?: string[];
+    onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
 }
 
-export function FileTree({ data, activeId, onSelect, className }: FileTreeProps) {
+export function FileTree({ data, activeId, activeIds, onSelect, className }: FileTreeProps) {
     return (
         <div className={cn("flex flex-col w-full h-full overflow-y-auto custom-scrollbar min-w-0 overflow-x-hidden", className)}>
             {data.map((node) => (
@@ -156,6 +192,7 @@ export function FileTree({ data, activeId, onSelect, className }: FileTreeProps)
                     key={node.id}
                     node={node}
                     activeId={activeId}
+                    activeIds={activeIds}
                     onSelect={onSelect}
                 />
             ))}

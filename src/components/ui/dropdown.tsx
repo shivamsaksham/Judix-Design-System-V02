@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Option } from './option';
 import { TextInput, inputVariants } from './text-input';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
@@ -24,6 +24,7 @@ export interface DropdownProps {
   searchbar?: "attached" | "integrated" | "off";
   placeholder?: string;
   className?: string;
+  activeIndex?: number | null;
 }
 
 export const Dropdown = ({
@@ -32,13 +33,26 @@ export const Dropdown = ({
   onChange,
   searchbar = "off",
   placeholder = "Search...",
-  className
+  className,
+  activeIndex
 }: DropdownProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const optionsContainerRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const filteredOptions = options.filter(option =>
     option.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Scroll active option into view
+  useEffect(() => {
+    if (activeIndex !== null && activeIndex !== undefined && optionRefs.current[activeIndex]) {
+      optionRefs.current[activeIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  }, [activeIndex]);
 
   const renderSearchBar = () => {
     if (searchbar === "attached") {
@@ -72,22 +86,30 @@ export const Dropdown = ({
   };
 
   const renderOptions = () => (
-    <div className="space-y-1 max-h-60 overflow-y-auto ">
+    <div
+      ref={optionsContainerRef}
+      className="space-y-1 max-h-60 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+    >
       {filteredOptions.length > 0 ? (
-        filteredOptions.map(option => (
-          <Option
+        filteredOptions.map((option, index) => (
+          <div
             key={option.value}
-            title={option.title}
-            subtext={option.subtext}
-            prefixSlot={option.leadingIcon}
-            suffixSlot={option.trailingAccessory}
-            selected={value === option.value}
-            onClick={() => {
-              onChange(option.value);
-              setSearchTerm("");
-            }}
-            className={option.className}
-          />
+            ref={(el) => { optionRefs.current[index] = el; }}
+          >
+            <Option
+              title={option.title}
+              subtext={option.subtext}
+              prefixSlot={option.leadingIcon}
+              suffixSlot={option.trailingAccessory}
+              selected={value === option.value}
+              highlighted={activeIndex === index}
+              onClick={() => {
+                onChange(option.value);
+                setSearchTerm("");
+              }}
+              className={option.className}
+            />
+          </div>
         ))
       ) : (
         <div className="p-2 option-font-title text-center textinput-color-text-active">
