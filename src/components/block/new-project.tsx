@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { GlobalContextManagement, ContextFile } from './global-context-management';
 import { Label } from '@/components/ui/label';
 import { IconButton } from '@/components/ui/icon-button';
+import { Button } from '@/components/ui/button';
 
 export interface NewProjectProps {
     titlePlaceholder?: string;
@@ -14,18 +15,22 @@ export interface NewProjectProps {
     onContextChange?: (files: ContextFile[]) => void;
     onTitleChange?: (title: string) => void;
     onDescriptionChange?: (description: string) => void;
+    onCreate?: () => void;
+    onCancel?: () => void;
     className?: string;
 }
 
 export const NewProject = ({
-    titlePlaceholder = 'New Project',
-    descriptionPlaceholder = 'Description of what this Space is for and how to use it',
+    titlePlaceholder = 'Type your project name here...',
+    descriptionPlaceholder = 'Description of your project and what it is for.',
     sectionTitle = 'Global context files',
     emptyStateText = 'Click to add project-wide global context information like case facts, client discussions etc.',
     initialContextFiles = [],
     onContextChange,
     onTitleChange,
     onDescriptionChange,
+    onCreate,
+    onCancel,
     className,
 }: NewProjectProps) => {
     const [title, setTitle] = useState('');
@@ -46,7 +51,7 @@ export const NewProject = ({
             <div className="mb-12">
                 {/* Icon */}
                 <IconButton
-                    icon="DocumentText"
+                    icon="folder-a"
                     variant="primary_2_tone"
                     size="large"
                     corner='sharp'
@@ -87,6 +92,24 @@ export const NewProject = ({
                 initialContextFiles={initialContextFiles}
                 onContextChange={onContextChange}
             />
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 mt-12">
+                <Button
+                    variant="primary"
+                    size="small"
+                    onClick={onCreate}
+                >
+                    Create
+                </Button>
+                <Button
+                    variant="neutral"
+                    size="small"
+                    onClick={onCancel}
+                >
+                    Cancel
+                </Button>
+            </div>
         </div>
     );
 };

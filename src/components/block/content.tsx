@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { UserQuery } from './user-query';
 import { Artifacts } from './artifacts';
 import { ResponseActions } from './response-actions';
+import { FollowUpQuery } from '@/components/block/follow-up-query';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -22,6 +23,9 @@ export interface ContentProps {
     onCopy?: () => void;
     isLiked?: boolean;
     isDisliked?: boolean;
+    // Follow-up queries
+    followUpQueries?: string[];
+    onFollowUpQueryClick?: (query: string) => void;
     className?: string;
 }
 
@@ -39,6 +43,8 @@ export const Content = ({
     onCopy,
     isLiked,
     isDisliked,
+    followUpQueries,
+    onFollowUpQueryClick,
     className,
 }: ContentProps) => {
     return (
@@ -47,11 +53,10 @@ export const Content = ({
             <UserQuery
                 query={query}
                 onEdit={onQueryEdit}
-                className='mb-6'
             />
 
             {/* Results Section */}
-            <div className='p-1'>
+            <div className='p-1 mt-6'>
                 <div className="mb-6">
                     <Artifacts
                         title='Cases'
@@ -103,6 +108,21 @@ export const Content = ({
                     isDisliked={isDisliked}
                     contentToCopy={markdown}
                 />
+
+                {/* Follow-up Queries */}
+                {followUpQueries && followUpQueries.length > 0 && (
+                    <div>
+                        <div className="flex flex-wrap">
+                            {followUpQueries.map((query, index) => (
+                                <FollowUpQuery
+                                    key={index}
+                                    query={query}
+                                    onClick={() => onFollowUpQueryClick?.(query)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

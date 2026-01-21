@@ -15,8 +15,6 @@ type Story = StoryObj<typeof meta>;
 
 export const EmptyState: Story = {
     args: {
-        titlePlaceholder: 'New Project',
-        descriptionPlaceholder: 'Description of what this Space is for and how to use it',
         sectionTitle: 'Global context files',
         emptyStateText: 'Click to add project-wide global context information like case facts, client discussions etc.',
         initialContextFiles: [],
