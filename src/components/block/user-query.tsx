@@ -88,6 +88,7 @@ export const UserQuery = ({
                 'relative border-b',
                 'border-l-color-border-primary-default border-b-color-border-neutral-default  ',
                 'transition-all duration-200',
+                className
             )}
             onMouseEnter={() => !isEditing && setIsHovered(true)}
             onMouseLeave={() => !isEditing && setIsHovered(false)}

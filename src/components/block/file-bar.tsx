@@ -18,6 +18,7 @@ export interface FileBarProps {
     onCreateNew?: (type: "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
+    onToggle?: (node: any) => void;
 }
 
 export function FileBar({
@@ -29,6 +30,7 @@ export function FileBar({
     onCreateNew,
     onEdit,
     onDelete,
+    onToggle,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -72,25 +74,28 @@ export function FileBar({
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         variant="neutral"
                         size="extraSmall"
-                        suffixIcon="ArrowDown"
+                        suffixIcon="arrow-down-c"
                         className="h-8"
+                        disabled={!activeId}
                     >
                         Create new
                     </Button>
 
                     <IconButton
-                        icon="Edit2"
+                        icon="edit-a"
                         size="medium"
                         variant="neutral"
                         onClick={onEdit}
                         className="hover:bg-color-surface-neutral-subtle_bg"
+                        disabled={!activeId}
                     />
                     <IconButton
-                        icon="Trash"
+                        icon="trash"
                         size="medium"
                         variant="neutral"
                         onClick={onDelete}
                         className="hover:bg-color-surface-neutral-subtle_bg"
+                        disabled={!activeId}
                     />
                 </div>
             </div>
@@ -101,6 +106,7 @@ export function FileBar({
                     activeId={activeId}
                     activeIds={activeIds}
                     onSelect={onSelect}
+                    onToggle={onToggle}
                     className="p-2"
                 />
             </div>

@@ -87,7 +87,7 @@ export function JudgmentTile({
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <div onClick={(e) => e.stopPropagation()}>
-                            <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                            <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
                         </div>
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">

@@ -12,6 +12,8 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '../ui';
 import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import Confirmation from './confirmation';
+import { ShareSearchDialog } from './share-search-dialog';
 
 export interface ChatHistoryItem {
     id: string;
@@ -73,6 +75,8 @@ export const HistorySidebar = ({
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [userMenuPosition, setUserMenuPosition] = useState({ top: 0, left: 0 });
     const [internalIsExpanded, setInternalIsExpanded] = useState(false);
+    const [deleteConfirmationChatId, setDeleteConfirmationChatId] = useState<string | null>(null);
+    const [shareChatId, setShareChatId] = useState<string | null>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -85,6 +89,8 @@ export const HistorySidebar = ({
             setInternalIsExpanded(!internalIsExpanded);
         }
     };
+
+    // ... useEffect ...
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -117,9 +123,18 @@ export const HistorySidebar = ({
     const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
         setOpenMenuChatId(null);
         if (action === 'rename' && onRename) onRename(chatId);
-        if (action === 'share' && onShare) onShare(chatId);
+        if (action === 'share') setShareChatId(chatId);
         if (action === 'move' && onMove) onMove(chatId);
-        if (action === 'delete' && onDelete) onDelete(chatId);
+        if (action === 'delete') {
+            setDeleteConfirmationChatId(chatId);
+        }
+    };
+
+    const handleConfirmDelete = () => {
+        if (deleteConfirmationChatId && onDelete) {
+            onDelete(deleteConfirmationChatId);
+        }
+        setDeleteConfirmationChatId(null);
     };
 
     return (
@@ -427,6 +442,26 @@ export const HistorySidebar = ({
                     </div>
                 </>
             )}
+            <Confirmation
+                open={!!deleteConfirmationChatId}
+                onOpenChange={(open) => !open && setDeleteConfirmationChatId(null)}
+                mainText="Delete Project"
+                subText="This action cannot be undone."
+                onConfirmClick={handleConfirmDelete}
+                onCancelClick={() => setDeleteConfirmationChatId(null)}
+                confirmVariant="destructive"
+            />
+            <ShareSearchDialog
+                open={!!shareChatId}
+                onOpenChange={(open) => !open && setShareChatId(null)}
+                shareLink={`https://judix.in/share/${shareChatId}`}
+                onShare={(recipients, note) => {
+                    console.log('Sharing', recipients, note);
+                    setShareChatId(null);
+                }}
+                onCopyLink={() => console.log('Link copied')}
+                onDownloadPdf={() => console.log('Downloading PDF')}
+            />
         </div>
     );
 };

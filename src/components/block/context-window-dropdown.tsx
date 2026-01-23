@@ -85,7 +85,7 @@ export default function ContextWindowDropdown({
                         onClick={() => setShowInfo(true)}
                         variant="neutral"
                         size="small"
-                        prefixIcon="InfoCircle"
+                        prefixIcon="info-circle"
                         className='border-none p-1 h-fit bg-color-surface-neutral-default'
                         iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                     />

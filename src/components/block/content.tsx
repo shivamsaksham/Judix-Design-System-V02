@@ -79,28 +79,31 @@ export const Content = ({
     return (
         <div className={cn('flex flex-col max-w-4xl mx-auto', className)}>
             {/* User Query Section */}
-            <UserQuery
-                query={query}
-                onEdit={onQueryEdit}
-            />
-
-            {/* Results Section */}
             <div className='p-1 mt-6'>
-                <div className="mb-6">
-                    <Artifacts
-                        title='Cases'
-                        subtitle={`Found ${caseLawsCount} cases`}
-                        onClick={onCaseLawsClick}
-                        isResult
+                {!hideQuery && (
+                    <UserQuery
+                        query={query}
+                        onEdit={onQueryEdit}
                     />
-                    <Artifacts
-                        title='Acts and Sections'
-                        subtitle={`${actsCount} Acts identified`}
-                        onClick={onActsClick}
-                    />
-                </div>
+                )}
+                {/* Results Section */}
+                {(caseLawsCount > 0 || actsCount > 0) && (
+                    <div className="mb-6 mt-6">
+                        <Artifacts
+                            title='Cases'
+                            subtitle={`Found ${caseLawsCount} cases`}
+                            onClick={onCaseLawsClick}
+                            isResult
+                        />
+                        <Artifacts
+                            title='Acts and Sections'
+                            subtitle={`${actsCount} Acts identified`}
+                            onClick={onActsClick}
+                        />
+                    </div>
+                )}
 
-                <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
+                {displayText && <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -123,9 +126,9 @@ export const Content = ({
                     >
                         {displayText}
                     </ReactMarkdown>
-                </div>
+                </div>}
 
-                <ResponseActions
+                {displayText && <ResponseActions
                     className='w-fit'
                     onLike={onLike}
                     onDislike={onDislike}
@@ -134,7 +137,7 @@ export const Content = ({
                     isLiked={isLiked}
                     isDisliked={isDisliked}
                     contentToCopy={markdown}
-                />
+                />}
 
                 {/* Follow-up Queries */}
                 {followUpQueries && followUpQueries.length > 0 && (

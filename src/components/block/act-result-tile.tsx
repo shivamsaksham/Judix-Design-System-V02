@@ -99,7 +99,7 @@ export function ActResultTile({
                     >
                         <span className="flex items-center gap-1">
                             {expanded ? "Show less" : "Read more"}
-                            <Icon name="ArrowDown" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
+                            <IconButton icon="arrow-down-a" variant="neutral" boundary="stroked" corner="rounded" size="medium" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
                         </span>
                     </Label>
                 )}

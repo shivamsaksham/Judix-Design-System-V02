@@ -11,6 +11,8 @@ export interface NewProjectProps {
     descriptionPlaceholder?: string;
     sectionTitle?: string;
     emptyStateText?: string;
+    initialTitle?: string;
+    initialDescription?: string;
     initialContextFiles?: ContextFile[];
     onContextChange?: (files: ContextFile[]) => void;
     onTitleChange?: (title: string) => void;
@@ -18,9 +20,12 @@ export interface NewProjectProps {
     onCreate?: () => void;
     onCancel?: () => void;
     className?: string;
+    submitButtonText?: string;
 }
 
 export const NewProject = ({
+    initialTitle = '',
+    initialDescription = '',
     titlePlaceholder = 'Type your project name here...',
     descriptionPlaceholder = 'Description of your project and what it is for.',
     sectionTitle = 'Global context files',
@@ -32,9 +37,22 @@ export const NewProject = ({
     onCreate,
     onCancel,
     className,
+    submitButtonText = 'Create',
 }: NewProjectProps) => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [title, setTitle] = useState(initialTitle);
+    const [description, setDescription] = useState(initialDescription);
+    const [contextFiles, setContextFiles] = useState(initialContextFiles); // We might need to sync this too
+
+    // Sync state with props when switching projects
+    React.useEffect(() => {
+        setTitle(initialTitle);
+        setDescription(initialDescription);
+    }, [initialTitle, initialDescription]);
+
+    // Note: GlobalContextManagement handles its own state but accepts initialContextFiles. 
+    // If we want to reset it, we might need a key or similar mechanism.
+    // For now, let's assume switching the component instance (by key) or reliance on key prop in ProjectsPage will handle reset.
+
 
     const handleTitleChange = (value: string) => {
         setTitle(value);
@@ -46,7 +64,7 @@ export const NewProject = ({
         onDescriptionChange?.(value);
     };
     return (
-        <div className={cn('w-full max-w-[600px] p-6 bg-color-surface-neutral-default', className)}>
+        <div className={cn('w-full max-w-[882px] p-6 bg-color-surface-neutral-default text-left items-start', className)}>
             {/* Header Section */}
             <div className="mb-12">
                 {/* Icon */}
@@ -100,7 +118,7 @@ export const NewProject = ({
                     size="small"
                     onClick={onCreate}
                 >
-                    Create
+                    {submitButtonText}
                 </Button>
                 <Button
                     variant="neutral"

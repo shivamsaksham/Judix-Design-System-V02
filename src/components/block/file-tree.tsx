@@ -4,6 +4,7 @@ import * as React from "react";
 import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { IconButton } from "../ui";
 
 export type FileType = "chat" | "note" | "archive";
 
@@ -62,11 +63,17 @@ const FileTreeNode = ({
         node.type === "folder" ? !!node.isOpen : false
     );
 
+    React.useEffect(() => {
+        if (node.type === "folder" && node.isOpen !== undefined) {
+            setIsOpen(node.isOpen);
+        }
+    }, [node.type === "folder" ? node.isOpen : undefined, node.type]);
+
     const handleToggle = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (node.type === "folder") {
             setIsOpen(!isOpen);
-            onToggle?.(node);
+            onToggle?.(node as FolderItem);
             onSelect?.(node);
         }
     };
@@ -80,33 +87,21 @@ const FileTreeNode = ({
 
     const getIcon = () => {
         if (node.type === "folder") {
-            return "Folder" as any;
+            return "folder-a" as any;
         }
-        switch (node.fileType) {
-            case "chat":
-                return "Message";
-            case "note":
-                return "Note";
-            case "archive":
-                return "Save2";
-            default:
-                return "Document";
-        }
+        return 'note-a' as any;
     };
 
     const isActive = React.useMemo(() => {
-        if (node.type === "folder" && level > 0) {
-            return false;
-        }
-
         const isSelfActive = activeId === node.id || activeIds?.includes(node.id);
         if (isSelfActive) return true;
 
-        if (node.type === "folder" && level === 0) {
+        // For folders at any level, check if they have an active descendant
+        if (node.type === "folder") {
             return hasActiveDescendant(node, activeId, activeIds);
         }
         return false;
-    }, [activeId, activeIds, node, level]);
+    }, [activeId, activeIds, node]);
 
     return (
         <div className="select-none">
@@ -131,9 +126,9 @@ const FileTreeNode = ({
                             : "text-color-icon-neutral-default"
                 )}>
                     {node.type === "folder" ? (
-                        <Icon name={(isOpen ? "DocumentText" : "DocumentCopy")} className="w-4 h-4" />
+                        <IconButton icon={(isOpen ? "folder-open" : "folder-a")} variant={'neutral'} size={'medium'} boundary={'none'} />
                     ) : (
-                        <Icon name={getIcon()} className="w-4 h-4" />
+                        <IconButton icon={getIcon()} variant={'neutral'} size={'medium'} boundary={'none'} />
                     )}
                 </div>
 
@@ -181,10 +176,11 @@ export interface FileTreeProps {
     activeId?: string;
     activeIds?: string[];
     onSelect?: (node: FileTreeNodeType) => void;
+    onToggle?: (node: FolderItem) => void;
     className?: string;
 }
 
-export function FileTree({ data, activeId, activeIds, onSelect, className }: FileTreeProps) {
+export function FileTree({ data, activeId, activeIds, onSelect, onToggle, className }: FileTreeProps) {
     return (
         <div className={cn("flex flex-col w-full h-full overflow-y-auto custom-scrollbar min-w-0 overflow-x-hidden", className)}>
             {data.map((node) => (
@@ -194,6 +190,7 @@ export function FileTree({ data, activeId, activeIds, onSelect, className }: Fil
                     activeId={activeId}
                     activeIds={activeIds}
                     onSelect={onSelect}
+                    onToggle={onToggle}
                 />
             ))}
         </div>

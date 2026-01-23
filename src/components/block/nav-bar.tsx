@@ -6,6 +6,7 @@ import Image from 'next/image';
 import ContextWindowDropdown from './context-window-dropdown';
 import { IconButton } from '../ui/icon-button';
 import { Button } from '../ui';
+import { ContextItem } from '@/types';
 
 export interface NavBarProps {
     onIndependentClick?: () => void;
@@ -15,6 +16,7 @@ export interface NavBarProps {
     showBackToResearch?: boolean;
     showMenu?: boolean;
     className?: string;
+    projectName?: string;
 
     contextItems?: ContextItem[];
     isAutoContext?: boolean;
@@ -34,6 +36,7 @@ export default function NavBar({
     showBackToResearch = false,
     showMenu = true,
     className,
+    projectName = "Independent",
     contextItems = [],
     isAutoContext = true,
     onContextItemToggle,
@@ -110,7 +113,7 @@ export default function NavBar({
                             onClick={onIndependentClick}
                             className="cursor-pointer hover:bg-color-surface-neutral-default relative z-10 bg-color-surface-neutral-default"
                         >
-                            Independent
+                            {projectName}
                         </Label>
                     </div>
 
@@ -151,7 +154,7 @@ export default function NavBar({
                                 onClick={onShareClick}
                                 variant="neutral"
                                 size="small"
-                                prefixIcon="BackSquare"
+                                prefixIcon="back-square"
                                 className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
                                 iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                             >

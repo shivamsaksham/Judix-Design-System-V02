@@ -12,8 +12,6 @@ export interface AddToContextProps {
     onCancel?: () => void;
     onClose?: () => void;
     className?: string;
-    initialTitle?: string;
-    initialContent?: string;
 }
 
 const MAX_CHARACTERS = 2500;
@@ -26,8 +24,6 @@ export default function AddToContext({
     onCancel,
     onClose,
     className,
-    initialTitle = '',
-    initialContent = '',
 }: AddToContextProps) {
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);

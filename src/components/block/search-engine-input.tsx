@@ -1138,7 +1138,7 @@ function SearchEngineInput({
                                     if (activeDropdown === "add") refs.setReference(node);
                                 }}
                                 color="neutral"
-                                icon="Add"
+                                icon="add"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
@@ -1151,7 +1151,7 @@ function SearchEngineInput({
                                     if (activeDropdown === "settings") refs.setReference(node);
                                 }}
                                 color="neutral"
-                                icon="Setting4"
+                                icon="setting-c"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
@@ -1164,7 +1164,7 @@ function SearchEngineInput({
                                     if (activeDropdown === "folder") refs.setReference(node);
                                 }}
                                 color="neutral"
-                                icon="Activity"
+                                icon="folder-open"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
@@ -1184,7 +1184,7 @@ function SearchEngineInput({
                             <IconButton
                                 onClick={handleSubmit}
                                 color="primary"
-                                icon="ArrowUp"
+                                icon="arrow-up-d"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
