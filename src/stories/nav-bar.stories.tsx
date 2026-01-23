@@ -22,6 +22,26 @@ export const Default: Story = {
     },
 };
 
+export const NewChat: Story = {
+    args: {
+        isNewChat: true,
+        onIndependentClick: () => console.log('Independent clicked'),
+        onContextClick: () => console.log('Context clicked'),
+        onShareClick: () => console.log('Share clicked'),
+        onRename: () => console.log('Rename clicked'),
+        onDelete: () => console.log('Delete clicked'),
+    },
+};
+
+export const LoadedChat: Story = {
+    args: {
+        isNewChat: false,
+        onIndependentClick: () => console.log('Independent clicked'),
+        onContextClick: () => console.log('Context clicked'),
+        onShareClick: () => console.log('Share clicked'),
+    },
+};
+
 export const WithCustomClass: Story = {
     args: {
         className: 'shadow-lg',
