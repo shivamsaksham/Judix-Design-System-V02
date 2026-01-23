@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from 'judix-icon'
+import { Icon } from '@judix/icon'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -31,12 +31,12 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
         <DialogHeader className='flex-row justify-between'>
           <DialogTitle className='confirmation-font-title p-1'>Confirmation</DialogTitle>
           <DialogClose className='cursor-pointer'>
-            <Icon name="Cross"></Icon>
+            <Icon name="cross"></Icon>
           </DialogClose>
         </DialogHeader>
-        
+
         <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext flex flex-col gap-1'>
-           <span className='p-1'>
+          <span className='p-1'>
             {mainText}
           </span>
           <span className='p-1  text-confirmation-color-subtext confirmation-font-subtext'>

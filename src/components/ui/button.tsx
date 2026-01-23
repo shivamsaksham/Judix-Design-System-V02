@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { Icon } from "judix-icon"
-import type { IconProps } from "judix-icon/dist/Icon"
+import { Icon } from "@judix/icon"
+import type { IconProps } from "@judix/icon"
 
 import { cn } from "@/lib/utils"
 
@@ -58,8 +58,8 @@ export interface ButtonProps extends React.ComponentProps<"button">,
   VariantProps<typeof buttonVariants> {
   iconClassName?: string
   asChild?: boolean
-  prefixIcon?: IconProps['name']
-  suffixIcon?: IconProps['name']
+  prefixIcon?: React.ComponentProps<typeof Icon>['name']
+  suffixIcon?: React.ComponentProps<typeof Icon>['name']
   iconStrokeWidth?: number
 }
 

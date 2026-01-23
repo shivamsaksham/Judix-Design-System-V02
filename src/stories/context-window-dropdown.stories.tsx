@@ -77,3 +77,15 @@ export const Interactive: Story = {
         );
     },
 };
+
+export const ManyItems: Story = {
+    args: {
+        items: Array.from({ length: 20 }, (_, i) => ({
+            id: `item-${i + 1}`,
+            title: `Context Item ${i + 1}`,
+            description: `Description for context item ${i + 1}. This demonstrates scrolling behavior.`,
+            checked: false,
+        })),
+        defaultAutoContext: true,
+    },
+};

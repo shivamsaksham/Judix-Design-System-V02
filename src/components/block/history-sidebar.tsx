@@ -1,15 +1,16 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Icon, Profile } from 'judix-icon';
+import { Icon } from '@judix/icon';
 import { HistoryTile } from './history-tile';
 import { SidebarActionButtons } from './sidebar-action-buttons';
 import { ChatHistorySection } from './chat-history-section';
 import { ChatHistoryMenu } from './chat-history-menu';
-import { UserMenu, type UserMenuItem } from './user-menu';
+import { UserMenu } from './user-menu';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '../ui';
+import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export interface ChatHistoryItem {
@@ -41,6 +42,7 @@ export interface HistorySidebarProps {
     onUpgrade?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
+    onMove?: (chatId: string) => void;
     onDelete?: (chatId: string) => void;
     activeChatId?: string;
     className?: string;
@@ -59,6 +61,7 @@ export const HistorySidebar = ({
     onUpgrade,
     onRename,
     onShare,
+    onMove,
     onDelete,
     activeChatId,
     className,
@@ -111,91 +114,13 @@ export const HistorySidebar = ({
         setOpenMenuChatId(chatId);
     };
 
-    const handleMenuAction = (action: 'rename' | 'share' | 'delete', chatId: string) => {
+    const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
         setOpenMenuChatId(null);
         if (action === 'rename' && onRename) onRename(chatId);
         if (action === 'share' && onShare) onShare(chatId);
+        if (action === 'move' && onMove) onMove(chatId);
         if (action === 'delete' && onDelete) onDelete(chatId);
     };
-
-    const userMenuItems: UserMenuItem[] = [
-        {
-            id: 'zoom',
-            label: 'Zoom',
-            icon: <Icon name="SearchZoomIn" />,
-            badge: '100%',
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Zoom clicked');
-            },
-        },
-        {
-            id: 'account',
-            label: 'My Account',
-            icon: <Icon name="ProfileCircle" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('My Account clicked');
-            },
-        },
-        {
-            id: 'projects',
-            label: 'Projects',
-            icon: <Icon name="DocumentCopy" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Projects clicked');
-            },
-        },
-        {
-            id: 'subscriptions',
-            label: 'Subscriptions',
-            icon: <Icon name="EmptyWalletChange" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Subscriptions clicked');
-            },
-        },
-        {
-            id: 'settings',
-            label: 'Settings',
-            icon: <Icon name="Setting" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Settings clicked');
-            },
-            dividerAfter: true,
-        },
-        {
-            id: 'refer',
-            label: 'Refer and Earn',
-            icon: <Icon name="Gift" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Refer and Earn clicked');
-            },
-        },
-        {
-            id: 'help',
-            label: 'Help & Support',
-            icon: <Icon name="Call" />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Help & Support clicked');
-            },
-            dividerAfter: true,
-        },
-        {
-            id: 'logout',
-            label: 'Logout',
-            icon: <Icon name="Logout" className='text-red-400' />,
-            onClick: () => {
-                setIsUserMenuOpen(false);
-                console.log('Logout clicked');
-            },
-            variant: 'danger',
-        },
-    ];
 
     return (
         <div
@@ -214,13 +139,15 @@ export const HistorySidebar = ({
             {isExpanded ? (
                 <>
                     <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
-                        <Button
+                        <IconButton
                             onClick={handleToggle}
+                            icon="sidebar-left"
                             variant="neutral"
-                            className="p-2 h-fit border-none bg-color-neutral-default rounded-lg hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
+                            size="medium"
+                            corner="sharp"
+                            className="bg-color-neutral-default hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
+                            iconClassName='text-icon_button-color-neutral-icon'
                             aria-label="Toggle Sidebar"
-                            prefixIcon='SidebarLeft'
-                            iconClassName='text-font-label-title-regular self-stretch self-stretch relative'
                         />
                         <Label
                             colorScheme="neutral"
@@ -251,7 +178,7 @@ export const HistorySidebar = ({
                             <span className=" p-1 
                                             text-style-body-default-regular
                                             text-color-text-neutral-default">Usage</span>
-                            <Icon name="InfoCircle" className="text-color-icon-neutral-tertiary w-4 h-4" />
+                            <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
                         </div>
                         <div className="w-full 
                                         bg-button-color-neutral-disabled-stroke 
@@ -272,7 +199,8 @@ export const HistorySidebar = ({
                         </div>
                     </div>
 
-                    <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-up-3">
+                    {/* User Profile Section */}
+                    <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-um-3">
                         <div
                             className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
                             onClick={(e) => {
@@ -286,7 +214,7 @@ export const HistorySidebar = ({
                         >
                             <div className="flex items-center min-w-0 flex-1">
                                 <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center flex-shrink-0">
-                                    <Icon name="Profile" className="w-6 h-6 icon-neutral-default" />
+                                    <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
                                 <div className="flex flex-col py-1 flex-1 min-w-0">
                                     <span className="text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
@@ -325,19 +253,26 @@ export const HistorySidebar = ({
                                     {
                                         id: 'rename',
                                         label: 'Rename',
-                                        icon: <Icon name="Edit2" />,
+                                        icon: <Icon name="edit-a" />,
                                         onClick: () => handleMenuAction('rename', openMenuChatId),
                                     },
                                     {
                                         id: 'share',
                                         label: 'Share',
-                                        icon: <Icon name="Export" />,
+                                        icon: <Icon name="export-a" />,
                                         onClick: () => handleMenuAction('share', openMenuChatId),
+                                    },
+                                    {
+                                        id: 'move',
+                                        label: 'Move to project',
+                                        icon: <Icon name="document-copy" />,
+                                        onClick: () => handleMenuAction('move', openMenuChatId),
+                                        dividerAfter: true,
                                     },
                                     {
                                         id: 'delete',
                                         label: 'Delete',
-                                        icon: <Icon name="Trash" className="text-red-400" />,
+                                        icon: <Icon name="trash" />,
                                         onClick: () => handleMenuAction('delete', openMenuChatId),
                                         variant: 'danger',
                                     },
@@ -356,7 +291,39 @@ export const HistorySidebar = ({
                             }}
                         >
                             <UserMenu
-                                items={userMenuItems}
+                                zoomLevel="100%"
+                                onZoom={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Zoom clicked');
+                                }}
+                                onAccount={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('My Account clicked');
+                                }}
+                                onProjects={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Projects clicked');
+                                }}
+                                onSubscriptions={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Subscriptions clicked');
+                                }}
+                                onSettings={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Settings clicked');
+                                }}
+                                onRefer={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Refer and Earn clicked');
+                                }}
+                                onHelp={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Help & Support clicked');
+                                }}
+                                onLogout={() => {
+                                    setIsUserMenuOpen(false);
+                                    console.log('Logout clicked');
+                                }}
                             />
                         </div>
                     )}
@@ -366,12 +333,15 @@ export const HistorySidebar = ({
                     <div className="flex flex-col items-center h-full">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
+                                <IconButton
                                     onClick={handleToggle}
+                                    icon="sidebar-right"
                                     variant="neutral"
-                                    className="mt-4 mx-3 mb-2 p-2 h-fit border-none bg-color-neutral-default rounded-lg hover:bg-option-color-hover transition-colors mb-2"
-                                    prefixIcon='SidebarRight'
-                                    iconClassName='text-icon_button-color-neutral-icon relative'
+                                    size="medium"
+                                    corner="sharp"
+                                    className="mt-4 mb-2 mx-3 bg-color-neutral-default
+                                    hover:bg-option-color-hover"
+                                    iconClassName='h-fit text-icon_button-color-neutral-icon'
                                     aria-label="Toggle Sidebar"
                                 />
                             </TooltipTrigger>
@@ -380,17 +350,21 @@ export const HistorySidebar = ({
                             </TooltipContent>
                         </Tooltip>
 
-                        <div className="flex flex-col gap-0 mx-1 p-1">
+                        {/* Action Icons */}
+                        <div className="px-2 py-1 flex flex-col">
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onNewChat}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="New Chat"
-                                        prefixIcon='Edit'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative'
-                                    />
+                                    <div className='p-1'>
+                                        <IconButton
+                                            onClick={onNewChat}
+                                            icon="edit-b"
+                                            variant="neutral"
+                                            size="medium"
+                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                            iconClassName='text-icon_button-color-neutral-icon'
+                                            aria-label="New Chat"
+                                        />
+                                    </div>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
                                     New Chat
@@ -398,14 +372,17 @@ export const HistorySidebar = ({
                             </Tooltip>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onNotes}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="Notes"
-                                        prefixIcon='Note1'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative'
-                                    />
+                                    <div className='p-1'>
+                                        <IconButton
+                                            onClick={onNotes}
+                                            icon="note-a"
+                                            variant="neutral"
+                                            size="medium"
+                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                            iconClassName='text-icon_button-color-neutral-icon'
+                                            aria-label="Notes"
+                                        />
+                                    </div>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
                                     Notes
@@ -413,14 +390,17 @@ export const HistorySidebar = ({
                             </Tooltip>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button
-                                        onClick={onProjects}
-                                        variant="neutral"
-                                        className="p-3 h-fit rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors "
-                                        aria-label="Projects"
-                                        prefixIcon='DocumentText'
-                                        iconClassName='text-icon_button-color-neutral-icon self-stretch self-stretch relative '
-                                    />
+                                    <div className='p-1'>
+                                        <IconButton
+                                            onClick={onProjects}
+                                            icon="folder-a"
+                                            variant="neutral"
+                                            size="medium"
+                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                            iconClassName='text-icon_button-color-neutral-icon'
+                                            aria-label="Projects"
+                                        />
+                                    </div>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
                                     Projects
@@ -433,12 +413,11 @@ export const HistorySidebar = ({
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
-                                    className="my-3 mx-1 p-2 rounded-lg bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
+                                    className=" bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
                                     aria-label="Profile"
                                     variant="neutral"
-                                    size="small"
-                                    prefixIcon="Profile"
-                                    iconClassName='w-6 h-6 relative'
+                                    size="medium"
+                                    prefixIcon="profile"
                                 />
                             </TooltipTrigger>
                             <TooltipContent side="right">

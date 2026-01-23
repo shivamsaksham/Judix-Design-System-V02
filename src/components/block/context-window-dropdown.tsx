@@ -114,9 +114,8 @@ export default function ContextWindowDropdown({
 
             <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
 
-            <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
-
-            <div className="overflow-y-auto flex-1 p-2">
+            {/* Session Context Section - Scrollable */}
+            <div className="max-h-[400px] overflow-y-auto">
                 <Option
                     title="Session context"
                     subtext="Text added by you using add to context feature acting as session context"
@@ -130,30 +129,26 @@ export default function ContextWindowDropdown({
                             disabled={isAutoContext}
                         />
                     }
-                    className="mb-3"
                 />
 
+                {/* Context Items List */}
 
+                {items.map((item) => (
+                    <Option
+                        key={item.id}
+                        title={item.title}
+                        subtext={item.description}
+                        onClick={() => handleItemCheck(item.id, !item.checked)}
+                        prefixSlot={
+                            <Checkbox
+                                id={item.id}
+                                checked={item.checked}
+                                onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                            />
+                        }
+                    />
+                ))}
 
-                <div className="space-y-2">
-                    {items.map((item) => (
-                        <Option
-                            key={item.id}
-                            title={item.title}
-                            subtext={item.description}
-                            onClick={() => !isAutoContext && handleItemCheck(item.id, !item.checked)}
-                            disabled={isAutoContext}
-                            prefixSlot={
-                                <Checkbox
-                                    id={item.id}
-                                    checked={item.checked}
-                                    onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
-                                    disabled={isAutoContext}
-                                />
-                            }
-                        />
-                    ))}
-                </div>
             </div>
 
 

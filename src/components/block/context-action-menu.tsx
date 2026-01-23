@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Dropdown } from "../ui/dropdown";
@@ -43,14 +43,14 @@ export function ContextActionMenu({
             title: isBookmarked ? "Bookmarked" : "Bookmark",
             value: "bookmark",
             trailingAccessory: isBookmarked ? (
-                <Icon name="Save2" className="w-4 h-4 text-color-icon-primary-default fill-current" />
+                <Icon name="edit-b" className="w-4 h-4 text-color-icon-primary-default fill-current" />
             ) : undefined
         },
         {
             title: "Mention in query",
             value: "mention",
             trailingAccessory: isMentioned ? (
-                <Icon name="TickCircle" className="w-4 h-4 text-color-icon-primary-default" />
+                <Icon name="tick-circle" className="w-4 h-4 text-color-icon-primary-default" />
             ) : undefined
         }
     ];
