@@ -22,6 +22,8 @@ export interface ContentProps {
     isLiked?: boolean;
     isDisliked?: boolean;
     className?: string;
+    hideQuery?: boolean;
+    animate?: boolean;
 }
 
 export const Content = ({
@@ -39,14 +41,44 @@ export const Content = ({
     isLiked,
     isDisliked,
     className,
+    hideQuery,
+    animate = false,
 }: ContentProps) => {
+    const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
+
+    React.useEffect(() => {
+        if (!animate) {
+            setDisplayText(markdown);
+            return;
+        }
+
+        let index = 0;
+        setDisplayText("");
+
+        const intervalId = setInterval(() => {
+            setDisplayText((prev) => {
+                if (index >= markdown.length) {
+                    clearInterval(intervalId);
+                    return markdown;
+                }
+                const nextChar = markdown.charAt(index);
+                index++;
+                return prev + nextChar;
+            });
+        }, 5); // Fast typing speed
+
+        return () => clearInterval(intervalId);
+    }, [markdown, animate]);
+
     return (
         <div className={cn('flex flex-col max-w-4xl mx-auto', className)}>
-            <UserQuery
-                query={query}
-                onEdit={onQueryEdit}
-                className='mb-6'
-            />
+            {!hideQuery && (
+                <UserQuery
+                    query={query}
+                    onEdit={onQueryEdit}
+                    className='mb-6'
+                />
+            )}
 
             <div className='p-1'>
                 <div className="mb-6">
@@ -84,7 +116,7 @@ export const Content = ({
                             a: ({ href, children }) => <a href={href} className="text-color-text-primary-default hover:underline">{children}</a>,
                         }}
                     >
-                        {markdown}
+                        {displayText}
                     </ReactMarkdown>
                 </div>
 
