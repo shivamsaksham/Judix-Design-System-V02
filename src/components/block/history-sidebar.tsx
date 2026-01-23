@@ -78,6 +78,7 @@ export const HistorySidebar = ({
     const [deleteConfirmationChatId, setDeleteConfirmationChatId] = useState<string | null>(null);
     const [shareChatId, setShareChatId] = useState<string | null>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
+    const userNameRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
     const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded;
@@ -114,7 +115,7 @@ export const HistorySidebar = ({
     const handleMenuClick = (chatId: string, event: React.MouseEvent) => {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         setMenuPosition({
-            top: rect.bottom + 4,
+            top: rect.bottom,
             left: rect.left,
         });
         setOpenMenuChatId(chatId);
@@ -219,10 +220,14 @@ export const HistorySidebar = ({
                         <div
                             className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
                             onClick={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
+                                const containerRect = e.currentTarget.getBoundingClientRect();
+                                const userNameRect = userNameRef.current?.getBoundingClientRect();
+                                // Calculate bottom distance so menu's bottom aligns with userName box's bottom
+                                const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
                                 setUserMenuPosition({
-                                    top: rect.top - 8,
-                                    left: rect.left,
+                                    top: bottomDistance,
+                                    //fix left
+                                    left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
                                 });
                                 setIsUserMenuOpen(!isUserMenuOpen);
                             }}
@@ -231,8 +236,8 @@ export const HistorySidebar = ({
                                 <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center flex-shrink-0">
                                     <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
-                                <div className="flex flex-col py-1 flex-1 min-w-0">
-                                    <span className="text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
+                                <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
+                                    <span className="w-fit text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
                                         {userProfile.name}
                                     </span>
                                     <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
@@ -301,7 +306,7 @@ export const HistorySidebar = ({
                             ref={userMenuRef}
                             className="fixed z-50"
                             style={{
-                                bottom: '70px',
+                                bottom: `${userMenuPosition.top}px`,
                                 left: `${userMenuPosition.left}px`,
                             }}
                         >
