@@ -23,6 +23,7 @@ export interface ResultPanelProps {
     className?: string;
     viewMode?: "judgments" | "acts";
     onViewModeChange?: (mode: "judgments" | "acts") => void;
+    selectedCourts?: string[];
 }
 
 export function ResultPanel({
@@ -37,11 +38,27 @@ export function ResultPanel({
     activeActId,
     className,
     viewMode = "judgments",
-    onViewModeChange
+    onViewModeChange,
+    selectedCourts = []
 }: ResultPanelProps) {
     const [search, setSearch] = React.useState("");
     const [debouncedSearch, setDebouncedSearch] = React.useState("");
     const [version, setVersion] = React.useState("v4");
+
+    // We need to track which specific court is selected in the dropdown if we are in "judgments" mode
+    // preciseViewVal can be "acts" or a specific court name
+    // If viewMode is acts, preciseViewVal is "acts"
+    // If viewMode is judgments, preciseViewVal is the selected court name.
+    // We'll initialize it with the first selected court or "Supreme Court" default
+    const [preciseViewVal, setPreciseViewVal] = React.useState(selectedCourts[0] || "Supreme Court of India");
+
+    // Sync preciseViewVal when selectedCourts changes if current val is not in new list? 
+    // For now, let's just default if empty.
+    React.useEffect(() => {
+        if (viewMode === 'judgments' && selectedCourts.length > 0 && !selectedCourts.includes(preciseViewVal)) {
+            setPreciseViewVal(selectedCourts[0]);
+        }
+    }, [selectedCourts, viewMode]);
 
 
     React.useEffect(() => {
@@ -54,13 +71,27 @@ export function ResultPanel({
 
 
     const filteredJudgments = React.useMemo(() => {
-        if (!debouncedSearch) return judgments;
+        let filtered = judgments;
+
+        // Filter by the selected court from dropdown if we are in judgments mode
+        // preciseViewVal holds the court name
+        if (viewMode === 'judgments') {
+            // If we have selected courts passed, we only show for the one selected in dropdown
+            // If preciseViewVal is "Supreme Court" (default) but not in selectedCourts (if selectedCourts provided), we might show nothing or all?
+            // As per user request: "drop-down me bhi whi tino courts rhenge" -> filtering selection
+
+            // We filter by court name matching preciseViewVal
+            // Note: Mock data needs to match these strings exactly or we need looser matching.
+            filtered = judgments.filter(j => j.court === preciseViewVal);
+        }
+
+        if (!debouncedSearch) return filtered;
         const lowercaseSearch = debouncedSearch.toLowerCase();
-        return judgments.filter(j =>
+        return filtered.filter(j =>
             j.title.toLowerCase().includes(lowercaseSearch) ||
             j.description.toLowerCase().includes(lowercaseSearch)
         );
-    }, [judgments, debouncedSearch]);
+    }, [judgments, debouncedSearch, preciseViewVal, viewMode]);
 
     const filteredActs = React.useMemo(() => {
         if (!debouncedSearch) return acts;
@@ -73,10 +104,22 @@ export function ResultPanel({
     }, [acts, debouncedSearch]);
 
 
-    const viewOptions: DropdownOption[] = [
-        { value: "judgments", title: "Supreme Court" },
-        { value: "acts", title: "Central Acts" },
-    ];
+    const viewOptions: DropdownOption[] = React.useMemo(() => {
+        const opts: DropdownOption[] = [];
+
+        if (selectedCourts.length > 0) {
+            selectedCourts.forEach(court => {
+                opts.push({ value: court, title: court });
+            });
+        } else {
+            // Fallback if no courts selected
+            opts.push({ value: "Supreme Court of India", title: "Supreme Court of India" });
+        }
+
+        opts.push({ value: "acts", title: "Central Acts" });
+        return opts;
+    }, [selectedCourts]);
+
 
     const versionOptions: DropdownOption[] = [
         { value: "v4", title: "v4 • Latest" },
@@ -86,14 +129,22 @@ export function ResultPanel({
     ];
 
     const handleDropdownChange = (value: string) => {
-        if (value === "judgments" || value === "acts") {
-            onViewModeChange?.(value);
+        if (value === "acts") {
+            onViewModeChange?.("acts");
+            setPreciseViewVal("acts");
+        } else {
+            // It's a court name
+            onViewModeChange?.("judgments");
+            setPreciseViewVal(value);
         }
     };
 
     const isJudgments = viewMode === "judgments";
-    const currentTitle = isJudgments ? "Relevant Judgments" : "Acts & Sections";
-    const currentDropdownLabel = viewOptions.find(o => o.value === viewMode)?.title || "Supreme Court";
+    // Title is determined by the specific selected court or "Acts & Sections"
+    const currentTitle = isJudgments ? (preciseViewVal || "Relevant Judgments") : "Acts & Sections";
+
+    // The dropdown label should reflect the currently selected item (Court name or "Central Acts")
+    const currentDropdownLabel = viewOptions.find(o => o.value === preciseViewVal)?.title || preciseViewVal || "Supreme Court";
 
 
     const actions = isJudgments ? (
@@ -158,7 +209,6 @@ export function ResultPanel({
                                 {...judgment}
                                 isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
                                 onClick={() => {
-                                    setSearch(judgment.title);
                                     onJudgmentClick?.(judgment);
                                 }}
                             />
@@ -170,7 +220,6 @@ export function ResultPanel({
                                 {...act}
                                 isSelected={activeActId ? act.id === activeActId : false}
                                 onClick={() => {
-                                    setSearch(act.title);
                                     onActClick?.(act);
                                 }}
                             />

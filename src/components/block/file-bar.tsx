@@ -13,24 +13,32 @@ export interface FileBarProps {
     data: FileTreeNodeType[];
     activeId?: string;
     activeIds?: string[];
+    editingId?: string | null;
+    editDisabled?: boolean;
     onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
     onCreateNew?: (type: "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
     onToggle?: (node: any) => void;
+    onRename?: (nodeId: string, newName: string) => void;
+    onCancelEdit?: () => void;
 }
 
 export function FileBar({
     data,
     activeId,
     activeIds,
+    editingId,
+    editDisabled,
     onSelect,
     className,
     onCreateNew,
     onEdit,
     onDelete,
     onToggle,
+    onRename,
+    onCancelEdit,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -87,7 +95,7 @@ export function FileBar({
                         variant="neutral"
                         onClick={onEdit}
                         className="hover:bg-color-surface-neutral-subtle_bg"
-                        disabled={!activeId}
+                        disabled={!activeId || editDisabled}
                     />
                     <IconButton
                         icon="trash"
@@ -105,8 +113,11 @@ export function FileBar({
                     data={data}
                     activeId={activeId}
                     activeIds={activeIds}
+                    editingId={editingId}
                     onSelect={onSelect}
                     onToggle={onToggle}
+                    onRename={onRename}
+                    onCancelEdit={onCancelEdit}
                     className="p-2"
                 />
             </div>

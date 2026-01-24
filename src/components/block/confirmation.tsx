@@ -22,9 +22,11 @@ export interface ConfirmationProps {
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactElement;
   confirmVariant?: 'primary' | 'neutral' | 'destructive';
+  confirmText?: string;
+  cancelText?: string;
 }
 
-function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children, open, onOpenChange, confirmVariant = "primary" }: ConfirmationProps) {
+function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children, open, onOpenChange, confirmVariant = "primary", confirmText = "Confirm", cancelText = "Cancel" }: ConfirmationProps) {
   return (
 
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -50,8 +52,8 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
           </span>
         </DialogDescription>
         <DialogFooter className=' '>
-          <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancel</Button>
-          <Button size="extraSmall" variant={confirmVariant} onClick={onConfirmClick}>Confirm</Button>
+          <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>{cancelText}</Button>
+          <Button size="extraSmall" variant={confirmVariant} onClick={onConfirmClick}>{confirmText}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -19,6 +19,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { FileTree, FileTreeNodeType } from "./file-tree";
 
+const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
+
 
 
 /**
@@ -55,6 +57,10 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     onImageUpload?: (file: File, editor: Editor | null) => void;
     fileTree?: FileTreeNodeType[];
     onFileSelect?: (node: FileTreeNodeType) => void;
+    activeFileId?: string | null;
+    content?: string;
+    variant?: 'floating' | 'embedded';
+    showSidebar?: boolean;
 }
 
 export function NotesCard({
@@ -74,21 +80,44 @@ export function NotesCard({
     onEditFile,
     onDeleteFile,
     onImageUpload,
-    fileTree = [],
+    fileTree = DEFAULT_FILE_TREE,
+
     onFileSelect,
+    activeFileId: propActiveFileId,
+    content: propContent,
+    variant = 'floating',
+    showSidebar = true,
     ...props
 }: NotesCardProps) {
-    const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+    const isEmbedded = variant === 'embedded';
+    const [isExpanded, setIsExpanded] = React.useState(isEmbedded ? true : defaultExpanded);
     const [isMaximized, setIsMaximized] = React.useState(false);
-    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(defaultEnlarged);
-    const [activeFileId, setActiveFileId] = React.useState<string | undefined>(undefined);
+    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isEmbedded ? false : defaultEnlarged);
+    const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
-    const [noteContent, setNoteContent] = React.useState("");
+    const [noteContent, setNoteContent] = React.useState(propContent || "");
     const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
 
     React.useEffect(() => {
         setFileTreeData(fileTree);
     }, [fileTree]);
+
+    // Sync activeFileId and content from props
+    React.useEffect(() => {
+        if (propActiveFileId !== undefined) {
+            setActiveFileId(propActiveFileId || undefined);
+        }
+    }, [propActiveFileId]);
+
+    React.useEffect(() => {
+        if (propContent !== undefined) {
+            setNoteContent(propContent);
+            // generating a new transaction to update editor content if it's different
+            if (editor && editor.getHTML() !== propContent) {
+                editor.commands.setContent(propContent);
+            }
+        }
+    }, [propContent, editor]);
 
     const handleFileTreeToggle = (toggledNode: any) => {
         // Check if it's a root node
@@ -233,91 +262,97 @@ export function NotesCard({
                 className={cn(
                     "transition-all duration-300 ease-in-out relative",
                     isEnlargeOpen && "z-50",
-                    isExpanded ? "w-140" : "w-80",
-                    isExpanded ? "h-100" : "h-14"
+                    isEmbedded ? "w-full h-full" : cn(isExpanded ? "w-140" : "w-80", isExpanded ? "h-100" : "h-14")
                 )}
             >
                 <motion.div
                     layout
                     className={cn(
-                        "bg-white border border-color-border-neutral-default overflow-hidden shadow-xl flex flex-col",
-                        isEnlargeOpen
+                        "bg-white overflow-hidden flex flex-col",
+                        !isEmbedded && "border border-color-border-neutral-default shadow-xl",
+                        isEnlargeOpen && !isEmbedded
                             ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[1050px] h-[680px] rounded-lg p-6 gap-2"
                             : cn(
                                 "absolute inset-0 w-full h-full",
-                                isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0"
+                                !isEmbedded && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
                             ),
                         className
                     )}
                     transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
                 >
-                    {isEnlargeOpen ? (
+                    {isEnlargeOpen || isEmbedded ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="flex flex-col h-full w-full gap-2"
                         >
-                            <div className="flex items-center justify-between shrink-0 mb-2">
-                                <div className="flex items-center gap-3">
-                                    <IconButton icon="note-a" size="medium" variant="neutral" boundary="none" />
-                                    <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <Button variant="neutral" size="small" className="gap-2" onClick={onOpenInNewTab}>
-                                        Open in new tab
-                                    </Button>
-                                    <IconButton
-                                        icon="received"
-                                        size="medium"
-                                        variant="neutral"
-                                        boundary="none"
-                                        className="rotate-180"
-                                        onClick={() => {
-                                            setIsEnlargeOpen(false);
-                                            onSend?.(false);
-                                        }}
-                                    />
-                                    <IconButton
-                                        icon="cross"
-                                        size="medium"
-                                        variant="neutral"
-                                        boundary="none"
-                                        onClick={() => {
-                                            setIsEnlargeOpen(false);
-                                            onCancel?.();
-                                        }}
-                                        className="rotate-180"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-1 min-h-0 gap-4">
-                                <div className="w-[240px] flex flex-col shrink-0">
-                                    <div className="flex items-center justify-between py-2">
-                                        <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
-                                        <div className="flex items-center gap-0.5">
-                                            <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} disabled={!activeFileId} />
-                                            <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={!activeFileId} />
-                                            <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={onDeleteFile} disabled={!activeFileId} />
-                                        </div>
+                            {!isEmbedded && (
+                                <div className="flex items-center justify-between shrink-0 mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <IconButton icon="note-a" size="medium" variant="neutral" boundary="none" />
+                                        <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                     </div>
-                                    <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
-                                    <div className="flex-1 overflow-hidden -ml-2">
-                                        <FileTree
-                                            data={fileTreeData}
-                                            activeId={activeFileId}
-                                            onSelect={(node: any) => {
-                                                setActiveFileId(node.id);
-                                                onFileSelect?.(node);
+                                    <div className="flex items-center gap-3">
+                                        <Button variant="neutral" size="small" className="gap-2" onClick={onOpenInNewTab}>
+                                            Open in new tab
+                                        </Button>
+                                        <IconButton
+                                            icon="received"
+                                            size="medium"
+                                            variant="neutral"
+                                            boundary="none"
+                                            className="rotate-180"
+                                            onClick={() => {
+                                                setIsEnlargeOpen(false);
+                                                onSend?.(false);
                                             }}
-                                            onToggle={handleFileTreeToggle}
-                                            className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                        />
+                                        <IconButton
+                                            icon="cross"
+                                            size="medium"
+                                            variant="neutral"
+                                            boundary="none"
+                                            onClick={() => {
+                                                setIsEnlargeOpen(false);
+                                                onCancel?.();
+                                            }}
+                                            className="rotate-180"
                                         />
                                     </div>
                                 </div>
+                            )}
 
-                                <Separator orientation="vertical" className="w-px h-full bg-color-border-neutral-default" />
+                            <div className="flex flex-1 min-h-0 gap-4">
+                                {showSidebar && (
+                                    <>
+                                        <div className="w-[240px] flex flex-col shrink-0">
+                                            <div className="flex items-center justify-between py-2">
+                                                <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
+                                                <div className="flex items-center gap-0.5">
+                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} disabled={!activeFileId} />
+                                                    <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={!activeFileId} />
+                                                    <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={onDeleteFile} disabled={!activeFileId} />
+                                                </div>
+                                            </div>
+                                            <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
+                                            <div className="flex-1 overflow-hidden -ml-2">
+                                                <FileTree
+                                                    data={fileTreeData}
+                                                    activeId={activeFileId}
+                                                    onSelect={(node: any) => {
+                                                        setActiveFileId(node.id);
+                                                        onFileSelect?.(node);
+                                                    }}
+                                                    onToggle={handleFileTreeToggle}
+                                                    className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <Separator orientation="vertical" className="w-px h-full bg-color-border-neutral-default" />
+                                    </>
+                                )}
 
                                 <div className="flex-1 flex flex-col min-w-0 gap-1">
                                     <div className="flex items-center px-0 w-[720px] h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between">
