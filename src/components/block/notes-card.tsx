@@ -23,9 +23,6 @@ const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
 
 
 
-/**
- * Helper to recursively toggle a node in the tree.
- */
 function toggleNodeRecursive(nodes: FileTreeNodeType[], targetId: string): FileTreeNodeType[] {
     return nodes.map((node) => {
         if (node.id === targetId && node.type === "folder") {
@@ -102,7 +99,6 @@ export function NotesCard({
         setFileTreeData(fileTree);
     }, [fileTree]);
 
-    // Sync activeFileId and content from props
     React.useEffect(() => {
         if (propActiveFileId !== undefined) {
             setActiveFileId(propActiveFileId || undefined);
@@ -112,7 +108,6 @@ export function NotesCard({
     React.useEffect(() => {
         if (propContent !== undefined) {
             setNoteContent(propContent);
-            // generating a new transaction to update editor content if it's different
             if (editor && editor.getHTML() !== propContent) {
                 editor.commands.setContent(propContent);
             }
@@ -120,23 +115,19 @@ export function NotesCard({
     }, [propContent, editor]);
 
     const handleFileTreeToggle = (toggledNode: any) => {
-        // Check if it's a root node
         const isRoot = fileTreeData.some(f => f.id === toggledNode.id);
 
         if (isRoot) {
-            // Apply accordion behavior for root nodes
             setFileTreeData(fileTreeData.map(f => {
                 if (f.id === toggledNode.id && f.type === "folder") {
                     return { ...f, isOpen: !f.isOpen } as FileTreeNodeType;
                 }
-                // Close other root nodes
                 if (f.type === "folder") {
                     return { ...f, isOpen: false } as FileTreeNodeType;
                 }
                 return f;
             }));
         } else {
-            // Standard toggle for nested nodes
             setFileTreeData(toggleNodeRecursive(fileTreeData, toggledNode.id));
         }
     };
@@ -355,7 +346,10 @@ export function NotesCard({
                                 )}
 
                                 <div className="flex-1 flex flex-col min-w-0 gap-1">
-                                    <div className="flex items-center px-0 w-[720px] h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between">
+                                    <div className={cn(
+                                        "flex items-center h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between",
+                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                    )}>
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
                                                 <PopoverTrigger asChild>
@@ -488,7 +482,12 @@ export function NotesCard({
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-white relative border border-color-border-neutral-default overflow-hidden w-[720px]">
+
+
+                                    <div className={cn(
+                                        "flex-1 bg-white relative overflow-hidden",
+                                        isEmbedded ? "w-full border border-color-border-neutral-default" : "w-[720px] border border-color-border-neutral-default"
+                                    )}>
                                         <TextEditor
                                             className="w-full h-full p-6 text-color-text-neutral-default"
                                             placeholder="Type your notes here"
@@ -498,7 +497,10 @@ export function NotesCard({
                                         />
                                     </div>
 
-                                    <div className="flex items-center justify-end px-0 py-3 gap-3 shrink-0 w-[720px]">
+                                    <div className={cn(
+                                        "flex items-center justify-end py-3 gap-3 shrink-0",
+                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                    )}>
                                         <Button variant="neutral" onClick={() => { setIsEnlargeOpen(false); onCancel?.(); }} size="small">Cancel</Button>
                                         <Button variant="primary" onClick={() => { setIsEnlargeOpen(false); onSave?.(noteContent); }} size="small">Save</Button>
                                     </div>

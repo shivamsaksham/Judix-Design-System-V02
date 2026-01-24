@@ -186,7 +186,7 @@ export const HistorySidebar = ({
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
                         onMenuClick={handleMenuClick}
-                        className="ml-1 mr-3"
+                        className="ml-1 mr-3 flex-1 min-h-0"
                     />
 
                     <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">

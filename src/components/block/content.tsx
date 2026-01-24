@@ -77,7 +77,7 @@ export const Content = ({
     }, [markdown, animate]);
 
     return (
-        <div className={cn('flex flex-col max-w-4xl mx-auto', className)}>
+        <div className={cn('flex flex-col w-full mx-auto', className)}>
             {/* User Query Section */}
             <div className='p-1 mt-6'>
                 {!hideQuery && (

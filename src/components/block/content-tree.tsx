@@ -28,7 +28,7 @@ function ContentTree({
   return (
     <div
       className={cn(
-        `inline-flex w-[175px] flex-col items-end gap-2 pr-2 
+        `flex h-full w-[175px] flex-col items-end gap-2 pr-2 
         border-r-2 border-color-border-neutral-default 
         bg-color-surface-neutral-default`,
       )}

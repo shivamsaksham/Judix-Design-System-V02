@@ -743,7 +743,7 @@
   /* Calendar Border Weight - Un-tokenized : should be used directly as class `calendar-border-weight-default`  */
   --calendar-border-weight-default: var(--border-weight-default);
   /* Tooltip classes */
-   --radius-tooltip-border-radius-default: var(--border-radius-sharp);
+  --radius-tooltip-border-radius-default: var(--border-radius-sharp);
   /* Pagination */
   --color-pagination-color-bg: var(--color-color-surface-neutral-default);
   --color-pagination-color-text: var(--color-color-icon-neutral-default);
@@ -1399,4 +1399,25 @@
   content: attr(data-placeholder);
   color: var(--color-color-text-neutral-placeholder);
   pointer-events: none;
+}
+
+/* Custom Scrollbar */
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-color-border-neutral-default);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-color-border-neutral-mid);
+  }
 }

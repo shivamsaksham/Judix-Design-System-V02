@@ -1,8 +1,11 @@
 import React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
+import { cn } from "../../lib/utils";
 import ContentTree, { ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
 import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { IconButton } from "../ui/icon-button";
 
 export type JudgementDetailsProps = {
   caseTitle: string;
@@ -14,102 +17,89 @@ export type JudgementDetailsProps = {
     title: string;
     items: string[];
   }[];
+  activeItemId?: string;
+  onItemClick?: (sectionId: string, itemId: string) => void;
+  children?: React.ReactNode;
   className?: string;
 };
 
 function JudgementDetails({
   caseTitle,
   status,
-  score = "93.46%",
+  score = "93.42%",
   scoreSubtitle = "Similar to issues",
   contentSections,
   content,
+  activeItemId,
+  onItemClick,
+  children,
   className,
 }: JudgementDetailsProps) {
   return (
     <div
-      className="flex w-full max-w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
-    rounded-modal bg-color-surface-neutral-default"
+      className={cn(
+        "flex w-full h-full flex-col items-start gap-2 p-4 bg-color-surface-neutral-default overflow-hidden",
+        className
+      )}
     >
       {/* main */}
-      <div className="flex flex-col items-start gap-4 flex-1 self-stretch">
-        {/* Frame 6083 */}
-
-        <div className="flex flex-start gap-4 self-stretch">
-          {/* Frame 6073 */}
-
-          <div className="flex flex-col flex-start gap-3 flex-1">
-            {/* Frame 6072 */}
-
-            <div className="flex p-1 content-center items-center gap-2 self-stretch">
-              {/* Frame 6071 */}
-              <p
-                className="flex-1 line-clamp-1 overflow-hidden text-ellipsis 
+      <div className="flex flex-col items-start gap-4 flex-1 self-stretch overflow-hidden">
+        {/* Header Section */}
+        <div className="flex flex-wrap items-start gap-x-4 gap-y-4 self-stretch pr-4">
+          <div className="flex flex-col gap-3 flex-1">
+            <div className="flex p-1 items-center gap-2 self-stretch">
+              <h1
+                className="flex-1 line-clamp-2 overflow-hidden text-ellipsis 
               text-color-text-neutral-default text-style-body-title-regular"
               >
                 {caseTitle}
-              </p>
+              </h1>
             </div>
 
-            <div className="flex items-center gap-1">
-              {/* Frame 5968 */}
-
+            <div className="flex items-center gap-2">
               {status && (
                 <Label
                   size="medium"
-                  color="neutral"
-                  className="flex h-8 items-center justify-center gap-2 px-3 py-2 
-                rounded-label-border-radius-default label-border-weight-default 
-                border-color-border-feedback-error-strong bg-color-label-color-neutral-bg"
+                  className="bg-red-50 text-red-600 border border-red-200"
                 >
-                  <p className="text-color-text-feedback-error-default text-style-body-default-regular">
-                    {status}
-                  </p>
+                  {status}
                 </Label>
               )}
 
-              {/* TODO: Add Correct Icons Names from the new icon pack*/}
-              <Icon
-                name="Export2"
-                color="neutral"
-                className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default"
-              />
+              <Button variant="neutral" size="medium" className="h-8 px-3 border border-color-border-neutral-default">
+                View SCR copy
+              </Button>
 
-              <Icon
-                name="Export2"
-                color="neutral"
-                className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default"
-              />
-
-              <Icon
-                name="Export2"
-                color="neutral"
-                className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default"
-              />
-
-              <Icon
-                name="Export2"
-                color="neutral"
-                className="flex w-8 h-8 items-center gap-2 p-2 
-                aspect-square rounded-icon_button-border-radius-default"
-              />
+              <div className="flex items-center gap-1">
+                <IconButton icon="add" variant="neutral" size="medium" />
+                <IconButton icon="at" variant="neutral" size="medium" />
+                <IconButton icon="bookmark-a" variant="neutral" size="medium" />
+                <IconButton icon="share-a" variant="neutral" size="medium" />
+              </div>
             </div>
           </div>
 
           <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
         </div>
 
-        <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
+        <hr className="w-full h-[1px] bg-color-border-neutral-default border-none" />
 
-        <div className="flex items-start gap-2 flex-1 self-stretch">
+        <div className="flex items-start gap-2 flex-1 self-stretch overflow-hidden">
           {/* Frame 6082 */}
-          {contentSections && <ContentTree sections={contentSections} />}
+          {contentSections && (
+            <aside className="w-[200px] shrink-0 overflow-y-auto pr-2 border-r border-color-border-neutral-default custom-scrollbar">
+              <ContentTree
+                sections={contentSections}
+                activeItemId={activeItemId}
+                onItemClick={onItemClick}
+              />
+            </aside>
+          )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default">
-            {content ? (
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto px-4 pb-20 custom-scrollbar scroll-smooth">
+            {children ? (
+              children
+            ) : content ? (
               content.map((section) => (
                 <div key={section.title}>{/* future content rendering */}</div>
               ))

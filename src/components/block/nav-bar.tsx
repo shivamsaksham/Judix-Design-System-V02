@@ -11,6 +11,7 @@ import { Button } from '../ui';
 export interface NavBarProps {
     variant?: 'default' | 'project';
     onIndependentClick?: () => void;
+    onConnectorClick?: () => void;
     onContextClick?: () => void;
     onShareClick?: () => void;
     onMenuClick?: () => void;
@@ -35,6 +36,7 @@ export interface NavBarProps {
 export default function NavBar({
     variant = 'default',
     onIndependentClick,
+    onConnectorClick,
     onContextClick,
     onShareClick,
     onMenuClick,
@@ -160,14 +162,21 @@ export default function NavBar({
 
 
                             <div className="flex items-center  mr-[10px]">
-                                <Image src="/add-connector.svg" alt="Add" className="text-color-icon-primary-default -mr-[3px]" width={41} height={24} />
+                                <Image
+                                    src="/add-connector.svg"
+                                    alt="Add"
+                                    className="text-color-icon-primary-default -mr-[3px] cursor-pointer hover:opacity-80"
+                                    width={41}
+                                    height={24}
+                                    onClick={onConnectorClick}
+                                />
                                 <Label
                                     colorScheme="primary"
                                     size="medium"
                                     onClick={onIndependentClick}
                                     className="cursor-pointer hover:bg-color-surface-neutral-default relative z-10 bg-color-surface-neutral-default"
                                 >
-                                    Independent
+                                    {projectName}
                                 </Label>
                             </div>
 
