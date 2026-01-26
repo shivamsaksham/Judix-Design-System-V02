@@ -6,7 +6,7 @@ import Image from 'next/image';
 import ContextWindowDropdown, { ContextItem } from './context-window-dropdown';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { Icon } from 'judix-icon';
-import { Button } from '../ui';
+import { Button, IconButton } from '../ui';
 
 export interface NavBarProps {
     variant?: 'default' | 'project';
@@ -115,17 +115,16 @@ export default function NavBar({
         >
             {variant === 'project' ? (
                 <>
-                    <div className="flex items-center py-[2.16px] cursor-pointer">
+                    <div className="flex items-center cursor-pointer">
                         <Image
                             src="/logo.svg"
                             alt="Logo"
-                            width={85}
-                            height={26}
-                            className="p-[3.6px]"
+                            width={92}
+                            height={32}
                         />
                     </div>
-
-                    <div className="flex items-center gap-4">
+                {/* UI FIX */}
+                    <div className="flex items-center gap-2">
                         <Button
                             variant="neutral"
                             size="small"
@@ -136,25 +135,24 @@ export default function NavBar({
                             Back to research
                         </Button>
                         <div className="flex items-center gap-3">
-                            <span className="text-style-body-default-regular text-color-text-neutral-default">
-                                {userName}
-                            </span>
                             <div className="w-8 h-8 rounded-full bg-color-surface-neutral-subtle_bg flex items-center justify-center">
                                 <Icon name="Profile" className="w-5 h-5 text-color-icon-neutral-default" />
                             </div>
+                            <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">
+                                {userName}
+                            </span>
                         </div>
                     </div>
                 </>
             ) : (
                 <>
-                    <div className="flex items-center justify-between w-full my-[6px]">
+                    <div className="flex items-center justify-between w-full my-1">
                         <div className="flex items-center py-[2.16px] cursor-pointer">
                             <Image
                                 src="/logo.svg"
                                 alt="Logo"
-                                width={85}
-                                height={26}
-                                className="p-[3.6px]"
+                                width={92}
+                                height={32}
                             />
                         </div>
 

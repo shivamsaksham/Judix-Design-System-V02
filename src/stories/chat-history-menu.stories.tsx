@@ -23,9 +23,93 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        onRename: () => console.log('Rename clicked'),
-        onShare: () => console.log('Share clicked'),
-        onMove: () => console.log('Move to project clicked'),
-        onDelete: () => console.log('Delete clicked'),
+        items: [
+            {
+                id: 'rename',
+                label: 'Rename',
+                icon: <Icon name="Edit2" />,
+                onClick: () => console.log('Rename clicked'),
+            },
+            {
+                id: 'share',
+                label: 'Share',
+                icon: <Icon name="Export" />,
+                onClick: () => console.log('Share clicked'),
+            },
+            {
+                id: 'move',
+                label: 'Move to project',
+                icon: <Icon name="DocumentCopy" />,
+                onClick: () => console.log('Move clicked'),
+                dividerAfter: true, // Border after this item
+            },
+            {
+                id: 'delete',
+                label: 'Delete',
+                icon: <Icon name="Trash" />,
+                onClick: () => console.log('Delete clicked'),
+                variant: 'danger',
+            },
+        ],
+    },
+};
+
+export const WithMultipleDividers: Story = {
+    args: {
+        items: [
+            {
+                id: 'rename',
+                label: 'Rename',
+                icon: <Icon name="Edit2" />,
+                onClick: () => console.log('Rename'),
+                dividerAfter: true,
+            },
+            {
+                id: 'share',
+                label: 'Share',
+                icon: <Icon name="Export" />,
+                onClick: () => console.log('Share'),
+                dividerAfter: true,
+            },
+            {
+                id: 'archive',
+                label: 'Archive',
+                icon: <Icon name="Archive" />,
+                onClick: () => console.log('Archive'),
+            },
+            {
+                id: 'delete',
+                label: 'Delete',
+                icon: <Icon name="Trash" />,
+                onClick: () => console.log('Delete'),
+                variant: 'danger',
+            },
+        ],
+    },
+};
+
+export const SimpleMenu: Story = {
+    args: {
+        items: [
+            {
+                id: 'edit',
+                label: 'Edit',
+                icon: <Icon name="Edit2" />,
+                onClick: () => console.log('Edit'),
+            },
+            {
+                id: 'duplicate',
+                label: 'Duplicate',
+                icon: <Icon name="Copy" />,
+                onClick: () => console.log('Duplicate'),
+            },
+            {
+                id: 'delete',
+                label: 'Delete',
+                icon: <Icon name="Trash" />,
+                onClick: () => console.log('Delete'),
+                variant: 'danger',
+            },
+        ],
     },
 };

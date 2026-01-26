@@ -279,13 +279,13 @@ export const HistorySidebar = ({
                                     {
                                         id: 'share',
                                         label: 'Share',
-                                        icon: <Icon name="export-a" />,
+                                        icon: <Icon name="export-d" />,
                                         onClick: () => handleMenuAction('share', openMenuChatId),
                                     },
                                     {
                                         id: 'move',
                                         label: 'Move to project',
-                                        icon: <Icon name="document-copy" />,
+                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default'/>,
                                         onClick: () => handleMenuAction('move', openMenuChatId),
                                         dividerAfter: true,
                                     },
@@ -450,7 +450,7 @@ export const HistorySidebar = ({
             <Confirmation
                 open={!!deleteConfirmationChatId}
                 onOpenChange={(open) => !open && setDeleteConfirmationChatId(null)}
-                mainText="Delete Project"
+                mainText="Delete Chat"
                 subText="This action cannot be undone."
                 onConfirmClick={handleConfirmDelete}
                 onCancelClick={() => setDeleteConfirmationChatId(null)}

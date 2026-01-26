@@ -47,19 +47,19 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'zoomLevel' | 'onZoom' | 'on
     {
         id: 'projects',
         label: 'Projects',
-        icon: <Icon name="document-copy" />,
+        icon: <Icon name="folder-a" />,
         onClick: props.onProjects,
     },
     {
         id: 'subscriptions',
         label: 'Subscriptions',
-        icon: <Icon name="empty-wallet-change" />,
+        icon: <Icon name="wallet-a" />,
         onClick: props.onSubscriptions,
     },
     {
         id: 'settings',
         label: 'Settings',
-        icon: <Icon name="settings" />,
+        icon: <Icon name="setting-e" />,
         onClick: props.onSettings,
         dividerAfter: true,
     },
@@ -79,7 +79,7 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'zoomLevel' | 'onZoom' | 'on
     {
         id: 'logout',
         label: 'Logout',
-        icon: <Icon name="logout-a" />,
+        icon: <Icon name="logout-b" />,
         onClick: props.onLogout,
         variant: 'danger' as const,
     },

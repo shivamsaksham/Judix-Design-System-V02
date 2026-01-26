@@ -37,7 +37,6 @@ export default function Breadcrumb({
         'flex justify-start items-center gap-2 pl-2 pr-4 py-2 bg-color-surface-neutral-subtle_bg rounded-lg h-[44px]',
         variant === 'header' ? 'flex-1 max-w-[1024px] mx-auto' : 'w-full'
     );
-
     return (
         <div className={cn(outerClasses, className)}>
             <div className={innerClasses}>
