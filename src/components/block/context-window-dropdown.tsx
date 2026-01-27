@@ -69,7 +69,7 @@ export default function ContextWindowDropdown({
     return (
         <div
             className={cn(
-                'w-[400px] max-h-[554px] flex flex-col',
+                'w-[400px] max-h-[554px] p-2 flex flex-col',
                 'bg-color-surface-neutral-default',
                 'border border-color-border-neutral-default',
                 'rounded-lg',

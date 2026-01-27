@@ -11,54 +11,20 @@ export interface ChatHistoryMenuItem {
     onClick?: () => void;
     variant?: 'default' | 'danger';
     disabled?: boolean;
-    dividerAfter?: boolean;
+    dividerAfter?: boolean; // Set to true to add a border-b after this item
 }
 
 export interface ChatHistoryMenuProps {
-    items?: ChatHistoryMenuItem[];
+    items: ChatHistoryMenuItem[];
     className?: string;
-    onRename?: () => void;
-    onShare?: () => void;
-    onMove?: () => void;
-    onDelete?: () => void;
 }
 
-const getDefaultItems = (props: Pick<ChatHistoryMenuProps, 'onRename' | 'onShare' | 'onMove' | 'onDelete'>): ChatHistoryMenuItem[] => [
-    {
-        id: 'rename',
-        label: 'Rename',
-        icon: <Icon name="edit-a" />,
-        onClick: props.onRename,
-    },
-    {
-        id: 'share',
-        label: 'Share',
-        icon: <Icon name="export-a" />,
-        onClick: props.onShare,
-    },
-    {
-        id: 'move',
-        label: 'Move to project',
-        icon: <Icon name="document-copy" />,
-        onClick: props.onMove,
-        dividerAfter: true,
-    },
-    {
-        id: 'delete',
-        label: 'Delete',
-        icon: <Icon name="trash" />,
-        onClick: props.onDelete,
-        variant: 'danger' as const,
-    },
-];
-
-export const ChatHistoryMenu = ({ items: customItems, className, onRename, onShare, onMove, onDelete }: ChatHistoryMenuProps) => {
-    const items = customItems || getDefaultItems({ onRename, onShare, onMove, onDelete });
+export const ChatHistoryMenu = ({ items, className }: ChatHistoryMenuProps) => {
     return (
         <div
             className={cn(
                 'bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default',
-                'w-[320px] p-2',
+                'w-[216px] p-2',
                 className
             )}
         >

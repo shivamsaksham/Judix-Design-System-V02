@@ -1103,9 +1103,9 @@ function SearchEngineInput({
                 }`}
         >
             <div className="relative w-full flex flex-col items-center min-h-fit">
-                <h1 className="text-3xl md:text-4xl font-normal text-center text-[#00808b] mb-8 block w-full">
+                <div className="p-1 text-center text-style-chat-heading-main text-color-text-primary-default mb-8 block w-full">
                     {heading}
-                </h1>
+                </div>
 
                 {helperText && (
                     <div
@@ -1186,7 +1186,6 @@ function SearchEngineInput({
                                 color="primary"
                                 icon="arrow-up-d"
                                 size="medium"
-                                boundary="stroked"
                                 corner="sharp"
                                 disabled={!input.trim() || input.trim().split(/\s+/).length < 3}
                             />

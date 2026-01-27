@@ -1,27 +1,28 @@
 import type { StorybookConfig } from "@storybook/nextjs-vite";
+import { fileURLToPath } from "url";
 import path from "path";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const config: StorybookConfig = {
-  "stories": [
+  stories: [
     "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
-  "addons": [
+  addons: [
     "@chromatic-com/storybook",
     "@storybook/addon-docs",
     "@storybook/addon-onboarding",
     "@storybook/addon-a11y",
     "@storybook/addon-vitest"
   ],
-  "framework": {
-    "name": "@storybook/nextjs-vite",
-    "options": {}
+  framework: {
+    name: "@storybook/nextjs-vite",
+    options: {}
   },
-  "staticDirs": [
-    "../public"
-  ],
-  "viteFinal": async (config) => {
-    // Ensure paths are resolved correctly
+  staticDirs: ["../public"],
+  viteFinal: async (config) => {
     if (config.resolve) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -29,12 +30,15 @@ const config: StorybookConfig = {
       };
     }
 
-    // Ensure PostCSS processes Tailwind CSS v4
     if (config.css) {
-      config.css.postcss = path.resolve(__dirname, "../postcss.config.mjs");
+      config.css.postcss = path.resolve(
+        __dirname,
+        "../postcss.config.mjs"
+      );
     }
 
     return config;
-  }
+  },
 };
+
 export default config;

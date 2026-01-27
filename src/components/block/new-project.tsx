@@ -21,7 +21,7 @@ export interface NewProjectProps {
     onCancel?: () => void;
     className?: string;
     submitButtonText?: string;
-    headerTitle?: string;
+
 }
 
 export const NewProject = ({
@@ -39,7 +39,7 @@ export const NewProject = ({
     onCancel,
     className,
     submitButtonText = 'Create',
-    headerTitle,
+
 }: NewProjectProps) => {
     const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState(initialDescription);
@@ -67,11 +67,7 @@ export const NewProject = ({
     };
     return (
         <div className={cn('w-full max-w-[882px] p-6 bg-color-surface-neutral-default text-left items-start', className)}>
-            {headerTitle && (
-                <div className="mb-6 text-style-heading-h4 text-color-text-neutral-default font-semibold">
-                    {headerTitle}
-                </div>
-            )}
+
             {/* Header Section */}
             <div className="mb-12">
                 {/* Icon */}
