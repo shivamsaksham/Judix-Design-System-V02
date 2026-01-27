@@ -35,7 +35,7 @@ export interface UserProfile {
 
 export interface HistorySidebarProps {
     chatHistory: ChatHistoryItem[];
-    usageStats: UsageStats;
+    usageStats: UsageStats & { zoomLevel?: string }; // Extend UsageStats or add separate prop? separate is cleaner but UsageStats has label. Let's add separate.
     userProfile: UserProfile;
     onNewChat?: () => void;
     onNotes?: () => void;
@@ -50,6 +50,8 @@ export interface HistorySidebarProps {
     className?: string;
     isExpanded?: boolean;
     onToggleSidebar?: () => void;
+    onZoom?: () => void;
+    zoomLevel?: string;
 }
 
 export const HistorySidebar = ({
@@ -69,6 +71,8 @@ export const HistorySidebar = ({
     className,
     isExpanded: controlledIsExpanded,
     onToggleSidebar,
+    onZoom,
+    zoomLevel = "100%",
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -285,7 +289,7 @@ export const HistorySidebar = ({
                                     {
                                         id: 'move',
                                         label: 'Move to project',
-                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default'/>,
+                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default' />,
                                         onClick: () => handleMenuAction('move', openMenuChatId),
                                         dividerAfter: true,
                                     },
@@ -311,10 +315,9 @@ export const HistorySidebar = ({
                             }}
                         >
                             <UserMenu
-                                zoomLevel="100%"
+                                zoomLevel={zoomLevel}
                                 onZoom={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Zoom clicked');
+                                    onZoom?.();
                                 }}
                                 onAccount={() => {
                                     setIsUserMenuOpen(false);
@@ -322,7 +325,7 @@ export const HistorySidebar = ({
                                 }}
                                 onProjects={() => {
                                     setIsUserMenuOpen(false);
-                                    console.log('Projects clicked');
+                                    onProjects?.();
                                 }}
                                 onSubscriptions={() => {
                                     setIsUserMenuOpen(false);

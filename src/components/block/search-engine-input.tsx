@@ -208,6 +208,12 @@ function SearchEngineInput({
     }, [contextItems, contextMode]);
 
     React.useEffect(() => {
+        if (heading) {
+            setIsCentered(true);
+        }
+    }, [heading]);
+
+    React.useEffect(() => {
         const handleSelectionChange = () => {
             const selection = window.getSelection();
             if (!selection || selection.rangeCount === 0) return;

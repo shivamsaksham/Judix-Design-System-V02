@@ -26,6 +26,10 @@ export const UserQuery = ({
     const textareaRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        setEditedQuery(query);
+    }, [query]);
+
+    useEffect(() => {
         if (isEditing && textareaRef.current) {
             if (textareaRef.current.textContent !== editedQuery) {
                 textareaRef.current.textContent = editedQuery;
@@ -53,10 +57,11 @@ export const UserQuery = ({
                 textareaRef.current?.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [isEditing])
+    }, [isEditing, editedQuery])
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {
+            console.log('Saving edited query:', editedQuery);
             onEdit(editedQuery);
         }
         setIsEditing(false);
@@ -146,6 +151,7 @@ export const UserQuery = ({
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
+                                    handleSave();
                                 }
                             }}
                             className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap break-words overflow-wrap-anywhere bg-transparent"
