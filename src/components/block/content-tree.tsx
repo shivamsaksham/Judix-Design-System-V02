@@ -19,7 +19,7 @@ export type ContentTreeProps = {
   className?: string;
 };
 
-function ContentTree({
+export function ContentTree({
   sections,
   activeItemId,
   onItemClick,
@@ -82,5 +82,3 @@ function ContentTree({
     </div>
   );
 }
-
-export default ContentTree;

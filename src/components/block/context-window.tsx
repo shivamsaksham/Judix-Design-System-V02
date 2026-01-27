@@ -103,8 +103,8 @@ export function ContextWindow({
                         <IconButton
                             variant="neutral"
                             boundary="none"
-                            size="small"
-                            icon="InfoCircle"
+                            size="medium"
+                            icon="info-circle"
                             className="bg-transparent hover:bg-color-surface-neutral-subtle_bg text-color-text-neutral-subtle"
                         />
                     </DialogTrigger>

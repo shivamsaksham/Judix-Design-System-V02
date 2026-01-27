@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@judix/icon";
 import { cn } from "../../lib/utils";
-import ContentTree, { ContentTreeSection } from "./content-tree";
+import { ContentTree, ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";

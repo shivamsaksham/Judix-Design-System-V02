@@ -33,7 +33,7 @@ export interface NavBarProps {
     isNewChat?: boolean;
 }
 
-export default function NavBar({
+export function NavBar({
     variant = 'default',
     onIndependentClick,
     onConnectorClick,
