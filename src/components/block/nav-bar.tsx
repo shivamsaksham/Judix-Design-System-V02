@@ -7,6 +7,25 @@ import ContextWindowDropdown, { ContextItem } from './context-window-dropdown';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { Icon } from 'judix-icon';
 import { Button, IconButton } from '../ui';
+import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
+import Link from 'next/link';
+
+// Hook to detect mobile screen
+function useMediaQuery(query: string) {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+        const media = window.matchMedia(query);
+        if (media.matches !== matches) {
+            setMatches(media.matches);
+        }
+        const listener = () => setMatches(media.matches);
+        media.addEventListener("change", listener);
+        return () => media.removeEventListener("change", listener);
+    }, [matches, query]);
+
+    return matches;
+}
 
 export interface NavBarProps {
     variant?: 'default' | 'project';
@@ -62,10 +81,14 @@ export function NavBar({
     const chatMenuRef = useRef<HTMLDivElement>(null);
     const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
 
+    // Detect mobile (md corresponds to 768px in default tailwind)
+    const isMobile = useMediaQuery("(max-width: 768px)");
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Element;
-            if (target.closest('[role="dialog"]')) {
+            // Allow clicks inside Sheet (which has role=dialog usually)
+            if (target.closest('[role="dialog"]') || target.closest('[data-state="open"]')) {
                 return;
             }
 
@@ -111,19 +134,21 @@ export function NavBar({
                 'transition-all duration-300 ease-in-out',
                 className
             )}
-            style={{ paddingRight: isResultPanelOpen ? '450px' : '1.25rem' }}
+            style={{ paddingRight: !isMobile && isResultPanelOpen ? '450px' : '1.25rem' }}
         >
             {variant === 'project' ? (
                 <>
+                    <Link href="/">
                     <div className="flex items-center cursor-pointer">
                         <Image
-                            src="/logo.svg"
+                            src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
                             alt="Logo"
-                            width={92}
+                            width={isMobile ? 32 : 92}
                             height={32}
                         />
                     </div>
-                {/* UI FIX */}
+                    </Link>
+                    {/* UI FIX */}
                     <div className="flex items-center gap-2">
                         <Button
                             variant="neutral"
@@ -147,13 +172,29 @@ export function NavBar({
             ) : (
                 <>
                     <div className="flex items-center justify-between w-full my-1">
-                        <div className="flex items-center py-[2.16px] cursor-pointer">
-                            <Image
-                                src="/logo.svg"
-                                alt="Logo"
-                                width={92}
-                                height={32}
-                            />
+                        <div className="flex items-center gap-2">
+                            <div className="md:hidden">
+                                <button
+                                    onClick={onMenuClick}
+                                    className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
+                                    aria-label="Toggle Sidebar"
+                                >
+                                    <Image
+                                        src="/mobile-sidebar.svg"
+                                        alt="Menu"
+                                        width={39}
+                                        height={32}
+                                    />
+                                </button>
+                            </div>
+                            <div className="flex items-center py-[2.16px] cursor-pointer">
+                                <Image
+                                    src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
+                                    alt="Logo"
+                                    width={isMobile ? 32 : 92}
+                                    height={32}
+                                />
+                            </div>
                         </div>
 
                         <div className="flex items-center">
@@ -163,7 +204,7 @@ export function NavBar({
                                 <Image
                                     src="/add-connector.svg"
                                     alt="Add"
-                                    className="text-color-icon-primary-default -mr-[3px] cursor-pointer hover:opacity-80"
+                                    className="text-color-icon-primary-default -mr-[3px] cursor-pointer hover:opacity-80 hidden sm:block"
                                     width={41}
                                     height={24}
                                     onClick={onConnectorClick}
@@ -172,7 +213,7 @@ export function NavBar({
                                     colorScheme="primary"
                                     size="medium"
                                     onClick={onIndependentClick}
-                                    className="cursor-pointer hover:bg-color-surface-neutral-default relative z-10 bg-color-surface-neutral-default"
+                                    className="cursor-pointer hover:bg-color-surface-neutral-default relative z-10 bg-color-surface-neutral-default hidden sm:flex"
                                 >
                                     {projectName}
                                 </Label>
@@ -190,20 +231,43 @@ export function NavBar({
                                 >
                                     Context
                                 </Label>
-                                {showContextDropdown && (
-                                    <div
-                                        ref={dropdownRef}
-                                        className="absolute top-full right-0 mt-2 z-50"
-                                    >
-                                        <ContextWindowDropdown
-                                            items={contextItems}
-                                            defaultAutoContext={isAutoContext}
-                                            onItemToggle={onContextItemToggle}
-                                            onModeChange={onAutoContextChange}
-                                            isSessionContextChecked={isSessionContextChecked}
-                                            onSessionContextToggle={onSessionContextToggle}
-                                        />
-                                    </div>
+
+                                {isMobile ? (
+                                    <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
+                                        <SheetContent side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
+                                            <div className="p-4 border-b border-color-border-neutral-default flex-shrink-0">
+                                                <SheetTitle className="text-lg font-semibold">Context Window</SheetTitle>
+                                            </div>
+                                            <div className="flex-1 overflow-hidden">
+                                                <ContextWindowDropdown
+                                                    items={contextItems}
+                                                    defaultAutoContext={isAutoContext}
+                                                    onItemToggle={onContextItemToggle}
+                                                    onModeChange={onAutoContextChange}
+                                                    isSessionContextChecked={isSessionContextChecked}
+                                                    onSessionContextToggle={onSessionContextToggle}
+                                                    hideHeader={true}
+                                                    isMobile={true}
+                                                />
+                                            </div>
+                                        </SheetContent>
+                                    </Sheet>
+                                ) : (
+                                    showContextDropdown && (
+                                        <div
+                                            ref={dropdownRef}
+                                            className="absolute top-full right-0 mt-2 z-50"
+                                        >
+                                            <ContextWindowDropdown
+                                                items={contextItems}
+                                                defaultAutoContext={isAutoContext}
+                                                onItemToggle={onContextItemToggle}
+                                                onModeChange={onAutoContextChange}
+                                                isSessionContextChecked={isSessionContextChecked}
+                                                onSessionContextToggle={onSessionContextToggle}
+                                            />
+                                        </div>
+                                    )
                                 )}
                             </div>
 
@@ -217,7 +281,7 @@ export function NavBar({
                                     className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
                                     iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                                 >
-                                    <span className="p-1 text-style-body-default-regular">Share</span>
+                                    <span className="p-1 text-style-body-default-regular hidden sm:block">Share</span>
                                 </Button>
 
                                 {isNewChat && (

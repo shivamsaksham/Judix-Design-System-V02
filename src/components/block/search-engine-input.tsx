@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useCallback, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { IconButton, Button, Dropdown, DropdownOption } from "@/components/ui";
 import {
     useFloating,
@@ -142,10 +143,12 @@ interface SearchEngineInputProps {
     tokenConfig?: Record<string, TokenStructure>;
     onSubmit?: (payload: SearchPayload) => void;
     children?: React.ReactNode;
-    heading?: string | null;
     onOptionClick?: (value: string, currentContent?: string) => boolean | void;
     selectedCourts?: string[];
     onCourtsChange?: (courts: string[]) => void;
+    isLoading?: boolean;
+    onStop?: () => void;
+    isMobile?: boolean;
 }
 
 function SearchEngineInput({
@@ -160,10 +163,12 @@ function SearchEngineInput({
     staticData = {},
     tokenConfig = DEFAULT_TOKEN_CONFIG,
     onSubmit,
-    heading,
     onOptionClick,
     selectedCourts: propSelectedCourts,
-    onCourtsChange
+    onCourtsChange,
+    isLoading = false,
+    onStop,
+    isMobile = false,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
     const [isCentered, setIsCentered] = useState(true);
@@ -208,10 +213,10 @@ function SearchEngineInput({
     }, [contextItems, contextMode]);
 
     React.useEffect(() => {
-        if (heading) {
+        if (input.trim() === "") {
             setIsCentered(true);
         }
-    }, [heading]);
+    }, [input]);
 
     React.useEffect(() => {
         const handleSelectionChange = () => {
@@ -420,12 +425,49 @@ function SearchEngineInput({
         });
 
         let queryText = "";
+        let displayQuery = "";
+
         div.childNodes.forEach(node => {
-            if (processedNodes.has(node)) return;
+            if (processedNodes.has(node)) {
+                // It is a wrapper, so we need to reconstruct its string form for displayQuery
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const el = node as HTMLElement;
+                    const type = el.getAttribute("data-type");
+                    if (type) {
+                        const config = tokenConfig[type] || DEFAULT_TOKEN_CONFIG[type];
+                        const valInputs = el.querySelectorAll(".static-value-input");
+
+                        if (config) {
+                            let tokenString = config.prefix;
+                            config.inputs.forEach((inputConfig, idx) => {
+                                if (idx > 0 && inputConfig.prefix) {
+                                    tokenString += inputConfig.prefix;
+                                }
+                                if (valInputs[idx]) {
+                                    tokenString += valInputs[idx].textContent || "";
+                                }
+                            });
+                            tokenString += config.suffix;
+                            displayQuery += tokenString;
+                        } else {
+                            // Fallback if no config (shouldn't happen for valid tokens)
+                            displayQuery += el.textContent || "";
+                        }
+                    } else {
+                        displayQuery += el.textContent || "";
+                    }
+                }
+                return;
+            }
+
             if (node.nodeType === Node.TEXT_NODE) {
-                queryText += node.textContent;
+                const txt = node.textContent || "";
+                queryText += txt;
+                displayQuery += txt;
             } else if (node.nodeType === Node.ELEMENT_NODE && !(node as Element).classList.contains("static-data-wrapper")) {
-                queryText += node.textContent;
+                const txt = node.textContent || "";
+                queryText += txt;
+                displayQuery += txt;
             }
         });
 
@@ -435,6 +477,7 @@ function SearchEngineInput({
 
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
+            displayQuery: displayQuery.replace(/\s+/g, " ").trim(), // Add this
             filters
         };
     }, [selectedScopes, tokenConfig, selectedContextItems, effectiveSelectedCourts]);
@@ -1105,13 +1148,12 @@ function SearchEngineInput({
 
     return (
         <div
-            className={`flex flex-col w-full h-full transition-all items-center ${isCentered ? "justify-center" : "justify-end"
-                }`}
+            className={cn(
+                'flex flex-col w-full transition-all items-center',
+                isCentered ? 'h-fit justify-center' : 'h-full justify-end'
+            )}
         >
             <div className="relative w-full flex flex-col items-center min-h-fit">
-                <div className="p-1 text-center text-style-chat-heading-main text-color-text-primary-default mb-8 block w-full">
-                    {heading}
-                </div>
 
                 {helperText && (
                     <div
@@ -1136,7 +1178,7 @@ function SearchEngineInput({
                         onKeyDown={handleKeyDown}
                     />
 
-                    <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex items-center justify-between flex-wrap gap-y-2">
                         <div className="flex gap-2">
                             <IconButton
                                 onClick={() => toggleDropdown("add")}
@@ -1178,22 +1220,23 @@ function SearchEngineInput({
                                     }`}
                             />
                         </div>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center ml-auto sm:ml-0">
                             {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
                                 <Button
                                     size="small"
-                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default"
+                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default whitespace-nowrap"
                                 >
-                                    Enhance Query
+                                    <span className="hidden sm:inline">Enhance Query</span>
+                                    <span className="sm:hidden">Enhance</span>
                                 </Button>
                             )}
                             <IconButton
-                                onClick={handleSubmit}
-                                color="primary"
-                                icon="arrow-up-d"
+                                onClick={isLoading ? onStop : handleSubmit}
+                                color={isLoading ? "neutral" : "primary"}
+                                icon={isLoading ? "stop" : "arrow-up-d"}
                                 size="medium"
                                 corner="sharp"
-                                disabled={!input.trim() || input.trim().split(/\s+/).length < 3}
+                                disabled={!isLoading && (!input.trim() || input.trim().split(/\s+/).length < 3)}
                             />
                         </div>
                     </div>

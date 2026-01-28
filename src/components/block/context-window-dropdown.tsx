@@ -24,6 +24,8 @@ export interface ContextWindowDropdownProps {
     className?: string;
     isSessionContextChecked?: boolean;
     onSessionContextToggle?: (checked: boolean) => void;
+    hideHeader?: boolean;
+    isMobile?: boolean;
 }
 
 export default function ContextWindowDropdown({
@@ -34,6 +36,8 @@ export default function ContextWindowDropdown({
     className,
     isSessionContextChecked = false,
     onSessionContextToggle,
+    hideHeader = false,
+    isMobile = false,
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);
     const [showInfo, setShowInfo] = useState(false);
@@ -69,10 +73,8 @@ export default function ContextWindowDropdown({
     return (
         <div
             className={cn(
-                'w-[400px] max-h-[554px] p-2 flex flex-col',
-                'bg-color-surface-neutral-default',
-                'border border-color-border-neutral-default',
-                'rounded-lg',
+                'w-full flex flex-col',
+                isMobile ? 'h-full' : 'sm:w-[400px] max-h-[554px] p-2 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg',
                 className
             )}
         >
@@ -113,41 +115,56 @@ export default function ContextWindowDropdown({
             </div>
 
             <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
-
-            {/* Session Context Section - Scrollable */}
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className={cn("overflow-y-auto", !isMobile ? "max-h-[400px]" : "flex-1")}>
                 <Option
                     title="Session context"
                     subtext="Text added by you using add to context feature acting as session context"
-                    onClick={() => !isAutoContext && handleSessionContextToggleInternal(!isSessionContextChecked)}
-                    disabled={isAutoContext}
+                    onClick={() => {
+                        const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
+                        const isLimitReached = checkedCount >= 10;
+                        if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
+                            handleSessionContextToggleInternal(!isSessionContextChecked);
+                        }
+                    }}
+                    disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
                     prefixSlot={
                         <Checkbox
                             id="session-context"
                             checked={isSessionContextChecked}
-                            onCheckedChange={handleSessionContextToggleInternal}
-                            disabled={isAutoContext}
+                            onCheckedChange={() => {
+                                const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
+                                const isLimitReached = checkedCount >= 10;
+                                if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
+                                    handleSessionContextToggleInternal(!isSessionContextChecked);
+                                }
+                            }}
+                            disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
                         />
                     }
                 />
+                {items.map((item) => {
+                    const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
+                    const isLimitReached = checkedCount >= 10;
+                    const isDisabled = isAutoContext || (isLimitReached && !item.checked);
 
-                {/* Context Items List */}
-
-                {items.map((item) => (
-                    <Option
-                        key={item.id}
-                        title={item.title}
-                        subtext={item.description}
-                        onClick={() => handleItemCheck(item.id, !item.checked)}
-                        prefixSlot={
-                            <Checkbox
-                                id={item.id}
-                                checked={item.checked}
-                                onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
-                            />
-                        }
-                    />
-                ))}
+                    return (
+                        <Option
+                            key={item.id}
+                            title={item.title}
+                            subtext={item.description}
+                            onClick={() => !isDisabled && handleItemCheck(item.id, !item.checked)}
+                            disabled={isDisabled}
+                            prefixSlot={
+                                <Checkbox
+                                    id={item.id}
+                                    checked={item.checked}
+                                    onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                                    disabled={isDisabled}
+                                />
+                            }
+                        />
+                    );
+                })}
 
             </div>
 

@@ -87,7 +87,7 @@ export const ResponseActions = ({
             {/* Dislike Button */}
             <IconButton
                 onClick={handleDislike}
-                variant="neutral"
+                variant={isDisliked ? "primary" : "neutral"}
                 size="medium"
                 corner="sharp"
                 icon="dislike"
@@ -97,7 +97,7 @@ export const ResponseActions = ({
             {/* Like Button */}
             <IconButton
                 onClick={handleLike}
-                variant="neutral"
+                variant={isLiked ? "primary" : "neutral"}
                 size="medium"
                 corner="sharp"
                 icon="like-a"

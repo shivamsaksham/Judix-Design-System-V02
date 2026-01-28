@@ -5,6 +5,61 @@ import { Icon } from '@judix/icon';
 import { Button } from '@/components/ui/button';
 import { showToast } from '@/components/ui/toast';
 
+const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | 'command' }) => {
+    let bgColor = 'bg-color-bg-neutral-subtle';
+    let textColor = 'text-color-text-neutral-default';
+    let borderColor = 'border-color-border-neutral-default';
+
+    if (type === 'token') {
+        const match = text.match(/^\[(.*?):-(.*?)\]$/);
+        const label = match ? `${match[1]}: ${match[2]}` : text;
+
+        return (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-blue-50 text-blue-700 border border-blue-200 mx-0.5 align-baseline">
+                {label}
+            </span>
+        );
+    }
+
+    if (type === 'mention') {
+        return (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-orange-50 text-orange-700 border border-orange-200 mx-0.5 align-baseline">
+                {text}
+            </span>
+        );
+    }
+
+    if (type === 'command') {
+        return (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-purple-50 text-purple-700 border border-purple-200 mx-0.5 align-baseline">
+                {text}
+            </span>
+        );
+    }
+
+    return <span>{text}</span>;
+}
+
+const renderParsedQuery = (text: string) => {
+    const parts = text.split(/(\[[^\]]+\]|@\S+|^\/[\w\s]+)/g);
+
+    return parts.map((part, index) => {
+        if (!part) return null;
+
+        if (part.startsWith('[') && part.endsWith(']')) {
+            return <TokenChip key={index} text={part} type="token" />;
+        }
+        if (part.startsWith('@')) {
+            return <TokenChip key={index} text={part} type="mention" />;
+        }
+        if (part.startsWith('/')) {
+            return <TokenChip key={index} text={part} type="command" />;
+        }
+
+        return <span key={index}>{part}</span>;
+    });
+};
+
 export interface UserQueryProps {
     query: string;
     onEdit?: (newQuery: string) => void;
@@ -102,8 +157,8 @@ export const UserQuery = ({
                 <>
                     {/* Default/Hover State */}
                     <div className="relative p-1 pb-5 ">
-                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
-                            {query}
+                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default leading-7">
+                            {renderParsedQuery(query)}
                         </p>
 
                         {/* Action Icons - Visible on Hover - Positioned at bottom right */}

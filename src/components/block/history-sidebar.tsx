@@ -52,6 +52,7 @@ export interface HistorySidebarProps {
     onToggleSidebar?: () => void;
     onZoom?: () => void;
     zoomLevel?: string;
+    showCloseButton?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -73,6 +74,7 @@ export const HistorySidebar = ({
     onToggleSidebar,
     onZoom,
     zoomLevel = "100%",
+    showCloseButton = false,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -161,13 +163,13 @@ export const HistorySidebar = ({
                     <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
                         <IconButton
                             onClick={handleToggle}
-                            icon="sidebar-left"
+                            icon={showCloseButton ? "cross" : "sidebar-left"}
                             variant="neutral"
                             size="medium"
                             corner="sharp"
                             className="bg-color-neutral-default hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
                             iconClassName='text-icon_button-color-neutral-icon'
-                            aria-label="Toggle Sidebar"
+                            aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
                         />
                         <Label
                             colorScheme="neutral"
@@ -241,10 +243,10 @@ export const HistorySidebar = ({
                                     <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
                                 <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
-                                    <span className="w-fit text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
+                                    <span className="w-full text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
                                         {userProfile.name}
                                     </span>
-                                    <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
+                                    <span className="w-full text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
                                         {userProfile.tier}
                                     </span>
                                 </div>
