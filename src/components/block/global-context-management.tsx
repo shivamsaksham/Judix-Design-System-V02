@@ -32,6 +32,7 @@ export const GlobalContextManagement = ({
     const [isClosing, setIsClosing] = useState(false);
     const [selectedContext, setSelectedContext] = useState<{ title: string; content: string } | null>(null);
     const [deletingTitle, setDeletingTitle] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     const hasContext = contextFiles.length > 0;
 
@@ -111,11 +112,70 @@ export const GlobalContextManagement = ({
             onContextChange?.(updatedFiles);
             setDeletingTitle(null);
         }, 200); // Match animation duration
+
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = async (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+
+        const files = Array.from(e.dataTransfer.files);
+        if (files.length === 0) return;
+
+        const newContextFiles: ContextFile[] = [];
+
+        for (const file of files) {
+            let content = "";
+            let fileType = "TXT";
+
+            if (file.type === "application/pdf") {
+                fileType = "PDF";
+                content = `[PDF File: ${file.name}]`; // Placeholder for PDF content
+            } else {
+                try {
+                    content = await file.text();
+                } catch (err) {
+                    console.error("Failed to read file", file.name, err);
+                    content = "[Error reading file]";
+                }
+            }
+
+            newContextFiles.push({
+                id: `context-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                title: file.name,
+                content: content,
+                lineCount: content.split('\n').length,
+                fileType: fileType,
+            });
+        }
+
+        const updatedFiles = [...contextFiles, ...newContextFiles];
+        setContextFiles(updatedFiles);
+        onContextChange?.(updatedFiles);
     };
 
     return (
         <>
-            <div className={cn('w-full max-w-[608px]', className)}>
+            <div
+                className={cn(
+                    'w-full max-w-[608px] transition-colors duration-200 rounded-2xl',
+                    isDragging && "bg-color-surface-primary-subtle_bg ring-2 ring-color-border-primary-default ring-inset",
+                    className
+                )}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
                 {!hasContext ? (
                     /* Empty State */
                     <button
@@ -170,7 +230,7 @@ export const GlobalContextManagement = ({
                                 onClick={handleAddClick}
                                 variant="neutral"
                                 size="small"
-                                prefixIcon="Add"
+                                prefixIcon="add"
                                 className={cn(
                                     'p-2 w-fit rounded-button-border-radius-default border',
                                     'border-color-border-neutral-default bg-color-surface-neutral-default',

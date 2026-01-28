@@ -5,6 +5,7 @@ import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Dropdown } from "../ui/dropdown";
+import { IconButton } from "../ui";
 
 export interface ContextActionMenuProps {
     isAdded?: boolean;
@@ -43,14 +44,14 @@ export function ContextActionMenu({
             title: isBookmarked ? "Bookmarked" : "Bookmark",
             value: "bookmark",
             trailingAccessory: isBookmarked ? (
-                <Icon name="edit-b" className="w-4 h-4 text-color-icon-primary-default fill-current" />
+                <Icon name="save-b" className="w-5 h-5 text-color-icon-primary-default fill-color-icon-primary-default" />
             ) : undefined
         },
         {
             title: "Mention in query",
             value: "mention",
             trailingAccessory: isMentioned ? (
-                <Icon name="tick-circle" className="w-4 h-4 text-color-icon-primary-default" />
+                <IconButton icon="tick-circle" variant="primary" size="medium" className="bg-transparent"/>
             ) : undefined
         }
     ];
@@ -71,7 +72,7 @@ export function ContextActionMenu({
                     if (val === "mention") handleMention();
                 }}
                 searchbar="off"
-                className="w-full border-none shadow-none items-center text-style-body-default-regular"
+                className="w-full border-none shadow-none items-center justify-center text-style-body-default-regular"
             />
         </div>
     );

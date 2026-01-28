@@ -18,15 +18,23 @@ export interface ConfirmationProps {
   subText: string;
   onConfirmClick: () => void;
   onCancelClick: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children?: React.ReactElement;
+  confirmVariant?: 'primary' | 'neutral' | 'destructive';
+  confirmText?: string;
+  cancelText?: string;
 }
 
-function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children }: ConfirmationProps & { children: React.ReactElement }) {
+function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, children, open, onOpenChange, confirmVariant = "primary", confirmText = "Confirm", cancelText = "Cancel" }: ConfirmationProps) {
   return (
 
-    <Dialog >
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {children && (
+        <DialogTrigger asChild>
+          {children}
+        </DialogTrigger>
+      )}
       <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke w-[366px]">
         <DialogHeader className='flex-row justify-between'>
           <DialogTitle className='confirmation-font-title p-1'>Confirmation</DialogTitle>
@@ -44,8 +52,8 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
           </span>
         </DialogDescription>
         <DialogFooter className=' '>
-          <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>Cancle</Button>
-          <Button size="extraSmall" onClick={onConfirmClick}>Confirm</Button>
+          <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>{cancelText}</Button>
+          <Button size="extraSmall" variant={confirmVariant} onClick={onConfirmClick}>{confirmText}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

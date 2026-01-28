@@ -13,22 +13,32 @@ export interface FileBarProps {
     data: FileTreeNodeType[];
     activeId?: string;
     activeIds?: string[];
+    editingId?: string | null;
+    editDisabled?: boolean;
     onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
     onCreateNew?: (type: "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
+    onToggle?: (node: any) => void;
+    onRename?: (nodeId: string, newName: string) => void;
+    onCancelEdit?: () => void;
 }
 
 export function FileBar({
     data,
     activeId,
     activeIds,
+    editingId,
+    editDisabled,
     onSelect,
     className,
     onCreateNew,
     onEdit,
     onDelete,
+    onToggle,
+    onRename,
+    onCancelEdit,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -72,25 +82,28 @@ export function FileBar({
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         variant="neutral"
                         size="extraSmall"
-                        suffixIcon="ArrowDown"
+                        suffixIcon="arrow-down-c"
                         className="h-8"
+                        disabled={!activeId}
                     >
                         Create new
                     </Button>
 
                     <IconButton
-                        icon="Edit2"
+                        icon="edit-a"
                         size="medium"
                         variant="neutral"
                         onClick={onEdit}
                         className="hover:bg-color-surface-neutral-subtle_bg"
+                        disabled={!activeId || editDisabled}
                     />
                     <IconButton
-                        icon="Trash"
+                        icon="trash"
                         size="medium"
                         variant="neutral"
                         onClick={onDelete}
                         className="hover:bg-color-surface-neutral-subtle_bg"
+                        disabled={!activeId}
                     />
                 </div>
             </div>
@@ -100,7 +113,11 @@ export function FileBar({
                     data={data}
                     activeId={activeId}
                     activeIds={activeIds}
+                    editingId={editingId}
                     onSelect={onSelect}
+                    onToggle={onToggle}
+                    onRename={onRename}
+                    onCancelEdit={onCancelEdit}
                     className="p-2"
                 />
             </div>

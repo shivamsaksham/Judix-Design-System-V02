@@ -19,135 +19,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { FileTree, FileTreeNodeType } from "./file-tree";
 
-const mockFileTreeData: FileTreeNodeType[] = [
-    {
-        id: "independent",
-        name: "Independent",
-        type: "folder",
-        isOpen: true,
-        children: [
-            {
-                id: "ind-chats",
-                name: "Chats",
-                type: "folder",
-                isOpen: true,
-                children: [
-                    { id: "ind-chat-1", name: "Income tax evasion discussion", type: "file", fileType: "chat" },
-                    { id: "ind-chat-2", name: "Anticipatory bail examination", type: "file", fileType: "chat" },
-                    { id: "ind-chat-3", name: "Automatic stay in money decree situation", type: "file", fileType: "chat" },
-                ]
-            },
-            {
-                id: "ind-notes",
-                name: "Notes",
-                type: "folder",
-                isOpen: true,
-                children: [
-                    { id: "ind-note-1", name: "Case facts", type: "file", fileType: "note" },
-                    { id: "ind-note-2", name: "Argument strategy", type: "file", fileType: "note" },
-                    { id: "ind-note-3", name: "Personal analysis", type: "file", fileType: "note" },
-                ]
-            },
-            {
-                id: "ind-archive",
-                name: "Archive",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "ind-archive-1", name: "Malwa Strips vs Commissioner of Income Tax", type: "file", fileType: "archive" },
-                    { id: "ind-archive-2", name: "The state of Bihar vs Srikumar Rao", type: "file", fileType: "archive" },
-                    { id: "ind-archive-3", name: "Income Tax Act, 1961 : sec 12,32", type: "file", fileType: "archive" },
-                ]
-            }
-        ]
-    },
-    {
-        id: "project-1",
-        name: "Shridhar apartment case",
-        type: "folder",
-        isOpen: false,
-        children: [
-            {
-                id: "proj1-chats",
-                name: "Chats",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj1-chat-1", name: "Income tax evasion discussion", type: "file", fileType: "chat" },
-                    { id: "proj1-chat-2", name: "Anticipatory bail examination", type: "file", fileType: "chat" },
-                    { id: "proj1-chat-3", name: "Automatic stay in money decree situation", type: "file", fileType: "chat" },
-                ]
-            },
-            {
-                id: "proj1-notes",
-                name: "Notes",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj1-note-1", name: "Case facts", type: "file", fileType: "note" },
-                    { id: "proj1-note-2", name: "Argument strategy", type: "file", fileType: "note" },
-                    { id: "proj1-note-3", name: "Personal analysis", type: "file", fileType: "note" },
-                ]
-            },
-            {
-                id: "proj1-archive",
-                name: "Archive",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj1-archive-1", name: "Malwa Strips vs Commissioner of Income Tax", type: "file", fileType: "archive" },
-                    { id: "proj1-archive-2", name: "The state of Bihar vs Srikumar Rao", type: "file", fileType: "archive" },
-                    { id: "proj1-archive-3", name: "Income Tax Act, 1961 : sec 12,32", type: "file", fileType: "archive" },
-                ]
-            }
-        ]
-    },
-    {
-        id: "project-2",
-        name: "Corporate Merger 2024 with a very long name",
-        type: "folder",
-        isOpen: false,
-        children: [
-            {
-                id: "proj2-chats",
-                name: "Chats",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj2-chat-1", name: "Income tax evasion discussion", type: "file", fileType: "chat" },
-                    { id: "proj2-chat-2", name: "Anticipatory bail examination", type: "file", fileType: "chat" },
-                    { id: "proj2-chat-3", name: "Automatic stay in money decree situation", type: "file", fileType: "chat" },
-                ]
-            },
-            {
-                id: "proj2-notes",
-                name: "Notes",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj2-note-1", name: "Case facts", type: "file", fileType: "note" },
-                    { id: "proj2-note-2", name: "Argument strategy", type: "file", fileType: "note" },
-                    { id: "proj2-note-3", name: "Personal analysis", type: "file", fileType: "note" },
-                ]
-            },
-            {
-                id: "proj2-archive",
-                name: "Archive",
-                type: "folder",
-                isOpen: false,
-                children: [
-                    { id: "proj2-archive-1", name: "Malwa Strips vs Commissioner of Income Tax", type: "file", fileType: "archive" },
-                    { id: "proj2-archive-2", name: "The state of Bihar vs Srikumar Rao", type: "file", fileType: "archive" },
-                    { id: "proj2-archive-3", name: "Income Tax Act, 1961 : sec 12,32", type: "file", fileType: "archive" },
-                ]
-            }
-        ]
-    }
-];
+const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
+
+
+
+function toggleNodeRecursive(nodes: FileTreeNodeType[], targetId: string): FileTreeNodeType[] {
+    return nodes.map((node) => {
+        if (node.id === targetId && node.type === "folder") {
+            return { ...node, isOpen: !node.isOpen } as FileTreeNodeType;
+        }
+        if (node.type === "folder" && node.children) {
+            return { ...node, children: toggleNodeRecursive(node.children, targetId) } as FileTreeNodeType;
+        }
+        return node;
+    });
+}
 
 
 export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     defaultExpanded?: boolean;
+    defaultEnlarged?: boolean;
     title?: string;
     children?: React.ReactNode;
     onExpandChange?: (expanded: boolean) => void;
@@ -161,11 +52,18 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     onEditFile?: () => void;
     onDeleteFile?: () => void;
     onImageUpload?: (file: File, editor: Editor | null) => void;
+    fileTree?: FileTreeNodeType[];
+    onFileSelect?: (node: FileTreeNodeType) => void;
+    activeFileId?: string | null;
+    content?: string;
+    variant?: 'floating' | 'embedded';
+    showSidebar?: boolean;
 }
 
 export function NotesCard({
     className,
     defaultExpanded = false,
+    defaultEnlarged = false,
     title = "Notes",
     children,
     onExpandChange,
@@ -179,14 +77,60 @@ export function NotesCard({
     onEditFile,
     onDeleteFile,
     onImageUpload,
+    fileTree = DEFAULT_FILE_TREE,
+
+    onFileSelect,
+    activeFileId: propActiveFileId,
+    content: propContent,
+    variant = 'floating',
+    showSidebar = true,
     ...props
 }: NotesCardProps) {
-    const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+    const isEmbedded = variant === 'embedded';
+    const [isExpanded, setIsExpanded] = React.useState(isEmbedded ? true : defaultExpanded);
     const [isMaximized, setIsMaximized] = React.useState(false);
-    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(false);
-    const [activeFileId, setActiveFileId] = React.useState<string | undefined>("note-2");
+    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isEmbedded ? false : defaultEnlarged);
+    const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
-    const [noteContent, setNoteContent] = React.useState("");
+    const [noteContent, setNoteContent] = React.useState(propContent || "");
+    const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
+
+    React.useEffect(() => {
+        setFileTreeData(fileTree);
+    }, [fileTree]);
+
+    React.useEffect(() => {
+        if (propActiveFileId !== undefined) {
+            setActiveFileId(propActiveFileId || undefined);
+        }
+    }, [propActiveFileId]);
+
+    React.useEffect(() => {
+        if (propContent !== undefined) {
+            setNoteContent(propContent);
+            if (editor && editor.getHTML() !== propContent) {
+                editor.commands.setContent(propContent);
+            }
+        }
+    }, [propContent, editor]);
+
+    const handleFileTreeToggle = (toggledNode: any) => {
+        const isRoot = fileTreeData.some(f => f.id === toggledNode.id);
+
+        if (isRoot) {
+            setFileTreeData(fileTreeData.map(f => {
+                if (f.id === toggledNode.id && f.type === "folder") {
+                    return { ...f, isOpen: !f.isOpen } as FileTreeNodeType;
+                }
+                if (f.type === "folder") {
+                    return { ...f, isOpen: false } as FileTreeNodeType;
+                }
+                return f;
+            }));
+        } else {
+            setFileTreeData(toggleNodeRecursive(fileTreeData, toggledNode.id));
+        }
+    };
 
     const handleExpandToggle = () => {
         const newExpandedState = !isExpanded;
@@ -309,89 +253,103 @@ export function NotesCard({
                 className={cn(
                     "transition-all duration-300 ease-in-out relative",
                     isEnlargeOpen && "z-50",
-                    isExpanded ? "w-140" : "w-80",
-                    isExpanded ? "h-100" : "h-14"
+                    isEmbedded ? "w-full h-full" : cn(isExpanded ? "w-140" : "w-80", isExpanded ? "h-100" : "h-14")
                 )}
             >
                 <motion.div
                     layout
                     className={cn(
-                        "bg-white border border-color-border-neutral-default overflow-hidden shadow-xl flex flex-col",
-                        isEnlargeOpen
+                        "bg-white overflow-hidden flex flex-col",
+                        !isEmbedded && "border border-color-border-neutral-default shadow-xl",
+                        isEnlargeOpen && !isEmbedded
                             ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[1050px] h-[680px] rounded-lg p-6 gap-2"
                             : cn(
                                 "absolute inset-0 w-full h-full",
-                                isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0"
+                                !isEmbedded && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
                             ),
                         className
                     )}
                     transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
                 >
-                    {isEnlargeOpen ? (
+                    {isEnlargeOpen || isEmbedded ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             className="flex flex-col h-full w-full gap-2"
                         >
-                            <div className="flex items-center justify-between shrink-0 mb-2">
-                                <div className="flex items-center gap-3">
-                                    <Icon name="Note" className="w-5 h-5 text-color-icon-neutral-default" />
-                                    <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <Button variant="neutral" size="small" className="gap-2" onClick={onOpenInNewTab}>
-                                        Open in new tab
-                                    </Button>
-                                    <IconButton
-                                        icon="Send"
-                                        size="small"
-                                        variant="neutral"
-                                        boundary="none"
-                                        className="rotate-180"
-                                        onClick={() => {
-                                            setIsEnlargeOpen(false);
-                                            onSend?.(false);
-                                        }}
-                                    />
-                                    <IconButton
-                                        icon="Cross"
-                                        size="small"
-                                        variant="neutral"
-                                        boundary="none"
-                                        onClick={() => {
-                                            setIsEnlargeOpen(false);
-                                            onSend?.(false);
-                                        }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-1 min-h-0 gap-4">
-                                <div className="w-[240px] flex flex-col shrink-0">
-                                    <div className="flex items-center justify-between py-2">
-                                        <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
-                                        <div className="flex items-center gap-0.5">
-                                            <IconButton icon="Add" size="small" variant="neutral" boundary="none" onClick={onAddFile} />
-                                            <IconButton icon="Edit" size="small" variant="neutral" boundary="none" onClick={onEditFile} />
-                                            <IconButton icon="Trash" size="small" variant="neutral" boundary="none" onClick={onDeleteFile} />
-                                        </div>
+                            {!isEmbedded && (
+                                <div className="flex items-center justify-between shrink-0 mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <IconButton icon="note-a" size="medium" variant="neutral" boundary="none" />
+                                        <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                     </div>
-                                    <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
-                                    <div className="flex-1 overflow-hidden -ml-2">
-                                        <FileTree
-                                            data={mockFileTreeData}
-                                            activeId={activeFileId}
-                                            onSelect={(node: any) => setActiveFileId(node.id)}
-                                            className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                    <div className="flex items-center gap-3">
+                                        <Button variant="neutral" size="small" className="gap-2" onClick={onOpenInNewTab}>
+                                            Open in new tab
+                                        </Button>
+                                        <IconButton
+                                            icon="received"
+                                            size="medium"
+                                            variant="neutral"
+                                            boundary="none"
+                                            className="rotate-180"
+                                            onClick={() => {
+                                                setIsEnlargeOpen(false);
+                                                onSend?.(false);
+                                            }}
+                                        />
+                                        <IconButton
+                                            icon="cross"
+                                            size="medium"
+                                            variant="neutral"
+                                            boundary="none"
+                                            onClick={() => {
+                                                setIsEnlargeOpen(false);
+                                                onCancel?.();
+                                            }}
+                                            className="rotate-180"
                                         />
                                     </div>
                                 </div>
+                            )}
 
-                                <Separator orientation="vertical" className="w-px h-full bg-color-border-neutral-default" />
+                            <div className="flex flex-1 min-h-0 gap-4">
+                                {showSidebar && (
+                                    <>
+                                        <div className="w-[240px] flex flex-col shrink-0">
+                                            <div className="flex items-center justify-between py-2">
+                                                <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
+                                                <div className="flex items-center gap-0.5">
+                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} disabled={!activeFileId} />
+                                                    <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={!activeFileId} />
+                                                    <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={onDeleteFile} disabled={!activeFileId} />
+                                                </div>
+                                            </div>
+                                            <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
+                                            <div className="flex-1 overflow-hidden -ml-2">
+                                                <FileTree
+                                                    data={fileTreeData}
+                                                    activeId={activeFileId}
+                                                    onSelect={(node: any) => {
+                                                        setActiveFileId(node.id);
+                                                        onFileSelect?.(node);
+                                                    }}
+                                                    onToggle={handleFileTreeToggle}
+                                                    className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <Separator orientation="vertical" className="w-px h-full bg-color-border-neutral-default" />
+                                    </>
+                                )}
 
                                 <div className="flex-1 flex flex-col min-w-0 gap-1">
-                                    <div className="flex items-center px-0 w-[720px] h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between">
+                                    <div className={cn(
+                                        "flex items-center h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between",
+                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                    )}>
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
                                                 <PopoverTrigger asChild>
@@ -403,7 +361,7 @@ export function NotesCard({
                                                         )}
                                                     >
                                                         <span className="truncate">{currentHeadingLabel}</span>
-                                                        <Icon name="ArrowDown" className="w-4 h-4 text-color-icon-neutral-tertiary" />
+                                                        <IconButton icon="arrow-down-c" size="medium" variant="neutral" boundary="none" />
                                                     </div>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="start" sideOffset={4}>
@@ -422,24 +380,24 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="TextBold"
-                                                size="small"
+                                                icon="text-bold"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => editor?.chain().focus().toggleBold().run()}
                                             />
                                             <IconButton
-                                                icon="TextItalic"
-                                                size="small"
+                                                icon="text-italic"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => editor?.chain().focus().toggleItalic().run()}
                                             />
                                             <IconButton
-                                                icon="TextUnderline"
-                                                size="small"
+                                                icon="text-underline"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -451,32 +409,32 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="TextalignLeft"
-                                                size="small"
+                                                icon="textalign-left"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('left')}
                                             />
                                             <IconButton
-                                                icon="TextalignCenter"
-                                                size="small"
+                                                icon="textalign-center"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('center')}
                                             />
                                             <IconButton
-                                                icon="TextalignRight"
-                                                size="small"
+                                                icon="textalign-right"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('right')}
                                             />
                                             <IconButton
-                                                icon="TextalignJustifycenter"
-                                                size="small"
+                                                icon="textalign-justifycenter"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -488,8 +446,8 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="Link2"
-                                                size="small"
+                                                icon="link-b"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -501,8 +459,8 @@ export function NotesCard({
                                                 }}
                                             />
                                             <IconButton
-                                                icon="Image"
-                                                size="small"
+                                                icon="image"
+                                                size="medium"
                                                 variant="neutral"
                                                 boundary="none"
                                                 onClick={() => fileInputRef.current?.click()}
@@ -519,12 +477,17 @@ export function NotesCard({
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton icon="Edit" size="small" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
-                                            <IconButton icon="Share" size="small" variant="neutral" boundary="none" onClick={handleShare} />
+                                            <IconButton icon="at" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
+                                            <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-white relative border border-color-border-neutral-default overflow-hidden w-[720px]">
+
+
+                                    <div className={cn(
+                                        "flex-1 bg-white relative overflow-hidden",
+                                        isEmbedded ? "w-full border border-color-border-neutral-default" : "w-[720px] border border-color-border-neutral-default"
+                                    )}>
                                         <TextEditor
                                             className="w-full h-full p-6 text-color-text-neutral-default"
                                             placeholder="Type your notes here"
@@ -534,7 +497,10 @@ export function NotesCard({
                                         />
                                     </div>
 
-                                    <div className="flex items-center justify-end px-0 py-3 gap-3 shrink-0 w-[720px]">
+                                    <div className={cn(
+                                        "flex items-center justify-end py-3 gap-3 shrink-0",
+                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                    )}>
                                         <Button variant="neutral" onClick={() => { setIsEnlargeOpen(false); onCancel?.(); }} size="small">Cancel</Button>
                                         <Button variant="primary" onClick={() => { setIsEnlargeOpen(false); onSave?.(noteContent); }} size="small">Save</Button>
                                     </div>
@@ -559,10 +525,10 @@ export function NotesCard({
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <IconButton
-                                        icon="Send"
+                                        icon="send-c"
                                         className="bg-transparent"
                                         iconClassName={cn("transition-transform duration-300", isEnlargeOpen && "rotate-180")}
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         aria-label="Open enlarge view"
@@ -572,19 +538,19 @@ export function NotesCard({
                                         }}
                                     />
                                     <IconButton
-                                        icon="Export"
+                                        icon="export-b"
                                         className="bg-transparent"
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         aria-label="Share as PDF"
                                         onClick={handleShare}
                                     />
                                     <IconButton
-                                        icon="ArrowDown"
+                                        icon="arrow-down-c"
                                         className="bg-transparent"
                                         iconClassName={cn("transition-transform duration-300 rotate-180", isExpanded && "rotate-0")}
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         onClick={handleExpandToggle}

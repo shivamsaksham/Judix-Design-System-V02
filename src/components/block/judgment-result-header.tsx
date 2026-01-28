@@ -38,7 +38,7 @@ export function JudgmentResultHeader({
             actions={
                 <>
                     <IconButton
-                        icon="Printer"
+                        icon="printer"
                         variant="neutral"
                         boundary="stroked"
                         corner="rounded"
@@ -48,7 +48,7 @@ export function JudgmentResultHeader({
                         onClick={onPrint}
                     />
                     <IconButton
-                        icon="Filter"
+                        icon="filter"
                         variant="neutral"
                         boundary="stroked"
                         corner="rounded"

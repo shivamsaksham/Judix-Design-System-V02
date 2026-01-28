@@ -78,7 +78,7 @@ export const GlobalContext = ({
                                 e.stopPropagation();
                                 onEdit?.();
                             }}
-                            icon="Edit2"
+                            icon="edit-a"
                             variant="neutral"
                             size="medium"
                             corner='sharp'
@@ -90,7 +90,7 @@ export const GlobalContext = ({
                                     e.stopPropagation();
                                     onDelete?.();
                                 }}
-                                icon="Trash"
+                                icon="trash"
                                 variant="neutral"
                                 size="medium"
                                 corner='sharp'

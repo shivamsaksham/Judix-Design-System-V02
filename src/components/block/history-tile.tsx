@@ -30,7 +30,7 @@ export const HistoryTile = ({
         <div
             className={cn(
                 'group relative flex items-center justify-between',
-                'w-full max-w-[242px]',
+                'w-full',
                 'p-2 py-[6px] rounded-lg cursor-pointer transition-colors duration-200',
                 'whitespace-nowrap',
                 isActive
