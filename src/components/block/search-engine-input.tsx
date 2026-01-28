@@ -794,6 +794,12 @@ function SearchEngineInput({
         }
     };
 
+    const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData("text/plain");
+        document.execCommand("insertText", false, text);
+    };
+
     const handleOptionSelect = (option: string, isManual: boolean = false) => {
         if (onOptionClick) {
             const currentPayload = getParsedPayload();
@@ -1176,6 +1182,7 @@ function SearchEngineInput({
                         style={{ height: isCentered ? CENTER_HEIGHT : BOTTOM_HEIGHT }}
                         onInput={handleTextChange}
                         onKeyDown={handleKeyDown}
+                        onPaste={handlePaste}
                     />
 
                     <div className="w-full flex items-center justify-between flex-wrap gap-y-2">
