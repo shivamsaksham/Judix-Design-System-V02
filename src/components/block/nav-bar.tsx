@@ -138,16 +138,32 @@ export function NavBar({
         >
             {variant === 'project' ? (
                 <>
-                    <Link href="/">
-                    <div className="flex items-center cursor-pointer">
-                        <Image
-                            src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
-                            alt="Logo"
-                            width={isMobile ? 32 : 92}
-                            height={32}
-                        />
+                    <div className="flex items-center gap-2">
+                        <div className="md:hidden">
+                            <button
+                                onClick={onMenuClick}
+                                className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
+                                aria-label="Toggle Sidebar"
+                            >
+                                <Image
+                                    src="/mobile-sidebar.svg"
+                                    alt="Menu"
+                                    width={39}
+                                    height={32}
+                                />
+                            </button>
+                        </div>
+                        <Link href="/">
+                            <div className="flex items-center cursor-pointer">
+                                <Image
+                                    src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
+                                    alt="Logo"
+                                    width={isMobile ? 32 : 92}
+                                    height={32}
+                                />
+                            </div>
+                        </Link>
                     </div>
-                    </Link>
                     {/* UI FIX */}
                     <div className="flex items-center gap-2">
                         <Button
@@ -160,12 +176,56 @@ export function NavBar({
                             Back to research
                         </Button>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-color-surface-neutral-subtle_bg flex items-center justify-center">
-                                <Icon name="Profile" className="w-5 h-5 text-color-icon-neutral-default" />
-                            </div>
-                            <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">
-                                {userName}
-                            </span>
+                            {!isMobile && (
+                                <>
+                                    <div className="w-8 h-8 rounded-full bg-color-surface-neutral-subtle_bg flex items-center justify-center">
+                                        <Icon name="Profile" className="w-5 h-5 text-color-icon-neutral-default" />
+                                    </div>
+                                    <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">
+                                        {userName}
+                                    </span>
+                                </>
+                            )}
+
+                            {isMobile && (
+                                <div className="relative">
+                                    <Button
+                                        ref={ellipsisButtonRef}
+                                        onClick={() => setShowChatMenu(!showChatMenu)}
+                                        variant="neutral"
+                                        size="small"
+                                        className='border-none p-2 bg-color-surface-neutral-default m-[1px] gap-1 h-fit'
+                                        iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
+                                    >
+                                        <Image
+                                            src="/ellipsis.svg"
+                                            alt="Menu"
+                                            width={20}
+                                            height={20}
+                                            aria-label="More options"
+                                        />
+                                    </Button>
+                                    {showChatMenu && (
+                                        <div
+                                            ref={chatMenuRef}
+                                            className="absolute top-full right-0 mt-2 z-50"
+                                        >
+                                            <ChatHistoryMenu
+                                                items={[
+                                                    {
+                                                        id: 'profile',
+                                                        label: userName,
+                                                        icon: <Icon name="Profile" />,
+                                                        onClick: () => {
+                                                            setShowChatMenu(false);
+                                                        },
+                                                    },
+                                                ]}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </>
@@ -196,6 +256,28 @@ export function NavBar({
                                 />
                             </div>
                         </div>
+
+                        {isResultPanelOpen && (
+                            <div className="flex items-center gap-2 ml-4 flex-1">
+                                <Button
+                                    variant="neutral"
+                                    size="small"
+                                    prefixIcon="back-square"
+                                    onClick={onBackToResearch}
+                                    className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg"
+                                >
+                                    Back to research
+                                </Button>
+                                {!isMobile && projectName && (
+                                    <div className="flex items-center gap-2 px-2 py-1 bg-color-surface-neutral-subtle_bg rounded-md">
+                                        <Icon name="Cube" className="w-4 h-4 text-color-icon-primary-default" />
+                                        <span className="text-style-body-default-medium text-color-text-neutral-default truncate max-w-[150px]">
+                                            {projectName}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         <div className="flex items-center">
 
