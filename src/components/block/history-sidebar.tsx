@@ -35,7 +35,7 @@ export interface UserProfile {
 
 export interface HistorySidebarProps {
     chatHistory: ChatHistoryItem[];
-    usageStats: UsageStats & { zoomLevel?: string }; // Extend UsageStats or add separate prop? separate is cleaner but UsageStats has label. Let's add separate.
+    usageStats: UsageStats;
     userProfile: UserProfile;
     onNewChat?: () => void;
     onNotes?: () => void;
@@ -50,8 +50,7 @@ export interface HistorySidebarProps {
     className?: string;
     isExpanded?: boolean;
     onToggleSidebar?: () => void;
-    onZoom?: () => void;
-    zoomLevel?: string;
+
     showCloseButton?: boolean;
 }
 
@@ -72,8 +71,7 @@ export const HistorySidebar = ({
     className,
     isExpanded: controlledIsExpanded,
     onToggleSidebar,
-    onZoom,
-    zoomLevel = "100%",
+
     showCloseButton = false,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
@@ -317,10 +315,7 @@ export const HistorySidebar = ({
                             }}
                         >
                             <UserMenu
-                                zoomLevel={zoomLevel}
-                                onZoom={() => {
-                                    onZoom?.();
-                                }}
+
                                 onAccount={() => {
                                     setIsUserMenuOpen(false);
                                     console.log('My Account clicked');

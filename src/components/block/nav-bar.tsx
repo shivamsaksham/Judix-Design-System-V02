@@ -18,7 +18,7 @@ export interface NavBarProps {
     onIndependentClick?: () => void;
     onConnectorClick?: () => void;
     onContextClick?: () => void;
-    onShareClick?: () => void;
+
     onMenuClick?: () => void;
     onRename?: () => void;
     onDelete?: () => void;
@@ -45,7 +45,7 @@ export function NavBar({
     onIndependentClick,
     onConnectorClick,
     onContextClick,
-    onShareClick,
+
     onMenuClick,
     onRename,
     onDelete,
@@ -154,7 +154,7 @@ export function NavBar({
                             </div>
                         </Link>
                     </div>
-                    {/* UI FIX */}
+                    {/* UI FIX REQUIRED */}
                     <div className="flex items-center gap-2">
                         <Button
                             variant="neutral"
@@ -398,16 +398,7 @@ export function NavBar({
 
 
                                 <div className="flex items-center gap-3 ">
-                                    <Button
-                                        onClick={onShareClick}
-                                        variant="neutral"
-                                        size="small"
-                                        prefixIcon="export-b"
-                                        className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
-                                        iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
-                                    >
-                                        <span className="p-1 text-style-body-default-regular hidden sm:block">Share</span>
-                                    </Button>
+
 
                                     {isNewChat && (
                                         <div className="relative">
@@ -443,15 +434,7 @@ export function NavBar({
                                                                     onRename?.();
                                                                 },
                                                             },
-                                                            {
-                                                                id: 'share',
-                                                                label: 'Share',
-                                                                icon: <Icon name="Export" />,
-                                                                onClick: () => {
-                                                                    setShowChatMenu(false);
-                                                                    onShareClick?.();
-                                                                },
-                                                            },
+
                                                             {
                                                                 id: 'delete',
                                                                 label: 'Delete',
