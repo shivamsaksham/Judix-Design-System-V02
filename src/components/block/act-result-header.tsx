@@ -35,7 +35,7 @@ export function ActResultHeader({
             onDropdownChange={onDropdownChange}
             actions={
                 <IconButton
-                    icon="Printer"
+                    icon="printer"
                     variant="neutral"
                     boundary="stroked"
                     corner="rounded"

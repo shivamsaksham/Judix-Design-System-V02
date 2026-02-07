@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
-import { Dropdown, DropdownOption } from '@/components/ui/dropdown';
+import { cn } from '@/lib/utils';
+import { Option } from '@/components/ui/option';
+import { Icon } from '@judix/icon';
 
 export interface ChatHistoryMenuItem {
     id: string;
@@ -9,6 +11,7 @@ export interface ChatHistoryMenuItem {
     onClick?: () => void;
     variant?: 'default' | 'danger';
     disabled?: boolean;
+    dividerAfter?: boolean; // Set to true to add a border-b after this item
 }
 
 export interface ChatHistoryMenuProps {
@@ -17,29 +20,32 @@ export interface ChatHistoryMenuProps {
 }
 
 export const ChatHistoryMenu = ({ items, className }: ChatHistoryMenuProps) => {
-    // Convert ChatHistoryMenuItem to DropdownOption format
-    const dropdownOptions: DropdownOption[] = items.map((item) => ({
-        value: item.id,
-        title: item.label,
-        leadingIcon: item.icon,
-        className: item.variant === 'danger' ? 'text-color-text-feedback-error-default hover:bg-color-surface-feedback-error-subtle' : undefined,
-    }));
-
-    // Handle selection - call the onClick handler for the selected item
-    const handleChange = (value: string) => {
-        const selectedItem = items.find((item) => item.id === value);
-        if (selectedItem?.onClick) {
-            selectedItem.onClick();
-        }
-    };
-
     return (
-        <Dropdown
-            options={dropdownOptions}
-            value={null}
-            onChange={handleChange}
-            searchbar="off"
-            className={className}
-        />
+        <div
+            className={cn(
+                'bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default',
+                'w-[216px] p-2',
+                className
+            )}
+        >
+            <div className="space-y-0">
+                {items.map((item, index) => (
+                    <React.Fragment key={item.id}>
+                        <Option
+                            title={item.label}
+                            prefixSlot={item.icon}
+                            onClick={item.onClick}
+                            disabled={item.disabled}
+                            className={cn(
+                                item.variant === 'danger' && 'text-color-text-feedback-error-default hover:bg-color-surface-feedback-error-subtle [&_svg]:text-color-icon-feedback-error-default'
+                            )}
+                        />
+                        {item.dividerAfter && index < items.length - 1 && (
+                            <div className="border-t border-dropdown-color-stroke" />
+                        )}
+                    </React.Fragment>
+                ))}
+            </div>
+        </div>
     );
 };

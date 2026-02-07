@@ -137,9 +137,11 @@ function ShareSearchDialog({
                 showCloseButton={true}
             >
                 <DialogHeader className="flex-row items-center gap-2">
-                    <Icon
-                        name="Share"
-                        className="h-5 w-5 text-icon_button-color-primary-icon"
+                    <IconButton
+                        icon="share-a"
+                        size="medium"
+                        variant="primary"
+                        boundary="none"
                     />
                     <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
                 </DialogHeader>
@@ -156,7 +158,7 @@ function ShareSearchDialog({
                             onKeyDown={handleKeyDown}
                             trailingAccessory={
                                 <IconButton
-                                    icon="Send2"
+                                    icon="send-b"
                                     size="medium"
                                     variant="primary"
                                     boundary="none"
@@ -242,7 +244,7 @@ function ShareSearchDialog({
                         type="button"
                         variant="neutral"
                         onClick={onDownloadPdf}
-                        prefixIcon="DocumentDownload"
+                        prefixIcon="document-download"
                         size="extraSmall"
                         className="w-full justify-center sm:w-auto self-start text-style-label-title-regular"
                     >

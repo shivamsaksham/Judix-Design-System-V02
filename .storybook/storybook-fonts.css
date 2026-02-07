@@ -3,7 +3,7 @@
 
 /* Load Satoshi local font */
 @font-face {
-  font-family: 'Satoshi Variable';
+  font-family: 'Satoshi';
   src: url('../src/app/fonts/Satoshi-Variable.woff2') format('woff2');
   font-weight: 100 900;
   font-display: swap;
@@ -13,7 +13,7 @@
 /* Define CSS variables for fonts */
 :root {
   --font-poppins: 'Poppins', sans-serif;
-  --font-satoshi: 'Satoshi Variable', sans-serif;
+  --font-satoshi: 'Satoshi', sans-serif;
 }
 
 /* Apply fonts to body */

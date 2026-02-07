@@ -75,9 +75,7 @@ function Toggle({
     >
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
-        className={cn(frameVariants({ variant, size }),
-          className
-        )}{...props}
+        className={cn(frameVariants({ variant, size }))}
       />
     </SwitchPrimitive.Root>
   )

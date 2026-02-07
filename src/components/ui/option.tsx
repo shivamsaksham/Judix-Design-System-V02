@@ -10,6 +10,9 @@ const optionVariants = cva(
       selected: {
         true: "bg-option-color-selected text-option-color-text",
       },
+      highlighted: {
+        true: "bg-option-color-hover text-option-color-text",
+      },
       disabled: {
         true: "opacity-50 cursor-not-allowed pointer-events-none",
       },
@@ -30,16 +33,17 @@ export interface OptionProps
   title: string
   subtext?: string
   selected?: boolean
+  highlighted?: boolean
   disabled?: boolean
   prefixSlot?: React.ReactNode
   suffixSlot?: React.ReactNode
 }
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, disabled, shape, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
+  ({ className, selected, highlighted, disabled, shape, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
     return (
       <div
-        className={cn(optionVariants({ selected, disabled, shape, className }))}
+        className={cn(optionVariants({ selected, highlighted, disabled, shape, className }))}
         ref={ref}
         {...props}
       >
@@ -48,7 +52,7 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
         <div className="flex-grow flex flex-row justify-between">
           <div className="flex justify-center items-center gap-1">
             {prefixSlot &&
-              <div className="text-option-color-icon">
+              <div className="text-option-color-icon w-[18px] h-[18px] flex items-center justify-center">
                 {prefixSlot}
               </div>
             }

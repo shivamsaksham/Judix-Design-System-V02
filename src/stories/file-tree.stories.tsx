@@ -116,3 +116,53 @@ export const SelectedItem: Story = {
         className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
     },
 };
+
+export const SelectedFolder: Story = {
+    render: (args) => {
+        const [activeId, setActiveId] = React.useState<string | undefined>(args.activeId);
+        return (
+            <FileTree
+                {...args}
+                activeId={activeId}
+                onSelect={(node) => {
+                    setActiveId(node.id);
+                    args.onSelect?.(node);
+                }}
+            />
+        );
+    },
+    args: {
+        data: generateMockData(),
+        activeId: "project-1",
+        className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
+    },
+};
+
+export const FolderandFileSelected: Story = {
+    render: (args) => {
+        const [activeIds, setActiveIds] = React.useState<string[] | undefined>(args.activeIds);
+        return (
+            <FileTree
+                {...args}
+                activeIds={activeIds}
+                onSelect={(node) => {
+                    if (node.type === "folder") {
+                        if (activeIds?.includes(node.id)) {
+                            setActiveIds(activeIds.filter(id => id !== node.id));
+                        } else {
+                            setActiveIds([...(activeIds || []), node.id]);
+                        }
+                    } else {
+                        setActiveIds([...(activeIds || []), node.id]);
+                    }
+                    args.onSelect?.(node);
+                }}
+            />
+        );
+    },
+    args: {
+        data: generateMockData(),
+        activeIds: ["project-1", "project-1-chat-1"],
+        className: "w-[400px] h-[600px] border border-color-border-neutral-default rounded-xl p-2",
+    },
+};

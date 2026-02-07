@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { IconButton } from '@/components/ui/icon-button';
 import { showToast } from '@/components/ui/toast';
 
 export interface ResponseActionsProps {
@@ -85,52 +85,42 @@ export const ResponseActions = ({
             )}
         >
             {/* Dislike Button */}
-            <Button
+            <IconButton
                 onClick={handleDislike}
-                variant="neutral"
-                size="small"
-                prefixIcon="Dislike"
-                className={cn(
-                    'p-2 h-fit border-none bg-transparent hover:bg-option-color-hover',
-                    isDisliked && 'bg-option-color-selected'
-                )}
-                iconClassName="w-4 h-4"
+                variant={isDisliked ? "primary" : "neutral"}
+                size="medium"
+                corner="sharp"
+                icon="dislike"
                 aria-label="Dislike"
             />
 
             {/* Like Button */}
-            <Button
+            <IconButton
                 onClick={handleLike}
-                variant="neutral"
-                size="small"
-                prefixIcon="Like1"
-                className={cn(
-                    'p-2 h-fit border-none bg-transparent hover:bg-option-color-hover',
-                    isLiked && 'bg-option-color-selected'
-                )}
-                iconClassName="w-4 h-4"
+                variant={isLiked ? "primary" : "neutral"}
+                size="medium"
+                corner="sharp"
+                icon="like-a"
                 aria-label="Like"
             />
 
             {/* Refresh Button */}
-            <Button
+            <IconButton
                 onClick={handleRefresh}
                 variant="neutral"
-                size="small"
-                prefixIcon="Refresh2"
-                className="p-2 h-fit border-none bg-transparent hover:bg-option-color-hover"
-                iconClassName="w-4 h-4"
-                aria-label="Refresh2"
+                size="medium"
+                corner="sharp"
+                icon="refresh-a"
+                aria-label="Refresh"
             />
 
             {/* Copy Button */}
-            <Button
+            <IconButton
                 onClick={handleCopy}
                 variant="neutral"
-                size="small"
-                prefixIcon="Copy"
-                className="p-2 h-fit border-none bg-transparent hover:bg-option-color-hover"
-                iconClassName="w-4 h-4"
+                size="medium"
+                corner="sharp"
+                icon="copy"
                 aria-label="Copy"
             />
         </div>

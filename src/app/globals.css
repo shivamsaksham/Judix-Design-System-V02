@@ -97,10 +97,11 @@
   --primitives-font-height-400: 24px;
   --primitives-font-height-500: 27px;
   --primitives-font-height-600: 30px;
-  --primitives-font-weight-regular: Regular;
-  --primitives-font-weight-medium: Medium;
-  --primitives-font-weight-semibold: SemiBold;
-  --primitives-font-weight-bold: Bold;
+  --primitives-font-weight-light: 300;
+  --primitives-font-weight-regular: 400;
+  --primitives-font-weight-medium: 500;
+  --primitives-font-weight-semibold: 600;
+  --primitives-font-weight-bold: 700;
 
   /* Border */
 
@@ -238,6 +239,7 @@
   --font-size-heading-sm: var(--primitives-font-size-500);
   --font-size-heading-xs: var(--primitives-font-size-400);
 
+  --font-weight-light: var(--primitives-font-weight-light);
   --font-weight-regular: var(--primitives-font-weight-regular);
   --font-weight-medium: var(--primitives-font-weight-medium);
   --font-weight-semibold: var(--primitives-font-weight-semibold);
@@ -264,9 +266,9 @@
   --font-line_height-textblock-largetext: var(--primitives-font-height-500);
 
   /* Border */
-  --border-radius-sharp: var(--primitives-border-radius-none);
   --border-radius-modal: var(--primitives-border-radius-md);
   --border-radius-small: var(--primitives-border-radius-xs);
+  --border-radius-sharp: var(--primitives-border-radius-sm);
   --border-radius-InteractiveElements: var(--primitives-border-radius-sm);
   --border-radius-large: var(--primitives-border-radius-lg);
   --border-radius-round: var(--primitives-border-radius-full);
@@ -417,6 +419,7 @@
   /* Icon Button Border Radius */
   --radius-icon_button-border-radius-default: var(--border-radius-InteractiveElements);
   --radius-icon_button-border-radius-round: var(--border-radius-round);
+  --radius-icon_button-border-radius-sharp: var(--border-radius-sharp);
   /* Icon Button Border Weight - Un-tokenized : should be used directly as class `icon_button-border-weight-default`  */
   --icon_button-border-weight-default: var(--border-weight-default);
 
@@ -434,7 +437,8 @@
   --radius-calendar-border-radius-default: var(--border-radius-modal);
   /* Calendar Border Weight - Un-tokenized : should be used directly as class `calendar-border-weight-default`  */
   --calendar-border-weight-default: var(--border-weight-default);
-
+  /* Tooltip classes */
+  --radius-tooltip-border-radius-default: var(--border-radius-sharp);
   /* Pagination */
   --color-pagination-color-bg: var(--color-color-surface-neutral-default);
   --color-pagination-color-text: var(--color-color-icon-neutral-default);
@@ -585,6 +589,14 @@
 }
 
 /* Test Styles Semantics */
+@utility text-style-chat-heading-main {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-heading-md);
+  line-height: 100%;
+  letter-spacing: var(--font-tracking-body-large);
+}
+
 @utility text-style-body-default-regular {
   font-family: var(--font-family-brandprimary);
   font-weight: var(--font-weight-regular);
@@ -747,7 +759,7 @@
 
 @utility text-style-textblock-secondary-largetext-bold {
   font-family: var(--font-family-brandsecondary);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   font-size: var(--font-size-textblock-largetext);
   letter-spacing: var(--font-tracking-textblock-largetext);
   line-height: var(--font-line_height-textblock-largetext);
@@ -1063,4 +1075,32 @@
   animation: fadeInUp 250ms ease-out;
   animation-delay: 80ms;
   animation-fill-mode: both;
+}
+
+/* ContentEditable Placeholder */
+.content-editable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--color-color-text-neutral-placeholder);
+  pointer-events: none;
+}
+
+/* Custom Scrollbar */
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-color-border-neutral-default);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-color-border-neutral-mid);
+  }
 }

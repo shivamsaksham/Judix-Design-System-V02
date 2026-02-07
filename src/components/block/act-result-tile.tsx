@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ContextActionMenu } from "./context-action-menu";
@@ -20,6 +19,9 @@ export interface ActResultTileProps {
     onAdd?: () => void;
     onBookmark?: () => void;
     onMention?: () => void;
+    onClick?: () => void;
+    isSelected?: boolean;
+    id?: string;
     className?: string;
 }
 
@@ -34,6 +36,8 @@ export function ActResultTile({
     onAdd,
     onBookmark,
     onMention,
+    onClick,
+    isSelected,
     className
 }: ActResultTileProps) {
     const [open, setOpen] = React.useState(false);
@@ -52,12 +56,15 @@ export function ActResultTile({
 
     return (
         <div className={cn(
-            "group relative flex flex-col gap-3 p-3 w-full",
-            "border border-color-border-neutral-default rounded-lg",
+            "group relative flex flex-col gap-3 p-3 w-full cursor-pointer",
+            "rounded-lg",
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
             "transition-colors duration-200",
             className
-        )}>
+        )}
+            onClick={onClick}
+        >
 
             <div className="flex flex-col gap-1 pr-8">
                 <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
@@ -85,11 +92,14 @@ export function ActResultTile({
                         colorScheme="neutral"
                         size="small"
                         className="cursor-pointer"
-                        onClick={() => setExpanded(!expanded)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setExpanded(!expanded);
+                        }}
                     >
                         <span className="flex items-center gap-1">
                             {expanded ? "Show less" : "Read more"}
-                            <Icon name="ArrowDown" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
+                            <IconButton icon="arrow-down-a" variant="neutral" boundary="stroked" corner="rounded" size="medium" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
                         </span>
                     </Label>
                 )}
@@ -97,7 +107,10 @@ export function ActResultTile({
                     colorScheme="primary"
                     size="small"
                     className="cursor-pointer"
-                    onClick={onViewDetails}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onViewDetails?.();
+                    }}
                 >
                     View Details
                 </Label>
@@ -107,9 +120,9 @@ export function ActResultTile({
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
                     </PopoverTrigger>
-                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
+                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto" onClick={(e) => e.stopPropagation()}>
                         <ContextActionMenu
                             isAdded={isAdded}
                             isBookmarked={isBookmarked}

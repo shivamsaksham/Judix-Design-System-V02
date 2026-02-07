@@ -51,11 +51,12 @@ export function Checkbox({ className, variant, size = "large", disabled, ...prop
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
-      className={cn(checkboxVariants({ variant, size, className }))}
+      className={cn(checkboxVariants({ variant, size, className }), "group")}
       disabled={disabled}
       {...props}
     >
-      {disabled && <CheckIcon strokeWidth={2.5} className={iconSize} />}
+      {disabled && <CheckIcon strokeWidth={2.5} className={cn(iconSize, "group-data-[state=checked]:hidden")} />}
+
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
         className="flex items-center justify-center text-current transition-none"
