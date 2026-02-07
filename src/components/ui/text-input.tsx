@@ -1,7 +1,9 @@
+"use client"
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
-import { Label as CustomLabel } from "@/components/ui/label"
+import { cn } from "../../lib/utils"
+import { Label as CustomLabel } from "./label"
 
 const inputVariants = cva(
   "flex w-full rounded-textinput-border-radius-default textinput-border-weight-default border bg-textinput-bg transition-colors duration-200 py-2 px-3",
@@ -43,7 +45,7 @@ const inputFieldVariants = cva(
 export interface TextInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
   VariantProps<typeof inputVariants> {
-  label: string
+  label?: string
   helperText?: string
   errorMessage?: string
   leadingIcon?: React.ReactNode
@@ -53,6 +55,7 @@ export interface TextInputProps
   inputSize?: "default";
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  inputClassName?: string
 }
 
 const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
@@ -70,6 +73,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       inputSize = "default",
       onFocus,
       onBlur,
+      inputClassName,
       ...props
     },
     ref
@@ -143,7 +147,8 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
                 "pl-3": leadingIcon,
                 "pr-3": trailingAccessory,
                 "pl-2": hasLabels && showLabelsInline,
-              }
+              },
+              inputClassName
             )}
             onFocus={handleFocus}
             onBlur={handleBlur}
