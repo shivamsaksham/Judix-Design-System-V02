@@ -1,18 +1,20 @@
 import React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import ActsContentTree, { ActsContentTreeSection } from "./acts-content-tree";
 import { Input, Button, Label } from "../ui";
+import ActsDetailsContent, { ActsDetailsData } from "./acts-details-content";
 
 export type ActsDetailsProps = {
   actTitle: string;
   contentSections?: ActsContentTreeSection[];
   activeItem?: string;
   onItemClick?: (sectionTitle: string, item: string) => void;
-  content?: {
-    title: string;
-    body: React.ReactNode;
-  }[];
+  actsDetailsData?: ActsDetailsData;
+  
   className?: string;
+  onContinueClick?: () => void;
+  onVisitIndiaCodeClick?: () => void;
+  onVisitIndiaCodeSelect?: () => void;
 };
 
 function ActsDetails({
@@ -20,110 +22,116 @@ function ActsDetails({
   contentSections,
   activeItem,
   onItemClick,
-  content,
+  actsDetailsData,
   className,
+  onContinueClick,
+  onVisitIndiaCodeClick,
+  onVisitIndiaCodeSelect,
 }: ActsDetailsProps) {
   return (
-    <div
-      className="flex w-full max-w-[1200px] h-[680px] flex-col items-start gap-2 p-4
+    <div className="h-screen flex">
+      <div
+        className="flex w-full max-w-[1200px] h-full flex-col overflow-hidden items-start gap-2 p-2
       rounded-modal bg-color-surface-neutral-default"
-    >
-      {/* Main */}
-      <div className="flex flex-col items-start gap-4 flex-1 self-stretch">
-        {/* Header */}
-        <div className="flex items-start gap-4 self-stretch">
-          <div className="flex flex-col items-start gap-3 flex-1">
-            <div className="flex items-center gap-2 p-1 self-stretch">
-              <p
-                className="flex-1 line-clamp-1 overflow-hidden text-ellipsis 
+      >
+        
+        <div className="flex flex-col items-start gap-4 flex-1 self-stretch min-h-0">
+          
+          <div className="flex items-start gap-4 self-stretch">
+            <div className="flex flex-col items-start gap-3 flex-1">
+              <div className="flex items-center gap-2 p-1 self-stretch">
+                <p
+                  className="flex-1 line-clamp-1 overflow-hidden text-ellipsis 
                 text-color-text-neutral-default text-style-body-title-regular"
-              >
-                {actTitle}
-              </p>
-            </div>
+                >
+                  {actTitle}
+                </p>
+              </div>
 
-            <Input
-              className="flex max-w-[600px] flex-col items-start justify-center 
+              <Input
+                className="flex max-w-[600px] flex-col items-start justify-center 
               gap-2 px-3 py-2 self-stretch rounded-textinput-border-radius-default 
               textinput-border-weight-default border-color-textinput-color-stroke-default 
               bg-color-textinput-bg"
-              placeholder="Search in here."
-            />
-          </div>
+                placeholder="Search in here."
+              />
+            </div>
 
-          <div className="flex items-center gap-1">
-            <Button
-              onClick={() => {}}
-              className="flex h-8 items-center justify-center gap-2 px-3 py-1.5 
+            <div className="flex items-center gap-1">
+              <Button
+                onClick={onContinueClick}
+                className="flex h-8 items-center justify-center gap-2 px-3 py-1.5 
               rounded-button-border-radius-default button-border-weight-default 
               border-color-button-color-neutral-default-stroke bg-color-button-color-neutral-default-bg"
-              size="extraSmall"
-              suffixIcon="ArrowDown"
-              variant="neutral"
-            >
-              Continue
-            </Button>
+                size="extraSmall"
+                suffixIcon="ArrowDown"
+                variant="neutral"
+              >
+                Continue
+              </Button>
 
-            <Icon
-              name="Add"
-              color="neutral"
-              className="flex w-8 h-8 items-center p-2 
+              <Icon
+                name="add"
+                color="neutral"
+                className="flex w-8 h-8 items-center p-2 
               aspect-square rounded-icon_button-border-radius-default"
-            />
+              />
 
-            <Icon
-              name="Export2"
-              color="neutral"
-              className="flex w-8 h-8 items-center p-2 
+              <Icon
+                name="at"
+                color="neutral"
+                className="flex w-8 h-8 items-center p-2 
               aspect-square rounded-icon_button-border-radius-default"
-            />
-            <Icon
-              name="Export2"
-              color="neutral"
-              className="flex w-8 h-8 items-center p-2 
+              />
+              <Icon
+                name="save-b"
+                color="neutral"
+                className="flex w-8 h-8 items-center p-2 
               aspect-square rounded-icon_button-border-radius-default"
-            />
-            <Icon
-              name="Export2"
-              color="neutral"
-              className="flex w-8 h-8 items-center p-2 
+              />
+              <Icon
+                name="share-a"
+                color="neutral"
+                className="flex w-8 h-8 items-center p-2 
               aspect-square rounded-icon_button-border-radius-default"
-            />
+              />
 
-            <Label
-              className="flex h-8 items-center justify-center gap-2 px-3 py-2 
+              <Label
+                className="flex h-8 items-center justify-center gap-2 px-3 py-2 
               rounded-label-border-radius-default label-border-weight-default 
               border-color-label-color-neutral-stroke bg-color-label-color-neutral-bg"
-              colorScheme="neutral"
-              onClick={() => {}}
-              onSelect={() => {}}
-              size="medium"
-            >
-              Visit India Code
-            </Label>
+                colorScheme="neutral"
+                onClick={onVisitIndiaCodeClick}
+                onSelect={onVisitIndiaCodeSelect}
+                size="medium"
+              >
+                Visit India Code
+              </Label>
+            </div>
           </div>
-        </div>
 
-        <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
+          <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
 
-        {/* Body */}
-        <div className="flex items-start gap-2 flex-1 self-stretch">
-          {/* Sidebar */}
-          {contentSections && (
-            <ActsContentTree
-              sections={contentSections}
-              activeItem={activeItem}
-              onItemClick={onItemClick}
-            />
-          )}
+          <div className="flex items-stretch gap-2 flex-1 self-stretch overflow-hidden min-h-0">
+            {/* Sidebar */}
+            {contentSections && (
+              <ActsContentTree
+                sections={contentSections}
+                activeItem={activeItem}
+                onItemClick={onItemClick}
+              />
+            )}
 
-          {/* Content */}
-          {content &&
-            content.map((item, index) => (
-              <React.Fragment key={index}>
-                {item.body}
-              </React.Fragment>
-            ))}
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
+              {actsDetailsData ? (
+                <ActsDetailsContent data={actsDetailsData} />
+              ) : (
+                <p>No content available.</p>
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import ContentTree, { ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
 import { Label } from "../ui/label";
+import JudgmentDetailsContent, { JudgmentData } from "./judgment-details-content";
 
 export type JudgementDetailsProps = {
   caseTitle: string;
@@ -14,8 +15,10 @@ export type JudgementDetailsProps = {
     title: string;
     items: string[];
   }[];
+  judgmentData?: JudgmentData;
   className?: string;
 };
+
 
 function JudgementDetails({
   caseTitle,
@@ -23,16 +26,20 @@ function JudgementDetails({
   score = "93.46%",
   scoreSubtitle = "Similar to issues",
   contentSections,
+  judgmentData,
   content,
   className,
 }: JudgementDetailsProps) {
   return (
+    <div className="h-screen flex">
+
+    
     <div
-      className="flex w-full max-w-[1200px] h-[680px] flex-col items-start gap-2 p-4 
+      className="flex w-full max-w-[1200px] h-full flex-col items-start gap-2 p-4 
     rounded-modal bg-color-surface-neutral-default"
     >
       {/* main */}
-      <div className="flex flex-col items-start gap-4 flex-1 self-stretch">
+      <div className="flex flex-col items-start gap-4 flex-1 self-stretch min-h-0">
         {/* Frame 6083 */}
 
         <div className="flex flex-start gap-4 self-stretch">
@@ -67,31 +74,41 @@ function JudgementDetails({
                   </p>
                 </Label>
               )}
+                <Label
+                  size="medium"
+                  color="neutral"
+                  className="flex h-8 items-center justify-center gap-2 px-3 py-2 
+                rounded-label-border-radius-default label-border-weight-default 
+                bg-color-label-color-neutral-bg"
+                >
+                  <p className=" text-style-body-default-regular">
+                    View SCR copy
+                  </p>
+                </Label>
 
-              {/* TODO: Add Correct Icons Names from the new icon pack*/}
               <Icon
-                name="Export2"
+                name="add"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="at"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="save-b"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="share-a"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
@@ -104,21 +121,20 @@ function JudgementDetails({
 
         <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
 
-        <div className="flex items-start gap-2 flex-1 self-stretch">
+        <div className="flex items-stretch gap-2 flex-1 self-stretch overflow-hidden min-h-0">
           {/* Frame 6082 */}
           {contentSections && <ContentTree sections={contentSections} />}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default">
-            {content ? (
-              content.map((section) => (
-                <div key={section.title}>{/* future content rendering */}</div>
-              ))
+          <main className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
+            {judgmentData ? (
+              <JudgmentDetailsContent data={judgmentData} />
             ) : (
-              <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+              <p>No content available.</p>
             )}
           </main>
         </div>
       </div>
+    </div>
     </div>
   );
 }

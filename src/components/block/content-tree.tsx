@@ -28,13 +28,16 @@ function ContentTree({
   return (
     <div
       className={cn(
-        `inline-flex w-[175px] flex-col items-end gap-2 pr-2 
-        border-r-2 border-color-border-neutral-default 
-        bg-color-surface-neutral-default`,
+        `inline-flex h-full flex-col items-end gap-2 pr-2
+         border-r border-color-border-neutral-default
+         bg-color-surface-neutral-default flex-shrink-0`
       )}
     >
       <div
-        className={cn("flex flex-col items-start w-[166px] gap-2", className)}
+        className={cn(
+          "flex flex-col items-start gap-2 h-full overflow-y-auto overscroll-contain overflow-x-hidden scrollbar-hide",
+          className
+        )}
       >
         {sections.map((section) => (
           <div
@@ -47,9 +50,9 @@ function ContentTree({
               </p>
             </div>
 
-            <div className="flex p-2 content-end items-center gap-2 self-stretch ">
+            <div className="flex p-2 content-end items-center gap-2 self-stretch">
               <div className="flex ml-auto w-[132px] flex-col items-start gap-1">
-                {/*  tabs  */}
+                {/* tabs */}
                 {section.items.map((item) => {
                   const isActive = item.id === activeItemId;
 
@@ -59,11 +62,11 @@ function ContentTree({
                       title={item.label}
                       onClick={() => onItemClick?.(section.id, item.id)}
                       className={cn(
-                        `flex w-[132px] cursor-pointer flex-col items-start gap-2 
+                        `flex w-[132px] cursor-pointer flex-col items-start gap-2
                          rounded-[4px] p-1 transition-colors`,
                         isActive
                           ? "bg-color-surface-neutral-hover_default"
-                          : "hover:bg-color-surface-neutral-hover_default",
+                          : "hover:bg-color-surface-neutral-hover_default"
                       )}
                     >
                       <div className="flex items-center gap-2 p-1 self-stretch">

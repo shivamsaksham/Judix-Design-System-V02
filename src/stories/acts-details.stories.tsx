@@ -1,9 +1,10 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ActsDetails from "@/components/block/acts-details";
 import { ActsContentTreeSection } from "@/components/block/acts-content-tree";
-import JudgmentDetailsContent from "@/components/block/judgment-details-content";
+import { ActsDetailsData } from "@/components/block/acts-details-content";
+import actsTableMeta from "./acts-table.stories";
 
+/* ---------- Sidebar Mock ---------- */
 const CONTENT_SECTIONS: ActsContentTreeSection[] = [
   {
     title: "Sections",
@@ -30,39 +31,41 @@ const CONTENT_SECTIONS: ActsContentTreeSection[] = [
   },
 ];
 
-const judgmentContent = {
-  overallSummary: `
-Every resident shall be entitled to obtain an Aadhaar number by submitting demographic and biometric information, subject to statutory safeguards.
+/* ---------- Content Mock ---------- */
+const actsDetailsDataMock: ActsDetailsData = {
+  overview: `
+Every resident shall be entitled to obtain an Aadhaar number by submitting
+demographic and biometric information in accordance with the provisions of this Act.
 `,
-  issue: `
-Whether mandatory Aadhaar enrolment violates the right to privacy under Article 21 of the Constitution.
-`,
-  facts: `
-The petitioners challenged the Aadhaar framework on grounds of privacy infringement and excessive data collection.
-`,
-  arguments: `
-**Petitioners argued**
-- Violation of the right to privacy  
-- Risk of mass surveillance  
 
-**Respondents argued**
-- Aadhaar ensures targeted delivery of welfare schemes  
-- Adequate safeguards exist under law
+  applicability: `
+This Act applies to all persons liable to pay income tax under the provisions
+of the Income-tax Act, 1961.
 `,
-  reasoning: `
-The Court applied the proportionality test and held that Aadhaar serves a legitimate state interest with necessary safeguards.
+
+  definitions: `
+"Assessee" means a person by whom any tax or any other sum of money is payable.
 `,
-  decision: `
-The Aadhaar scheme is constitutionally valid with restrictions on mandatory linkage in non-welfare contexts.
+
+  provisions: `
+• Filing of returns  
+• Assessment procedures  
+• Appeals and revisions  
+• Penalties and prosecutions
 `,
-  keywords: [
-    "Aadhaar",
-    "Right to Privacy",
-    "Article 21",
-    "Constitution of India",
-  ],
+
+  penalties: `
+Failure to comply with the provisions of this Act may result in monetary
+penalties or prosecution.
+`,
+
+  actsTable: {
+    data: actsTableMeta.args!.data!,
+    headers: actsTableMeta.args!.headers!,
+  },
 };
 
+/* ---------- Meta ---------- */
 const meta: Meta<typeof ActsDetails> = {
   title: "Block/ActsDetails",
   component: ActsDetails,
@@ -74,41 +77,25 @@ const meta: Meta<typeof ActsDetails> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/* ---------- Default ---------- */
 export const Default: Story = {
-  render: () => (
-    <ActsDetails
-      actTitle="Indian Income-tax Act, 1961"
-      contentSections={CONTENT_SECTIONS}
-      content={[
-        {
-          title: "Judgment Details",
-          body: <JudgmentDetailsContent data={judgmentContent} />,
-        },
-      ]}
-    />
-  ),
+  args: {
+    actTitle: "Indian Income-tax Act, 1961",
+    contentSections: CONTENT_SECTIONS,
+    actsDetailsData: actsDetailsDataMock,
+  },
 };
 
+/* ---------- Long Sidebar Stress Test ---------- */
 export const LongSidebar: Story = {
-  render: () => (
-    <ActsDetails
-      actTitle="Indian Income-tax Act, 1961"
-      contentSections={[
-        {
-          title: "Sections",
-          items: Array.from({ length: 40 }, (_, i) => `Section ${i + 1}`),
-        },
-      ]}
-      content={[
-        {
-          title: "Content",
-          body: (
-            <p className="text-style-body-default-regular">
-              Sidebar scroll stress test
-            </p>
-          ),
-        },
-      ]}
-    />
-  ),
+  args: {
+    actTitle: "Indian Income-tax Act, 1961",
+    contentSections: [
+      {
+        title: "Sections",
+        items: Array.from({ length: 50 }, (_, i) => `Section ${i + 1}`),
+      },
+    ],
+    actsDetailsData: actsDetailsDataMock,
+  },
 };

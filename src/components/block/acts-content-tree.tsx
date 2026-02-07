@@ -22,13 +22,13 @@ function ActsContentTree({
   return (
     <div
       className={cn(
-        `inline-flex w-[175px] flex-col items-end gap-2 pr-2 
-        border-r-2 border-color-border-neutral-default 
-        bg-color-surface-neutral-default`,
+        `inline-flex h-full flex-col items-end gap-2
+border-r border-color-border-neutral-default 
+bg-color-surface-neutral-default flex-shrink-0`,
       )}
     >
       <div
-        className={cn("flex flex-col items-start w-[166px] gap-2", className)}
+        className={cn("flex flex-col items-start gap-2 h-full overflow-y-auto overscroll-contain overflow-x-hidden scrollbar-hide", className)}
       >
         {sections.map((section) => (
           <div

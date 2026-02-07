@@ -516,6 +516,17 @@
   --textinput-border-weight-default: var(--border-weight-default);
 }
 
+/* Hide Scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;    
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             
+}
+
+
 /* ----------------------Utility Classes---------------------------- */
 @utility button-border-weight-default {
   border-width: var(--button-border-weight-default);
