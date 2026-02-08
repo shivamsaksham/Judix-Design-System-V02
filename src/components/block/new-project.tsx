@@ -21,7 +21,7 @@ export interface NewProjectProps {
     onCancel?: () => void;
     className?: string;
     submitButtonText?: string;
-
+    isMobile?: boolean;
 }
 
 export const NewProject = ({
@@ -39,6 +39,7 @@ export const NewProject = ({
     onCancel,
     className,
     submitButtonText = 'Create',
+    isMobile = false,
 
 }: NewProjectProps) => {
     const [title, setTitle] = useState(initialTitle);

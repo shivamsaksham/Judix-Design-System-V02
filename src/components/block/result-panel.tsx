@@ -41,6 +41,7 @@ export function ResultPanel({
     onViewModeChange,
     selectedCourts = []
 }: ResultPanelProps) {
+
     const [search, setSearch] = React.useState("");
     const [debouncedSearch, setDebouncedSearch] = React.useState("");
     const [version, setVersion] = React.useState("v4");
@@ -195,7 +196,7 @@ export function ResultPanel({
                 dropdownValue={viewMode}
                 onDropdownChange={handleDropdownChange}
                 searchValue={search}
-                onSearchChange={(e) => setSearch(e.target.value)}
+                onSearchChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                 actions={actions}
                 className="shrink-0"
             />

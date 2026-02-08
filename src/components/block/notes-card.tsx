@@ -347,8 +347,8 @@ export function NotesCard({
 
                                 <div className="flex-1 flex flex-col min-w-0 gap-1">
                                     <div className={cn(
-                                        "flex items-center h-auto min-h-[34px] shrink-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] justify-between",
-                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                        "flex items-center h-auto min-h-[34px] shrink-0 py-2 gap-y-2 justify-between flex-wrap",
+                                        isEmbedded ? "w-full px-6" : "w-full max-w-[720px] px-0"
                                     )}>
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Popover open={headingOpen} onOpenChange={setHeadingOpen}>

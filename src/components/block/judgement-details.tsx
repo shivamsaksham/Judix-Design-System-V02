@@ -45,8 +45,8 @@ function JudgementDetails({
       {/* main */}
       <div className="flex flex-col items-start gap-4 flex-1 self-stretch overflow-hidden">
         {/* Header Section */}
-        <div className="flex flex-wrap items-start gap-x-4 gap-y-4 self-stretch pr-4">
-          <div className="flex flex-col gap-3 flex-1">
+        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch pr-4">
+          <div className="flex flex-col gap-3 flex-1 w-full">
             <div className="flex p-1 items-center gap-2 self-stretch">
               <h1
                 className="flex-1 line-clamp-2 overflow-hidden text-ellipsis 
@@ -56,11 +56,11 @@ function JudgementDetails({
               </h1>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {status && (
                 <Label
                   size="medium"
-                  className="bg-red-50 text-red-600 border border-red-200"
+                  className="bg-red-50 text-red-600 border border-red-200 h-8 flex items-center"
                 >
                   {status}
                 </Label>
@@ -69,6 +69,10 @@ function JudgementDetails({
               <Button variant="neutral" size="medium" className="h-8 px-3 border border-color-border-neutral-default">
                 View SCR copy
               </Button>
+
+              <div className="flex md:hidden">
+                <ScoreBox title="" score={score} subtitle={scoreSubtitle} variant="badge" />
+              </div>
 
               <div className="flex items-center gap-1">
                 <IconButton icon="add" variant="neutral" size="medium" />
@@ -79,7 +83,9 @@ function JudgementDetails({
             </div>
           </div>
 
-          <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
+          <div className="hidden md:flex">
+            <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
+          </div>
         </div>
 
         <hr className="w-full h-[1px] bg-color-border-neutral-default border-none" />
@@ -87,7 +93,7 @@ function JudgementDetails({
         <div className="flex items-start gap-2 flex-1 self-stretch overflow-hidden">
           {/* Frame 6082 */}
           {contentSections && (
-            <aside className="w-[200px] shrink-0 overflow-y-auto pr-2 border-r border-color-border-neutral-default custom-scrollbar">
+            <aside className="hidden md:block w-[200px] shrink-0 overflow-y-auto pr-2 border-r border-color-border-neutral-default custom-scrollbar">
               <ContentTree
                 sections={contentSections}
                 activeItemId={activeItemId}
