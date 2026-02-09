@@ -28,6 +28,7 @@ export interface ContentProps {
     className?: string;
     hideQuery?: boolean;
     animate?: boolean;
+    isStreaming?: boolean;
 }
 
 export const Content = ({
@@ -49,6 +50,7 @@ export const Content = ({
     className,
     hideQuery,
     animate = false,
+    isStreaming = false,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
 
@@ -128,7 +130,7 @@ export const Content = ({
                     </ReactMarkdown>
                 </div>}
 
-                {displayText && <ResponseActions
+                {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && <ResponseActions
                     className='w-fit'
                     onLike={onLike}
                     onDislike={onDislike}

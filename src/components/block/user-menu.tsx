@@ -19,8 +19,7 @@ export interface UserMenuItem {
 export interface UserMenuProps {
     items?: UserMenuItem[];
     className?: string;
-    zoomLevel?: string | number;
-    onZoom?: () => void;
+
     onAccount?: () => void;
     onProjects?: () => void;
     onSubscriptions?: () => void;
@@ -30,14 +29,8 @@ export interface UserMenuProps {
     onLogout?: () => void;
 }
 
-const getDefaultItems = (props: Pick<UserMenuProps, 'zoomLevel' | 'onZoom' | 'onAccount' | 'onProjects' | 'onSubscriptions' | 'onSettings' | 'onRefer' | 'onHelp' | 'onLogout'>): UserMenuItem[] => [
-    {
-        id: 'zoom',
-        label: 'Zoom',
-        icon: <Icon name="search-zoom-in-a" />,
-        badge: props.zoomLevel || '100%',
-        onClick: props.onZoom,
-    },
+const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' | 'onSubscriptions' | 'onSettings' | 'onRefer' | 'onHelp' | 'onLogout'>): UserMenuItem[] => [
+
     {
         id: 'account',
         label: 'My Account',
@@ -85,8 +78,8 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'zoomLevel' | 'onZoom' | 'on
     },
 ];
 
-export const UserMenu = ({ items: customItems, className, zoomLevel, onZoom, onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout }: UserMenuProps) => {
-    const items = customItems || getDefaultItems({ zoomLevel, onZoom, onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout });
+export const UserMenu = ({ items: customItems, className, onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout }: UserMenuProps) => {
+    const items = customItems || getDefaultItems({ onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout });
     return (
         <div
             className={cn(
