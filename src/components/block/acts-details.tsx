@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Icon } from "@judix/icon";
 import ActsContentTree, { ActsContentTreeSection } from "./acts-content-tree";
 import { Input, Button, Label } from "../ui";
@@ -20,7 +20,6 @@ export type ActsDetailsProps = {
 function ActsDetails({
   actTitle,
   contentSections,
-  activeItem,
   onItemClick,
   actsDetailsData,
   className,
@@ -28,6 +27,53 @@ function ActsDetails({
   onVisitIndiaCodeClick,
   onVisitIndiaCodeSelect,
 }: ActsDetailsProps) {
+  const [activeItem, setActiveItem] = React.useState<string | undefined>();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+const handleItemClick = (_sectionTitle: string, itemId: string) => {
+  setActiveItem(itemId);
+  const container = contentRef.current;
+  const target = document.getElementById(itemId);
+
+  if (!container || !target) return;
+
+  const containerTop = container.getBoundingClientRect().top;
+  const targetTop = target.getBoundingClientRect().top;
+
+  container.scrollTo({
+    top: container.scrollTop + (targetTop - containerTop),
+    behavior: "smooth",
+  });
+};
+
+React.useEffect(() => {
+  const container = contentRef.current;
+  if (!container || !actsDetailsData) return;
+
+  const sections = Array.from(
+    container.querySelectorAll<HTMLElement>("section[id]")
+  );
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.find((e) => e.isIntersecting);
+      if (visible?.target.id) {
+        setActiveItem(visible.target.id);
+      }
+    },
+    {
+      root: container,
+      threshold: 0.3,
+    }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+
+  return () => observer.disconnect();
+}, [actsDetailsData]);
+
+
+
   return (
     <div className="h-screen flex">
       <div
@@ -64,7 +110,7 @@ function ActsDetails({
               rounded-button-border-radius-default button-border-weight-default 
               border-color-button-color-neutral-default-stroke bg-color-button-color-neutral-default-bg"
                 size="extraSmall"
-                suffixIcon="ArrowDown"
+                suffixIcon="arrow-down-c"
                 variant="neutral"
               >
                 Continue
@@ -118,12 +164,12 @@ function ActsDetails({
               <ActsContentTree
                 sections={contentSections}
                 activeItem={activeItem}
-                onItemClick={onItemClick}
+                onItemClick={handleItemClick}
               />
             )}
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
+            <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
               {actsDetailsData ? (
                 <ActsDetailsContent data={actsDetailsData} />
               ) : (
