@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Icon } from "@judix/icon";
 import ContentTree, { ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
@@ -30,6 +30,58 @@ function JudgementDetails({
   content,
   className,
 }: JudgementDetailsProps) {
+  const [activeItem, setActiveItem] = useState<string | undefined>();
+const contentRef = useRef<HTMLElement>(null);
+
+const handleItemClick = (_sectionTitle: string, itemId: string) => {
+  setActiveItem(itemId);
+
+  const container = contentRef.current;
+  const target = document.getElementById(itemId);
+
+  if (!container || !target) return;
+
+  const containerTop = container.getBoundingClientRect().top;
+  const targetTop = target.getBoundingClientRect().top;
+
+  container.scrollTo({
+  top: target.offsetTop - container.offsetTop - 8,
+  behavior: "smooth",
+});
+
+};
+
+useEffect(() => {
+  const container = contentRef.current;
+  if (!container) return;
+
+  const sections = Array.from(
+    container.querySelectorAll<HTMLElement>("section[id]")
+  );
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visibleEntry = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (visibleEntry?.target.id) {
+        setActiveItem(visibleEntry.target.id);
+      }
+    },
+    {
+      root: container,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: [0.1, 0.25, 0.5, 0.75],
+    }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+
+  return () => observer.disconnect();
+}, [judgmentData]);
+
+
   return (
     <div className="h-screen flex">
 
@@ -123,9 +175,9 @@ function JudgementDetails({
 
         <div className="flex items-stretch gap-2 flex-1 self-stretch overflow-hidden min-h-0">
           {/* Frame 6082 */}
-          {contentSections && <ContentTree sections={contentSections} />}
+          {contentSections && <ContentTree sections={contentSections} activeItemId={activeItem} onItemClick={handleItemClick} />}
 
-          <main className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
+          <main ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
             {judgmentData ? (
               <JudgmentDetailsContent data={judgmentData} />
             ) : (
