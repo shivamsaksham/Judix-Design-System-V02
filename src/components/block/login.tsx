@@ -8,6 +8,36 @@ export interface LoginProps {
 }
 
 export function Login({ countryCode = "+91" }: LoginProps) {
+    const [phoneNumber, setPhoneNumber] = React.useState("");
+    const [error, setError] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Allow only digits
+        if (/^\d*$/.test(value)) {
+            // Limit to 10 digits
+            if (value.length <= 10) {
+                setPhoneNumber(value);
+                if (error) setError("");
+            }
+        }
+    };
+
+    const handleContinue = () => {
+        if (phoneNumber.length !== 10) {
+            setError("Phone number must be exactly 10 digits");
+            return;
+        }
+
+        setIsLoading(true);
+        // Simulate API call
+        setTimeout(() => {
+            setIsLoading(false);
+            console.log("Proceeding with phone:", phoneNumber);
+        }, 2000);
+    };
+
     return (
         <div className="flex flex-col w-[480px] max-w-full mx-auto gap-8">
             {/* Header */}
@@ -34,9 +64,16 @@ export function Login({ countryCode = "+91" }: LoginProps) {
                             </div>
                             <TextInput
                                 placeholder="Enter Phone Number"
-                                className="flex-1 h-[56px] py-[7px] textinput-border-radius-default textinput-border-weight-default textinput-font-placeholder-large"
+                                className={cn(
+                                    "flex-1 h-[56px] py-[7px] textinput-border-radius-default textinput-border-weight-default textinput-font-placeholder-large",
+                                    isLoading
+                                )}
                                 inputClassName="!textinput-font-placeholder-large"
                                 type="tel"
+                                value={phoneNumber}
+                                onChange={handlePhoneChange}
+                                errorMessage={error}
+                                disabled={isLoading}
                             />
                         </div>
                         <div className="p-1 text-style-label-default-regular text-color-text-neutral-secondary w-fit">
@@ -62,8 +99,17 @@ export function Login({ countryCode = "+91" }: LoginProps) {
                     <Button
                         className="w-full h-[44px] button-border-radius-default"
                         size="large"
+                        disabled={isLoading}
+                        onClick={handleContinue}
                     >
-                        Continue
+                        {isLoading ? (
+                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        ) : (
+                            "Continue"
+                        )}
                     </Button>
 
                     {/* Footer */}
