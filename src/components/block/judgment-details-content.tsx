@@ -31,10 +31,7 @@ const Section = ({
   title: string;
   content: string;
 }) => (
-  <section
-    id={id}
-    className="flex flex-col gap-2 mb-8 scroll-mt-6"
-  >
+  <section id={id} className="flex flex-col gap-2 mb-8 scroll-mt-6">
     <div className="border-b border-color-border-neutral-default pt-2 pb-2 pl-1">
       <div className="text-style-body-default-emphasis text-color-text-neutral-secondary">
         {title}
@@ -57,10 +54,7 @@ const TableSection = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <section
-    id={id}
-    className="flex flex-col gap-2 mb-8 scroll-mt-6"
-  >
+  <section id={id} className="flex flex-col gap-2 mb-8 scroll-mt-6">
     <div className="border-b border-color-border-neutral-default pt-2 pb-2 pl-1">
       <div className="text-style-body-default-emphasis text-color-text-neutral-secondary">
         {title}
@@ -74,8 +68,11 @@ export function JudgmentDetailsContent({ data }: { data: JudgmentData }) {
   return (
     <Card className="rounded-none border-none shadow-none bg-transparent">
       <CardContent>
-
-        <Section id="overall-summary" title="OVERALL SUMMARY" content={data.overallSummary} />
+        <Section
+          id="overall-summary"
+          title="OVERALL SUMMARY"
+          content={data.overallSummary}
+        />
         <Section id="issue" title="ISSUE" content={data.issue} />
         <Section id="facts" title="FACTS" content={data.facts} />
         <Section id="arguments" title="ARGUMENTS" content={data.arguments} />

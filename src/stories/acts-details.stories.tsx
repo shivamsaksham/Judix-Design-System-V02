@@ -8,7 +8,14 @@ import actsTableMeta from "./acts-table.stories";
 const CONTENT_SECTIONS = [
   {
     title: "Sections",
-    items: ["Section 1", "Section 2", "Section 3", "Section 4", "Section 5", "Section 6"],
+    items: [
+      "Section 1",
+      "Section 2",
+      "Section 3",
+      "Section 4",
+      "Section 5",
+      "Section 6",
+    ],
   },
   {
     title: "Schedules",
@@ -51,47 +58,47 @@ Provided that the Central Government may, from time to time, notify such other c
 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
 `,
-},
-{
-  id: "Section 3",
-  title: "Section 3: section 3 title goes here",
-  content: `
+    },
+    {
+      id: "Section 3",
+      title: "Section 3: section 3 title goes here",
+      content: `
   (1) Every resident shall be entitled to obtain an Aadhaar number by submitting his demographic information and biometric information by undergoing the process of enrolment.
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   `,
-},
-{
-  id: "Section 4",
-  title: "Section 4: section 4 title goes here",
-  content: `
+    },
+    {
+      id: "Section 4",
+      title: "Section 4: section 4 title goes here",
+      content: `
   (1) Every resident shall be entitled to obtain an Aadhaar number by submitting his demographic information and biometric information by undergoing the process of enrolment.
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   `,
-},
-{
-  id: "Section 5",
-  title: "Section 5: section 5 title goes here",
-  content: `
+    },
+    {
+      id: "Section 5",
+      title: "Section 5: section 5 title goes here",
+      content: `
   (1) Every resident shall be entitled to obtain an Aadhaar number by submitting his demographic information and biometric information by undergoing the process of enrolment.
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   `,
-},
-{
-  id: "Section 6",
-  title: "Section 6: section 6 title goes here",
-  content: `
+    },
+    {
+      id: "Section 6",
+      title: "Section 6: section 6 title goes here",
+      content: `
   (1) Every resident shall be entitled to obtain an Aadhaar number by submitting his demographic information and biometric information by undergoing the process of enrolment.
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   `,
-},
-{
-  id: "Schedule I",
-  title: "Schedule I: schedule 1 title goes here",
-  content: `
+    },
+    {
+      id: "Schedule I",
+      title: "Schedule I: schedule 1 title goes here",
+      content: `
   (1) Every resident shall be entitled to obtain an Aadhaar number by submitting his demographic information and biometric information by undergoing the process of enrolment.
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
   Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tempore reprehenderit facilis ratione laborum asperiores non sapiente, nemo accusamus quaerat ducimus, corporis rerum excepturi autem harum veritatis obcaecati voluptas nobis? Eligendi saepe velit inventore libero sed at ipsa tempora. Enim sit optio eos placeat corrupti eveniet ratione magni dignissimos veniam? Expedita saepe ab, error quo voluptatum magni veritatis?
@@ -99,7 +106,6 @@ Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi quas suscipit tem
     },
   ],
 };
-
 
 /* ---------- Meta ---------- */
 const meta: Meta<typeof ActsDetails> = {

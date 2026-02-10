@@ -28,7 +28,10 @@ bg-color-surface-neutral-default flex-shrink-0`,
       )}
     >
       <div
-        className={cn("flex flex-col items-start gap-2 h-full overflow-y-auto overscroll-contain overflow-x-hidden scrollbar-hide", className)}
+        className={cn(
+          "flex flex-col items-start gap-2 h-full overflow-y-auto overscroll-contain overflow-x-hidden scrollbar-hide",
+          className,
+        )}
       >
         {sections.map((section) => (
           <div

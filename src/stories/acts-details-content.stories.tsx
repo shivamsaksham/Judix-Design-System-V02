@@ -46,7 +46,6 @@ Provided that the Central Government may, from time to time, notify such other c
       ],
     },
   },
-
 };
 
 export default meta;

@@ -10,7 +10,7 @@ export type ActsDetailsProps = {
   activeItem?: string;
   onItemClick?: (sectionTitle: string, item: string) => void;
   actsDetailsData?: ActsDetailsData;
-  
+
   className?: string;
   onContinueClick?: () => void;
   onVisitIndiaCodeClick?: () => void;
@@ -30,59 +30,55 @@ function ActsDetails({
   const [activeItem, setActiveItem] = React.useState<string | undefined>();
   const contentRef = useRef<HTMLDivElement>(null);
 
-const handleItemClick = (_sectionTitle: string, itemId: string) => {
-  setActiveItem(itemId);
-  const container = contentRef.current;
-  const target = document.getElementById(itemId);
+  const handleItemClick = (_sectionTitle: string, itemId: string) => {
+    setActiveItem(itemId);
+    const container = contentRef.current;
+    const target = document.getElementById(itemId);
 
-  if (!container || !target) return;
+    if (!container || !target) return;
 
-  const containerTop = container.getBoundingClientRect().top;
-  const targetTop = target.getBoundingClientRect().top;
+    const containerTop = container.getBoundingClientRect().top;
+    const targetTop = target.getBoundingClientRect().top;
 
-  container.scrollTo({
-    top: container.scrollTop + (targetTop - containerTop),
-    behavior: "smooth",
-  });
-};
+    container.scrollTo({
+      top: container.scrollTop + (targetTop - containerTop),
+      behavior: "smooth",
+    });
+  };
 
-React.useEffect(() => {
-  const container = contentRef.current;
-  if (!container || !actsDetailsData) return;
+  React.useEffect(() => {
+    const container = contentRef.current;
+    if (!container || !actsDetailsData) return;
 
-  const sections = Array.from(
-    container.querySelectorAll<HTMLElement>("section[id]")
-  );
+    const sections = Array.from(
+      container.querySelectorAll<HTMLElement>("section[id]"),
+    );
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries.find((e) => e.isIntersecting);
-      if (visible?.target.id) {
-        setActiveItem(visible.target.id);
-      }
-    },
-    {
-      root: container,
-      threshold: 0.3,
-    }
-  );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible?.target.id) {
+          setActiveItem(visible.target.id);
+        }
+      },
+      {
+        root: container,
+        threshold: 0.3,
+      },
+    );
 
-  sections.forEach((section) => observer.observe(section));
+    sections.forEach((section) => observer.observe(section));
 
-  return () => observer.disconnect();
-}, [actsDetailsData]);
-
-
+    return () => observer.disconnect();
+  }, [actsDetailsData]);
 
   return (
     <div className="h-screen flex">
       <div
-        className="flex w-full max-w-[1200px] h-full flex-col overflow-hidden items-start gap-2 p-2
+        className="flex w-full h-full flex-col overflow-hidden items-start gap-2 p-2
       rounded-modal bg-color-surface-neutral-default"
       >
-        
         <div className="flex flex-col items-start gap-4 flex-1 self-stretch min-h-0">
-          
           <div className="flex items-start gap-4 self-stretch">
             <div className="flex flex-col items-start gap-3 flex-1">
               <div className="flex items-center gap-2 p-1 self-stretch">
@@ -169,14 +165,16 @@ React.useEffect(() => {
             )}
 
             {/* Content */}
-            <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden">
+            <div
+              ref={contentRef}
+              className="flex-1 overflow-y-auto overscroll-contain min-w-0 overflow-x-hidden"
+            >
               {actsDetailsData ? (
                 <ActsDetailsContent data={actsDetailsData} />
               ) : (
                 <p>No content available.</p>
               )}
             </div>
-
           </div>
         </div>
       </div>
