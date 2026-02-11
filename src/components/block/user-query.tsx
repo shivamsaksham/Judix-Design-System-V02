@@ -18,23 +18,28 @@ export const UserQuery = ({
     onEdit,
     onCopy,
     isEditable = true,
-    className,
 }: UserQueryProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedQuery, setEditedQuery] = useState(query);
     const textareaRef = useRef<HTMLDivElement>(null);
 
+    const handleCancel = React.useCallback(() => {
+        setEditedQuery(query);
+        setIsEditing(false);
+    }, [query]);
+
     useEffect(() => {
         if (isEditing && textareaRef.current) {
-            if (textareaRef.current.textContent !== editedQuery) {
-                textareaRef.current.textContent = editedQuery;
+            const currentRef = textareaRef.current;
+            if (currentRef.textContent !== editedQuery) {
+                currentRef.textContent = editedQuery;
             }
-            textareaRef.current.focus();
+            currentRef.focus();
             const range = document.createRange();
             const selection = window.getSelection();
-            if (textareaRef.current.childNodes.length > 0) {
-                const textNode = textareaRef.current.childNodes[0];
+            if (currentRef.childNodes.length > 0) {
+                const textNode = currentRef.childNodes[0];
                 const length = textNode.textContent?.length || 0;
                 range.setStart(textNode, length);
                 range.collapse(true);
@@ -48,22 +53,17 @@ export const UserQuery = ({
                 }
             };
 
-            textareaRef.current.addEventListener('keydown', handleKeyDown);
+            currentRef.addEventListener('keydown', handleKeyDown);
             return () => {
-                textareaRef.current?.removeEventListener('keydown', handleKeyDown);
+                currentRef.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [isEditing])
+    }, [isEditing, editedQuery, handleCancel]);
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {
             onEdit(editedQuery);
         }
-        setIsEditing(false);
-    };
-
-    const handleCancel = () => {
-        setEditedQuery(query);
         setIsEditing(false);
     };
 

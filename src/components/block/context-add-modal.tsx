@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from '@judix/icon';
 import { TextInput } from '@/components/ui/text-input';
 import { Button } from '@/components/ui/button';
 
@@ -33,6 +32,10 @@ export default function AddToContext({
     const isAtLimit = characterCount >= MAX_CHARACTERS;
     const isBelowMinimum = characterCount > 0 && characterCount < MIN_CHARACTERS;
 
+    const handleClose = React.useCallback(() => {
+        onClose?.();
+    }, [onClose]);
+
     // ESC key listener
     React.useEffect(() => {
         const handleEscKey = (event: KeyboardEvent) => {
@@ -45,7 +48,7 @@ export default function AddToContext({
         return () => {
             document.removeEventListener('keydown', handleEscKey);
         };
-    }, []);
+    }, [handleClose]);
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
@@ -60,10 +63,6 @@ export default function AddToContext({
 
     const handleCancel = () => {
         onCancel?.();
-    };
-
-    const handleClose = () => {
-        onClose?.();
     };
 
     return (

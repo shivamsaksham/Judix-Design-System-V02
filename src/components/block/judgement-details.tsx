@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import ContentTree, { ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
 import { Label } from "../ui/label";
@@ -24,7 +24,6 @@ function JudgementDetails({
   scoreSubtitle = "Similar to issues",
   contentSections,
   content,
-  className,
 }: JudgementDetailsProps) {
   return (
     <div
@@ -70,28 +69,28 @@ function JudgementDetails({
 
               {/* TODO: Add Correct Icons Names from the new icon pack*/}
               <Icon
-                name="Export2"
+                name="export-b"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="export-b"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="export-b"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
               />
 
               <Icon
-                name="Export2"
+                name="export-b"
                 color="neutral"
                 className="flex w-8 h-8 items-center gap-2 p-2 
                 aspect-square rounded-icon_button-border-radius-default"
@@ -99,7 +98,7 @@ function JudgementDetails({
             </div>
           </div>
 
-          <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
+          <ScoreBox score={score} subtitle={scoreSubtitle} />
         </div>
 
         <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />

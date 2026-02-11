@@ -35,6 +35,6 @@ const meta: Meta<typeof ActsTable> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ActsTable>;
 
 export const Default: Story = {};

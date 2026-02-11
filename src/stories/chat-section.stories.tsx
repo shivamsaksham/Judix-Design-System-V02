@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ChatHistorySection } from '@/components/block/chat-history-section';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof ChatHistorySection>;
+} as Meta<typeof ChatHistorySection>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ChatHistorySection>;
 
 const sampleChats = [
     { id: '1', title: 'Project Discussion', onClick: () => console.log('Chat 1') },
@@ -24,7 +24,7 @@ export const Default: Story = {
     args: {
         chatHistory: sampleChats,
         activeChatId: '2',
-        onMenuClick: (chatId, event) => {
+        onMenuClick: (chatId) => {
             console.log('Menu clicked for chat:', chatId);
         },
     },

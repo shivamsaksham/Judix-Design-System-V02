@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -9,10 +9,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Tabs>;
+} as Meta<typeof Tabs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Tabs>;
 
 export const Default: Story = {
     render: () => (

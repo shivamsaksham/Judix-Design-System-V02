@@ -3,11 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Toggle } from '@/components/ui/toggle';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Icon } from 'judix-icon';
 import { ContextWindowInfo } from './context-window-info';
 import { Option } from '@/components/ui/option';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 export interface ContextItem {
     id: string;
@@ -81,7 +80,7 @@ export default function ContextWindowDropdown({
                         onClick={() => setShowInfo(true)}
                         variant="neutral"
                         size="small"
-                        prefixIcon="InfoCircle"
+                        prefixIcon="info-circle"
                         className='border-none p-1 h-fit bg-color-surface-neutral-default'
                         iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                     />

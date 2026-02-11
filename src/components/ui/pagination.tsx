@@ -1,6 +1,7 @@
 'use client'
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -48,11 +49,11 @@ function PaginationLink({
       className={cn(
         "flex items-center justify-center w-8 h-8 md:w-9 md:h-9 text-sm md:text-base border transition-colors cursor-pointer select-none",
         "py-1.5 px-[7px]",
-        "font-family-brandprimary font-medium", 
-        "text-color-pagination-color-text", 
-        "border-sm", 
+        "font-family-brandprimary font-medium",
+        "text-color-pagination-color-text",
+        "border-sm",
         "rounded-pagination-border-radius-default",
-        "text-center", 
+        "text-center",
         isActive
           ? "border-pagination-color-stroke bg-pagination-color-selected" // Active state
           : "bg-neutral-light-100 border-pagination-color-bg", // Inactive state
@@ -72,16 +73,18 @@ function PaginationPrevious({
       aria-label="Go to previous page"
       className={cn(
         "w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5",
-        "box-border", 
-        "rounded-pagination-border-radius-default", 
-        "border-pagination-color-stroke", 
+        "box-border",
+        "rounded-pagination-border-radius-default",
+        "border-pagination-color-stroke",
         className
       )}
       {...props}
     >
-      <img
+      <Image
         src="/LeftArrow.svg"
         alt="Previous"
+        width={12}
+        height={12}
         className="w-2.5 h-2.5 md:w-3 md:h-3"
       />
     </PaginationLink>
@@ -98,15 +101,17 @@ function PaginationNext({
       className={cn(
         "w-8 h-8 md:w-9 md:h-9 p-2 md:p-2.5",
         "box-border",
-        "rounded-pagination-border-radius-default", 
-        "border-pagination-color-stroke", 
+        "rounded-pagination-border-radius-default",
+        "border-pagination-color-stroke",
         className
       )}
       {...props}
     >
-      <img
+      <Image
         src="/RightArrow.svg"
         alt="Next"
+        width={12}
+        height={12}
         className="w-2.5 h-2.5 md:w-3 md:h-3"
       />
     </PaginationLink>
@@ -138,7 +143,7 @@ function PaginationEllipsis({
 
 function getPaginationItems(currentPage: number, totalPages: number) {
   const items: (number | 'ellipsis')[] = []
-  
+
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) {
       items.push(i)
@@ -149,7 +154,7 @@ function getPaginationItems(currentPage: number, totalPages: number) {
       items.push('ellipsis')
     }
     if (currentPage === totalPages) {
-       items.push(currentPage-2)
+      items.push(currentPage - 2)
     }
     if (currentPage > 2) {
       items.push(currentPage - 1)
@@ -160,15 +165,15 @@ function getPaginationItems(currentPage: number, totalPages: number) {
     if (currentPage < totalPages - 1) {
       items.push(currentPage + 1)
     }
-     if (currentPage === 1) {
-       items.push(currentPage+2)
+    if (currentPage === 1) {
+      items.push(currentPage + 2)
     }
     if (currentPage < totalPages - 2) {
       items.push('ellipsis')
     }
     items.push(totalPages)
   }
-  
+
   return [...new Set(items)];
 }
 

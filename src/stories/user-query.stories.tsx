@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { UserQuery } from '@/components/block/user-query';
 import { useState } from 'react';
 
@@ -19,7 +19,7 @@ const meta: Meta<typeof UserQuery> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof UserQuery>;
 
 export const Default: Story = {
     render: () => {

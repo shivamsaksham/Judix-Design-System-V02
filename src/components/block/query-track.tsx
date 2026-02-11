@@ -14,7 +14,7 @@ export interface QueryTrackProps {
     className?: string;
 }
 
-export const QueryTrack = ({ queries, type = 'Query track', className }: QueryTrackProps) => {
+export const QueryTrack = ({ queries, className }: QueryTrackProps) => {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
     const [showLargeBox, setShowLargeBox] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -63,13 +63,14 @@ export const QueryTrack = ({ queries, type = 'Query track', className }: QueryTr
             }
         };
 
-        if (showLargeBox && dropdownRef.current) {
-            dropdownRef.current.addEventListener('mousemove', handleMouseMove);
+        const currentDropdown = dropdownRef.current;
+        if (showLargeBox && currentDropdown) {
+            currentDropdown.addEventListener('mousemove', handleMouseMove);
         }
 
         return () => {
-            if (dropdownRef.current) {
-                dropdownRef.current.removeEventListener('mousemove', handleMouseMove);
+            if (currentDropdown) {
+                currentDropdown.removeEventListener('mousemove', handleMouseMove);
             }
         };
     }, [showLargeBox, queries]);

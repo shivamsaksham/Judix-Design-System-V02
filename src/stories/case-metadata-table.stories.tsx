@@ -22,7 +22,7 @@ const meta: Meta<typeof CaseMetadataTable> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof CaseMetadataTable>;
 
 export const Default: Story = {};
 

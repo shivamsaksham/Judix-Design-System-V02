@@ -1,8 +1,8 @@
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import SearchEngineInput, { OptionHelper, TriggerConfig, StaticDataConfig, TokenStructure } from "@/components/block/search-engine-input";
 import { ContextItem } from "@/components/block/context-window";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 
 const meta: Meta<typeof SearchEngineInput> = {
     title: "Block/SearchEngineInput",
@@ -42,19 +42,19 @@ const MOCK_FOLDERS = [
         value: "1",
         title: "Patna land case",
         subtext: "Land acquisition case filed in Patna HC. Respondent side.",
-        leadingIcon: <Icon name="DocumentText" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
     },
     {
         value: "2",
         title: "GST tax notice case",
         subtext: "GST notice tax refund case. Issue in filing of GSTR 3B",
-        leadingIcon: <Icon name="DocumentText" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
     },
     {
         value: "3",
         title: "Non bailable offence lucknow",
         subtext: "A murder case in Lucknow. Petitioner side.",
-        leadingIcon: <Icon name="DocumentText" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
     },
 ];
 
@@ -62,7 +62,7 @@ const MOCK_CONTEXT_ITEMS: ContextItem[] = Array.from({ length: 20 }, (_, i) => (
     id: (i + 1).toString(),
     title: i === 0 ? "Session context" : `Context Item ${i + 1}`,
     subtitle: i === 0 ? "Text added by you using add to context feature acting as session context" : `Description for context item ${i + 1}`,
-    type: i === 0 ? "session" : ["case", "query", "act"][i % 3] as any,
+    type: i === 0 ? "session" : (["case", "query", "act"][i % 3] as ContextItem["type"]),
 }));
 
 const STATIC_OPTIONS: OptionHelper[] = [
@@ -81,31 +81,31 @@ const QUICK_ADD_OPTIONS: OptionHelper[] = [
     {
         value: "add_context",
         title: "Add Context",
-        leadingIcon: <Icon name="Add" />,
+        leadingIcon: <Icon name="add" />,
     },
     {
         value: "static_data",
         title: "Specify static data",
-        leadingIcon: <Icon name="Data" />,
+        leadingIcon: <Icon name="data-a" />,
         options: STATIC_OPTIONS,
     },
     {
         value: "connect_project",
         title: "Connect to project",
-        leadingIcon: <Icon name="Document" />,
-        trailingAccessory: <Icon name="ArrowRight" />,
+        leadingIcon: <Icon name="document-a" />,
+        trailingAccessory: <Icon name="arrow-right-a" />,
         className: "border-t border-color-border-neutral-default mt-2 pt-2 items-center",
         options: [
             {
                 value: "Patna_land_case",
                 title: "Patna land case",
-                leadingIcon: <Icon name="Cube" />,
+                leadingIcon: <Icon name="dcube" />,
                 subtext: "Land acquisition case filed in Patna HC. Respondent side.",
             },
             {
                 value: "GST_tax",
                 title: "GST tax notice case",
-                leadingIcon: <Icon name="Cube" />,
+                leadingIcon: <Icon name="dcube" />,
                 subtext: "GST notice tax refund case. Issue in filing of GSTR 3B",
             },
         ],

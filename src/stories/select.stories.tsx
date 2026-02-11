@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Select>;
+} as Meta<typeof Select>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Select>;
 
 export const Default: Story = {
     render: () => (

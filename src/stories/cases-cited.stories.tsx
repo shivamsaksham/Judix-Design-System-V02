@@ -50,6 +50,6 @@ const meta: Meta<typeof CasesCited> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof CasesCited>;
 
 export const Default: Story = {};

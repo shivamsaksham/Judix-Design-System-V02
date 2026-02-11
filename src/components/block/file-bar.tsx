@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FileTree, FileTreeNodeType, FileItem } from "@/components/block/file-tree";
+import { FileTree, FileTreeNodeType} from "@/components/block/file-tree";
 import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
@@ -72,21 +72,21 @@ export function FileBar({
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         variant="neutral"
                         size="extraSmall"
-                        suffixIcon="ArrowDown"
+                        suffixIcon="arrow-down-a"
                         className="h-8"
                     >
                         Create new
                     </Button>
 
                     <IconButton
-                        icon="Edit2"
+                        icon="edit-a"
                         size="medium"
                         variant="neutral"
                         onClick={onEdit}
                         className="hover:bg-color-surface-neutral-subtle_bg"
                     />
                     <IconButton
-                        icon="Trash"
+                        icon="trash"
                         size="medium"
                         variant="neutral"
                         onClick={onDelete}

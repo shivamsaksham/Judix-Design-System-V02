@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { ChatHistoryMenu, type ChatHistoryMenuProps } from '@/components/block/chat-history-menu';
-import { Icon } from 'judix-icon';
+import { ChatHistoryMenu } from '@/components/block/chat-history-menu';
 
 const meta: Meta<typeof ChatHistoryMenu> = {
     title: 'Block/ChatHistoryMenu',
@@ -19,7 +18,7 @@ const meta: Meta<typeof ChatHistoryMenu> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ChatHistoryMenu>;
 
 export const Default: Story = {
     args: {

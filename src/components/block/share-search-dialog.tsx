@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
@@ -138,7 +138,7 @@ function ShareSearchDialog({
             >
                 <DialogHeader className="flex-row items-center gap-2">
                     <Icon
-                        name="Share"
+                        name="share-a"
                         className="h-5 w-5 text-icon_button-color-primary-icon"
                     />
                     <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
@@ -156,7 +156,7 @@ function ShareSearchDialog({
                             onKeyDown={handleKeyDown}
                             trailingAccessory={
                                 <IconButton
-                                    icon="Send2"
+                                    icon="send-a"
                                     size="medium"
                                     variant="primary"
                                     boundary="none"
@@ -204,7 +204,7 @@ function ShareSearchDialog({
                             onChange={(e) => setNote(e.target.value)}
                             leadingIcon={
                                 <Icon
-                                    name="DocumentText1"
+                                    name="document-text-a"
                                     className="h-4 w-4 text-color-text-neutral-secondary"
                                 />
                             }
@@ -242,7 +242,7 @@ function ShareSearchDialog({
                         type="button"
                         variant="neutral"
                         onClick={onDownloadPdf}
-                        prefixIcon="DocumentDownload"
+                        prefixIcon="document-download"
                         size="extraSmall"
                         className="w-full justify-center sm:w-auto self-start text-style-label-title-regular"
                     >

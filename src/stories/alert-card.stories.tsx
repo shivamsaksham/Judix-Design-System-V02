@@ -21,7 +21,7 @@ const meta: Meta<typeof AlertCard> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AlertCard>;
 
 export const Default: Story = {};
 

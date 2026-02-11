@@ -35,10 +35,10 @@ export const GlobalContextManagement = ({
 
     const hasContext = contextFiles.length > 0;
 
-    const handleContextClick = (title: string) => {
-        setSelectedContext({ title, content: '' });
-        setShowModal(true);
-    };
+    // const handleContextClick = (title: string) => {
+    //     setSelectedContext({ title, content: '' });
+    //     setShowModal(true);
+    // };
 
     const handleAddClick = () => {
         setSelectedContext({ title: '', content: '' });
@@ -170,7 +170,7 @@ export const GlobalContextManagement = ({
                                 onClick={handleAddClick}
                                 variant="neutral"
                                 size="small"
-                                prefixIcon="Add"
+                                prefixIcon="add"
                                 className={cn(
                                     'p-2 w-fit rounded-button-border-radius-default border',
                                     'border-color-border-neutral-default bg-color-surface-neutral-default',

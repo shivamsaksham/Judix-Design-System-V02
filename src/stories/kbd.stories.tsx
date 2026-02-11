@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Kbd } from '@/components/ui/kbd';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Kbd>;
+} as Meta<typeof Kbd>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Kbd>;
 
 export const Default: Story = {
     args: {

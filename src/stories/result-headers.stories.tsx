@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import * as React from "react";
 import { JudgmentResultHeader } from "../components/block/judgment-result-header";
 import { ActResultHeader } from "../components/block/act-result-header";
@@ -41,7 +41,7 @@ const HeaderWrapper = ({
     Component: React.ElementType,
     initialDropdownValue: string,
     dropdownOptions: DropdownOption[],
-    [key: string]: any
+    [key: string]: unknown;
 }) => {
     const [version, setVersion] = React.useState<string | null>("v4");
     const [search, setSearch] = React.useState("");

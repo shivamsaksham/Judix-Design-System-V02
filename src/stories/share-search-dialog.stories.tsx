@@ -36,10 +36,10 @@ const meta = {
         onCopyLink: fn(),
         onDownloadPdf: fn()
     }
-} satisfies Meta<typeof ShareSearchDialog>;
+} as Meta<typeof ShareSearchDialog>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ShareSearchDialog>;
 
 export const Default: Story = {};
 

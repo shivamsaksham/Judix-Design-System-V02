@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useRef, useEffect } from 'react'; // <-- 1. IMPORT useRef, useEffect
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const daysInMonth = (year: number, month: number) => {
     return new Date(year, month + 1, 0).getDate();
@@ -18,9 +19,9 @@ interface CalendarProps {
 
 // --- Main Calendar Component ---
 const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: CalendarProps) => {
-    
+
     const [currentDate, setCurrentDate] = useState(initialDisplayDate || onDateSelected || new Date());
-    
+
     const [viewMode, setViewMode] = useState<'calendar' | 'year'>('calendar');
     const [yearRangeStart, setYearRangeStart] = useState(2001);
 
@@ -45,7 +46,7 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
 
     // --- Click handler for day selection ---
     const handleDayClick = (date: Date) => {
-        onDateChange(date); 
+        onDateChange(date);
     };
 
     // --- Year Picker Handlers ---
@@ -74,7 +75,7 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
     const todayDate = today.getDate();
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
-    
+
     const handleNextYearRange = () => {
         const newStart = yearRangeStart + 25;
         const maxYear = todayYear;
@@ -159,11 +160,11 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
         const years = [];
         const maxYear = todayYear;
         const minYear = 1950;
-        
+
         // Generate 25 years (5 rows × 5 columns) like in the image
         for (let i = 0; i < 25; i++) {
             const yearValue = yearRangeStart + i;
-            
+
             // Only render years between 1950 and current year
             if (yearValue >= minYear && yearValue <= maxYear) {
                 const isCurrentYear = yearValue === todayYear;
@@ -224,24 +225,24 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
                             {/* Header with navigation and month/year */}
                             <div className="calendar-header flex items-center justify-between p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
                                 <button onClick={handlePrevMonth} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
-                                    <img src="./arrow-left.svg" alt="Previous Month" />
+                                    <Image src="./arrow-left.svg" alt="Previous Month" width={16} height={16} />
                                 </button>
 
-                                <h2 
-                                    className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center cursor-pointer hover:text-color-text-primary-default px-3 py-1 rounded" 
+                                <h2
+                                    className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center cursor-pointer hover:text-color-text-primary-default px-3 py-1 rounded"
                                     onClick={handleYearClick}
                                 >
                                     {monthName} {year}
                                 </h2>
 
                                 <button onClick={handleNextMonth} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
-                                    <img src="./arrow-right.svg" alt="Next Month" />
+                                    <Image src="./arrow-right.svg" alt="Next Month" width={16} height={16} />
                                 </button>
                             </div>
 
                             {/* --- 4. ADD REF TO CALENDAR GRID --- */}
-                            <div 
-                                ref={calendarGridRef} 
+                            <div
+                                ref={calendarGridRef}
                                 className="calendar-grid grid grid-cols-7 gap-x-[3px] gap-y-[10px] text-center min-w-[272px] max-w-[352px] justify-items-center"
                             >
 
@@ -264,7 +265,7 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
                             {/* Year Picker Header */}
                             <div className="calendar-header flex items-center justify-between p-[6.22px] min-w-[272px] max-w-[350px] min-h-[24px] max-h-[40px]">
                                 <button onClick={handlePrevYearRange} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
-                                    <img src="./arrow-left.svg" alt="Previous Years" />
+                                    <Image src="./arrow-left.svg" alt="Previous Years" width={16} height={16} />
                                 </button>
 
                                 <h2 className="month-year-display calendar-font-month text-calendar-color-text-month box-sizing mt-[3px] mb-[3px] text-center">
@@ -272,11 +273,11 @@ const Calender = ({ onDateSelected, onDateChange, initialDisplayDate }: Calendar
                                 </h2>
 
                                 <button onClick={handleNextYearRange} className="nav-button p-2 rounded-full hover:bg-calendar-color-hover cursor-pointer select-none">
-                                    <img src="./arrow-right.svg" alt="Next Years" />
+                                    <Image src="./arrow-right.svg" alt="Next Years" width={16} height={16} />
                                 </button>
                             </div>
 
-                            <div 
+                            <div
                                 className="year-grid grid grid-cols-5 gap-x-3 gap-y-[10px] text-center min-w-[272px] max-w-[352px] justify-items-center"
                                 style={{ minHeight: gridHeight ? `${gridHeight}px` : 'auto' }}
                             >

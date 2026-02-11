@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import JudgementDetails from "../components/block/judgement-details";
 import { ContentTreeSection } from "../components/block/content-tree";
 

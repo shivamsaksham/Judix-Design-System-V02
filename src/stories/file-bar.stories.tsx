@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FileBar } from "@/components/block/file-bar";
 import { FolderItem, FileItem } from "@/components/block/file-tree";
 
@@ -126,9 +126,9 @@ export const FolderAndFileSelected: Story = {
                 {...args}
                 activeIds={activeIds}
                 onSelect={(node) => {
-                    const newIds = node.type === "folder"
-                        ? [...(activeIds || []).filter(id => id !== node.id), node.id]
-                        : [node.id, ...(activeIds || []).filter(id => !id.includes(node.id) && !node.id.startsWith(id.split('-')[0]))];
+                    // const newIds = node.type === "folder"
+                    //     ? [...(activeIds || []).filter(id => id !== node.id), node.id]
+                    //     : [node.id, ...(activeIds || []).filter(id => !id.includes(node.id) && !node.id.startsWith(id.split('-')[0]))];
 
                     if (node.type === "folder") {
                         if (activeIds?.includes(node.id)) {

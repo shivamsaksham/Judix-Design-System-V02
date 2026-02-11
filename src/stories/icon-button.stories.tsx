@@ -25,7 +25,7 @@ const meta: Meta<typeof IconButton> = {
     },
   },
   args: {
-    icon: 'ClipboardText',
+    icon: 'clipboard-text',
     disabled: false,
     variant: 'neutral',
   },

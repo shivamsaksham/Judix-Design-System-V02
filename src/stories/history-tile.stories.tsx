@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
-import { HistoryTile, type HistoryTileProps } from '@/components/block/history-tile';
+import { HistoryTile } from '@/components/block/history-tile';
 
 const meta: Meta<typeof HistoryTile> = {
     title: 'Block/HistoryTile',
@@ -24,7 +24,7 @@ const meta: Meta<typeof HistoryTile> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof HistoryTile>;
 
 export const Default: Story = {
     args: {

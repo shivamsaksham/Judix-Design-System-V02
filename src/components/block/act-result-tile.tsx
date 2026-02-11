@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -88,7 +88,7 @@ export function ActResultTile({
                     >
                         <span className="flex items-center gap-1">
                             {expanded ? "Show less" : "Read more"}
-                            <Icon name="ArrowDown" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
+                            <Icon name="arrow-down-a" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
                         </span>
                     </Label>
                 )}

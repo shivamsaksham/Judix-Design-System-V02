@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { NumberBadge } from "./number-badges"
-import { Icon } from "judix-icon"
+import { Icon } from "@judix/icon"
 
 const labelVariants = cva(
   "inline-flex items-center justify-center gap-2 border rounded-label-border-radius-default label-border-weight-default",
@@ -141,7 +141,7 @@ const Label = React.forwardRef<HTMLDivElement, LabelProps>(
         )}
         {onRemove && (
           <Icon
-            name="Cross"
+            name="close-circle"
             onClick={onRemove}
             className={cn(iconVariants({ colorScheme, size, selected }), "cursor-pointer")}
           />

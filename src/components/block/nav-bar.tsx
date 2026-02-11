@@ -162,7 +162,7 @@ export default function NavBar({
                                 onClick={onShareClick}
                                 variant="neutral"
                                 size="small"
-                                prefixIcon="BackSquare"
+                                prefixIcon="back-square"
                                 className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
                                 iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                             >

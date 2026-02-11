@@ -79,7 +79,7 @@ const KeyWord = ({ title, children }: { title: string; children: React.ReactNode
   </div>
 );
 
-export function JudgmentDetailsContent({ data, className }: JudgmentDetailsContentProps) {
+export function JudgmentDetailsContent({ data }: JudgmentDetailsContentProps) {
   return (
     <Card className="rounded-none border-none shadow-none bg-transparent">
         <CardContent>

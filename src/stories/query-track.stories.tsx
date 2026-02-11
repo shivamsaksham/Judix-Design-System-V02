@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryTrack } from '@/components/block/query-track';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof QueryTrack>;
+} as Meta<typeof QueryTrack>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof QueryTrack>;
 
 const sampleQueries = [
     { id: '1', text: 'Anticipatory bail in domestic viole...' },

@@ -1,11 +1,10 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { Option } from './option';
-import { TextInput, inputVariants } from './text-input';
+import { TextInput } from './text-input';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
-// --- 3. Dropdown Component ---
 
 export interface DropdownOption {
   value: string;

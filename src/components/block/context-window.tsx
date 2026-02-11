@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
-import { Icon } from "judix-icon";
 import { IconButton } from "@/components/ui/icon-button";
 import {
     Dialog,
@@ -103,8 +102,8 @@ export function ContextWindow({
                         <IconButton
                             variant="neutral"
                             boundary="none"
-                            size="small"
-                            icon="InfoCircle"
+                            size="medium"
+                            icon="info-circle"
                             className="bg-transparent hover:bg-color-surface-neutral-subtle_bg text-color-text-neutral-subtle"
                         />
                     </DialogTrigger>

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -80,17 +80,17 @@ const FileTreeNode = ({
 
     const getIcon = () => {
         if (node.type === "folder") {
-            return "Folder" as any;
+            return "folder-a";
         }
         switch (node.fileType) {
             case "chat":
-                return "Message";
+                return "message-a";
             case "note":
-                return "Note";
+                return "note-a";
             case "archive":
-                return "Save2";
+                return "save-b";
             default:
-                return "Document";
+                return "document-a";
         }
     };
 
@@ -131,7 +131,7 @@ const FileTreeNode = ({
                             : "text-color-icon-neutral-default"
                 )}>
                     {node.type === "folder" ? (
-                        <Icon name={(isOpen ? "DocumentText" : "DocumentCopy")} className="w-4 h-4" />
+                        <Icon name={(isOpen ? "document-text-a" : "document-copy")} className="w-4 h-4" />
                     ) : (
                         <Icon name={getIcon()} className="w-4 h-4" />
                     )}

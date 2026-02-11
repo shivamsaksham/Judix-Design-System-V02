@@ -93,6 +93,7 @@ export interface NotesPDFDocumentProps {
 const renderTextNodes = (content: JSONContent[]) => {
     return content.map((node, index) => {
         if (node.type === 'text') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const style: any[] = [];
             let isLink = false;
             let linkHref = '';
@@ -143,6 +144,7 @@ const renderContent = (node: JSONContent, index: number): React.ReactNode => {
         // Map level to class names
         let headingClass = styles['text-style-heading-lg'];
         let colorClass = styles['text-neutral-default'];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let spacingStyles: any[] = [styles['mb-4']];
 
         if (level === 1) {

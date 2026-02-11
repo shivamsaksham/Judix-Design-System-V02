@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { Editor } from '@tiptap/react';
 import { cn } from "@/lib/utils";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { CardHeader, CardTitle, CardContent } from "../ui/card";
 import { IconButton } from "../ui/icon-button";
 import {
     Popover,
@@ -169,7 +169,7 @@ export function NotesCard({
     title = "Notes",
     children,
     onExpandChange,
-    onMaximize,
+    // onMaximize,
     onOpenInNewTab,
     onSend,
     onShare,
@@ -179,10 +179,10 @@ export function NotesCard({
     onEditFile,
     onDeleteFile,
     onImageUpload,
-    ...props
+    // ...props
 }: NotesCardProps) {
     const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
-    const [isMaximized, setIsMaximized] = React.useState(false);
+    // const [isMaximized, setIsMaximized] = React.useState(false);
     const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(false);
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>("note-2");
     const [editor, setEditor] = React.useState<Editor | null>(null);
@@ -336,7 +336,7 @@ export function NotesCard({
                         >
                             <div className="flex items-center justify-between shrink-0 mb-2">
                                 <div className="flex items-center gap-3">
-                                    <Icon name="Note" className="w-5 h-5 text-color-icon-neutral-default" />
+                                    <Icon name="note-a" className="w-5 h-5 text-color-icon-neutral-default" />
                                     <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -344,8 +344,8 @@ export function NotesCard({
                                         Open in new tab
                                     </Button>
                                     <IconButton
-                                        icon="Send"
-                                        size="small"
+                                        icon="send-a"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         className="rotate-180"
@@ -355,8 +355,8 @@ export function NotesCard({
                                         }}
                                     />
                                     <IconButton
-                                        icon="Cross"
-                                        size="small"
+                                        icon="cross"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         onClick={() => {
@@ -372,9 +372,9 @@ export function NotesCard({
                                     <div className="flex items-center justify-between py-2">
                                         <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                         <div className="flex items-center gap-0.5">
-                                            <IconButton icon="Add" size="small" variant="neutral" boundary="none" onClick={onAddFile} />
-                                            <IconButton icon="Edit" size="small" variant="neutral" boundary="none" onClick={onEditFile} />
-                                            <IconButton icon="Trash" size="small" variant="neutral" boundary="none" onClick={onDeleteFile} />
+                                            <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} />
+                                            <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} />
+                                            <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={onDeleteFile} />
                                         </div>
                                     </div>
                                     <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
@@ -382,7 +382,7 @@ export function NotesCard({
                                         <FileTree
                                             data={mockFileTreeData}
                                             activeId={activeFileId}
-                                            onSelect={(node: any) => setActiveFileId(node.id)}
+                                            onSelect={(node: FileTreeNodeType) => setActiveFileId(node.id)}
                                             className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                         />
                                     </div>
@@ -403,7 +403,7 @@ export function NotesCard({
                                                         )}
                                                     >
                                                         <span className="truncate">{currentHeadingLabel}</span>
-                                                        <Icon name="ArrowDown" className="w-4 h-4 text-color-icon-neutral-tertiary" />
+                                                        <Icon name="arrow-down-a" className="w-4 h-4 text-color-icon-neutral-tertiary" />
                                                     </div>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="start" sideOffset={4}>
@@ -422,24 +422,24 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="TextBold"
-                                                size="small"
+                                                icon="text-bold"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => editor?.chain().focus().toggleBold().run()}
                                             />
                                             <IconButton
-                                                icon="TextItalic"
-                                                size="small"
+                                                icon="text-italic"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => editor?.chain().focus().toggleItalic().run()}
                                             />
                                             <IconButton
-                                                icon="TextUnderline"
-                                                size="small"
+                                                icon="text-underline"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -451,32 +451,32 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="TextalignLeft"
-                                                size="small"
+                                                icon="textalign-left"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('left')}
                                             />
                                             <IconButton
-                                                icon="TextalignCenter"
-                                                size="small"
+                                                icon="textalign-center"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('center')}
                                             />
                                             <IconButton
-                                                icon="TextalignRight"
-                                                size="small"
+                                                icon="textalign-right"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
                                                 onClick={() => handleTextAlign('right')}
                                             />
                                             <IconButton
-                                                icon="TextalignJustifycenter"
-                                                size="small"
+                                                icon="textalign-justifycenter"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -488,8 +488,8 @@ export function NotesCard({
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <IconButton
-                                                icon="Link2"
-                                                size="small"
+                                                icon="link-a"
+                                                size="medium"
                                                 variant="neutral"
                                                 className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
                                                 boundary="none"
@@ -501,8 +501,8 @@ export function NotesCard({
                                                 }}
                                             />
                                             <IconButton
-                                                icon="Image"
-                                                size="small"
+                                                icon="image"
+                                                size="medium"
                                                 variant="neutral"
                                                 boundary="none"
                                                 onClick={() => fileInputRef.current?.click()}
@@ -519,8 +519,8 @@ export function NotesCard({
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton icon="Edit" size="small" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
-                                            <IconButton icon="Share" size="small" variant="neutral" boundary="none" onClick={handleShare} />
+                                            <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
+                                            <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
                                         </div>
                                     </div>
 
@@ -554,15 +554,15 @@ export function NotesCard({
                                 isExpanded ? "border-color-border-neutral-default" : "border-transparent"
                             )}>
                                 <div className="flex items-center gap-2">
-                                    <Icon name="Note" className="h-4 w-4 text-color-text-neutral-default" />
+                                    <Icon name="note-a" className="h-4 w-4 text-color-text-neutral-default" />
                                     <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <IconButton
-                                        icon="Send"
+                                        icon="send-a"
                                         className="bg-transparent"
                                         iconClassName={cn("transition-transform duration-300", isEnlargeOpen && "rotate-180")}
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         aria-label="Open enlarge view"
@@ -572,19 +572,19 @@ export function NotesCard({
                                         }}
                                     />
                                     <IconButton
-                                        icon="Export"
+                                        icon="export-a"
                                         className="bg-transparent"
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         aria-label="Share as PDF"
                                         onClick={handleShare}
                                     />
                                     <IconButton
-                                        icon="ArrowDown"
+                                        icon="arrow-down-a"
                                         className="bg-transparent"
                                         iconClassName={cn("transition-transform duration-300 rotate-180", isExpanded && "rotate-0")}
-                                        size="small"
+                                        size="medium"
                                         variant="neutral"
                                         boundary="none"
                                         onClick={handleExpandToggle}

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -78,7 +77,7 @@ export function JudgmentTile({
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
                     </PopoverTrigger>
                     <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
                         <ContextActionMenu

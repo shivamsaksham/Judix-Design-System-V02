@@ -65,10 +65,10 @@ const meta = {
         onSave: fn(),
         onCreateNewProject: fn()
     }
-} satisfies Meta<typeof BookmarkDialog>;
+} as Meta<typeof BookmarkDialog>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof BookmarkDialog>;
 
 export const Default: Story = {};
 

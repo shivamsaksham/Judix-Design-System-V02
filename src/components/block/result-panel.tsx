@@ -58,7 +58,7 @@ export function ResultPanel({
     const actions = isJudgments ? (
         <>
             <IconButton
-                icon="Printer"
+                icon="printer"
                 variant="neutral"
                 boundary="stroked"
                 corner="rounded"
@@ -68,7 +68,7 @@ export function ResultPanel({
                 onClick={onJudgmentPrint}
             />
             <IconButton
-                icon="Filter"
+                icon="filter"
                 variant="neutral"
                 boundary="stroked"
                 corner="rounded"
@@ -80,7 +80,7 @@ export function ResultPanel({
         </>
     ) : (
         <IconButton
-            icon="Printer"
+            icon="printer"
             variant="neutral"
             boundary="stroked"
             corner="rounded"

@@ -23,7 +23,7 @@ const meta: Meta<typeof Calender> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Calender>;
 
 const CalenderPreview = (args: CalenderProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(args.onDateSelected ?? null);

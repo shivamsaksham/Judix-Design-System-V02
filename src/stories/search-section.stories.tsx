@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import * as React from "react";
 import { SearchSection } from "../components/block/search-section";
 import { IconButton } from "../components/ui/icon-button";
@@ -71,7 +71,7 @@ export const RelevantJudgments: Story = {
         actions: (
             <>
                 <IconButton
-                    icon="Printer"
+                    icon="printer"
                     variant="neutral"
                     boundary="stroked"
                     corner="rounded"
@@ -80,7 +80,7 @@ export const RelevantJudgments: Story = {
                     className="rounded-lg"
                 />
                 <IconButton
-                    icon="Filter"
+                    icon="filter"
                     variant="neutral"
                     boundary="stroked"
                     corner="rounded"
@@ -102,7 +102,7 @@ export const ActsAndSections: Story = {
         dropdownLabel: "Central acts",
         actions: (
             <IconButton
-                icon="Printer"
+                icon="printer"
                 variant="neutral"
                 boundary="stroked"
                 corner="rounded"
