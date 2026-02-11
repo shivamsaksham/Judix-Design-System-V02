@@ -24,7 +24,7 @@ function ActsContentTree({
       className={cn(
         `inline-flex h-full flex-col items-end gap-2
 border-r border-color-border-neutral-default 
-bg-color-surface-neutral-default flex-shrink-0`,
+bg-color-surface-neutral-default shrink-0`,
       )}
     >
       <div

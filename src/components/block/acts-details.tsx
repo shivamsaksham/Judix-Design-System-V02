@@ -56,14 +56,18 @@ function ActsDetails({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.find((e) => e.isIntersecting);
-        if (visible?.target.id) {
-          setActiveItem(visible.target.id);
+        const visibleEntry = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visibleEntry?.target.id) {
+          setActiveItem(visibleEntry.target.id);
         }
       },
       {
         root: container,
-        threshold: 0.3,
+        rootMargin: "-10% 0px -60% 0px",
+        threshold: [0.1, 0.25, 0.5, 0.75],
       },
     );
 
@@ -91,7 +95,7 @@ function ActsDetails({
               </div>
 
               <Input
-                className="flex max-w-[600px] flex-col items-start justify-center 
+                className="flex max-w-150 flex-col items-start justify-center 
               gap-2 px-3 py-2 self-stretch rounded-textinput-border-radius-default 
               textinput-border-weight-default border-color-textinput-color-stroke-default 
               bg-color-textinput-bg"
@@ -152,7 +156,7 @@ function ActsDetails({
             </div>
           </div>
 
-          <hr className="w-full max-w-[1168px] h-[1px] border-color-border-neutral-default" />
+          <hr className="w-full h-px border-color-border-neutral-default" />
 
           <div className="flex items-stretch gap-2 flex-1 self-stretch overflow-hidden min-h-0">
             {/* Sidebar */}
