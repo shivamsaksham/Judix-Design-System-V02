@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ContextWindowInfo } from '@/components/block/context-window-info';
 
 const meta: Meta<typeof ContextWindowInfo> = {
@@ -18,7 +18,7 @@ const meta: Meta<typeof ContextWindowInfo> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof conetn>;
 
 export const Default: Story = {
     args: {},

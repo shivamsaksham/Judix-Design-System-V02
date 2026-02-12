@@ -22,7 +22,7 @@ const meta: Meta<typeof Confirmation> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Confirmation>;
 
 export const Default: Story = {};
 

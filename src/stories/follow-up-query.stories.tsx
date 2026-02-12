@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FollowUpQuery } from '@/components/block/follow-up-query';
 
 const meta = {
@@ -18,10 +18,10 @@ const meta = {
             description: 'Callback when the query is clicked',
         },
     },
-} satisfies Meta<typeof FollowUpQuery>;
+} as Meta<typeof FollowUpQuery>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof FollowUpQuery>;
 
 export const Default: Story = {
     args: {

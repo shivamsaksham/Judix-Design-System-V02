@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -9,10 +9,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Card>;
+} as Meta<typeof Card>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Card>;
 
 export const Default: Story = {
     render: () => (
@@ -70,7 +70,7 @@ export const Complete: Story = {
                 <CardTitle>Complete Card Example</CardTitle>
                 <CardDescription>All card sections demonstrated</CardDescription>
                 <CardAction>
-                    <Button size="small" variant="neutral" prefixIcon="More" />
+                    <Button size="small" variant="neutral" prefixIcon="more-b" />
                 </CardAction>
             </CardHeader>
             <CardContent>

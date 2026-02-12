@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import AddToContext from '@/components/block/context-add-modal';
 import { useState } from 'react';
 
@@ -12,7 +12,7 @@ const meta: Meta<typeof AddToContext> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AddToContext>;
 
 export const Default: Story = {
     args: {
@@ -30,8 +30,8 @@ export const Default: Story = {
 
 export const WithContent: Story = {
     render: () => {
-        const [title] = useState('My Important Document');
-        const [content] = useState('This is some sample content that has been entered into the textarea field.');
+        // const [title] = useState('My Important Document');
+        // const [content] = useState('This is some sample content that has been entered into the textarea field.');
 
         return (
             <AddToContext
@@ -45,7 +45,7 @@ export const WithContent: Story = {
 
 export const NearLimit: Story = {
     render: () => {
-        const sampleText = 'A'.repeat(2490);
+        // const sampleText = 'A'.repeat(2490);
 
         return (
             <div>

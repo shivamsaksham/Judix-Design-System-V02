@@ -2,9 +2,10 @@
 import React from 'react';
 import toast, { Toaster, ToastBar, resolveValue } from 'react-hot-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { AlertTriangle, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Check, Danger, Icon, TickCircle } from 'judix-icon';
+import { Danger, Icon } from '@judix/icon';
+import Image from 'next/image';
 
 const toastVariants = cva(
   "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
@@ -61,14 +62,17 @@ const toastTextVariants = cva(
 );
 
 const CustomInfoIcon = ({ className }: { className?: string }) => (
-  <img src="/info-toast.svg" alt="Info" className={className} />
+  <Image src="/info-toast.svg" alt="Information" width={20} height={20} className={className} />
 );
 
 const iconMap = {
   loading: Loader2,
-  alert: Danger,
-  success: TickCircle,
-  notice: Danger,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  alert: (props: React.SVGProps<SVGSVGElement>) => <Icon name="danger" {...props as any} />,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  success: (props: React.SVGProps<SVGSVGElement>) => <Icon name="tick-circle" {...props as any} />,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  notice: (props: React.SVGProps<SVGSVGElement>) => <Icon name="danger" {...props as any} />,
   info: CustomInfoIcon,
 };
 
@@ -110,7 +114,7 @@ export const showToast = {
     toast.promise(promise, messages),
 };
 
-export const ToastContainer = ({ position = 'top-center' }: { position?: any }) => {
+export const ToastContainer = ({ position = 'top-center' }: { position?: "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right" }) => {
   return (
     <Toaster
       position={position}
@@ -137,7 +141,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: any }) 
 
         const getIcon = () => {
           if (t.type === 'loading') return <Loader2 className="h-6 w-6 shrink-0 text-gray-500 animate-spin" />;
-          if (t.type === 'success') return <Icon name='TickCircle' className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
+          if (t.type === 'success') return <Icon name='tick-circle' className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
           if (t.type === 'error') return <Danger className="h-6 w-6 shrink-0 text-toast-color-warning-icon" />;
           return <AlertCircle className="h-6 w-6 shrink-0" />;
         };

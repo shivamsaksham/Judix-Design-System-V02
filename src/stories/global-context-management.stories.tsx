@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GlobalContextManagement } from '@/components/block/global-context-management';
 
 const meta: Meta<typeof GlobalContextManagement> = {
@@ -11,7 +11,7 @@ const meta: Meta<typeof GlobalContextManagement> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof GlobalContextManagement>;
 
 export const EmptyState: Story = {
     args: {

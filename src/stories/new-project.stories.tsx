@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { NewProject } from '@/components/block/new-project';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof NewProject>;
+} as Meta<typeof NewProject>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof NewProject>;
 
 export const EmptyState: Story = {
     args: {

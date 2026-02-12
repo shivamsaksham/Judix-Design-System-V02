@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ScoreBox from "../components/block/score-box";
 
 const meta: Meta<typeof ScoreBox> = {

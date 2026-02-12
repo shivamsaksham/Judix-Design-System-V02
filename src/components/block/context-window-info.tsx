@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Icon } from '@judix/icon';
 import { Button } from '@/components/ui/button';
 
 export interface ContextWindowInfoProps {

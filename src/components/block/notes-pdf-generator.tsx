@@ -28,6 +28,7 @@ export const downloadNotesAsPDF = async (editor: Editor, title: string) => {
                     await navigator.share(shareData);
                     return;
                 } catch (err) {
+                    console.log(err)
                     // User cancelled or share failed
                 }
             }

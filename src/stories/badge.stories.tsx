@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Badge } from '@/components/ui/badge';
-import { Icon } from 'judix-icon';
+import { Icon } from '@judix/icon';
 
 const meta = {
     title: 'UI/Badge',
@@ -15,10 +15,10 @@ const meta = {
             options: ['default', 'secondary', 'destructive', 'outline'],
         },
     },
-} satisfies Meta<typeof Badge>;
+} as Meta<typeof Badge>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Badge>;
 
 export const Default: Story = {
     args: {
@@ -52,15 +52,15 @@ export const WithIcon: Story = {
     render: () => (
         <div className="flex gap-3">
             <Badge variant="default">
-                <Icon name="Star" className="w-3 h-3" />
+                <Icon name="star-a" className="w-3 h-3" />
                 Featured
             </Badge>
             <Badge variant="secondary">
-                <Icon name="InfoCircle" className="w-3 h-3" />
+                <Icon name="info-circle" className="w-3 h-3" />
                 Info
             </Badge>
             <Badge variant="destructive">
-                <Icon name="Danger" className="w-3 h-3" />
+                <Icon name="danger" className="w-3 h-3" />
                 Warning
             </Badge>
         </div>
@@ -89,15 +89,15 @@ export const StatusBadges: Story = {
             </div>
             <div className="flex gap-2">
                 <Badge variant="default">
-                    <Icon name="TickCircle" className="w-3 h-3" />
+                    <Icon name="tick-circle" className="w-3 h-3" />
                     Active
                 </Badge>
                 <Badge variant="secondary">
-                    <Icon name="Clock" className="w-3 h-3" />
+                    <Icon name="clock-a" className="w-3 h-3" />
                     Away
                 </Badge>
                 <Badge variant="outline">
-                    <Icon name="CloseCircle" className="w-3 h-3" />
+                    <Icon name="close-circle" className="w-3 h-3" />
                     Offline
                 </Badge>
             </div>

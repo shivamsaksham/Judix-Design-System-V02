@@ -2,13 +2,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
-import { HistoryTile } from './history-tile';
 import { SidebarActionButtons } from './sidebar-action-buttons';
 import { ChatHistorySection } from './chat-history-section';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { UserMenu } from './user-menu';
 import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
 import { Button } from '../ui';
 import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';

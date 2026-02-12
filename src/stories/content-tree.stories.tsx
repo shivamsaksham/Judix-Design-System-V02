@@ -56,7 +56,7 @@ const meta: Meta<typeof ContentTree> = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ContentTree>;
 
 export const Default: Story = {};
 

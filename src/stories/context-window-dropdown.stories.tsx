@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ContextWindowDropdown from '@/components/block/context-window-dropdown';
 import { useState } from 'react';
 
@@ -12,7 +12,7 @@ const meta: Meta<typeof ContextWindowDropdown> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ContextWindowDropdown>;
 
 const sampleItems = [
     {

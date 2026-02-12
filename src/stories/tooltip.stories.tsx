@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 
@@ -9,10 +9,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Tooltip>;
+} as Meta<typeof Tooltip>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Tooltip>;
 
 export const Default: Story = {
     render: () => (
@@ -93,7 +93,7 @@ export const WithIcon: Story = {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button variant="neutral" prefixIcon="InfoCircle">Info</Button>
+                    <Button variant="neutral" prefixIcon="info-circle">Info</Button>
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>This is helpful information</p>

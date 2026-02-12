@@ -1,8 +1,6 @@
 'use client';
 import React from 'react';
-import { Icon } from 'judix-icon';
 import { IconButton } from '../ui/icon-button';
-import { cn } from '@/lib/utils';
 
 export interface SidebarActionButtonsProps {
     onNewChat?: () => void;
@@ -12,7 +10,7 @@ export interface SidebarActionButtonsProps {
     style?: React.CSSProperties;
 }
 
-export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, className, style }: SidebarActionButtonsProps) => {
+export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, style }: SidebarActionButtonsProps) => {
     return (
         <div className="p-1 mr-3 ml-1 mb-2" style={style}>
             <div

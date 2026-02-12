@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Input } from '@/components/ui/input';
 
 const meta = {
@@ -17,10 +17,10 @@ const meta = {
             control: 'boolean',
         },
     },
-} satisfies Meta<typeof Input>;
+} as Meta<typeof Input>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
     args: {

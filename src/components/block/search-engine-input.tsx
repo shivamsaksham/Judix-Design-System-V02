@@ -49,7 +49,7 @@ export interface StaticDataConfig {
 
 export interface SearchPayload {
     query: string;
-    filters: any;
+    filters: Record<string, unknown>;
 }
 
 export interface TokenStructure {
@@ -157,7 +157,6 @@ function SearchEngineInput({
     scopes = [],
     courtCategories = [],
     contextItems = [],
-    folderOptions = [],
     quickAddOptions = [],
     triggers = {},
     staticData = {},
@@ -210,7 +209,7 @@ function SearchEngineInput({
         if (contextMode === "auto" && contextItems.length > 0 && selectedContextItems.length === 0) {
             setSelectedContextItems(contextItems.slice(0, 10).map((i) => i.id));
         }
-    }, [contextItems, contextMode]);
+    }, [contextItems, contextMode, selectedContextItems.length]);
 
     React.useEffect(() => {
         if (input.trim() === "") {
@@ -293,7 +292,7 @@ function SearchEngineInput({
             shift({ padding: 8 }),
         ],
         open: activeDropdown !== null,
-        onOpenChange: (open: any) => {
+        onOpenChange: (open: boolean) => {
             if (!open) {
                 setActiveDropdown(null);
                 setActiveIndex(null);
@@ -378,6 +377,7 @@ function SearchEngineInput({
         if (!div) return { query: "", filters: {} };
 
         const wrappers = div.querySelectorAll(".static-data-wrapper");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const filters: any = {};
         const processedNodes = new Set<Node>();
 
@@ -525,6 +525,7 @@ function SearchEngineInput({
                 if (activeDropdown !== "trigger") {
                     setActiveDropdown("trigger");
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window as any).activeTriggerNode = currentNode;
             }
         } else {
@@ -553,6 +554,7 @@ function SearchEngineInput({
                 setTriggerStartIndex(cursorPosition - 1);
                 setSearchQuery("");
                 setActiveDropdown("trigger");
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window as any).activeTriggerNode = currentNode;
             }
         }
@@ -861,7 +863,8 @@ function SearchEngineInput({
             }
         }
 
-        const targetNode = (window as any).activeTriggerNode;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const targetNode = (window as any).activeTriggerNode as Node;
 
 
         const isStaticType = Object.keys(tokenConfig).includes(option) || option.startsWith("Court:");

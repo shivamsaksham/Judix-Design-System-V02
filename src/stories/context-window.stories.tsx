@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ContextWindow, ContextItem } from "@/components/block/context-window";
 
 const meta = {
@@ -14,10 +14,10 @@ const meta = {
             options: ["auto", "self-managed"],
         },
     },
-} satisfies Meta<typeof ContextWindow>;
+} as Meta<typeof ContextWindow>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ContextWindow>;
 
 const demoItems: ContextItem[] = [
     {

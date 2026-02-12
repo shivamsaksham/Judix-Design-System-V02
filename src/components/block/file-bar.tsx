@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FileTree, FileTreeNodeType, FileItem } from "@/components/block/file-tree";
+import { FileTree, FileTreeNodeType} from "@/components/block/file-tree";
 import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";

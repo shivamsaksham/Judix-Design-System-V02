@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "../ui";
@@ -128,7 +128,17 @@ const FileTreeNode = ({
 
     const getIcon = () => {
         if (node.type === "folder") {
-            return "folder-a" as any;
+            return "folder-a";
+        }
+        switch (node.fileType) {
+            case "chat":
+                return "message-a";
+            case "note":
+                return "note-a";
+            case "archive":
+                return "save-b";
+            default:
+                return "document-a";
         }
         return 'note-a' as any;
     };

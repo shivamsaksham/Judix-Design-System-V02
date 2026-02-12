@@ -33,7 +33,7 @@ const meta: Meta<typeof Dropdown> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Dropdown>;
 
 const DropdownPreview = (args: DropdownProps) => {
   const [value, setValue] = useState<string | null>(args.value ?? null);

@@ -1,16 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Icon } from '@judix/icon'
-import { cn } from '@/lib/utils'
 import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 
 export interface AlertCardProps {

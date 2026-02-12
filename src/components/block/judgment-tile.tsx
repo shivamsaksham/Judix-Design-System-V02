@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";

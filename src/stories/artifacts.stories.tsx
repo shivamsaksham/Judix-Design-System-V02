@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Artifacts } from '@/components/block/artifacts';
 
 const meta = {
@@ -26,10 +26,10 @@ const meta = {
             description: 'Click handler',
         },
     },
-} satisfies Meta<typeof Artifacts>;
+} as Meta<typeof Artifacts>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Artifacts>;
 
 export const CaseLaws: Story = {
     args: {

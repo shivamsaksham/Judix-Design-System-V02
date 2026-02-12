@@ -53,7 +53,7 @@ export default function UserQueryDemo() {
                         <li>Hover over any query to see edit and copy icons</li>
                         <li>Click the edit icon to modify the query</li>
                         <li>Click the copy icon to copy to clipboard (shows toast notification)</li>
-                        <li>Changes are saved when you click "Save"</li>
+                        <li>Changes are saved when you click &quot;Save&quot;</li>
                     </ul>
                 </div>
             </div>

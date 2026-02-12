@@ -21,16 +21,14 @@ export const ResponseActions = ({
     onRefresh,
     onCopy,
     className,
-    isLiked: externalIsLiked,
-    isDisliked: externalIsDisliked,
     contentToCopy,
 }: ResponseActionsProps) => {
     const [internalIsLiked, setInternalIsLiked] = useState(false);
     const [internalIsDisliked, setInternalIsDisliked] = useState(false);
 
     // Use external state if provided, otherwise use internal state
-    const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
-    const isDisliked = externalIsDisliked !== undefined ? externalIsDisliked : internalIsDisliked;
+    // const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
+    // const isDisliked = externalIsDisliked !== undefined ? externalIsDisliked : internalIsDisliked;
 
     const handleLike = () => {
         if (onLike) {
@@ -61,7 +59,7 @@ export const ResponseActions = ({
                 } else {
                     showToast.alert('No content to copy');
                 }
-            } catch (error) {
+            } catch {
                 showToast.alert('Failed to copy');
             }
         }

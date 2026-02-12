@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
@@ -158,7 +158,7 @@ function ShareSearchDialog({
                             onKeyDown={handleKeyDown}
                             trailingAccessory={
                                 <IconButton
-                                    icon="send-b"
+                                    icon="send-a"
                                     size="medium"
                                     variant="primary"
                                     boundary="none"
@@ -206,7 +206,7 @@ function ShareSearchDialog({
                             onChange={(e) => setNote(e.target.value)}
                             leadingIcon={
                                 <Icon
-                                    name="DocumentText1"
+                                    name="document-text-a"
                                     className="h-4 w-4 text-color-text-neutral-secondary"
                                 />
                             }

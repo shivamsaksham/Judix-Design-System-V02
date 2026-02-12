@@ -36,10 +36,10 @@ export const GlobalContextManagement = ({
 
     const hasContext = contextFiles.length > 0;
 
-    const handleContextClick = (title: string) => {
-        setSelectedContext({ title, content: '' });
-        setShowModal(true);
-    };
+    // const handleContextClick = (title: string) => {
+    //     setSelectedContext({ title, content: '' });
+    //     setShowModal(true);
+    // };
 
     const handleAddClick = () => {
         setSelectedContext({ title: '', content: '' });

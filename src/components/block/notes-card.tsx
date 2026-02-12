@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { Editor } from '@tiptap/react';
 import { cn } from "@/lib/utils";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { CardHeader, CardTitle, CardContent } from "../ui/card";
 import { IconButton } from "../ui/icon-button";
 import {
     Popover,
@@ -67,7 +67,7 @@ export function NotesCard({
     title = "Notes",
     children,
     onExpandChange,
-    onMaximize,
+    // onMaximize,
     onOpenInNewTab,
     onSend,
     onShare,
@@ -520,7 +520,7 @@ export function NotesCard({
                                 isExpanded ? "border-color-border-neutral-default" : "border-transparent"
                             )}>
                                 <div className="flex items-center gap-2">
-                                    <Icon name="Note" className="h-4 w-4 text-color-text-neutral-default" />
+                                    <Icon name="note-a" className="h-4 w-4 text-color-text-neutral-default" />
                                     <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                 </div>
                                 <div className="flex items-center gap-1">

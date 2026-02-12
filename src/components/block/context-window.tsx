@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
-import { Icon } from "judix-icon";
 import { IconButton } from "@/components/ui/icon-button";
 import {
     Dialog,

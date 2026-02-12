@@ -64,13 +64,14 @@ export const QueryTrack = ({ queries, type = 'Query track', className, onQueryCl
             }
         };
 
-        if (showLargeBox && dropdownRef.current) {
-            dropdownRef.current.addEventListener('mousemove', handleMouseMove);
+        const currentDropdown = dropdownRef.current;
+        if (showLargeBox && currentDropdown) {
+            currentDropdown.addEventListener('mousemove', handleMouseMove);
         }
 
         return () => {
-            if (dropdownRef.current) {
-                dropdownRef.current.removeEventListener('mousemove', handleMouseMove);
+            if (currentDropdown) {
+                currentDropdown.removeEventListener('mousemove', handleMouseMove);
             }
         };
     }, [showLargeBox, queries]);

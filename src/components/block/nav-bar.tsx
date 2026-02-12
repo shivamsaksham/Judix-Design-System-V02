@@ -247,20 +247,36 @@ export function NavBar({
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="neutral"
-                                    size="small"
-                                    prefixIcon="back-square"
-                                    onClick={onBackToResearch}
-                                    className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg text-color-text-neutral-default gap-2"
-                                >
-                                    Back to research
-                                </Button>
-                                <IconButton
-                                    variant="neutral"
-                                    size="medium"
-                                    onClick={onMoreOptions}
+                    {/* Share and Menu Group */}
+                    <div className="flex items-center gap-3 ">
+                        {/* Back to Research Button */}
+                        {showBackToResearch && (
+                            <Button
+                                onClick={onShareClick}
+                                variant="neutral"
+                                size="small"
+                                prefixIcon="back-square"
+                                className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
+                                iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
+                            >
+                                <span className="p-1 text-style-body-default-regular">Back to Research</span>
+                            </Button>
+                        )}
+
+                        {/* Three Dot Menu */}
+                        {showMenu && (
+                            <IconButton
+                                onClick={onMenuClick}
+                                variant="neutral"
+                                size="medium"
+                                corner='sharp'
+                                className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-[1px] h-fit"
+                            >
+                                <Image
+                                    src="/ellipsis.svg"
+                                    alt="Menu"
+                                    width={20}
+                                    height={20}
                                     aria-label="More options"
                                     className="bg-transparent border-none shadow-none hover:bg-transparent text-color-icon-neutral-secondary"
                                 >

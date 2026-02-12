@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { ResultPanel, ResultPanelProps } from "../components/block/result-panel";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { ResultPanel } from "../components/block/result-panel";
 import { JudgmentTileProps } from "../components/block/judgment-tile";
 import { ActResultTileProps } from "../components/block/act-result-tile";
 

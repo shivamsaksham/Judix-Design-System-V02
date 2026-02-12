@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Content } from '@/components/block/content';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'fullscreen',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Content>;
+} as Meta<typeof Content>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Content>;
 
 const sampleMarkdown = `
 In cases involving domestic violence — especially when strong evidence exists against the accused — the question of whether anticipatory bail can be granted is highly fact-dependent and varies by jurisdiction.

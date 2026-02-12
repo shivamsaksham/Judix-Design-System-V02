@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { JudgmentTile } from "../components/block/judgment-tile";
 
 const meta: Meta<typeof JudgmentTile> = {

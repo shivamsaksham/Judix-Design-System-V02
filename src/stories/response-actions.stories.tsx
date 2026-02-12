@@ -18,7 +18,7 @@ const meta: Meta<typeof ResponseActions> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ResponseActions>;
 
 export const Default: Story = {
     args: {},
