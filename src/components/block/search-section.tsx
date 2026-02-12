@@ -72,7 +72,7 @@ export function SearchSection({
     return (
         <div className={cn("flex flex-col gap-3 pt-4 px-2 pb-2 bg-color-surface-neutral-subtle_bg", className)}>
 
-            <div className="flex justify-start">
+            <div className="flex items-center justify-between">
                 <VersionSelector
                     options={versionOptions}
                     value={version}

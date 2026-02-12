@@ -4,13 +4,6 @@ import { Icon } from 'judix-icon';
 
 const sampleMenuItems: UserMenuProps['items'] = [
     {
-        id: 'zoom',
-        label: 'Zoom',
-        icon: <Icon name="SearchZoomIn" />,
-        badge: '100%',
-        onClick: () => console.log('Zoom clicked'),
-    },
-    {
         id: 'account',
         label: 'My Account',
         icon: <Icon name="ProfileCircle" />,

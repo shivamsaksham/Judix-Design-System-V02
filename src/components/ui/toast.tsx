@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster, ToastBar, resolveValue } from 'react-hot-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -80,13 +80,18 @@ interface CustomToastProps extends VariantProps<typeof toastVariants> {
   title?: string;
   message: string;
   toastId: string;
+  visible?: boolean;
 }
 
-const CustomToast: React.FC<CustomToastProps> = ({ type, title, message }) => {
+const CustomToast: React.FC<CustomToastProps> = ({ type, title, message, visible }) => {
   const Icon = iconMap[type || 'info'];
 
   return (
-    <div className={cn(toastVariants({ type }))}>
+    <div className={cn(
+      toastVariants({ type }),
+      "transition-all duration-500 ease-in-out transform",
+      visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+    )}>
       <Icon className={cn(toastIconVariants({ type }))} />
       <div className="flex-1">
         {title && <p className={cn(toastTextVariants({ type }))}>{title}</p>}
@@ -98,14 +103,14 @@ const CustomToast: React.FC<CustomToastProps> = ({ type, title, message }) => {
 
 export const showToast = {
   alert: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} />, { duration: 4000 }),
+    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
   success: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} />, { duration: 4000 }),
+    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
   notice: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} />, { duration: 4000 }),
+    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
   info: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} />, { duration: 4000 }),
-  promise: (promise: Promise<unknown>, messages: { loading: string; success: string; error: string; }) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  promise: (promise: Promise<any>, messages: { loading: string; success: string; error: string; }) =>
     toast.promise(promise, messages),
 };
 
@@ -124,7 +129,14 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
     >
       {(t) => {
         if (t.type === 'custom') {
-          return <>{t.message}</>;
+          return (
+            <div className={cn(
+              "transition-all duration-500 ease-in-out transform",
+              t.visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+            )}>
+              {resolveValue(t.message, t)}
+            </div>
+          );
         }
 
         const getIcon = () => {
@@ -137,6 +149,8 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
         return (
           <div className={cn(
             "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
+            "transition-all duration-500 ease-in-out transform",
+            t.visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
             t.type === 'success' && "bg-toast-color-success-bg border-toast-color-success-stroke",
             t.type === 'error' && "bg-toast-color-alert-bg border-toast-color-error-stroke",
             t.type === 'loading' && "bg-toast-color-error-bg border-toast-color-error-stroke",

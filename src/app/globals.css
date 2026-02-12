@@ -4,8 +4,7 @@
 /* Un comment when dark mode is implemented */
 /* @custom-variant dark (&:is(.dark *)); */
 
-@layer base {
-}
+@layer base {}
 
 @theme {
   /* -------------------Primitives---------------------- */
@@ -98,6 +97,7 @@
   --primitives-font-height-400: 24px;
   --primitives-font-height-500: 27px;
   --primitives-font-height-600: 30px;
+  --primitives-font-weight-light: 300;
   --primitives-font-weight-regular: 400;
   --primitives-font-weight-medium: 500;
   --primitives-font-weight-semibold: 600;
@@ -124,232 +124,100 @@
   --color-color-bg-subtle: var(--primitives-color-base-000);
   --color-color-bg-muted: var(--primitives-color-neutral-light-200);
 
-  --color-color-surface-feedback-error-subtle: var(
-    --primitives-color-semantic-red-000
-  );
-  --color-color-surface-feedback-warning-subtle: var(
-    --primitives-color-semantic-orange-000
-  );
-  --color-color-surface-feedback-info-subtle: var(
-    --primitives-color-semantic-blue-000
-  );
-  --color-color-surface-feedback-info-default: var(
-    --primitives-color-semantic-blue-400
-  );
-  --color-color-surface-feedback-info-hover: var(
-    --primitives-color-semantic-blue-500
-  );
-  --color-color-border-neutral-default: var(
-    --primitives-color-neutral-light-300
-  );
-  --color-color-surface-feedback-info-disabled: var(
-    --primitives-color-semantic-blue-200
-  );
-  --color-color-surface-neutral-default: var(
-    --primitives-color-neutral-light-100
-  );
+  --color-color-surface-feedback-error-subtle: var(--primitives-color-semantic-red-000);
+  --color-color-surface-feedback-warning-subtle: var(--primitives-color-semantic-orange-000);
+  --color-color-surface-feedback-info-subtle: var(--primitives-color-semantic-blue-000);
+  --color-color-surface-feedback-info-default: var(--primitives-color-semantic-blue-400);
+  --color-color-surface-feedback-info-hover: var(--primitives-color-semantic-blue-500);
+  --color-color-border-neutral-default: var(--primitives-color-neutral-light-300);
+  --color-color-surface-feedback-info-disabled: var(--primitives-color-semantic-blue-200);
+  --color-color-surface-neutral-default: var(--primitives-color-neutral-light-100);
   --color-color-surface-neutral-subtle_bg: var(--primitives-color-base-000);
-  --color-color-surface-neutral-hover_default: var(
-    --primitives-color-neutral-light-200
-  );
-  --color-color-surface-neutral-hover_mild: var(
-    --primitives-color-neutral-light-300
-  );
-  --color-color-surface-neutral-hover_strong: var(
-    --primitives-color-neutral-contrast-700
-  );
-  --color-color-surface-neutral-disabled: var(
-    --primitives-color-neutral-light-200
-  );
+  --color-color-surface-neutral-hover_default: var(--primitives-color-neutral-light-200);
+  --color-color-surface-neutral-hover_mild: var(--primitives-color-neutral-light-300);
+  --color-color-surface-neutral-hover_strong: var(--primitives-color-neutral-contrast-700);
+  --color-color-surface-neutral-disabled: var(--primitives-color-neutral-light-200);
   --color-color-surface-primary-default: var(--primitives-color-primary-400);
 
   --color-color-surface-primary-subtle_bg: var(--primitives-color-primary--100);
-  --color-color-surface-primary-hover_default: var(
-    --primitives-color-primary--100
-  );
+  --color-color-surface-primary-hover_default: var(--primitives-color-primary--100);
   --color-color-surface-primary-hover_mild: var(--primitives-color-primary-000);
 
-  --color-color-surface-primary-hover_strong: var(
-    --primitives-color-primary-500
-  );
+  --color-color-surface-primary-hover_strong: var(--primitives-color-primary-500);
   --color-color-surface-primary-disabled: var(--primitives-color-primary-100);
   --color-color-border-neutral-mid: var(--primitives-color-neutral-mid-400);
   --color-color-border-primary-default: var(--primitives-color-primary-200);
-  --color-color-surface-feedback-warning-default: var(
-    --primitives-color-semantic-orange-400
-  );
+  --color-color-surface-feedback-warning-default: var(--primitives-color-semantic-orange-400);
   --color-color-border-neutral-strong: var(--primitives-color-neutral-mid-600);
-  --color-color-surface-feedback-warning-hover: var(
-    --primitives-color-semantic-orange-500
-  );
+  --color-color-surface-feedback-warning-hover: var(--primitives-color-semantic-orange-500);
   --color-color-border-primary-strong: var(--primitives-color-primary-400);
-  --color-color-surface-feedback-warning-disabled: var(
-    --primitives-color-semantic-orange-200
-  );
-  --color-color-border-feedback-success-default: var(
-    --primitives-color-semantic-green-200
-  );
-  --color-color-border-feedback-info-default: var(
-    --primitives-color-semantic-blue-200
-  );
-  --color-color-surface-feedback-error-default: var(
-    --primitives-color-semantic-red-400
-  );
-  --color-color-border-feedback-success-strong: var(
-    --primitives-color-semantic-green-400
-  );
-  --color-color-surface-feedback-error-hover: var(
-    --primitives-color-semantic-red-500
-  );
-  --color-color-surface-feedback-error-disabled: var(
-    --primitives-color-semantic-red-200
-  );
-  --color-color-surface-feedback-success-subtle: var(
-    --primitives-color-semantic-green-000
-  );
-  --color-color-surface-feedback-success-default: var(
-    --primitives-color-semantic-green-400
-  );
-  --color-color-surface-feedback-success-hover: var(
-    --primitives-color-semantic-green-500
-  );
-  --color-color-surface-feedback-success-disabled: var(
-    --primitives-color-semantic-green-200
-  );
+  --color-color-surface-feedback-warning-disabled: var(--primitives-color-semantic-orange-200);
+  --color-color-border-feedback-success-default: var(--primitives-color-semantic-green-200);
+  --color-color-border-feedback-info-default: var(--primitives-color-semantic-blue-200);
+  --color-color-surface-feedback-error-default: var(--primitives-color-semantic-red-400);
+  --color-color-border-feedback-success-strong: var(--primitives-color-semantic-green-400);
+  --color-color-surface-feedback-error-hover: var(--primitives-color-semantic-red-500);
+  --color-color-surface-feedback-error-disabled: var(--primitives-color-semantic-red-200);
+  --color-color-surface-feedback-success-subtle: var(--primitives-color-semantic-green-000);
+  --color-color-surface-feedback-success-default: var(--primitives-color-semantic-green-400);
+  --color-color-surface-feedback-success-hover: var(--primitives-color-semantic-green-500);
+  --color-color-surface-feedback-success-disabled: var(--primitives-color-semantic-green-200);
   --color-color-overlay-mild: #e0e0e080;
   --color-color-overlay-strong: #b8b8b880;
-  --color-color-text-neutral-default: var(
-    --primitives-color-neutral-contrast-800
-  );
-  --color-color-text-neutral-secondary: var(
-    --primitives-color-neutral-contrast-700
-  );
+  --color-color-text-neutral-default: var(--primitives-color-neutral-contrast-800);
+  --color-color-text-neutral-secondary: var(--primitives-color-neutral-contrast-700);
   --color-color-text-neutral-tertiary: var(--primitives-color-neutral-mid-600);
-  --color-color-text-neutral-emphasis: var(
-    --primitives-color-neutral-contrast-900
-  );
-  --color-color-text-neutral-placeholder: var(
-    --primitives-color-neutral-mid-500
-  );
+  --color-color-text-neutral-emphasis: var(--primitives-color-neutral-contrast-900);
+  --color-color-text-neutral-placeholder: var(--primitives-color-neutral-mid-500);
   --color-color-text-neutral-disabled: var(--primitives-color-neutral-mid-400);
-  --color-color-text-neutral-onneutral: var(
-    --primitives-color-neutral-light-100
-  );
+  --color-color-text-neutral-onneutral: var(--primitives-color-neutral-light-100);
   --color-color-text-primary-default: var(--primitives-color-primary-400);
   --color-color-text-primary-secondary: var(--primitives-color-primary-300);
   --color-color-text-primary-tertiary: var(--primitives-color-primary-200);
   --color-color-text-primary-emphasis: var(--primitives-color-primary-500);
   --color-color-text-primary-placeholder: var(--primitives-color-primary-200);
   --color-color-text-primary-disabled: var(--primitives-color-primary-100);
-  --color-color-text-primary-onprimary: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-text-feedback-success-default: var(
-    --primitives-color-semantic-green-400
-  );
-  --color-color-text-feedback-success-muted: var(
-    --primitives-color-semantic-green-300
-  );
-  --color-color-text-feedback-success-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-text-feedback-warning-default: var(
-    --primitives-color-semantic-orange-400
-  );
-  --color-color-text-feedback-warning-muted: var(
-    --primitives-color-semantic-orange-300
-  );
-  --color-color-text-feedback-warning-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-text-feedback-error-default: var(
-    --primitives-color-semantic-red-400
-  );
-  --color-color-text-feedback-error-muted: var(
-    --primitives-color-semantic-red-300
-  );
-  --color-color-text-feedback-error-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-text-feedback-info-default: var(
-    --primitives-color-semantic-blue-400
-  );
-  --color-color-text-feedback-info-muted: var(
-    --primitives-color-semantic-blue-300
-  );
-  --color-color-text-feedback-info-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
+  --color-color-text-primary-onprimary: var(--primitives-color-neutral-light-100);
+  --color-color-text-feedback-success-default: var(--primitives-color-semantic-green-400);
+  --color-color-text-feedback-success-muted: var(--primitives-color-semantic-green-300);
+  --color-color-text-feedback-success-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-text-feedback-warning-default: var(--primitives-color-semantic-orange-400);
+  --color-color-text-feedback-warning-muted: var(--primitives-color-semantic-orange-300);
+  --color-color-text-feedback-warning-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-text-feedback-error-default: var(--primitives-color-semantic-red-400);
+  --color-color-text-feedback-error-muted: var(--primitives-color-semantic-red-300);
+  --color-color-text-feedback-error-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-text-feedback-info-default: var(--primitives-color-semantic-blue-400);
+  --color-color-text-feedback-info-muted: var(--primitives-color-semantic-blue-300);
+  --color-color-text-feedback-info-ondefault: var(--primitives-color-neutral-light-100);
 
   --color-color-icon-primary-default: var(--primitives-color-primary-400);
   --color-color-icon-primary-secondary: var(--primitives-color-primary-300);
   --color-color-icon-primary-emphasis: var(--primitives-color-primary-500);
   --color-color-icon-primary-disabled: var(--primitives-color-primary-100);
-  --color-color-icon-primary-onprimary: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-icon-neutral-default: var(
-    --primitives-color-neutral-contrast-800
-  );
-  --color-color-icon-neutral-secondary: var(
-    --primitives-color-neutral-contrast-700
-  );
+  --color-color-icon-primary-onprimary: var(--primitives-color-neutral-light-100);
+  --color-color-icon-neutral-default: var(--primitives-color-neutral-contrast-800);
+  --color-color-icon-neutral-secondary: var(--primitives-color-neutral-contrast-700);
   --color-color-icon-neutral-tertiary: var(--primitives-color-neutral-mid-600);
   --color-color-icon-neutral-disabled: var(--primitives-color-neutral-mid-400);
-  --color-color-icon-neutral-onneutral: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-border-feedback-error-default: var(
-    --primitives-color-semantic-red-200
-  );
-  --color-color-icon-feedback-success-default: var(
-    --primitives-color-semantic-green-400
-  );
-  --color-color-border-feedback-error-strong: var(
-    --primitives-color-semantic-red-400
-  );
-  --color-color-border-feedback-warning-default: var(
-    --primitives-color-semantic-orange-200
-  );
-  --color-color-icon-feedback-success-muted: var(
-    --primitives-color-semantic-green-300
-  );
-  --color-color-border-feedback-warning-strong: var(
-    --primitives-color-semantic-orange-400
-  );
-  --color-color-icon-feedback-success-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-icon-feedback-warning-default: var(
-    --primitives-color-semantic-orange-400
-  );
-  --color-color-icon-feedback-warning-muted: var(
-    --primitives-color-semantic-orange-300
-  );
-  --color-color-border-feedback-info-strong: var(
-    --primitives-color-semantic-blue-400
-  );
-  --color-color-icon-feedback-warning-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-icon-feedback-error-default: var(
-    --primitives-color-semantic-red-400
-  );
-  --color-color-icon-feedback-error-muted: var(
-    --primitives-color-semantic-red-300
-  );
-  --color-color-icon-feedback-error-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
-  --color-color-icon-feedback-info-default: var(
-    --primitives-color-semantic-blue-400
-  );
-  --color-color-icon-feedback-info-muted: var(
-    --primitives-color-semantic-blue-300
-  );
-  --color-color-icon-feedback-info-ondefault: var(
-    --primitives-color-neutral-light-100
-  );
+  --color-color-icon-neutral-onneutral: var(--primitives-color-neutral-light-100);
+  --color-color-border-feedback-error-default: var(--primitives-color-semantic-red-200);
+  --color-color-icon-feedback-success-default: var(--primitives-color-semantic-green-400);
+  --color-color-border-feedback-error-strong: var(--primitives-color-semantic-red-400);
+  --color-color-border-feedback-warning-default: var(--primitives-color-semantic-orange-200);
+  --color-color-icon-feedback-success-muted: var(--primitives-color-semantic-green-300);
+  --color-color-border-feedback-warning-strong: var(--primitives-color-semantic-orange-400);
+  --color-color-icon-feedback-success-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-icon-feedback-warning-default: var(--primitives-color-semantic-orange-400);
+  --color-color-icon-feedback-warning-muted: var(--primitives-color-semantic-orange-300);
+  --color-color-border-feedback-info-strong: var(--primitives-color-semantic-blue-400);
+  --color-color-icon-feedback-warning-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-icon-feedback-error-default: var(--primitives-color-semantic-red-400);
+  --color-color-icon-feedback-error-muted: var(--primitives-color-semantic-red-300);
+  --color-color-icon-feedback-error-ondefault: var(--primitives-color-neutral-light-100);
+  --color-color-icon-feedback-info-default: var(--primitives-color-semantic-blue-400);
+  --color-color-icon-feedback-info-muted: var(--primitives-color-semantic-blue-300);
+  --color-color-icon-feedback-info-ondefault: var(--primitives-color-neutral-light-100);
 
   /* Fonts */
   --font-family-brandprimary: var(--primitives-font-family-poppins);
@@ -371,6 +239,7 @@
   --font-size-heading-sm: var(--primitives-font-size-500);
   --font-size-heading-xs: var(--primitives-font-size-400);
 
+  --font-weight-light: var(--primitives-font-weight-light);
   --font-weight-regular: var(--primitives-font-weight-regular);
   --font-weight-medium: var(--primitives-font-weight-medium);
   --font-weight-semibold: var(--primitives-font-weight-semibold);
@@ -411,167 +280,71 @@
 
   /* ----------------------Tertiary (UI Elements)---------------------------- */
   /* Buttons */
-  --color-button-color-primary-default-bg: var(
-    --color-color-surface-primary-default
-  );
-  --color-button-color-primary-default-stroke: var(
-    --color-color-border-primary-default
-  );
-  --color-button-color-primary-default-text: var(
-    --color-color-text-primary-onprimary
-  );
-  --color-button-color-primary-default-icon: var(
-    --color-color-icon-primary-onprimary
-  );
-  --color-button-color-primary-hover-bg: var(
-    --color-color-surface-primary-hover_strong
-  );
-  --color-button-color-primary-hover-stroke: var(
-    --color-color-border-primary-default
-  );
-  --color-button-color-primary-hover-text: var(
-    --color-color-text-primary-onprimary
-  );
-  --color-button-color-primary-hover-icon: var(
-    --color-color-icon-primary-onprimary
-  );
-  --color-button-color-primary-disabled-bg: var(
-    --color-color-surface-primary-disabled
-  );
-  --color-button-color-primary-disabled-stroke: var(
-    --color-color-border-primary-default
-  );
-  --color-button-color-primary-disabled-text: var(
-    --color-color-text-primary-onprimary
-  );
-  --color-button-color-primary-disabled-icon: var(
-    --color-color-icon-primary-onprimary
-  );
-  --color-button-color-neutral-default-bg: var(
-    --color-color-surface-neutral-subtle_bg
-  );
-  --color-button-color-neutral-default-stroke: var(
-    --color-color-border-neutral-default
-  );
-  --color-button-color-neutral-default-text: var(
-    --color-color-text-neutral-default
-  );
-  --color-button-color-neutral-default-icon: var(
-    --color-color-icon-neutral-default
-  );
-  --color-button-color-neutral-hover-bg: var(
-    --color-color-surface-neutral-hover_default
-  );
-  --color-button-color-neutral-hover-stroke: var(
-    --color-color-border-neutral-default
-  );
-  --color-button-color-neutral-hover-text: var(
-    --color-color-text-neutral-default
-  );
-  --color-button-color-neutral-hover-icon: var(
-    --color-color-icon-neutral-default
-  );
-  --color-button-color-neutral-disabled-bg: var(
-    --color-color-surface-neutral-subtle_bg
-  );
-  --color-button-color-neutral-disabled-stroke: var(
-    --color-color-border-neutral-default
-  );
-  --color-button-color-neutral-disabled-text: var(
-    --color-color-text-neutral-disabled
-  );
-  --color-button-color-neutral-disabled-icon: var(
-    --color-color-icon-neutral-disabled
-  );
-  --color-button-color-error-default-bg: var(
-    --color-color-surface-feedback-error-default
-  );
+  --color-button-color-primary-default-bg: var(--color-color-surface-primary-default);
+  --color-button-color-primary-default-stroke: var(--color-color-border-primary-default);
+  --color-button-color-primary-default-text: var(--color-color-text-primary-onprimary);
+  --color-button-color-primary-default-icon: var(--color-color-icon-primary-onprimary);
+  --color-button-color-primary-hover-bg: var(--color-color-surface-primary-hover_strong);
+  --color-button-color-primary-hover-stroke: var(--color-color-border-primary-default);
+  --color-button-color-primary-hover-text: var(--color-color-text-primary-onprimary);
+  --color-button-color-primary-hover-icon: var(--color-color-icon-primary-onprimary);
+  --color-button-color-primary-disabled-bg: var(--color-color-surface-primary-disabled);
+  --color-button-color-primary-disabled-stroke: var(--color-color-border-primary-default);
+  --color-button-color-primary-disabled-text: var(--color-color-text-primary-onprimary);
+  --color-button-color-primary-disabled-icon: var(--color-color-icon-primary-onprimary);
+  --color-button-color-neutral-default-bg: var(--color-color-surface-neutral-subtle_bg);
+  --color-button-color-neutral-default-stroke: var(--color-color-border-neutral-default);
+  --color-button-color-neutral-default-text: var(--color-color-text-neutral-default);
+  --color-button-color-neutral-default-icon: var(--color-color-icon-neutral-default);
+  --color-button-color-neutral-hover-bg: var(--color-color-surface-neutral-hover_default);
+  --color-button-color-neutral-hover-stroke: var(--color-color-border-neutral-default);
+  --color-button-color-neutral-hover-text: var(--color-color-text-neutral-default);
+  --color-button-color-neutral-hover-icon: var(--color-color-icon-neutral-default);
+  --color-button-color-neutral-disabled-bg: var(--color-color-surface-neutral-subtle_bg);
+  --color-button-color-neutral-disabled-stroke: var(--color-color-border-neutral-default);
+  --color-button-color-neutral-disabled-text: var(--color-color-text-neutral-disabled);
+  --color-button-color-neutral-disabled-icon: var(--color-color-icon-neutral-disabled);
+  --color-button-color-error-default-bg: var(--color-color-surface-feedback-error-default);
 
-  --color-button-color-error-default-stroke: var(
-    --color-color-border-feedback-error-default
-  );
-  --color-button-color-error-default-text: var(
-    --color-color-text-feedback-error-ondefault
-  );
-  --color-button-color-error-default-icon: var(
-    --color-color-icon-feedback-error-ondefault
-  );
-  --color-button-color-error-hover-bg: var(
-    --color-color-surface-feedback-error-hover
-  );
-  --color-button-color-error-hover-stroke: var(
-    --color-color-border-feedback-error-default
-  );
-  --color-button-color-error-hover-text: var(
-    --color-color-text-feedback-error-ondefault
-  );
-  --color-button-color-error-hover-icon: var(
-    --color-color-icon-feedback-error-ondefault
-  );
-  --color-button-color-error-disabled-bg: var(
-    --color-color-surface-feedback-error-disabled
-  );
-  --color-button-color-error-disabled-stroke: var(
-    --color-color-border-feedback-error-default
-  );
-  --color-button-color-error-disabled-text: var(
-    --color-color-text-feedback-error-ondefault
-  );
-  --color-button-color-error-disabled-icon: var(
-    --color-color-icon-feedback-error-ondefault
-  );
+  --color-button-color-error-default-stroke: var(--color-color-border-feedback-error-default);
+  --color-button-color-error-default-text: var(--color-color-text-feedback-error-ondefault);
+  --color-button-color-error-default-icon: var(--color-color-icon-feedback-error-ondefault);
+  --color-button-color-error-hover-bg: var(--color-color-surface-feedback-error-hover);
+  --color-button-color-error-hover-stroke: var(--color-color-border-feedback-error-default);
+  --color-button-color-error-hover-text: var(--color-color-text-feedback-error-ondefault);
+  --color-button-color-error-hover-icon: var(--color-color-icon-feedback-error-ondefault);
+  --color-button-color-error-disabled-bg: var(--color-color-surface-feedback-error-disabled);
+  --color-button-color-error-disabled-stroke: var(--color-color-border-feedback-error-default);
+  --color-button-color-error-disabled-text: var(--color-color-text-feedback-error-ondefault);
+  --color-button-color-error-disabled-icon: var(--color-color-icon-feedback-error-ondefault);
   /* Button Border Radius */
-  --radius-button-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-button-border-radius-default: var(--border-radius-InteractiveElements);
   /* Button Border Weight - Un-tokenized : should be used directly as class `button-border-weight-default`  */
   --button-border-weight-default: var(--border-weight-default);
 
   /* label */
   --color-label-color-neutral-bg: var(--color-color-surface-neutral-default);
-  --color-label-color-neutral-hover: var(
-    --color-color-surface-neutral-hover_default
-  );
-  --color-label-color-neutral-selected: var(
-    --color-color-surface-neutral-hover_default
-  );
+  --color-label-color-neutral-hover: var(--color-color-surface-neutral-hover_default);
+  --color-label-color-neutral-selected: var(--color-color-surface-neutral-hover_default);
   --color-label-color-neutral-stroke: var(--color-color-border-neutral-default);
   --color-label-color-neutral-text: var(--color-color-text-neutral-default);
-  --color-label-color-neutral-selectedtext: var(
-    --color-color-text-neutral-default
-  );
+  --color-label-color-neutral-selectedtext: var(--color-color-text-neutral-default);
   --color-label-color-primary-bg: var(--color-color-surface-neutral-default);
-  --color-label-color-primary-hover: var(
-    --color-color-surface-primary-hover_default
-  );
-  --color-label-color-primary-selected: var(
-    --color-color-surface-primary-hover_default
-  );
+  --color-label-color-primary-hover: var(--color-color-surface-primary-hover_default);
+  --color-label-color-primary-selected: var(--color-color-surface-primary-hover_default);
   --color-label-color-primary-stroke: var(--color-color-border-primary-default);
   --color-label-color-primary-text: var(--color-color-text-primary-default);
-  --color-label-color-primary-selectedtext: var(
-    --color-color-text-primary-default
-  );
+  --color-label-color-primary-selectedtext: var(--color-color-text-primary-default);
   /* label Border Radius */
-  --radius-label-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-label-border-radius-default: var(--border-radius-InteractiveElements);
   /* label Border Weight - Un-tokenized : should be used directly as class `label-border-weight-default`  */
   --label-border-weight-default: var(--border-weight-default);
 
   /* Number Badges */
-  --color-number_badges-color-neutral-bg: var(
-    --color-color-surface-neutral-hover_mild
-  );
-  --color-number_badges-color-neutral-text: var(
-    --color-color-text-neutral-default
-  );
-  --color-number_badges-color-primary-bg: var(
-    --color-color-surface-primary-hover_mild
-  );
-  --color-number_badges-color-primary-text: var(
-    --color-color-text-primary-default
-  );
+  --color-number_badges-color-neutral-bg: var(--color-color-surface-neutral-hover_mild);
+  --color-number_badges-color-neutral-text: var(--color-color-text-neutral-default);
+  --color-number_badges-color-primary-bg: var(--color-color-surface-primary-hover_mild);
+  --color-number_badges-color-primary-text: var(--color-color-text-primary-default);
   /* Number Badges Border Radius */
   --radius-number_badges-border-radius-small: var(--border-radius-small);
   --radius-number_badges-border-radius-round: var(--border-radius-round);
@@ -580,15 +353,11 @@
 
   /* Toasts */
   --color-toast-color-error-text: var(--color-color-text-neutral-default);
-  --color-toast-color-error-icon: var(
-    --color-color-icon-feedback-error-default
-  );
+  --color-toast-color-error-icon: var(--color-color-icon-feedback-error-default);
   --color-toast-color-error-bg: var(--color-color-surface-neutral-subtle_bg);
   --color-toast-color-error-stroke: var(--color-color-border-neutral-default);
   --color-toast-color-warning-text: var(--color-color-text-neutral-default);
-  --color-toast-color-warning-icon: var(
-    --color-color-icon-feedback-warning-default
-  );
+  --color-toast-color-warning-icon: var(--color-color-icon-feedback-warning-default);
   --color-toast-color-warning-bg: var(--color-color-surface-neutral-subtle_bg);
   --color-toast-color-warning-stroke: var(--color-color-border-neutral-default);
   --color-toast-color-info-text: var(--color-color-text-neutral-default);
@@ -596,129 +365,59 @@
   --color-toast-color-info-bg: var(--color-color-surface-neutral-subtle_bg);
   --color-toast-color-info-stroke: var(--color-color-border-neutral-default);
   --color-toast-color-success-text: var(--color-color-text-neutral-default);
-  --color-toast-color-success-icon: var(
-    --color-color-icon-feedback-success-default
-  );
+  --color-toast-color-success-icon: var(--color-color-icon-feedback-success-default);
   --color-toast-color-success-bg: var(--color-color-surface-neutral-subtle_bg);
   --color-toast-color-success-stroke: var(--color-color-border-neutral-default);
   /* Toast Border Radius */
-  --radius-toast-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-toast-border-radius-default: var(--border-radius-InteractiveElements);
   /* Toast Border Weight - Un-tokenized : should be used directly as class `toast-border-weight-default`  */
   --toast-border-weight-default: var(--border-weight-default);
 
   /* Toggles */
-  --color-toggle-color-neutral-default: var(
-    --color-color-surface-neutral-hover_mild
-  );
-  --color-toggle-color-neutral-selected: var(
-    --color-color-surface-neutral-hover_strong
-  );
-  --color-toggle-color-primary-default: var(
-    --color-color-surface-neutral-hover_mild
-  );
-  --color-toggle-color-primary-selected: var(
-    --color-color-surface-primary-default
-  );
+  --color-toggle-color-neutral-default: var(--color-color-surface-neutral-hover_mild);
+  --color-toggle-color-neutral-selected: var(--color-color-surface-neutral-hover_strong);
+  --color-toggle-color-primary-default: var(--color-color-surface-neutral-hover_mild);
+  --color-toggle-color-primary-selected: var(--color-color-surface-primary-default);
 
   /* Checkboxes */
-  --color-checkbox-color-neutral-default: var(
-    --color-color-border-neutral-default
-  );
-  --color-checkbox-color-neutral-hover: var(
-    --color-color-border-neutral-strong
-  );
-  --color-checkbox-color-neutral-selected: var(
-    --color-color-surface-neutral-hover_strong
-  );
-  --color-checkbox-color-neutral-disabled: var(
-    --color-color-surface-neutral-disabled
-  );
-  --color-checkbox-color-neutral-tick: var(
-    --color-color-icon-neutral-onneutral
-  );
-  --color-checkbox-color-primary-default: var(
-    --color-color-border-neutral-default
-  );
-  --color-checkbox-color-primary-hover: var(
-    --color-color-border-primary-default
-  );
-  --color-checkbox-color-primary-selected: var(
-    --color-color-surface-primary-default
-  );
-  --color-checkbox-color-primary-disabled: var(
-    --color-color-surface-primary-disabled
-  );
-  --color-checkbox-color-primary-tick: var(
-    --color-color-icon-neutral-onneutral
-  );
+  --color-checkbox-color-neutral-default: var(--color-color-border-neutral-default);
+  --color-checkbox-color-neutral-hover: var(--color-color-border-neutral-strong);
+  --color-checkbox-color-neutral-selected: var(--color-color-surface-neutral-hover_strong);
+  --color-checkbox-color-neutral-disabled: var(--color-color-surface-neutral-disabled);
+  --color-checkbox-color-neutral-tick: var(--color-color-icon-neutral-onneutral);
+  --color-checkbox-color-primary-default: var(--color-color-border-neutral-default);
+  --color-checkbox-color-primary-hover: var(--color-color-border-primary-default);
+  --color-checkbox-color-primary-selected: var(--color-color-surface-primary-default);
+  --color-checkbox-color-primary-disabled: var(--color-color-surface-primary-disabled);
+  --color-checkbox-color-primary-tick: var(--color-color-icon-neutral-onneutral);
   /* Checkbox Border Radius */
   --radius-checkbox-border-radius-default: var(--border-radius-small);
   /* Checkbox Border Weight - Un-tokenized : should be used directly as class `checkbox-border-weight-default`  */
   --checkbox-border-weight-default: var(--border-weight-default);
 
   /* Radio Buttons */
-  --color-radio_button-color-neutral-default: var(
-    --color-color-border-neutral-default
-  );
-  --color-radio_button-color-neutral-hover: var(
-    --color-color-border-neutral-mid
-  );
-  --color-radio_button-color-neutral-selected: var(
-    --color-color-surface-neutral-hover_strong
-  );
-  --color-radio_button-color-neutral-disabled: var(
-    --color-color-color-surface-neutral-hover-mild
-  );
-  --color-radio_button-color-primary-default: var(
-    --color-color-border-neutral-default
-  );
-  --color-radio_button-color-primary-hover: var(
-    --color-color-border-primary-default
-  );
-  --color-radio_button-color-primary-selected: var(
-    --color-color-surface-primary-default
-  );
-  --color-radio_button-color-primary-disabled: var(
-    --color-color-surface-neutral-hover_mild
-  );
+  --color-radio_button-color-neutral-default: var(--color-color-border-neutral-default);
+  --color-radio_button-color-neutral-hover: var(--color-color-border-neutral-mid);
+  --color-radio_button-color-neutral-selected: var(--color-color-surface-neutral-hover_strong);
+  --color-radio_button-color-neutral-disabled: var(--color-color-color-surface-neutral-hover-mild);
+  --color-radio_button-color-primary-default: var(--color-color-border-neutral-default);
+  --color-radio_button-color-primary-hover: var(--color-color-border-primary-default);
+  --color-radio_button-color-primary-selected: var(--color-color-surface-primary-default);
+  --color-radio_button-color-primary-disabled: var(--color-color-surface-neutral-hover_mild);
 
   /* Icon Buttons */
-  --color-icon_button-color-neutral-bg: var(
-    --color-color-surface-neutral-default
-  );
-  --color-icon_button-color-neutral-hover: var(
-    --color-color-surface-neutral-hover_default
-  );
-  --color-icon_button-color-neutral-stroke: var(
-    --color-color-border-neutral-default
-  );
-  --color-icon_button-color-neutral-disabled: var(
-    --color-color-icon-neutral-disabled
-  );
-  --color-icon_button-color-neutral-icon: var(
-    --color-color-icon-neutral-default
-  );
-  --color-icon_button-color-primary-bg: var(
-    --color-color-surface-neutral-default
-  );
-  --color-icon_button-color-primary-hover: var(
-    --color-color-surface-primary-hover_default
-  );
-  --color-icon_button-color-primary-stroke: var(
-    --color-color-border-neutral-default
-  );
-  --color-icon_button-color-primary-icon: var(
-    --color-color-icon-primary-default
-  );
-  --color-icon_button-color-primary-disabled: var(
-    --color-color-icon-primary-disabled
-  );
+  --color-icon_button-color-neutral-bg: var(--color-color-surface-neutral-default);
+  --color-icon_button-color-neutral-hover: var(--color-color-surface-neutral-hover_default);
+  --color-icon_button-color-neutral-stroke: var(--color-color-border-neutral-default);
+  --color-icon_button-color-neutral-disabled: var(--color-color-icon-neutral-disabled);
+  --color-icon_button-color-neutral-icon: var(--color-color-icon-neutral-default);
+  --color-icon_button-color-primary-bg: var(--color-color-surface-neutral-default);
+  --color-icon_button-color-primary-hover: var(--color-color-surface-primary-hover_default);
+  --color-icon_button-color-primary-stroke: var(--color-color-border-neutral-default);
+  --color-icon_button-color-primary-icon: var(--color-color-icon-primary-default);
+  --color-icon_button-color-primary-disabled: var(--color-color-icon-primary-disabled);
   /* Icon Button Border Radius */
-  --radius-icon_button-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-icon_button-border-radius-default: var(--border-radius-InteractiveElements);
   --radius-icon_button-border-radius-round: var(--border-radius-round);
   --radius-icon_button-border-radius-sharp: var(--border-radius-sharp);
   /* Icon Button Border Weight - Un-tokenized : should be used directly as class `icon_button-border-weight-default`  */
@@ -728,14 +427,10 @@
   --color-calendar-color-text-date: var(--color-color-text-neutral-default);
   --color-calendar-color-text-month: var(--color-color-text-neutral-default);
   --color-calendar-color-text-day: var(--color-color-text-neutral-tertiary);
-  --color-calendar-color-text-selected_date: var(
-    --color-color-text-neutral-onneutral
-  );
+  --color-calendar-color-text-selected_date: var(--color-color-text-neutral-onneutral);
   --color-calendar-color-bg: var(--color-color-surface-neutral-default);
   --color-calendar-color-navigation: var(--color-color-icon-neutral-default);
-  --color-calendar-color-hover: var(
-    --color-color-surface-primary-hover_default
-  );
+  --color-calendar-color-hover: var(--color-color-surface-primary-hover_default);
   --color-calendar-color-selected: var(--color-color-surface-primary-default);
   --color-calendar-color-card_stroke: var(--color-color-border-neutral-default);
   /* Calendar Border Radius */
@@ -743,14 +438,12 @@
   /* Calendar Border Weight - Un-tokenized : should be used directly as class `calendar-border-weight-default`  */
   --calendar-border-weight-default: var(--border-weight-default);
   /* Tooltip classes */
-   --radius-tooltip-border-radius-default: var(--border-radius-sharp);
+  --radius-tooltip-border-radius-default: var(--border-radius-sharp);
   /* Pagination */
   --color-pagination-color-bg: var(--color-color-surface-neutral-default);
   --color-pagination-color-text: var(--color-color-icon-neutral-default);
   --color-pagination-color-stroke: var(--color-color-border-neutral-default);
-  --color-pagination-color-selected: var(
-    --color-color-surface-neutral-hover_default
-  );
+  --color-pagination-color-selected: var(--color-color-surface-neutral-hover_default);
   /* Pagination Border Radius */
   --radius-pagination-border-radius-default: var(--border-radius-round);
   /* Pagination Border Weight - Un-tokenized : should be used directly as class `pagination-border-weight-default`  */
@@ -764,9 +457,7 @@
   --color-option-color-subtext: var(--color-color-icon-neutral-tertiary);
   --color-option-color-selected: var(--color-color-surface-primary-subtle_bg);
   /* Options Radius */
-  --radius-option-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-option-border-radius-default: var(--border-radius-InteractiveElements);
   /* Options Border Weight - Un-tokenized : should be used directly as class `option-border-weight-default`  */
   --option-border-weight-default: var(--border-weight-none);
 
@@ -774,25 +465,17 @@
   --color-dropdown-color-bg: var(--color-color-surface-neutral-default);
   --color-dropdown-color-stroke: var(--color-color-border-neutral-default);
   /* Dropdowns Border Radius */
-  --radius-dropdown-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-dropdown-border-radius-default: var(--border-radius-InteractiveElements);
   /* Dropdowns Border Weight - Un-tokenized : should be used directly as class `dropdown-border-weight-default`  */
   --dropdown-border-weight-default: var(--border-weight-default);
 
   /* Tag Selectors */
   --color-tag_selector-color-bg: var(--color-color-surface-neutral-default);
   --color-tag_selector-color-stroke: var(--color-color-border-neutral-default);
-  --color-tag_selector-color-textdefault: var(
-    --color-color-text-neutral-placeholder
-  );
-  --color-tag_selector-color-textselected: var(
-    --color-color-text-neutral-secondary
-  );
+  --color-tag_selector-color-textdefault: var(--color-color-text-neutral-placeholder);
+  --color-tag_selector-color-textselected: var(--color-color-text-neutral-secondary);
   /* Tag Selectors Border Radius */
-  --radius-tag_selector-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-tag_selector-border-radius-default: var(--border-radius-InteractiveElements);
   /* Tag Selectors Border Weight - Un-tokenized : should be used directly as class `tag_selector-border-weight-default`  */
   --tag_selector-border-weight-default: var(--border-weight-default);
 
@@ -801,8 +484,7 @@
   --color-confirmation-color-stroke: var(--color-color-border-neutral-default);
   --color-confirmation-color-titletext: var(--color-color-text-neutral-default);
   --color-confirmation-color-bodytext: var(--color-color-text-neutral-default);
-  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary)
-    --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
+  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary) --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
   /* Confirmation Modals Border Radius */
   --radius-confirmation-border-radius-default: var(--border-radius-modal);
   /* Confirmation Modals Border Weight - Un-tokenized : should be used directly as class `confirmation-border-weight-default`  */
@@ -814,44 +496,26 @@
   --color-alert_card-color-titletext: var(--color-color-text-neutral-default);
   --color-alert_card-color-bodytext: var(--color-color-text-neutral-default);
   --color-alert_card-color-iconprimary: var(--color-color-icon-neutral-default);
-  --color-alert_card-color-iconsecondary: var(
-    --color-color-icon-neutral-tertiary
-  );
+  --color-alert_card-color-iconsecondary: var(--color-color-icon-neutral-tertiary);
   /* Alert Cards Border Radius */
   --radius-alert_card-border-radius-default: var(--border-radius-modal);
   /* Alert Cards Border Weight - Un-tokenized : should be used directly as class `alert_card-border-weight-default`  */
   --alert_card-border-weight-default: var(--border-weight-default);
 
   /* Text Input */
-  --color-textinput-color-stroke-default: var(
-    --color-color-border-neutral-default
-  );
-  --color-textinput-color-stroke-focus: var(
-    --color-color-border-primary-strong
-  );
-  --color-textinput-color-text-default: var(
-    --color-color-text-neutral-placeholder
-  );
+  --color-textinput-color-stroke-default: var(--color-color-border-neutral-default);
+  --color-textinput-color-stroke-focus: var(--color-color-border-primary-strong);
+  --color-textinput-color-text-default: var(--color-color-text-neutral-placeholder);
   --color-textinput-color-text-active: var(--color-color-text-neutral-default);
   --color-textinput-color-text-label: var(--color-color-text-neutral-secondary);
-  --color-textinput-color-text-helper-default: var(
-    --color-color-text-neutral-tertiary
-  );
-  --color-textinput-color-text-helper-error: var(
-    --color-color-text-feedback-error-default
-  );
-  --color-textinput-color-icon-default: var(
-    --color-color-text-neutral-placeholder
-  );
+  --color-textinput-color-text-helper-default: var(--color-color-text-neutral-tertiary);
+  --color-textinput-color-text-helper-error: var(--color-color-text-feedback-error-default);
+  --color-textinput-color-icon-default: var(--color-color-text-neutral-placeholder);
   --color-textinput-color-icon-active: var(--color-color-icon-neutral-default);
   --color-textinput-bg: var(--color-color-surface-neutral-default);
-  --color-textinput-color-icon-error: var(
-    --color-color-icon-feedback-error-default
-  );
+  --color-textinput-color-icon-error: var(--color-color-icon-feedback-error-default);
   /* Text Input Border Radius */
-  --radius-textinput-border-radius-default: var(
-    --border-radius-InteractiveElements
-  );
+  --radius-textinput-border-radius-default: var(--border-radius-InteractiveElements);
   /* Text Input Border Weight - Un-tokenized : should be used directly as class `textinput-border-weight-default`  */
   --textinput-border-weight-default: var(--border-weight-default);
 }
@@ -914,6 +578,14 @@
 }
 
 /* Test Styles Semantics */
+@utility text-style-chat-heading-main {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-heading-md);
+  line-height: 100%;
+  letter-spacing: var(--font-tracking-body-large);
+}
+
 @utility text-style-body-default-regular {
   font-family: var(--font-family-brandprimary);
   font-weight: var(--font-weight-regular);
@@ -1399,4 +1071,25 @@
   content: attr(data-placeholder);
   color: var(--color-color-text-neutral-placeholder);
   pointer-events: none;
+}
+
+/* Custom Scrollbar */
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-color-border-neutral-default);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--color-color-border-neutral-mid);
+  }
 }

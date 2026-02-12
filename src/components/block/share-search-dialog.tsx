@@ -137,9 +137,11 @@ function ShareSearchDialog({
                 showCloseButton={true}
             >
                 <DialogHeader className="flex-row items-center gap-2">
-                    <Icon
-                        name="share-a"
-                        className="h-5 w-5 text-icon_button-color-primary-icon"
+                    <IconButton
+                        icon="share-a"
+                        size="medium"
+                        variant="primary"
+                        boundary="none"
                     />
                     <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
                 </DialogHeader>

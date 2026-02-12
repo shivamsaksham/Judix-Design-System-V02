@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useCallback, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { IconButton, Button, Dropdown, DropdownOption } from "@/components/ui";
 import {
     useFloating,
@@ -13,7 +14,7 @@ import {
 import { createPortal } from "react-dom";
 import NestedDropdown from "./custom-dropdown-helper";
 import { SearchScopeSelector } from "./search-scope-selector";
-import { ContextWindow, ContextItem } from "./context-window";
+import { ContextItem } from "./context-window";
 import { CourtSelector, CourtCategory } from "./court-selector";
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
@@ -141,9 +142,17 @@ interface SearchEngineInputProps {
     staticData?: StaticDataConfig;
     tokenConfig?: Record<string, TokenStructure>;
     onSubmit?: (payload: SearchPayload) => void;
+    children?: React.ReactNode;
+    onOptionClick?: (value: string, currentContent?: string) => boolean | void;
+    selectedCourts?: string[];
+    onCourtsChange?: (courts: string[]) => void;
+    isLoading?: boolean;
+    onStop?: () => void;
+    isMobile?: boolean;
 }
 
 function SearchEngineInput({
+    placeholder,
     helperText,
     scopes = [],
     courtCategories = [],
@@ -152,13 +161,31 @@ function SearchEngineInput({
     triggers = {},
     staticData = {},
     tokenConfig = DEFAULT_TOKEN_CONFIG,
-    onSubmit
+    onSubmit,
+    onOptionClick,
+    selectedCourts: propSelectedCourts,
+    onCourtsChange,
+    isLoading = false,
+    onStop,
+    isMobile = false,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
-    const [selectedCourts, setSelectedCourts] = useState<string[]>([]);
+    const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
+
+    const effectiveSelectedCourts = propSelectedCourts !== undefined ? propSelectedCourts : internalSelectedCourts;
+
+    const handleCourtsChange = (newCourts: string[]) => {
+        if (onCourtsChange) {
+            onCourtsChange(newCourts);
+        }
+        if (propSelectedCourts === undefined) {
+            setInternalSelectedCourts(newCourts);
+        }
+    };
+
     const [selectedContextItems, setSelectedContextItems] = useState<string[]>([]);
     const [contextMode, setContextMode] = useState<"auto" | "self-managed">("self-managed");
     const [activeDropdown, setActiveDropdown] = useState<
@@ -183,6 +210,12 @@ function SearchEngineInput({
             setSelectedContextItems(contextItems.slice(0, 10).map((i) => i.id));
         }
     }, [contextItems, contextMode, selectedContextItems.length]);
+
+    React.useEffect(() => {
+        if (input.trim() === "") {
+            setIsCentered(true);
+        }
+    }, [input]);
 
     React.useEffect(() => {
         const handleSelectionChange = () => {
@@ -302,9 +335,6 @@ function SearchEngineInput({
 
     const filteredTriggerOptions = useMemo(() => {
         if (!triggerOptions) return [];
-        if (!searchQuery) return triggerOptions;
-
-
         const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, "");
         const normalizedQuery = normalize(searchQuery);
 
@@ -315,7 +345,6 @@ function SearchEngineInput({
         });
     }, [triggerOptions, searchQuery]);
 
-    // Refs for event handlers to access latest state
     const optionsRef = useRef(filteredTriggerOptions);
     const activeIndexRef = useRef(activeIndex);
 
@@ -360,9 +389,6 @@ function SearchEngineInput({
 
             const config = tokenConfig[type] || DEFAULT_TOKEN_CONFIG[type];
 
-            // Special handling for legacy/specific parsing logic if needed,
-            // but trying to make it generic based on config
-
             if (type === "Year") {
                 const value = valInputs[0].textContent?.trim() || "";
                 if (value.includes(":")) {
@@ -384,13 +410,11 @@ function SearchEngineInput({
                 return;
             }
 
-            // Generic parsing
             if (config && config.inputs.length === 1 && config.inputs[0].key) {
                 const key = config.inputs[0].key;
                 const val = valInputs[0].textContent?.trim();
                 if (val) filters[key] = val;
             } else if (config) {
-                // Fallback or complex types not covered by specific overrides
                 config.inputs.forEach((inputConfig, idx) => {
                     if (inputConfig.key && valInputs[idx]) {
                         const val = valInputs[idx].textContent?.trim();
@@ -401,24 +425,62 @@ function SearchEngineInput({
         });
 
         let queryText = "";
+        let displayQuery = "";
+
         div.childNodes.forEach(node => {
-            if (processedNodes.has(node)) return;
+            if (processedNodes.has(node)) {
+                // It is a wrapper, so we need to reconstruct its string form for displayQuery
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const el = node as HTMLElement;
+                    const type = el.getAttribute("data-type");
+                    if (type) {
+                        const config = tokenConfig[type] || DEFAULT_TOKEN_CONFIG[type];
+                        const valInputs = el.querySelectorAll(".static-value-input");
+
+                        if (config) {
+                            let tokenString = config.prefix;
+                            config.inputs.forEach((inputConfig, idx) => {
+                                if (idx > 0 && inputConfig.prefix) {
+                                    tokenString += inputConfig.prefix;
+                                }
+                                if (valInputs[idx]) {
+                                    tokenString += valInputs[idx].textContent || "";
+                                }
+                            });
+                            tokenString += config.suffix;
+                            displayQuery += tokenString;
+                        } else {
+                            // Fallback if no config (shouldn't happen for valid tokens)
+                            displayQuery += el.textContent || "";
+                        }
+                    } else {
+                        displayQuery += el.textContent || "";
+                    }
+                }
+                return;
+            }
+
             if (node.nodeType === Node.TEXT_NODE) {
-                queryText += node.textContent;
+                const txt = node.textContent || "";
+                queryText += txt;
+                displayQuery += txt;
             } else if (node.nodeType === Node.ELEMENT_NODE && !(node as Element).classList.contains("static-data-wrapper")) {
-                queryText += node.textContent;
+                const txt = node.textContent || "";
+                queryText += txt;
+                displayQuery += txt;
             }
         });
 
         filters.scopes = selectedScopes;
         filters.contextItems = selectedContextItems;
-        filters.courts = selectedCourts;
+        filters.courts = effectiveSelectedCourts;
 
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
+            displayQuery: displayQuery.replace(/\s+/g, " ").trim(), // Add this
             filters
         };
-    }, [selectedScopes, tokenConfig, selectedContextItems, selectedCourts]);
+    }, [selectedScopes, tokenConfig, selectedContextItems, effectiveSelectedCourts]);
 
     const handleSubmit = useCallback(() => {
         const payload = getParsedPayload();
@@ -539,7 +601,7 @@ function SearchEngineInput({
             }
         }
 
-        if (e.key === "Enter" && !e.shiftKey && input.trim() !== "") {
+        if (e.key === "Enter" && !e.shiftKey && input.trim() !== "" && input.trim().split(/\s+/).length >= 3) {
             e.preventDefault();
             handleSubmit();
             return;
@@ -734,7 +796,26 @@ function SearchEngineInput({
         }
     };
 
+    const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData("text/plain");
+        document.execCommand("insertText", false, text);
+    };
+
     const handleOptionSelect = (option: string, isManual: boolean = false) => {
+        if (onOptionClick) {
+            const currentPayload = getParsedPayload();
+            const currentQuery = currentPayload.query || "";
+
+            const handled = onOptionClick(option, currentQuery);
+            if (handled) {
+                setActiveDropdown(null);
+                setTriggerStartIndex(null);
+                setSearchQuery("");
+                setActiveIndex(null);
+                return;
+            }
+        }
         const div = textareaRef.current;
 
         const selection = window.getSelection();
@@ -1036,25 +1117,7 @@ function SearchEngineInput({
                             }}
                             activeIndex={activeIndex}
                             customComponents={{
-                                add_context: (
-                                    <ContextWindow
-                                        items={contextItems}
-                                        selectedItems={selectedContextItems}
-                                        onSelectionChange={(ids) => {
-                                            setSelectedContextItems(ids);
-                                            console.log("Context items selected:", ids);
-                                        }}
-                                        mode={contextMode}
-                                        onModeChange={(mode) => {
-                                            setContextMode(mode);
-                                            if (mode === "self-managed") {
-                                                setSelectedContextItems([]);
-                                            } else {
-                                                setSelectedContextItems(contextItems.slice(0, 10).map((i) => i.id));
-                                            }
-                                        }}
-                                    />
-                                ),
+                                // Removed add_context legacy component
                             }}
                         />
                     ) : activeDropdown === "settings" ? (
@@ -1074,16 +1137,14 @@ function SearchEngineInput({
                         <div className="w-[350px]">
                             <CourtSelector
                                 categories={courtCategories}
-                                selectedCourts={selectedCourts}
+                                selectedCourts={effectiveSelectedCourts}
                                 onCourtSelect={(court) => {
-                                    if (!selectedCourts.includes(court)) {
-                                        setSelectedCourts((prev) => [...prev, court]);
-                                        console.log(`Court selected: ${court}`);
-                                    }
+                                    const newCourts = [...effectiveSelectedCourts, court];
+                                    handleCourtsChange(newCourts);
                                 }}
                                 onCourtDeselect={(court) => {
-                                    setSelectedCourts((prev) => prev.filter((c) => c !== court));
-                                    console.log(`Court deselected: ${court}`);
+                                    const newCourts = effectiveSelectedCourts.filter((c) => c !== court);
+                                    handleCourtsChange(newCourts);
                                 }}
                             />
                         </div>
@@ -1096,19 +1157,22 @@ function SearchEngineInput({
 
     return (
         <div
-            className={`flex flex-col h-screen transition-all items-center ${isCentered ? "justify-center" : "justify-end"
-                }`}
+            className={cn(
+                'flex flex-col w-full transition-all items-center',
+                isCentered ? 'h-fit justify-center' : 'h-full justify-end'
+            )}
         >
             <div className="relative w-full flex flex-col items-center min-h-fit">
+
                 {helperText && (
                     <div
-                        className="absolute w-full max-w-3xl h-full z-0 rounded-t-2xl px-4 py-2 text-sm bg-color-surface-primary-subtle_bg"
+                        className="absolute w-full h-full z-0 rounded-t-2xl px-4 py-2 text-sm bg-color-surface-primary-subtle_bg"
                         style={{ bottom: 34 }}
                     >
                         <span>{helperText}</span>
                     </div>
                 )}
-                <div className="relative w-full z-10 max-w-3xl border border-gray-300 rounded-2xl px-6 py-4 mb-4 flex flex-col gap-3 items-center justify-around bg-white">
+                <div className="relative w-full z-10 border border-gray-300 rounded-2xl px-6 py-4 mb-4 flex flex-col gap-3 items-center justify-around bg-white">
                     <div
                         contentEditable={true}
                         ref={(node) => {
@@ -1121,9 +1185,10 @@ function SearchEngineInput({
                         style={{ height: isCentered ? CENTER_HEIGHT : BOTTOM_HEIGHT }}
                         onInput={handleTextChange}
                         onKeyDown={handleKeyDown}
+                        onPaste={handlePaste}
                     />
 
-                    <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex items-center justify-between flex-wrap gap-y-2">
                         <div className="flex gap-2">
                             <IconButton
                                 onClick={() => toggleDropdown("add")}
@@ -1144,7 +1209,7 @@ function SearchEngineInput({
                                     if (activeDropdown === "settings") refs.setReference(node);
                                 }}
                                 color="neutral"
-                                icon="setting-a"
+                                icon="setting-c"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
@@ -1157,7 +1222,7 @@ function SearchEngineInput({
                                     if (activeDropdown === "folder") refs.setReference(node);
                                 }}
                                 color="neutral"
-                                icon="activity"
+                                icon="folder-open"
                                 size="medium"
                                 boundary="stroked"
                                 corner="sharp"
@@ -1165,23 +1230,23 @@ function SearchEngineInput({
                                     }`}
                             />
                         </div>
-                        <div className="flex gap-2 items-center">
+                        <div className="flex gap-2 items-center ml-auto sm:ml-0">
                             {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
                                 <Button
                                     size="small"
-                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default"
+                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default whitespace-nowrap"
                                 >
-                                    Enhance Query
+                                    <span className="hidden sm:inline">Enhance Query</span>
+                                    <span className="sm:hidden">Enhance</span>
                                 </Button>
                             )}
                             <IconButton
-                                onClick={handleSubmit}
-                                color="primary"
-                                icon="arrow-up-a"
+                                onClick={isLoading ? onStop : handleSubmit}
+                                color={isLoading ? "neutral" : "primary"}
+                                icon={isLoading ? "stop" : "arrow-up-d"}
                                 size="medium"
-                                boundary="stroked"
                                 corner="sharp"
-                                disabled={!input.trim() || input.trim().split(" ").length < 3}
+                                disabled={!isLoading && (!input.trim() || input.trim().split(/\s+/).length < 3)}
                             />
                         </div>
                     </div>

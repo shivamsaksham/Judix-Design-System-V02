@@ -12,9 +12,10 @@ export interface QueryTrackProps {
     queries: QueryItem[];
     type?: string;
     className?: string;
+    onQueryClick?: (id: string) => void;
 }
 
-export const QueryTrack = ({ queries, className }: QueryTrackProps) => {
+export const QueryTrack = ({ queries, type = 'Query track', className, onQueryClick }: QueryTrackProps) => {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
     const [showLargeBox, setShowLargeBox] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -93,15 +94,20 @@ export const QueryTrack = ({ queries, className }: QueryTrackProps) => {
                     {smallBoxQueries.map((query, index) => (
                         <div
                             key={query.id}
-                            className={cn(
-                                "h-0 border-t rounded transition-all duration-200 cursor-pointer",
-                                hoveredIndexInSmallBox === index ? "w-[40px] border-color-border-neutral-strong" : "w-[20px] border-color-border-neutral-default"
-                            )}
+                            className="py-1 cursor-pointer"
                             onMouseEnter={() => {
                                 setShowLargeBox(true);
                                 setHoveredId(query.id);
                             }}
-                        />
+                            onClick={() => onQueryClick?.(query.id)}
+                        >
+                            <div
+                                className={cn(
+                                    "h-0 border-t rounded transition-all duration-200",
+                                    hoveredIndexInSmallBox === index ? "w-[40px] border-color-border-neutral-strong" : "w-[20px] border-color-border-neutral-default"
+                                )}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>
@@ -110,7 +116,7 @@ export const QueryTrack = ({ queries, className }: QueryTrackProps) => {
             <div
                 ref={dropdownRef}
                 className={cn(
-                    "absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[calc(300px-76px)] transition-opacity duration-200 z-20",
+                    "absolute left-14 top-0 transition-opacity duration-200 z-20",
                     "[&_.space-y-1]:max-h-[80vh] [&_.space-y-1]:overflow-y-auto",
                     showLargeBox ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                 )}
@@ -119,7 +125,10 @@ export const QueryTrack = ({ queries, className }: QueryTrackProps) => {
                 <Dropdown
                     options={dropdownOptions}
                     value={null}
-                    onChange={(value) => setHoveredId(value)}
+                    onChange={(value) => {
+                        setHoveredId(value);
+                        onQueryClick?.(value);
+                    }}
                     searchbar="off"
                     className="w-[300px]"
                 />

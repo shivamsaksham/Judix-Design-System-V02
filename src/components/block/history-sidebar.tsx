@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '../ui';
 import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import Confirmation from './confirmation';
+import { ShareSearchDialog } from './share-search-dialog';
 
 export interface ChatHistoryItem {
     id: string;
@@ -46,6 +48,8 @@ export interface HistorySidebarProps {
     className?: string;
     isExpanded?: boolean;
     onToggleSidebar?: () => void;
+
+    showCloseButton?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -65,16 +69,20 @@ export const HistorySidebar = ({
     className,
     isExpanded: controlledIsExpanded,
     onToggleSidebar,
+
+    showCloseButton = false,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [userMenuPosition, setUserMenuPosition] = useState({ top: 0, left: 0 });
     const [internalIsExpanded, setInternalIsExpanded] = useState(false);
+    const [deleteConfirmationChatId, setDeleteConfirmationChatId] = useState<string | null>(null);
+    const [shareChatId, setShareChatId] = useState<string | null>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
+    const userNameRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Use controlled or internal state
     const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded;
 
     const handleToggle = () => {
@@ -85,7 +93,8 @@ export const HistorySidebar = ({
         }
     };
 
-    // Close menus when clicking outside
+    // ... useEffect ...
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -108,7 +117,7 @@ export const HistorySidebar = ({
     const handleMenuClick = (chatId: string, event: React.MouseEvent) => {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         setMenuPosition({
-            top: rect.bottom + 4,
+            top: rect.bottom,
             left: rect.left,
         });
         setOpenMenuChatId(chatId);
@@ -117,9 +126,18 @@ export const HistorySidebar = ({
     const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
         setOpenMenuChatId(null);
         if (action === 'rename' && onRename) onRename(chatId);
-        if (action === 'share' && onShare) onShare(chatId);
+        if (action === 'share') setShareChatId(chatId);
         if (action === 'move' && onMove) onMove(chatId);
-        if (action === 'delete' && onDelete) onDelete(chatId);
+        if (action === 'delete') {
+            setDeleteConfirmationChatId(chatId);
+        }
+    };
+
+    const handleConfirmDelete = () => {
+        if (deleteConfirmationChatId && onDelete) {
+            onDelete(deleteConfirmationChatId);
+        }
+        setDeleteConfirmationChatId(null);
     };
 
     return (
@@ -138,17 +156,16 @@ export const HistorySidebar = ({
         >
             {isExpanded ? (
                 <>
-                    {/* Header Section */}
                     <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
                         <IconButton
                             onClick={handleToggle}
-                            icon="sidebar-left"
+                            icon={showCloseButton ? "cross" : "sidebar-left"}
                             variant="neutral"
                             size="medium"
                             corner="sharp"
                             className="bg-color-neutral-default hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
                             iconClassName='text-icon_button-color-neutral-icon'
-                            aria-label="Toggle Sidebar"
+                            aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
                         />
                         <Label
                             colorScheme="neutral"
@@ -160,7 +177,6 @@ export const HistorySidebar = ({
                         </Label>
                     </div>
 
-                    {/* Action Buttons */}
                     <SidebarActionButtons
                         onNewChat={onNewChat}
                         onNotes={onNotes}
@@ -168,15 +184,13 @@ export const HistorySidebar = ({
                         className="sidebar-fade-in-up-1"
                     />
 
-                    {/* Chats Section */}
                     <ChatHistorySection
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
                         onMenuClick={handleMenuClick}
-                        className="ml-1 mr-3"
+                        className="ml-1 mr-3 flex-1 min-h-0"
                     />
 
-                    {/* Usage Section */}
                     <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
                         <div className="flex items-center gap-2 mb-3 ">
                             <span className=" p-1 
@@ -184,7 +198,6 @@ export const HistorySidebar = ({
                                             text-color-text-neutral-default">Usage</span>
                             <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
                         </div>
-                        {/* Progress Bar */}
                         <div className="w-full 
                                         bg-button-color-neutral-disabled-stroke 
                                         rounded-full h-2 mb-1">
@@ -209,10 +222,14 @@ export const HistorySidebar = ({
                         <div
                             className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
                             onClick={(e) => {
-                                const rect = e.currentTarget.getBoundingClientRect();
+                                const containerRect = e.currentTarget.getBoundingClientRect();
+                                const userNameRect = userNameRef.current?.getBoundingClientRect();
+                                // Calculate bottom distance so menu's bottom aligns with userName box's bottom
+                                const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
                                 setUserMenuPosition({
-                                    top: rect.top - 8,
-                                    left: rect.left,
+                                    top: bottomDistance,
+                                    //fix left
+                                    left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
                                 });
                                 setIsUserMenuOpen(!isUserMenuOpen);
                             }}
@@ -221,11 +238,11 @@ export const HistorySidebar = ({
                                 <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center flex-shrink-0">
                                     <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
-                                <div className="flex flex-col py-1 flex-1 min-w-0">
-                                    <span className="text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
+                                <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
+                                    <span className="w-full text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
                                         {userProfile.name}
                                     </span>
-                                    <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
+                                    <span className="w-full text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
                                         {userProfile.tier}
                                     </span>
                                 </div>
@@ -244,7 +261,6 @@ export const HistorySidebar = ({
                         </div>
                     </div>
 
-                    {/* ChatHistoryMenu Popup */}
                     {openMenuChatId && (
                         <div
                             ref={menuRef}
@@ -265,13 +281,13 @@ export const HistorySidebar = ({
                                     {
                                         id: 'share',
                                         label: 'Share',
-                                        icon: <Icon name="export-a" />,
+                                        icon: <Icon name="export-d" />,
                                         onClick: () => handleMenuAction('share', openMenuChatId),
                                     },
                                     {
                                         id: 'move',
                                         label: 'Move to project',
-                                        icon: <Icon name="document-copy" />,
+                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default' />,
                                         onClick: () => handleMenuAction('move', openMenuChatId),
                                         dividerAfter: true,
                                     },
@@ -287,29 +303,24 @@ export const HistorySidebar = ({
                         </div>
                     )}
 
-                    {/* UserMenu Popup */}
                     {isUserMenuOpen && (
                         <div
                             ref={userMenuRef}
                             className="fixed z-50"
                             style={{
-                                bottom: '70px',
+                                bottom: `${userMenuPosition.top}px`,
                                 left: `${userMenuPosition.left}px`,
                             }}
                         >
                             <UserMenu
-                                zoomLevel="100%"
-                                onZoom={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Zoom clicked');
-                                }}
+
                                 onAccount={() => {
                                     setIsUserMenuOpen(false);
                                     console.log('My Account clicked');
                                 }}
                                 onProjects={() => {
                                     setIsUserMenuOpen(false);
-                                    console.log('Projects clicked');
+                                    onProjects?.();
                                 }}
                                 onSubscriptions={() => {
                                     setIsUserMenuOpen(false);
@@ -337,9 +348,7 @@ export const HistorySidebar = ({
                 </>
             ) : (
                 <>
-                    {/* Collapsed State */}
                     <div className="flex flex-col items-center h-full">
-                        {/* Toggle Icon */}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <IconButton
@@ -417,10 +426,8 @@ export const HistorySidebar = ({
                             </Tooltip>
                         </div>
 
-                        {/* Spacer */}
                         <div className="flex-1"></div>
 
-                        {/* Profile Icon */}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
@@ -438,6 +445,26 @@ export const HistorySidebar = ({
                     </div>
                 </>
             )}
+            <Confirmation
+                open={!!deleteConfirmationChatId}
+                onOpenChange={(open) => !open && setDeleteConfirmationChatId(null)}
+                mainText="Delete Chat"
+                subText="This action cannot be undone."
+                onConfirmClick={handleConfirmDelete}
+                onCancelClick={() => setDeleteConfirmationChatId(null)}
+                confirmVariant="destructive"
+            />
+            <ShareSearchDialog
+                open={!!shareChatId}
+                onOpenChange={(open) => !open && setShareChatId(null)}
+                shareLink={`https://judix.in/share/${shareChatId}`}
+                onShare={(recipients, note) => {
+                    console.log('Sharing', recipients, note);
+                    setShareChatId(null);
+                }}
+                onCopyLink={() => console.log('Link copied')}
+                onDownloadPdf={() => console.log('Downloading PDF')}
+            />
         </div>
     );
 };

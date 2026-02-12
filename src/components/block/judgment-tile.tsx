@@ -20,6 +20,9 @@ export interface JudgmentTileProps {
     onAdd?: () => void;
     onBookmark?: () => void;
     onMention?: () => void;
+    onClick?: () => void;
+    isSelected?: boolean;
+    id?: string;
     className?: string;
 }
 
@@ -36,18 +39,23 @@ export function JudgmentTile({
     onAdd,
     onBookmark,
     onMention,
+    onClick,
+    isSelected,
     className
 }: JudgmentTileProps) {
     const [open, setOpen] = React.useState(false);
 
     return (
         <div className={cn(
-            "group relative flex flex-col gap-3 p-3 w-full",
-            "border border-color-border-neutral-default rounded-lg",
+            "group relative flex flex-col gap-3 p-3 w-full cursor-pointer",
+            "rounded-lg",
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
             "transition-colors duration-200",
             className
-        )}>
+        )}
+            onClick={onClick}
+        >
             <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1 pr-8">
                 {title}
             </h3>
@@ -77,9 +85,11 @@ export function JudgmentTile({
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        <div onClick={(e) => e.stopPropagation()}>
+                            <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
+                        </div>
                     </PopoverTrigger>
-                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
+                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto" onClick={(e) => e.stopPropagation()}>
                         <ContextActionMenu
                             isAdded={isAdded}
                             isBookmarked={isBookmarked}
