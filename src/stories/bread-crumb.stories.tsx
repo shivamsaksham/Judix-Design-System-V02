@@ -1,5 +1,4 @@
-
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import Breadcrumb from '@/components/block/bread-crumb';
 
 const meta: Meta<typeof Breadcrumb> = {

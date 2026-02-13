@@ -152,7 +152,7 @@ interface SearchEngineInputProps {
 }
 
 function SearchEngineInput({
-    placeholder,
+    // placeholder,
     helperText,
     scopes = [],
     courtCategories = [],
@@ -167,7 +167,7 @@ function SearchEngineInput({
     onCourtsChange,
     isLoading = false,
     onStop,
-    isMobile = false,
+    // isMobile = false,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
     const [isCentered, setIsCentered] = useState(true);
@@ -187,7 +187,7 @@ function SearchEngineInput({
     };
 
     const [selectedContextItems, setSelectedContextItems] = useState<string[]>([]);
-    const [contextMode, setContextMode] = useState<"auto" | "self-managed">("self-managed");
+    const [contextMode] = useState<"auto" | "self-managed">("self-managed");
     const [activeDropdown, setActiveDropdown] = useState<
         "add" | "settings" | "folder" | "trigger" | null
     >(null);

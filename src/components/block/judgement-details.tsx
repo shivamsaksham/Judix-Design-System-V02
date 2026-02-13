@@ -1,5 +1,4 @@
 import React from "react";
-import { Icon } from "@judix/icon";
 import { cn } from "../../lib/utils";
 import { ContentTree, ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";

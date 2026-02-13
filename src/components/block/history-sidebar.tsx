@@ -62,7 +62,7 @@ export const HistorySidebar = ({
     onResetChat,
     onUpgrade,
     onRename,
-    onShare,
+    // onShare,
     onMove,
     onDelete,
     activeChatId,

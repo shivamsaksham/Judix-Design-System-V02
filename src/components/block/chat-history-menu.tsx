@@ -2,7 +2,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Option } from '@/components/ui/option';
-import { Icon } from '@judix/icon';
 
 export interface ChatHistoryMenuItem {
     id: string;

@@ -18,7 +18,7 @@ const meta: Meta<typeof ContextWindowInfo> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof conetn>;
+type Story = StoryObj<typeof ContextWindowInfo>;
 
 export const Default: Story = {
     args: {},

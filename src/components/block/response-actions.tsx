@@ -22,13 +22,15 @@ export const ResponseActions = ({
     onCopy,
     className,
     contentToCopy,
+    isLiked: externalIsLiked,
+    isDisliked: externalIsDisliked,
 }: ResponseActionsProps) => {
     const [internalIsLiked, setInternalIsLiked] = useState(false);
     const [internalIsDisliked, setInternalIsDisliked] = useState(false);
 
     // Use external state if provided, otherwise use internal state
-    // const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
-    // const isDisliked = externalIsDisliked !== undefined ? externalIsDisliked : internalIsDisliked;
+    const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
+    const isDisliked = externalIsDisliked !== undefined ? externalIsDisliked : internalIsDisliked;
 
     const handleLike = () => {
         if (onLike) {
