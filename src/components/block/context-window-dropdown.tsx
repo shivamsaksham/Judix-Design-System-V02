@@ -35,7 +35,7 @@ export default function ContextWindowDropdown({
     className,
     isSessionContextChecked = false,
     onSessionContextToggle,
-    hideHeader = false,
+    // hideHeader = false,
     isMobile = false,
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "../ui";
@@ -72,11 +71,14 @@ const FileTreeNode = ({
     const inputRef = React.useRef<HTMLInputElement>(null);
     const isEditing = editingId === node.id;
 
+    const nodeIsOpen = node.type === "folder" ? node.isOpen : undefined;
+    const nodeType = node.type;
+
     React.useEffect(() => {
-        if (node.type === "folder" && node.isOpen !== undefined) {
-            setIsOpen(node.isOpen);
+        if (nodeType === "folder" && nodeIsOpen !== undefined) {
+            setIsOpen(nodeIsOpen);
         }
-    }, [node.type === "folder" ? node.isOpen : undefined, node.type]);
+    }, [nodeIsOpen, nodeType]);
 
     React.useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -140,7 +142,6 @@ const FileTreeNode = ({
             default:
                 return "document-a";
         }
-        return 'note-a' as any;
     };
 
     const isActive = React.useMemo(() => {

@@ -17,7 +17,7 @@ import { LinkDialog } from "./link-dialog";
 import { TextEditor } from "../ui/text-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
-import { FileTree, FileTreeNodeType } from "./file-tree";
+import { FileTree, FileTreeNodeType, FolderItem } from "./file-tree";
 
 const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
 
@@ -84,11 +84,9 @@ export function NotesCard({
     content: propContent,
     variant = 'floating',
     showSidebar = true,
-    ...props
 }: NotesCardProps) {
     const isEmbedded = variant === 'embedded';
     const [isExpanded, setIsExpanded] = React.useState(isEmbedded ? true : defaultExpanded);
-    const [isMaximized, setIsMaximized] = React.useState(false);
     const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isEmbedded ? false : defaultEnlarged);
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
@@ -114,7 +112,7 @@ export function NotesCard({
         }
     }, [propContent, editor]);
 
-    const handleFileTreeToggle = (toggledNode: any) => {
+    const handleFileTreeToggle = (toggledNode: FolderItem) => {
         const isRoot = fileTreeData.some(f => f.id === toggledNode.id);
 
         if (isRoot) {
@@ -331,7 +329,7 @@ export function NotesCard({
                                                 <FileTree
                                                     data={fileTreeData}
                                                     activeId={activeFileId}
-                                                    onSelect={(node: any) => {
+                                                    onSelect={(node: FileTreeNodeType) => {
                                                         setActiveFileId(node.id);
                                                         onFileSelect?.(node);
                                                     }}

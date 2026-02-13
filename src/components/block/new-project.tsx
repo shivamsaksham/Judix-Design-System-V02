@@ -39,12 +39,12 @@ export const NewProject = ({
     onCancel,
     className,
     submitButtonText = 'Create',
-    isMobile = false,
+    // isMobile = false,
 
 }: NewProjectProps) => {
     const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState(initialDescription);
-    const [contextFiles, setContextFiles] = useState(initialContextFiles); // We might need to sync this too
+    // const [contextFiles, setContextFiles] = useState(initialContextFiles); // We might need to sync this too
 
     // Sync state with props when switching projects
     React.useEffect(() => {

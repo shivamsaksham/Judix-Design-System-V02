@@ -59,7 +59,7 @@ export function ResultPanel({
         if (viewMode === 'judgments' && selectedCourts.length > 0 && !selectedCourts.includes(preciseViewVal)) {
             setPreciseViewVal(selectedCourts[0]);
         }
-    }, [selectedCourts, viewMode]);
+    }, [selectedCourts, viewMode, preciseViewVal]);
 
 
     React.useEffect(() => {

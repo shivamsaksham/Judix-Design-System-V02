@@ -15,7 +15,7 @@ export interface QueryTrackProps {
     onQueryClick?: (id: string) => void;
 }
 
-export const QueryTrack = ({ queries, type = 'Query track', className, onQueryClick }: QueryTrackProps) => {
+export const QueryTrack = ({ queries, className, onQueryClick }: QueryTrackProps) => {
     const [hoveredId, setHoveredId] = useState<string | null>(null);
     const [showLargeBox, setShowLargeBox] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);

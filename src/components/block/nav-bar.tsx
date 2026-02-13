@@ -50,7 +50,7 @@ export function NavBar({
     onRename,
     onDelete,
     onBackToResearch,
-    onMoreOptions,
+    // onMoreOptions,
     userName = 'User',
     className,
     projectName = "Independent",
@@ -247,46 +247,41 @@ export function NavBar({
                                 </div>
                             </div>
 
-                    {/* Share and Menu Group */}
-                    <div className="flex items-center gap-3 ">
-                        {/* Back to Research Button */}
-                        {showBackToResearch && (
-                            <Button
-                                onClick={onShareClick}
-                                variant="neutral"
-                                size="small"
-                                prefixIcon="back-square"
-                                className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
-                                iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
-                            >
-                                <span className="p-1 text-style-body-default-regular">Back to Research</span>
-                            </Button>
-                        )}
+                            {/* Share and Menu Group */}
+                            <div className="flex items-center gap-3 ">
+                                {/* Back to Research Button */}
+                                {onBackToResearch && (
+                                    <Button
+                                        onClick={onBackToResearch}
+                                        variant="neutral"
+                                        size="small"
+                                        prefixIcon="back-square"
+                                        className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
+                                        iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
+                                    >
+                                        <span className="p-1 text-style-body-default-regular">Back to Research</span>
+                                    </Button>
+                                )}
 
-                        {/* Three Dot Menu */}
-                        {showMenu && (
-                            <IconButton
-                                onClick={onMenuClick}
-                                variant="neutral"
-                                size="medium"
-                                corner='sharp'
-                                className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-[1px] h-fit"
-                            >
-                                <Image
-                                    src="/ellipsis.svg"
-                                    alt="Menu"
-                                    width={20}
-                                    height={20}
-                                    aria-label="More options"
-                                    className="bg-transparent border-none shadow-none hover:bg-transparent text-color-icon-neutral-secondary"
-                                >
-                                    <Image
-                                        src="/ellipsis.svg"
-                                        alt="More"
-                                        width={20}
-                                        height={20}
-                                    />
-                                </IconButton>
+                                {/* Three Dot Menu */}
+                                {onMenuClick && (
+                                    <IconButton
+                                        onClick={onMenuClick}
+                                        variant="neutral"
+                                        size="medium"
+                                        corner='sharp'
+                                        className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-[1px] h-fit"
+                                    >
+                                        <Image
+                                            src="/ellipsis.svg"
+                                            alt="Menu"
+                                            width={20}
+                                            height={20}
+                                            aria-label="More options"
+                                            className="bg-transparent border-none shadow-none hover:bg-transparent text-color-icon-neutral-secondary"
+                                        />
+                                    </IconButton>
+                                )}
                             </div>
                         </div>
                     ) : (

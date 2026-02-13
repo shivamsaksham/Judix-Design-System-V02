@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import toast, { Toaster, ToastBar, resolveValue } from 'react-hot-toast';
+import toast, { Toaster, resolveValue } from 'react-hot-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -110,7 +110,7 @@ export const showToast = {
     toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
   info: (message: string, title?: string) =>
     toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  promise: (promise: Promise<any>, messages: { loading: string; success: string; error: string; }) =>
+  promise: (promise: Promise<unknown>, messages: { loading: string; success: string; error: string; }) =>
     toast.promise(promise, messages),
 };
 

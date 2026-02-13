@@ -9,7 +9,7 @@ export type ScoreBoxProps = {
     variant?: 'default' | 'badge';
 };
 
-function ScoreBox({ title, score, subtitle, showInfo = false, variant = 'default' }: ScoreBoxProps) {
+function ScoreBox({ score, subtitle, showInfo = false, variant = 'default' }: ScoreBoxProps) {
     if (variant === 'badge') {
         return (
             <div className="inline-flex items-center gap-2 px-3 h-8 bg-color-surface-neutral-default border border-color-border-primary-strong rounded-label-border-radius-default">

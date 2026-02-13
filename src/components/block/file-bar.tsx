@@ -20,7 +20,7 @@ export interface FileBarProps {
     onCreateNew?: (type: "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
-    onToggle?: (node: any) => void;
+    onToggle?: (node: FileTreeNodeType) => void;
     onRename?: (nodeId: string, newName: string) => void;
     onCancelEdit?: () => void;
 }

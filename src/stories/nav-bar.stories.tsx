@@ -17,7 +17,6 @@ export const Default: Story = {
     args: {
         onIndependentClick: () => console.log('Independent clicked'),
         onContextClick: () => console.log('Context clicked'),
-        onShareClick: () => console.log('Share clicked'),
         onMenuClick: () => console.log('Menu clicked'),
     },
 };
@@ -27,7 +26,6 @@ export const NewChat: Story = {
         isNewChat: true,
         onIndependentClick: () => console.log('Independent clicked'),
         onContextClick: () => console.log('Context clicked'),
-        onShareClick: () => console.log('Share clicked'),
         onRename: () => console.log('Rename clicked'),
         onDelete: () => console.log('Delete clicked'),
     },
@@ -38,7 +36,6 @@ export const LoadedChat: Story = {
         isNewChat: false,
         onIndependentClick: () => console.log('Independent clicked'),
         onContextClick: () => console.log('Context clicked'),
-        onShareClick: () => console.log('Share clicked'),
     },
 };
 
@@ -47,7 +44,6 @@ export const WithCustomClass: Story = {
         className: 'shadow-lg',
         onIndependentClick: () => console.log('Independent clicked'),
         onContextClick: () => console.log('Context clicked'),
-        onShareClick: () => console.log('Share clicked'),
         onMenuClick: () => console.log('Menu clicked'),
     },
 };

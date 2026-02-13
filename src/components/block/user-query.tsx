@@ -6,10 +6,6 @@ import { Button } from '@/components/ui/button';
 import { showToast } from '@/components/ui/toast';
 
 const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | 'command' }) => {
-    let bgColor = 'bg-color-bg-neutral-subtle';
-    let textColor = 'text-color-text-neutral-default';
-    let borderColor = 'border-color-border-neutral-default';
-
     if (type === 'token') {
         const match = text.match(/^\[(.*?):-(.*?)\]$/);
         const label = match ? `${match[1]}: ${match[2]}` : text;
@@ -73,6 +69,7 @@ export const UserQuery = ({
     onEdit,
     onCopy,
     isEditable = true,
+    className,
 }: UserQueryProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);

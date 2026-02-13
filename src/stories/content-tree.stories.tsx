@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import ContentTree, {
-  type ContentTreeSection,
-} from "@/components/block/content-tree";
+import { ContentTree } from "@/components/block/content-tree";
+import { type ContentTreeSection } from "@/components/block/content-tree";
 
 const DEFAULT_SECTIONS: ContentTreeSection[] = [
   {
