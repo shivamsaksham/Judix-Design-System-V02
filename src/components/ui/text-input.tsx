@@ -27,15 +27,17 @@ const inputVariants = cva(
 )
 
 const inputFieldVariants = cva(
-  "flex-1 min-w-0 bg-transparent border-none appearance-none textinput-font-placeholder-medium text-textinput-color-text-active placeholder:text-textinput-color-text-default focus:outline-none disabled:cursor-not-allowed disabled:text-color-text-neutral-disabled placeholder:disabled:text-color-text-neutral-disabled",
+  "",
   {
     variants: {
       size: {
-        default: "h-10",
+        small: "h-7",
+        medium: "h-[48px]",
+        large: "h-[56px]",
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "small",
     },
   }
 )
@@ -50,7 +52,7 @@ export interface TextInputProps
   trailingAccessory?: React.ReactNode
   selectedLabels?: { text: string; onRemove: () => void }[]
   showLabelsInline?: boolean
-  inputSize?: "default";
+  inputSize?: "small" | "medium" | "large";
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
@@ -67,7 +69,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       selectedLabels,
       showLabelsInline = false,
       variant: propVariant,
-      inputSize = "default",
+      inputSize = "small",
       onFocus,
       onBlur,
       ...props
@@ -106,7 +108,9 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             {label}
           </label>
         )}
-        <div className={cn(inputVariants({ variant: currentVariant, className }), {
+        <div className={cn(
+          inputFieldVariants({ size: inputSize }),
+          inputVariants({ variant: currentVariant, className }), {
           "border-textinput-color-stroke-focus": isFocused && !showError && !props.disabled,
         })}>
           {leadingIcon && (
@@ -137,7 +141,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
           <input
             ref={ref}
-            className={cn(inputFieldVariants({ size: inputSize }),
+            className={cn(
               "flex-grow appearance-none focus:outline-none focus:ring-0 focus:border-none",
               {
                 "pl-3": leadingIcon,
