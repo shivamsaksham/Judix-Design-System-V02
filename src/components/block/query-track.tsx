@@ -88,7 +88,7 @@ export const QueryTrack = ({ queries, className, onQueryClick }: QueryTrackProps
             {/* Left sidebar with dynamic lines (max 10 lines) */}
             <div
                 ref={smallBoxRef}
-                className="flex-shrink-0 bg-white flex self-start p-2 w-14 relative z-10"
+                className="shrink-0 bg-white flex self-start p-2 w-14 relative z-10"
             >
                 <div className="flex flex-col gap-[11px] min-w-10">
                     {smallBoxQueries.map((query, index) => (

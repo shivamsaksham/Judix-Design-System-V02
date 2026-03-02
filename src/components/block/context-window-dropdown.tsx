@@ -77,7 +77,7 @@ export default function ContextWindowDropdown({
                 className
             )}
         >
-            <div className="p-4 flex-shrink-0">
+            <div className="p-4 shrink-0">
                 <div className="flex items-center justify-between mb-2">
                     <h3 className="p-1 text-style-body-large-default text-color-text-neutral-default">
                         Context Window
@@ -113,7 +113,7 @@ export default function ContextWindowDropdown({
                 </div>
             </div>
 
-            <div className="mb-2 border-b border-color-border-neutral-default flex-shrink-0" />
+            <div className="mb-2 border-b border-color-border-neutral-default shrink-0" />
             <div className={cn("overflow-y-auto", !isMobile ? "max-h-[400px]" : "flex-1")}>
                 <Option
                     title="Session context"
