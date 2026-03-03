@@ -58,11 +58,12 @@ export const Dropdown = ({
       return (
         <div className="border-b border-textinput-color-stroke-default text-">
           <TextInput
+            inputSize="medium"
             label="" // Hide the label
             placeholder={placeholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            inputSize="default"
+            
             variant="default"
             className="px-6 py-2 border-t-0 border-x-0 rounded-t-none rounded-b-none border-textinput-bg placeholder:text-red-100"
           />
@@ -73,6 +74,7 @@ export const Dropdown = ({
       // Variant 3: Integrated Search Bar
       return (
         <TextInput
+          inputSize="medium"
           label=""
           placeholder={placeholder}
           value={searchTerm}

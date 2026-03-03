@@ -98,6 +98,7 @@ export default function AddToContext({
                     placeholder="Name your content"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    inputSize="medium"
 
                 />
             </div>

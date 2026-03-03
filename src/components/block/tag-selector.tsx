@@ -58,6 +58,7 @@ const TagSelector = React.forwardRef<HTMLDivElement, TagSelectorProps>(
         {...props}
       >
         <TextInput
+          inputSize="small"
           label=""
           placeholder={placeholder}
           value={inputValue}

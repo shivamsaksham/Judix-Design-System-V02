@@ -149,6 +149,7 @@ function ShareSearchDialog({
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <TextInput
+                            inputSize="small"
                             label=""
                             className="h-[42px] items-center px-3 py-2"
                             type="email"
@@ -216,6 +217,7 @@ function ShareSearchDialog({
 
                     <div className="flex flex-col gap-1">
                         <TextInput
+                            inputSize="small"
                             label=""
                             value={shareLink}
                             className="h-[42px] items-center text-style-body-default-regular px-3 py-2"

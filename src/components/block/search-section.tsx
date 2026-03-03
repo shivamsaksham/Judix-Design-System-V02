@@ -117,7 +117,7 @@ export function SearchSection({
             <div className="flex gap-3">
                 <TextInput
                     label=""
-                    inputSize="default"
+                    inputSize="small"
                     placeholder={searchPlaceholder}
                     value={searchValue}
                     onChange={onSearchChange}
