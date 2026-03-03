@@ -33,6 +33,10 @@ const meta: Meta<typeof TextInput> = {
     errorMessage: {
       control: "text",
     },
+    inputSize:{
+      control:"select",
+      options:["small","medium","large"],
+    },
     leadingIcon: {
       control: false,
     },
@@ -49,6 +53,7 @@ const meta: Meta<typeof TextInput> = {
   args: {
     label: "Label",
     placeholder: "Placeholder text",
+    inputSize:"medium",
   },
 }
 
