@@ -119,6 +119,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
     <Toaster
       position={position}
       gutter={8}
+      containerClassName="z-[100]"
       toastOptions={{
         className: "",
         success: { className: "" },

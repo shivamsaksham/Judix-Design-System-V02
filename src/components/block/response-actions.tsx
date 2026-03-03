@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { IconButton } from '@/components/ui/icon-button';
 import { showToast } from '@/components/ui/toast';
-
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 export interface ResponseActionsProps {
     onDislike?: () => void;
     onLike?: () => void;
@@ -77,52 +77,84 @@ export const ResponseActions = ({
     };
 
     return (
-        <div
-            className={cn(
-                'flex items-center gap-1 p-2',
-                'bg-color-surface-neutral-default',
-                className
-            )}
-        >
-            {/* Dislike Button */}
-            <IconButton
-                onClick={handleDislike}
-                variant={isDisliked ? "primary" : "neutral"}
-                size="medium"
-                corner="sharp"
-                icon="dislike"
-                aria-label="Dislike"
-            />
+        <TooltipProvider>
+            <div
+                className={cn(
+                    'flex items-center gap-1 p-2',
+                    'bg-color-surface-neutral-default',
+                    className
+                )}
+            >
+                {/* Dislike Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+                        <IconButton
+                            onClick={handleDislike}
+                            variant={isDisliked ? "primary" : "neutral"}
+                            size="medium"
+                            corner="sharp"
+                            icon="dislike"
+                            aria-label="Dislike"
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Dislike</p>
+                    </TooltipContent>
+                </Tooltip>
 
-            {/* Like Button */}
-            <IconButton
-                onClick={handleLike}
-                variant={isLiked ? "primary" : "neutral"}
-                size="medium"
-                corner="sharp"
-                icon="like-a"
-                aria-label="Like"
-            />
+                {/* Like Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
 
-            {/* Refresh Button */}
-            <IconButton
-                onClick={handleRefresh}
-                variant="neutral"
-                size="medium"
-                corner="sharp"
-                icon="refresh-a"
-                aria-label="Refresh"
-            />
+                <IconButton
+                    onClick={handleLike}
+                    variant={isLiked ? "primary" : "neutral"}
+                    size="medium"
+                    corner="sharp"
+                    icon="like-a"
+                    aria-label="Like"
+                    />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                    <p>Like</p>
+                </TooltipContent>
+                </Tooltip>
 
-            {/* Copy Button */}
-            <IconButton
-                onClick={handleCopy}
-                variant="neutral"
-                size="medium"
-                corner="sharp"
-                icon="copy"
-                aria-label="Copy"
-            />
-        </div>
+                {/* Refresh Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+
+                <IconButton
+                    onClick={handleRefresh}
+                    variant="neutral"
+                    size="medium"
+                    corner="sharp"
+                    icon="refresh-a"
+                    aria-label="Refresh"
+                />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Refresh</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                {/* Copy Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+                <IconButton
+                    onClick={handleCopy}
+                    variant="neutral"
+                    size="medium"
+                    corner="sharp"
+                    icon="copy"
+                    aria-label="Copy"
+                />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Copy</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        </TooltipProvider>
     );
 };

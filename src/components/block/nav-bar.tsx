@@ -411,7 +411,7 @@ export function NavBar({
                                 <div className="flex items-center gap-3 ">
 
 
-                                    {isNewChat && (
+                                    {!isNewChat && (
                                         <div className="relative">
                                             <Button
                                                 ref={ellipsisButtonRef}

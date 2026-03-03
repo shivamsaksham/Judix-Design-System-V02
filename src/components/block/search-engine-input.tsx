@@ -559,7 +559,13 @@ function SearchEngineInput({
             }
         }
 
-        setInput(e.currentTarget.innerText);
+        const newText = e.currentTarget.innerText;
+        setInput(newText);
+
+        if (!newText.trim() && e.currentTarget.innerHTML === '<br>') {
+            e.currentTarget.innerHTML = '';
+        }
+
         requestAnimationFrame(autoResize);
     };
 
@@ -1064,7 +1070,7 @@ function SearchEngineInput({
                 ref={refs.setFloating}
                 style={floatingStyles}
                 {...getFloatingProps()}
-                className="z-[9999]"
+                className="z-9999"
             >
                 <div className="animate-dropdown-enter">
                     {config.renderType === "nested" ? (
@@ -1099,7 +1105,7 @@ function SearchEngineInput({
                 ref={refs.setFloating}
                 style={floatingStyles}
                 {...getFloatingProps()}
-                className="z-[9999]"
+                className="z-9999"
             >
                 <div className="animate-dropdown-enter">
                     {activeDropdown === "add" ? (
@@ -1181,14 +1187,14 @@ function SearchEngineInput({
                         }}
                         {...getReferenceProps()}
                         data-placeholder="Ask anything. Type @ for mentions, / for commands."
-                        className="content-editable w-full resize-none focus:outline-none leading-6 transition-[height] duration-150 ease-out"
+                        className="content-editable w-full resize-none focus:outline-none leading-6 transition-[height] duration-150 ease-out empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400 [&:empty:before]:pointer-events-none before:content-[attr(data-placeholder)] before:text-gray-400 [&>br]:hidden [&:not(:empty):before]:hidden inline-block"
                         style={{ height: isCentered ? CENTER_HEIGHT : BOTTOM_HEIGHT }}
                         onInput={handleTextChange}
                         onKeyDown={handleKeyDown}
                         onPaste={handlePaste}
                     />
 
-                    <div className="w-full flex items-center justify-between flex-wrap gap-y-2">
+                    <div className="w-full flex items-center justify-between flex-wrap gap-y-2 min-h-[40px]">
                         <div className="flex gap-2">
                             <IconButton
                                 onClick={() => toggleDropdown("add")}
@@ -1230,11 +1236,11 @@ function SearchEngineInput({
                                     }`}
                             />
                         </div>
-                        <div className="flex gap-2 items-center ml-auto sm:ml-0">
+                        <div className="flex gap-2 items-center ml-auto sm:ml-0 h-[40px] justify-end">
                             {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
                                 <Button
                                     size="small"
-                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default whitespace-nowrap"
+                                    className="text-color-text-primary-default bg-color-surface-neutral-default border border-color-surface-primary-default whitespace-nowrap h-full"
                                 >
                                     <span className="hidden sm:inline">Enhance Query</span>
                                     <span className="sm:hidden">Enhance</span>
@@ -1246,6 +1252,7 @@ function SearchEngineInput({
                                 icon={isLoading ? "stop" : "arrow-up-d"}
                                 size="medium"
                                 corner="sharp"
+                                className="h-full w-[40px]"
                                 disabled={!isLoading && (!input.trim() || input.trim().split(/\s+/).length < 3)}
                             />
                         </div>
