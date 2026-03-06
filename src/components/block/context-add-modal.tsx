@@ -4,6 +4,22 @@ import { cn } from '@/lib/utils';
 import { TextInput } from '@/components/ui/text-input';
 import { Button } from '@/components/ui/button';
 
+//To use Add to context modal wrap it in a dialog component one such demo is added below
+/* 
+           <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
+                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]">
+                    <DialogTitle className="sr-only">Add to context</DialogTitle>
+                    <AddToContext
+                        onSave={(_title, _content) => {
+                            setIsContextDialogOpen(false);
+                        }}
+                        onCancel={() => setIsContextDialogOpen(false)}
+                        onClose={() => setIsContextDialogOpen(false)}
+                    />
+                </DialogContent>
+            </Dialog>
+
+*/
 export interface AddToContextProps {
     initialTitle?: string;
     initialContent?: string;
@@ -81,14 +97,6 @@ export default function AddToContext({
                 <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label">
                     Add to context
                 </h2>
-                <Button
-                    onClick={handleClose}
-                    variant="neutral"
-                    size="small"
-                    prefixIcon="cross"
-                    className='border-none p-[3.33px] h-0'
-                    iconClassName="w-4 h-4 relative"
-                />
             </div>
 
             {/* Title Input */}

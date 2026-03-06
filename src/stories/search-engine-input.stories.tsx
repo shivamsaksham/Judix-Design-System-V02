@@ -42,19 +42,19 @@ const MOCK_FOLDERS = [
         value: "1",
         title: "Patna land case",
         subtext: "Land acquisition case filed in Patna HC. Respondent side.",
-        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5" />,
     },
     {
         value: "2",
         title: "GST tax notice case",
         subtext: "GST notice tax refund case. Issue in filing of GSTR 3B",
-        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 " />,
     },
     {
         value: "3",
         title: "Non bailable offence lucknow",
         subtext: "A murder case in Lucknow. Petitioner side.",
-        leadingIcon: <Icon name="document-text-a" className="w-5 h-5 text-gray-700" />,
+        leadingIcon: <Icon name="document-text-a" className="w-5 h-5" />,
     },
 ];
 
@@ -125,6 +125,7 @@ const MENTIONS_OPTIONS: OptionHelper[] = [
 const COMMAND_OPTIONS: OptionHelper[] = [
     { value: "/Find case laws", title: "/ Find case laws" },
     { value: "/Interpret Laws and rules", title: "/ Interpret Laws and rules" },
+    { value: "/Explain and analyze", title: "/ Explain and analyze" },
 ];
 
 const MOCK_TRIGGERS: Record<string, TriggerConfig> = {
@@ -138,6 +139,15 @@ const MOCK_STATIC_DATA: StaticDataConfig = {
     "Judge": ["D.Y. Chandrachud", "Sanjiv Khanna", "B.R. Gavai", "Surya Kant", "Hima Kohli", "Abhay S. Oka"].map(j => ({ value: j, title: j })),
     "Appellant": ["Union of India", "State of Maharashtra"].map(p => ({ value: p, title: p })),
     "Respondent": ["Union of India", "State of Maharashtra"].map(p => ({ value: p, title: p })),
+    "Act": [
+        "Constitution of India, 1950",
+        "Indian Penal Code, 1860",
+        "Code of Criminal Procedure, 1973",
+        "Code of Civil Procedure, 1908",
+        "Indian Evidence Act, 1872",
+        "Companies Act, 2013",
+        "Income Tax Act, 1961"
+    ].map(a => ({ value: a, title: a })),
 };
 
 const STORY_TOKEN_CONFIG: Record<string, TokenStructure> = {

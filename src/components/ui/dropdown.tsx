@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Option } from './option';
 import { TextInput } from './text-input';
+import { Button, ButtonProps } from './button';
 const cn = (...inputs: (string | boolean | undefined)[]) =>
   inputs.filter(Boolean).join(' ');
 
@@ -9,7 +10,7 @@ const cn = (...inputs: (string | boolean | undefined)[]) =>
 export interface DropdownOption {
   value: string;
   title: string;
-  subtext?: string;
+  subtext?: React.ReactNode;
   leadingIcon?: React.ReactNode;
   trailingAccessory?: React.ReactNode;
   className?: string;
@@ -24,6 +25,10 @@ export interface DropdownProps {
   placeholder?: string;
   className?: string;
   activeIndex?: number | null;
+  /** Ref forwarded to the search <input> inside the attached searchbar */
+  searchInputRef?: React.RefObject<HTMLInputElement | null>;
+  /** If true, the search input auto-focuses when the Dropdown mounts */
+  autoFocusSearch?: boolean;
 }
 
 export const Dropdown = ({
@@ -33,7 +38,9 @@ export const Dropdown = ({
   searchbar = "off",
   placeholder = "Search...",
   className,
-  activeIndex
+  activeIndex,
+  searchInputRef,
+  autoFocusSearch = false,
 }: DropdownProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const optionsContainerRef = useRef<HTMLDivElement>(null);
@@ -56,16 +63,30 @@ export const Dropdown = ({
   const renderSearchBar = () => {
     if (searchbar === "attached") {
       return (
-        <div className="border-b border-textinput-color-stroke-default text-">
+        <div className="flex items-center justify-between gap-2 border-b border-textinput-color-stroke-default p-2">
           <TextInput
             inputSize="medium"
-            label="" // Hide the label
+            label=""
             placeholder={placeholder}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            
             variant="default"
-            className="px-6 py-2 border-t-0 border-x-0 rounded-t-none rounded-b-none border-textinput-bg placeholder:text-red-100"
+            className="flex-1 w-full border-none bg-transparent shadow-none focus-visible:ring-0"
+            ref={searchInputRef}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={autoFocusSearch}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (activeIndex !== undefined && activeIndex !== null && filteredOptions[activeIndex]) {
+                  onChange(filteredOptions[activeIndex].value);
+                  setSearchTerm("");
+                } else if (filteredOptions.length > 0) {
+                  onChange(filteredOptions[0].value);
+                  setSearchTerm("");
+                }
+              }
+            }}
           />
         </div>
       );
@@ -80,6 +101,18 @@ export const Dropdown = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-72 bg-textinput-bg"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (activeIndex !== undefined && activeIndex !== null && filteredOptions[activeIndex]) {
+                onChange(filteredOptions[activeIndex].value);
+                setSearchTerm("");
+              } else if (filteredOptions.length > 0) {
+                onChange(filteredOptions[0].value);
+                setSearchTerm("");
+              }
+            }
+          }}
         />
       );
     }
@@ -104,7 +137,10 @@ export const Dropdown = ({
               suffixSlot={option.trailingAccessory}
               selected={value === option.value}
               highlighted={activeIndex === index}
-              onClick={() => {
+              onPointerDown={(e) => {
+                // Use pointerDown so selection fires immediately for both
+                // mouse clicks and touchpad tap-to-click (avoids focus/blur race)
+                e.preventDefault();
                 onChange(option.value);
                 setSearchTerm("");
               }}
