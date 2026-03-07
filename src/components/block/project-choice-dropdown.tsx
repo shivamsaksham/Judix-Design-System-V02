@@ -83,7 +83,7 @@ export function ProjectChoiceDropdown({
                     size="extraSmall"
                     prefixIcon="add"
                     onClick={() => {
-                        router.push("/projects/new");
+                        router.push("/projects");
                         onNewProject?.();
                     }}
                     className="shrink-0"
