@@ -31,7 +31,7 @@ export interface OptionProps
   extends React.HTMLAttributes<HTMLDivElement>,
   VariantProps<typeof optionVariants> {
   title: string
-  subtext?: string
+  subtext?: React.ReactNode
   selected?: boolean
   highlighted?: boolean
   disabled?: boolean
@@ -50,13 +50,13 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
 
 
         <div className="flex-grow flex flex-row justify-between">
-          <div className="flex justify-center items-center gap-1">
+          <div className="flex items-start gap-2">
             {prefixSlot &&
-              <div className="text-option-color-icon w-[18px] h-[18px] flex items-center justify-center">
+              <div className="text-color-icon-neutral-default w-6 h-6 shrink-0 flex items-center justify-center">
                 {prefixSlot}
               </div>
             }
-            <div className="option-font-title p-1">
+            <div className="option-font-title text-style-font-heading-heading-6 pt-0.5">
               {title}
             </div>
           </div>
@@ -66,7 +66,7 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
             </div>
           }
         </div>
-        {subtext && <div className="text-option-color-subtext option-font-subtext p-1">{subtext}</div>}
+        {subtext && <div className="text-option-color-subtext option-font-subtext px-1 pb-1 ml-8">{subtext}</div>}
 
       </div>
     )
