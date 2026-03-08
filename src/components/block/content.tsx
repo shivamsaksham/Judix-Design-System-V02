@@ -7,6 +7,7 @@ import { ResponseActions } from './response-actions';
 import { FollowUpQuery } from '@/components/block/follow-up-query';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AiThinking, type AiThinkingProps } from './ai-thinking';
 
 export interface ContentProps {
     query: string;
@@ -29,6 +30,7 @@ export interface ContentProps {
     hideQuery?: boolean;
     animate?: boolean;
     isStreaming?: boolean;
+    aiThinkingProps?: AiThinkingProps;
 }
 
 export const Content = ({
@@ -51,6 +53,7 @@ export const Content = ({
     hideQuery,
     animate = false,
     isStreaming = false,
+    aiThinkingProps,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
 
@@ -79,18 +82,24 @@ export const Content = ({
     }, [markdown, animate]);
 
     return (
-        <div className={cn('flex flex-col w-full mx-auto', className)}>
+        <div className={cn('flex flex-col w-full mx-auto gap-4', className)}>
             {/* User Query Section */}
-            <div className='p-1 mt-6'>
-                {!hideQuery && (
-                    <UserQuery
-                        query={query}
-                        onEdit={onQueryEdit}
-                    />
-                )}
-                {/* Results Section */}
+            {!hideQuery && (
+                <UserQuery
+                    query={query}
+                    onEdit={onQueryEdit}
+                />
+            )}
+
+            {/* AI Thinking Component */}
+            {aiThinkingProps && (
+                <AiThinking {...aiThinkingProps} />
+            )}
+
+            {/* Complete Result Section */}
+            <div className="flex flex-col">
                 {(caseLawsCount > 0 || actsCount > 0) && (
-                    <div className="mb-6 mt-6">
+                    <div className="my-6">
                         <Artifacts
                             title='Cases'
                             subtitle={`Found ${caseLawsCount} cases`}

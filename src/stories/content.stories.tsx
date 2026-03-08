@@ -156,7 +156,38 @@ export const WithFollowUpQueries: Story = {
             'What is the difference between regular bail and anticipatory bail in such cases?',
         ],
         onFollowUpQueryClick: (query) => console.log('Follow-up query clicked:', query),
-        onLike: () => console.log('Liked response'),
         onDislike: () => console.log('Disliked response'),
+    },
+};
+
+export const WithAiThinking: Story = {
+    args: {
+        query: 'What are the recent supreme court judgements on anticipatory bail?',
+        caseLawsCount: 16,
+        actsCount: 2,
+        markdown: sampleMarkdown,
+        aiThinkingProps: {
+            variant: 'expanded',
+            label: 'Judix is thinking...',
+            badge: '4 of 6 steps',
+            steps: [
+                {
+                    title: 'Interpreted your legal query',
+                    description: 'Application of anticipatory bail...',
+                    duration: '0.3s',
+                    completed: true,
+                },
+                {
+                    title: 'Scanning Supreme Court precedents',
+                    description: '16 case laws found from SCR.',
+                    duration: '1.1s',
+                    completed: true,
+                },
+                {
+                    title: 'Ranking by relevance & recency',
+                    completed: false,
+                },
+            ]
+        }
     },
 };
