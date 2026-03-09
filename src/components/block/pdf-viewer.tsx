@@ -10,6 +10,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 //Add a slide-in right animation in parent
+//Add a black overlay to the parent of 50% opacity
 export interface PdfViewerProps extends React.HTMLAttributes<HTMLDivElement> {
     title: string;
     currentPage: number;

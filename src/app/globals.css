@@ -267,11 +267,22 @@
 
   /* Border */
   --border-radius-modal: var(--primitives-border-radius-md);
+  --radius-modal: var(--border-radius-modal);
+
   --border-radius-small: var(--primitives-border-radius-xs);
+  --radius-small: var(--border-radius-small);
+
   --border-radius-sharp: var(--primitives-border-radius-sm);
+  --radius-sharp: var(--border-radius-sharp);
+
   --border-radius-InteractiveElements: var(--primitives-border-radius-sm);
+  --radius-InteractiveElements: var(--border-radius-InteractiveElements);
+
   --border-radius-large: var(--primitives-border-radius-lg);
+  --radius-large: var(--border-radius-large);
+
   --border-radius-round: var(--primitives-border-radius-full);
+  --radius-round: var(--border-radius-round);
   --border-weight-none: var(--primitives-border-weight-none);
   --border-weight-default: var(--primitives-border-weight-sm);
   --border-weight-IconDefault: var(--primitives-border-weight-md);
