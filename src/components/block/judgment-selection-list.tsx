@@ -100,7 +100,7 @@ export const JudgmentSelectionList = ({
                 <div className="flex flex-col">
 
                     {/* The list of judgment tiles */}
-                    <div className="flex flex-col bg-color-surface-neutral-subtle_bg">
+                    <div className="flex flex-col bg-color-surface-neutral-default">
                         {judgments.map((judgment, idx) => {
                             // Determine selection state logic
                             let tileState: 'default' | 'selected' | 'unselected' = 'default';
