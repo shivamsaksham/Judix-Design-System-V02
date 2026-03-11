@@ -19,7 +19,7 @@ export interface JudgmentSelectionListProps {
 export const JudgmentSelectionList = ({
     className,
     judgments = [],
-    isConfirmed = false,
+    isConfirmed: isConfirmedProp = false,
     isExpanded: isExpandedProp,
     selectedIndex: selectedIndexProp,
     onToggleExpand,
@@ -29,11 +29,21 @@ export const JudgmentSelectionList = ({
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
-    const [internalExpanded, setInternalExpanded] = useState(true);
+    const [internalExpanded, setInternalExpanded] = useState(!isConfirmedProp);
     const [internalSelectedIndex, setInternalSelectedIndex] = useState<number | null>(null);
+    const [internalConfirmed, setInternalConfirmed] = useState(isConfirmedProp);
+
+    React.useEffect(() => {
+        setInternalConfirmed(isConfirmedProp);
+        if (isConfirmedProp) {
+            setInternalExpanded(false);
+        }
+    }, [isConfirmedProp]);
+
 
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
     const selectedIndex = selectedIndexProp !== undefined ? selectedIndexProp : internalSelectedIndex;
+    const isConfirmed = internalConfirmed;
 
     const handleToggle = () => {
         const next = !isExpanded;
@@ -45,6 +55,12 @@ export const JudgmentSelectionList = ({
         if (isConfirmed) return; // Don't allow changing selection if already confirmed
         setInternalSelectedIndex(idx);
         onSelect?.(idx);
+    };
+
+    const handleConfirm = () => {
+        setInternalConfirmed(true);
+        setInternalExpanded(false);
+        onConfirm?.();
     };
 
     return (
@@ -112,7 +128,7 @@ export const JudgmentSelectionList = ({
                             <Button
                                 size="extraSmall"
                                 variant="primary"
-                                onClick={onConfirm}
+                                onClick={handleConfirm}
                                 disabled={selectedIndex === null}
                             >
                                 Confirm and proceed

@@ -14,6 +14,30 @@ export const ProNudge = ({
     onYesClick,
     onNoClick,
 }: ProNudgeProps) => {
+    const [isConfirmed, setIsConfirmed] = React.useState(false);
+    const [accepted, setAccepted] = React.useState(false);
+
+    const handleYes = () => {
+        setIsConfirmed(true);
+        setAccepted(true);
+        onYesClick?.();
+    };
+
+    const handleNo = () => {
+        setIsConfirmed(true);
+        setAccepted(false);
+        onNoClick?.();
+    };
+
+    if (isConfirmed) {
+        return (
+            <div className={cn('flex items-center gap-2 px-4 py-2 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default text-color-text-neutral-secondary text-style-label-default-regular', className)}>
+                <Icon name={accepted ? "tick-circle" : "close-circle"} className={cn("w-4 h-4", accepted ? "text-color-text-feedback-success-default" : "text-color-text-neutral-tertiary")} />
+                <span>{accepted ? "Switched to Judix-pro v1.6" : "Continuing with current model"}</span>
+            </div>
+        );
+    }
+
     return (
         <div
             className={cn(
@@ -32,10 +56,10 @@ export const ProNudge = ({
                     </span>
                     {/* Mobile buttons */}
                     <div className="flex md:hidden items-center gap-2 mt-2">
-                        <Button size="extraSmall" variant="primary" onClick={onYesClick}>
+                        <Button size="extraSmall" variant="primary" onClick={handleYes}>
                             Yes
                         </Button>
-                        <Button size="extraSmall" variant="neutral" onClick={onNoClick}>
+                        <Button size="extraSmall" variant="neutral" onClick={handleNo}>
                             No
                         </Button>
                     </div>
@@ -44,10 +68,10 @@ export const ProNudge = ({
 
             {/* Desktop buttons */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
-                <Button size="extraSmall" variant="primary" onClick={onYesClick}>
+                <Button size="extraSmall" variant="primary" onClick={handleYes}>
                     Yes
                 </Button>
-                <Button size="extraSmall" variant="neutral" onClick={onNoClick}>
+                <Button size="extraSmall" variant="neutral" onClick={handleNo}>
                     No
                 </Button>
             </div>
