@@ -38,7 +38,6 @@ export const JudgmentTile = ({
             onClick={onClick}
             className={cn(
                 'flex flex-col md:flex-row w-full bg-color-surface-neutral-default overflow-hidden',
-                'border border-color-border-neutral-default',
                 isUnselected ? 'opacity-50 transition-opacity' : 'opacity-100 transition-opacity',
                 onClick ? 'cursor-pointer' : '',
                 onClick && !isUnselected ? 'hover:bg-color-surface-neutral-hover_default' : '',

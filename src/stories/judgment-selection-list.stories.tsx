@@ -100,7 +100,7 @@ export const Interactive: Story = {
                     onConfirm={() => {
                         console.log('Confirmed!');
                         setIsConfirmed(true);
-                        setIsExpanded(false); // standard UX: collapse on confirm
+                        setIsExpanded(false);
                     }}
                     onReject={() => {
                         console.log('Rejected!');
