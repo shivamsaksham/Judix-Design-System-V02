@@ -22,7 +22,7 @@ export interface JudgmentSelectionListProps {
 export const JudgmentSelectionList = ({
     className,
     judgments = [],
-    isConfirmed = false,
+    isConfirmed: isConfirmedProp = false,
     isExpanded: isExpandedProp,
     selectedIndex: selectedIndexProp,
     onToggleExpand,
@@ -34,13 +34,23 @@ export const JudgmentSelectionList = ({
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
-    const [internalExpanded, setInternalExpanded] = useState(true);
+    const [internalExpanded, setInternalExpanded] = useState(!isConfirmedProp);
     const [internalSelectedIndex, setInternalSelectedIndex] = useState<number | null>(null);
     const [showManualInput, setShowManualInput] = useState(defaultShowManualInput);
     const [manualQuery, setManualQuery] = useState('');
+    const [internalConfirmed, setInternalConfirmed] = useState(isConfirmedProp);
+
+    React.useEffect(() => {
+        setInternalConfirmed(isConfirmedProp);
+        if (isConfirmedProp) {
+            setInternalExpanded(false);
+        }
+    }, [isConfirmedProp]);
+
 
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
     const selectedIndex = selectedIndexProp !== undefined ? selectedIndexProp : internalSelectedIndex;
+    const isConfirmed = internalConfirmed;
 
     const handleToggle = () => {
         const next = !isExpanded;
@@ -59,6 +69,13 @@ export const JudgmentSelectionList = ({
         setInternalExpanded(false);
         onToggleExpand?.(false);
         onReject?.();
+    };
+
+    const handleConfirm = () => {
+        setInternalConfirmed(true);
+        setInternalExpanded(false);
+        onToggleExpand?.(false);
+        onConfirm?.();
     };
 
     const handleManualSearch = () => {
@@ -130,7 +147,7 @@ export const JudgmentSelectionList = ({
                             <Button
                                 size="extraSmall"
                                 variant="primary"
-                                onClick={onConfirm}
+                                onClick={handleConfirm}
                                 disabled={selectedIndex === null}
                             >
                                 Confirm and proceed
@@ -154,6 +171,7 @@ export const JudgmentSelectionList = ({
                         value={manualQuery}
                         onChange={(e) => setManualQuery(e.target.value)}
                         className="flex-grow h-[42px]"
+                        inputClassName="placeholder:text-[13px] py-1"
                         inputSize="small"
                     />
                     <Button

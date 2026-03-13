@@ -14,17 +14,17 @@ export interface ProjectChoiceItem {
 }
 
 export interface ProjectChoiceDropdownProps {
-    /** List of projects to display */
+    /* List of projects to display */
     projects: ProjectChoiceItem[];
-    /** Currently selected project id */
+    /* Currently selected project id */
     selectedProjectId?: string | null;
-    /** Called when a project is selected */
+    /* Called when a project is selected */
     onSelect?: (project: ProjectChoiceItem) => void;
-    /** Search placeholder */
+    /* Search placeholder */
     placeholder?: string;
-    /** Label for the action button (default: "New project") */
+    /* Label for the action button (default: "New project") */
     newProjectLabel?: string;
-    /** Called when the "New project" button is clicked */
+    /* Called when the "New project" button is clicked */
     onNewProject?: () => void;
     className?: string;
 }
@@ -83,7 +83,7 @@ export function ProjectChoiceDropdown({
                     size="extraSmall"
                     prefixIcon="add"
                     onClick={() => {
-                        router.push("/projects");
+                        router.push("/projects?new=true");
                         onNewProject?.();
                     }}
                     className="shrink-0"

@@ -206,6 +206,7 @@ interface SearchEngineInputProps {
     onProjectClick?: () => void;
     modelName?: string;
     projects?: ProjectChoiceItem[];
+    showProjectSelector?: boolean;
 }
 
 function SearchEngineInput({
@@ -227,6 +228,7 @@ function SearchEngineInput({
     onProjectClick,
     modelName: propModelName = "Judix Default",
     projects = [],
+    showProjectSelector = true,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
 
@@ -1068,7 +1070,7 @@ function SearchEngineInput({
         const isTokenTypeName =
             Object.keys(tokenConfig).includes(option) || option.startsWith("Court:");
 
-        // ── Case A: setting a VALUE for an already-open wrapper (Judge name, Act name, etc.) ──
+        //  Case A: setting a VALUE for an already-open wrapper (Judge name, Act name, etc.) 
         if (activeWrapperType && activeWrapperRef.current && !isTokenTypeName) {
             const wrapper = activeWrapperRef.current;
             const firstInput = wrapper.querySelector(".static-value-input") as HTMLElement | null;
@@ -1121,7 +1123,7 @@ function SearchEngineInput({
             return;
         }
 
-        // ── Case B: caret inside a wrapper's value input ──
+        //  Case B: caret inside a wrapper's value input 
         const selection = window.getSelection();
         if (!isTokenTypeName && selection && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
@@ -1178,7 +1180,7 @@ function SearchEngineInput({
             }
         }
 
-        // ── Case C: inserting a brand-new token wrapper ──
+        //  Case C: inserting a brand-new token wrapper 
         const isStaticType = isTokenTypeName;
         const isTriggerOption = activeTrigger === "@" || activeTrigger === "/";
 
@@ -1496,21 +1498,23 @@ function SearchEngineInput({
         >
             <div className="relative w-full flex flex-col items-center min-h-fit">
                 {/* Project selector */}
-                <div className="w-full flex justify-start mb-2 pl-4">
-                    <button
-                        onClick={() =>
-                            setActiveDropdown((prev) => (prev === "project" ? null : "project"))
-                        }
-                        ref={projectBtnRef}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
-                    >
-                        <Icon
-                            name="folder-a"
-                            className="w-4 h-4 text-color-icon-neutral-secondary shrink-0 -mt-0.5"
-                        />
-                        <span>{projectLabel}</span>
-                    </button>
-                </div>
+                {showProjectSelector && (
+                    <div className="w-full flex justify-start mb-2 pl-4">
+                        <button
+                            onClick={() =>
+                                setActiveDropdown((prev) => (prev === "project" ? null : "project"))
+                            }
+                            ref={projectBtnRef}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
+                        >
+                            <Icon
+                                name="folder-a"
+                                className="w-4 h-4 text-color-icon-neutral-secondary shrink-0 -mt-0.5"
+                            />
+                            <span>{projectLabel}</span>
+                        </button>
+                    </div>
+                )}
 
                 {helperText && (
                     <div
@@ -1708,7 +1712,7 @@ function SearchEngineInput({
     );
 }
 
-// ── DOM helpers ──────────────────────────────────────────────────────────────
+//  DOM helpers 
 
 function getWrapperNode(node: Node | null): HTMLSpanElement | null {
     if (!node) return null;

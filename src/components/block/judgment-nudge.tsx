@@ -22,7 +22,7 @@ export interface JudgmentNudgeProps {
 
 export const JudgmentNudge = ({
     className,
-    isConfirmed = false,
+    isConfirmed: isConfirmedProp = false,
     isExpanded: isExpandedProp,
     onToggleExpand,
     onConfirm,
@@ -34,14 +34,29 @@ export const JudgmentNudge = ({
     bench,
     summary,
 }: JudgmentNudgeProps) => {
-    const [internalExpanded, setInternalExpanded] = useState(true);
+    const [internalExpanded, setInternalExpanded] = useState(!isConfirmedProp);
+    const [internalConfirmed, setInternalConfirmed] = useState(isConfirmedProp);
+
+    React.useEffect(() => {
+        setInternalConfirmed(isConfirmedProp);
+        if (isConfirmedProp) {
+            setInternalExpanded(false);
+        }
+    }, [isConfirmedProp]);
 
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
+    const isConfirmed = internalConfirmed;
 
     const handleToggle = () => {
         const next = !isExpanded;
         setInternalExpanded(next);
         onToggleExpand?.(next);
+    };
+
+    const handleConfirm = () => {
+        setInternalConfirmed(true);
+        setInternalExpanded(false);
+        onConfirm?.();
     };
 
     return (
@@ -110,7 +125,7 @@ export const JudgmentNudge = ({
                     {/* Action Buttons (Only show if NOT confirmed) */}
                     {!isConfirmed && (
                         <div className="flex items-center gap-2 mt-2">
-                            <Button size="extraSmall" variant="primary" onClick={onConfirm}>
+                            <Button size="extraSmall" variant="primary" onClick={handleConfirm}>
                                 Yes, this is the judgment
                             </Button>
                             <Button size="extraSmall" variant="neutral" onClick={onReject}>
