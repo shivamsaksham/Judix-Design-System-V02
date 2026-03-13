@@ -43,7 +43,7 @@ export const JudgmentTile = ({
                 onClick && !isUnselected ? 'hover:bg-color-surface-neutral-hover_default' : '',
                 className
             )}
-            style={isSelected ? { borderLeftWidth: '8px', borderLeftColor: 'var(--color-border-primary-strong)' } : {}}
+            style={isSelected ? { borderLeftWidth: '8px', borderLeftColor: 'var(--color-color-border-primary-strong)' } : {}}
         >
             <div className="flex w-full p-4 gap-4">
                 {/* Index Number Box */}

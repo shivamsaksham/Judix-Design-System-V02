@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { Button } from '@/components/ui/button';
+import { TextInput } from '@/components/ui/text-input';
 import { JudgmentTile, JudgmentTileProps } from './judgment-tile';
 
 export interface JudgmentSelectionListProps {
@@ -14,6 +15,8 @@ export interface JudgmentSelectionListProps {
     onSelect?: (index: number) => void;
     onConfirm?: () => void;
     onReject?: () => void;
+    onManualSearch?: (query: string) => void;
+    defaultShowManualInput?: boolean;
 }
 
 export const JudgmentSelectionList = ({
@@ -26,11 +29,15 @@ export const JudgmentSelectionList = ({
     onSelect,
     onConfirm,
     onReject,
+    onManualSearch,
+    defaultShowManualInput = false,
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
     const [internalExpanded, setInternalExpanded] = useState(true);
     const [internalSelectedIndex, setInternalSelectedIndex] = useState<number | null>(null);
+    const [showManualInput, setShowManualInput] = useState(defaultShowManualInput);
+    const [manualQuery, setManualQuery] = useState('');
 
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
     const selectedIndex = selectedIndexProp !== undefined ? selectedIndexProp : internalSelectedIndex;
@@ -45,6 +52,17 @@ export const JudgmentSelectionList = ({
         if (isConfirmed) return; // Don't allow changing selection if already confirmed
         setInternalSelectedIndex(idx);
         onSelect?.(idx);
+    };
+
+    const handleReject = () => {
+        setShowManualInput(true);
+        setInternalExpanded(false);
+        onToggleExpand?.(false);
+        onReject?.();
+    };
+
+    const handleManualSearch = () => {
+        onManualSearch?.(manualQuery);
     };
 
     return (
@@ -117,11 +135,35 @@ export const JudgmentSelectionList = ({
                             >
                                 Confirm and proceed
                             </Button>
-                            <Button size="extraSmall" variant="neutral" onClick={onReject}>
+                            <Button size="extraSmall" variant="neutral" onClick={handleReject}>
                                 None of these
                             </Button>
                         </div>
                     )}
+
+                </div>
+            )}
+
+            {showManualInput && (
+                <div className={cn(
+                    "p-4 bg-color-surface-neutral-default flex items-center gap-2",
+                    isExpanded && "border-t border-color-border-neutral-default"
+                )}>
+                    <TextInput
+                        placeholder="Type the full case name or case number"
+                        value={manualQuery}
+                        onChange={(e) => setManualQuery(e.target.value)}
+                        className="flex-grow h-[42px]"
+                        inputSize="small"
+                    />
+                    <Button
+                        variant="primary"
+                        size="small"
+                        onClick={handleManualSearch}
+                        className="h-[42px] px-6"
+                    >
+                        Search
+                    </Button>
                 </div>
             )}
         </div>

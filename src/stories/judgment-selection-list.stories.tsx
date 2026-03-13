@@ -81,6 +81,15 @@ export const ConfirmedCollapsed: Story = {
     },
 };
 
+export const ManualSearch: Story = {
+    args: {
+        judgments: sampleJudgments,
+        isConfirmed: false,
+        isExpanded: false,
+        defaultShowManualInput: true,
+    },
+};
+
 export const Interactive: Story = {
     args: { judgments: sampleJudgments },
     render: (args) => {
