@@ -48,7 +48,7 @@ export const JudgmentTile = ({
             <div className="flex w-full p-4 gap-4">
                 {/* Index Number Box */}
                 <div className="flex-shrink-0">
-                    <div className="w-12 h-12 flex items-center justify-center rounded-InteractiveElements border border-color-border-neutral-default bg-color-surface-neutral-default text-style-body-title-emphasis text-color-text-neutral-default">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-interactiveelement border border-color-border-neutral-default bg-color-surface-neutral-default text-style-body-title-emphasis text-color-text-neutral-default">
                         {String(index).padStart(2, '0')}
                     </div>
                 </div>

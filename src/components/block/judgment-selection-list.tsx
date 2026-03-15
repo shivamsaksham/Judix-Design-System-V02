@@ -170,7 +170,7 @@ export const JudgmentSelectionList = ({
                         placeholder="Type the full case name or case number"
                         value={manualQuery}
                         onChange={(e) => setManualQuery(e.target.value)}
-                        className="flex-grow h-[42px]"
+                        className="grow h-[42px]"
                         inputClassName="placeholder:text-[13px] py-1"
                         inputSize="small"
                     />
