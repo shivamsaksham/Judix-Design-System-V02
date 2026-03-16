@@ -20,7 +20,7 @@ export interface ActResultTileProps {
     onMention?: () => void;
     onClick?: () => void;
     isSelected?: boolean;
-    id?: string;
+    id: string;
     className?: string;
 }
 

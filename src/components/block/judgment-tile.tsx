@@ -2,36 +2,52 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface JudgmentTileProps {
+    id: string;
     className?: string;
-    index: string | number;
+    index?: string | number;
     title: string;
-    citation: string;
+    citation?: string; 
     court: string;
-    date: string;
-    bench: string;
-    summary: string;
-    matchScore: number;
+    year: string;
+    bench?: string;
+    description: string;
+    matchPercentage: string;
+    citationCount?: number;
     selectionState?: 'default' | 'selected' | 'unselected';
+    isSelected?: boolean;
+    isAdded?: boolean;
+    isBookmarked?: boolean;
+    isMentioned?: boolean;
+    onAdd?: () => void;
+    onBookmark?: () => void;
+    onMention?: () => void;
     onClick?: () => void;
 }
 
 export const JudgmentTile = ({
     className,
-    index,
+    index = 0,
     title,
     citation,
     court,
-    date,
+    year,
     bench,
-    summary,
-    matchScore,
+    description,
+    matchPercentage,
     selectionState = 'default',
+    isSelected,
     onClick,
 }: JudgmentTileProps) => {
 
-    // Determine dynamic classes based on selection state
-    const isSelected = selectionState === 'selected';
-    const isUnselected = selectionState === 'unselected';
+    // Determine selection state logic
+    const effectiveSelectionState = (isSelected !== undefined)
+        ? (isSelected ? 'selected' : 'default')
+        : selectionState;
+
+    const isSelectedState = effectiveSelectionState === 'selected';
+    const isUnselected = effectiveSelectionState === 'unselected';
+
+    const matchValue = parseFloat(matchPercentage) || 0;
 
     return (
         <div
@@ -43,7 +59,7 @@ export const JudgmentTile = ({
                 onClick && !isUnselected ? 'hover:bg-color-surface-neutral-hover_default' : '',
                 className
             )}
-            style={isSelected ? { borderLeftWidth: '8px', borderLeftColor: 'var(--color-color-border-primary-strong)' } : {}}
+            style={isSelectedState ? { borderLeftWidth: '8px', borderLeftColor: 'var(--color-color-border-primary-strong)' } : {}}
         >
             <div className="flex w-full p-4 gap-4">
                 {/* Index Number Box */}
@@ -64,16 +80,16 @@ export const JudgmentTile = ({
 
                             {/* Metadata Row 1 */}
                             <div className="flex flex-wrap items-center gap-4 text-style-label-default-regular text-color-text-neutral-default">
-                                <span className='p-1 text-style-label-default-regular' >{citation}</span>
+                                {citation && <span className='p-1 text-style-label-default-regular' >{citation}</span>}
                                 <span className='p-1 text-style-label-default-regular' >{court}</span>
-                                <span className='p-1 text-style-label-default-regular' >{date}</span>
-                                <span className='p-1 text-style-label-default-regular' >{bench}</span>
+                                <span className='p-1 text-style-label-default-regular' >{year}</span>
+                                {bench && <span className='p-1 text-style-label-default-regular' >{bench}</span>}
                             </div>
                         </div>
 
-                        {/* Summary */}
+                        {/* Description */}
                         <p className="p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-emphasis">
-                            {summary}
+                            {description}
                         </p>
                     </div>
 
@@ -86,12 +102,12 @@ export const JudgmentTile = ({
                         <div className="grow h-0.5 rounded-full bg-color-surface-neutral-hover_mild overflow-hidden">
                             <div
                                 className="h-full bg-color-border-primary-default rounded-full"
-                                style={{ width: `${Math.min(100, Math.max(0, matchScore))}%` }}
+                                style={{ width: `${Math.min(100, Math.max(0, matchValue))}%` }}
                             />
                         </div>
 
                         <span className="p-1 text-style-label-default-regular text-color-text-primary-default min-w-[32px] text-right">
-                            {matchScore}%
+                            {matchPercentage}
                         </span>
                     </div>
                 </div>

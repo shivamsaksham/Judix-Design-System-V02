@@ -279,9 +279,9 @@ export const AiThinking = ({
                                                 title={step.judgments[0].title}
                                                 citation={step.judgments[0].citation}
                                                 court={step.judgments[0].court}
-                                                date={step.judgments[0].date}
+                                                year={step.judgments[0].year}
                                                 bench={step.judgments[0].bench}
-                                                summary={step.judgments[0].summary}
+                                                description={step.judgments[0].description}
                                                 isConfirmed={isCompleted}
                                                 onConfirm={onJudgmentConfirm}
                                             />
