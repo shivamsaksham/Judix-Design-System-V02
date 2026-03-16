@@ -4,6 +4,9 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { Label } from '@/components/ui/label';
 import { ProNudge } from './pro-nudge';
+import { JudgmentTileProps } from './judgment-tile';
+import { JudgmentNudge } from './judgment-nudge';
+import { JudgmentSelectionList } from './judgment-selection-list';
 
 //  Types 
 
@@ -18,6 +21,8 @@ export interface ThinkingStep {
     duration?: string;
     /* Whether this individual step is done */
     completed?: boolean;
+    /* Judgments discovered in this step */
+    judgments?: JudgmentTileProps[];
 }
 
 export interface AiThinkingProps {
@@ -39,6 +44,8 @@ export interface AiThinkingProps {
     onProNudgeYesClick?: () => void;
     /* Callback when user clicks No on the ProNudge prompt */
     onProNudgeNoClick?: () => void;
+    /* Callback when user confirms a judgment nudge or selection */
+    onJudgmentConfirm?: () => void;
     /* Callback when expand/collapse is toggled */
     onToggle?: (expanded: boolean) => void;
     className?: string;
@@ -72,19 +79,26 @@ const PulseSpinnerCircle = () => (
 
 const CompletedCircle = () => (
     <svg
-        className="w-4 h-4 text-color-text-neutral-tertiary"
+        className="w-4 h-4 text-color-icon-primary-default"
         viewBox="0 0 16 16"
         fill="none"
     >
-        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="8" cy="8" r="6" fill="currentColor" />
+        <path d="M5.5 8.5L7 10L10.5 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
 
-const StepCircle = ({ completed }: { completed?: boolean }) => (
+const PendingCircle = () => (
+    <div className="flex items-center justify-center w-4 h-4 rounded-full border-[1.5px] border-color-border-neutral-default shrink-0 mb-px" />
+);
+
+const StepCircle = ({ completed, ongoing }: { completed?: boolean; ongoing?: boolean }) => (
     <div className="my-[5px] shrink-0">
         {completed
             ? <CompletedCircle />
-            : <PulseSpinnerCircle />}
+            : ongoing
+                ? <PulseSpinnerCircle />
+                : <PendingCircle />}
     </div>
 );
 
@@ -100,6 +114,7 @@ export const AiThinking = ({
     showProNudge = false,
     onProNudgeYesClick,
     onProNudgeNoClick,
+    onJudgmentConfirm,
     onToggle,
     className,
 }: AiThinkingProps) => {
@@ -108,13 +123,44 @@ export const AiThinking = ({
     // Support both controlled and uncontrolled expansion
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
 
+    const isCompleted = variant === 'completed';
+
+    const reachedNudgeCount = 
+        (showProNudge && steps.every(s => s.completed) ? 1 : 0) + 
+        steps.filter((s, i) => s.judgments && s.judgments.length > 0 && steps.slice(0, i).every(prev => prev.completed)).length;
+        
+    const prevReachedNudgeRef = React.useRef(reachedNudgeCount);
+
+    // Auto-expand when a new nudge is reached
+    React.useEffect(() => {
+        if (reachedNudgeCount > prevReachedNudgeRef.current) {
+            if (!isCompleted) {
+                setInternalExpanded(true);
+            }
+            prevReachedNudgeRef.current = reachedNudgeCount;
+        }
+    }, [reachedNudgeCount, isCompleted]);
+
+    // Handle prop-driven variant changes
+    const prevVariantRef = React.useRef(variant);
+    React.useEffect(() => {
+        if (variant !== prevVariantRef.current) {
+            if (variant === 'completed') {
+                setInternalExpanded(false);
+            } else if (variant === 'expanded') {
+                setInternalExpanded(true);
+            } else if (variant === 'collapsed') {
+                setInternalExpanded(false);
+            }
+            prevVariantRef.current = variant;
+        }
+    }, [variant]);
+
     const handleToggle = () => {
         const next = !isExpanded;
         setInternalExpanded(next);
         onToggle?.(next);
     };
-
-    const isCompleted = variant === 'completed';
 
     return (
         <div
@@ -181,43 +227,76 @@ export const AiThinking = ({
                 ) : (
                     <button
                         type="button"
-                        className="py-[2px] flex items-center gap-1 text-style-caption-regular text-color-text-neutral-tertiary hover:text-color-text-neutral-default transition-colors"
+                        onClick={(e) => { e.stopPropagation(); handleToggle(); }}
+                        className="py-[2px] flex items-center gap-1 text-style-label-default-regular text-color-text-neutral-tertiary hover:text-color-text-neutral-default transition-colors cursor-pointer shrink-0 whitespace-nowrap"
                     >
-                        Show reasoning steps
-                        <Icon name="arrow-down-c" className="w-4 h-4" />
+                        {isExpanded ? 'Hide reasoning steps' : 'Show reasoning steps'}
+                        <Icon name={isExpanded ? 'arrow-up-a' : 'arrow-down-c'} className="w-4 h-4 shrink-0" />
                     </button>
                 )}
             </div>
 
             {/*  Expanded step list  */}
-            {!isCompleted && isExpanded && steps.length > 0 && (
+            {isExpanded && steps.length > 0 && (
                 <div className="border-t border-color-border-neutral-default px-4 py-2 relative z-10 bg-color-surface-neutral-default">
-                    {steps.map((step, index) => (
-                        <div
-                            key={index}
-                            className="flex items-start gap-3 ai-thinking-step"
-                            style={{ animationDelay: `${index * 0.15}s` }}
-                        >
-                            <StepCircle completed={step.completed} />
+                    {steps.map((step, index) => {
+                        const firstIncompleteIndex = steps.findIndex(s => !s.completed);
+                        const isStepCompleted = isCompleted || step.completed || (firstIncompleteIndex !== -1 && index < firstIncompleteIndex);
+                        const isOngoing = !isStepCompleted && firstIncompleteIndex === index;
 
-                            <div className="flex-1 min-w-0 mb-4">
-                                <p className="p-1 text-style-textblock-secondary-subtext-emphasis text-color-text-neutral-default">
-                                    {step.title}
-                                </p>
-                                {step.description && (
-                                    <p className="px-[5px] text-style-textblock-secondary-subtext-regular text-color-text-neutral-secondary">
-                                        {step.description}
-                                    </p>
+                        return (
+                            <React.Fragment key={index}>
+                                <div
+                                    className="flex items-start gap-3 ai-thinking-step"
+                                    style={{ animationDelay: `${index * 0.15}s` }}
+                                >
+                                    <StepCircle
+                                        completed={isStepCompleted}
+                                        ongoing={isOngoing}
+                                    />
+
+                                    <div className="flex-1 min-w-0 mb-4">
+                                        <p className="p-1 text-style-textblock-secondary-subtext-emphasis text-color-text-neutral-default">
+                                            {step.title}
+                                        </p>
+                                        {step.description && (
+                                            <p className="px-[5px] text-style-textblock-secondary-subtext-regular text-color-text-neutral-secondary">
+                                                {step.description}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {step.duration && (
+                                        <span className="p-1 shrink-0 text-style-label-default-regular text-color-text-neutral-tertiary tabular-nums mt-px">
+                                            {step.duration}
+                                        </span>
+                                    )}
+                                </div>
+                                {step.judgments && step.judgments.length > 0 && (
+                                    <div className="flex flex-col gap-2 pl-[32px] mb-4 mt-2 ai-thinking-step" style={{ animationDelay: `${index * 0.15 + 0.05}s` }}>
+                                        {step.judgments.length === 1 ? (
+                                            <JudgmentNudge
+                                                title={step.judgments[0].title}
+                                                citation={step.judgments[0].citation}
+                                                court={step.judgments[0].court}
+                                                date={step.judgments[0].date}
+                                                bench={step.judgments[0].bench}
+                                                summary={step.judgments[0].summary}
+                                                isConfirmed={isCompleted}
+                                                onConfirm={onJudgmentConfirm}
+                                            />
+                                        ) : (
+                                            <JudgmentSelectionList
+                                                judgments={step.judgments}
+                                                isConfirmed={isCompleted}
+                                                onConfirm={onJudgmentConfirm}
+                                            />
+                                        )}
+                                    </div>
                                 )}
-                            </div>
-
-                            {step.duration && (
-                                <span className="p-1 shrink-0 text-style-label-default-regular text-color-text-neutral-tertiary tabular-nums mt-[1px]">
-                                    {step.duration}
-                                </span>
-                            )}
-                        </div>
-                    ))}
+                            </React.Fragment>
+                        )
+                    })}
                     {showProNudge && (
                         <div className="mt-2 ai-thinking-step" style={{ animationDelay: `${steps.length * 0.15 + 0.15}s` }}>
                             <ProNudge

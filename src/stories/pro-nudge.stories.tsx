@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ProNudge } from '@/components/block/pro-nudge';
 
 const meta = {
-    title: 'Components/Block/ProNudge',
+    title: 'Block/ProNudge',
     component: ProNudge,
     parameters: {
         layout: 'centered',

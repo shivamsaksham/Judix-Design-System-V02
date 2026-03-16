@@ -110,8 +110,14 @@ export const showToast = {
     toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
   info: (message: string, title?: string) =>
     toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  promise: (promise: Promise<unknown>, messages: { loading: string; success: string; error: string; }) =>
-    toast.promise(promise, messages),
+  promise: <T extends unknown>(
+    promise: Promise<T>,
+    messages: {
+      loading: React.ReactElement | string;
+      success: string | ((data: T) => string);
+      error: string | ((err: any) => string);
+    }
+  ) => toast.promise(promise, messages),
 };
 
 export const ToastContainer = ({ position = 'top-center' }: { position?: "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right" }) => {

@@ -52,6 +52,7 @@ export interface TextInputProps
   trailingAccessory?: React.ReactNode
   selectedLabels?: { text: string; onRemove: () => void }[]
   showLabelsInline?: boolean
+  inputClassName?: string;
   inputSize?: "small" | "medium" | "large";
   onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
@@ -70,6 +71,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       showLabelsInline = false,
       variant: propVariant,
       inputSize = "small",
+      inputClassName,
       onFocus,
       onBlur,
       ...props
@@ -142,12 +144,11 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           <input
             ref={ref}
             className={cn(
-              "flex-grow appearance-none focus:outline-none focus:ring-0 focus:border-none",
-              {
-                "pl-3": leadingIcon,
-                "pr-3": trailingAccessory,
-                "pl-2": hasLabels && showLabelsInline,
-              }
+              "flex-grow appearance-none focus:outline-none focus:ring-0 focus:border-none bg-transparent",
+              inputSize === "small" && "placeholder:text-style-label-default-regular",
+              inputSize === "medium" && "placeholder:text-style-body-default-regular",
+              inputSize === "large" && "placeholder:text-style-body-title-regular",
+              inputClassName
             )}
             onFocus={handleFocus}
             onBlur={handleBlur}

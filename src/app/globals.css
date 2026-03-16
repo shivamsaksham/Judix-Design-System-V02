@@ -266,12 +266,13 @@
   --font-line_height-textblock-largetext: var(--primitives-font-height-500);
 
   /* Border */
-  --border-radius-modal: var(--primitives-border-radius-md);
-  --border-radius-small: var(--primitives-border-radius-xs);
-  --border-radius-sharp: var(--primitives-border-radius-sm);
-  --border-radius-InteractiveElements: var(--primitives-border-radius-sm);
-  --border-radius-large: var(--primitives-border-radius-lg);
-  --border-radius-round: var(--primitives-border-radius-full);
+  --radius-radius-modal: var(--primitives-border-radius-md);
+  --radius-radius-small: var(--primitives-border-radius-xs);
+  --radius-radius-sharp: var(--primitives-border-radius-sm);
+  --radius-radius-interactiveelement: var(--primitives-border-radius-sm);
+  --radius-radius-large: var(--primitives-border-radius-lg);
+  --radius-radius-round: var(--primitives-border-radius-full);
+
   --border-weight-none: var(--primitives-border-weight-none);
   --border-weight-default: var(--primitives-border-weight-sm);
   --border-weight-IconDefault: var(--primitives-border-weight-md);
@@ -318,7 +319,7 @@
   --color-button-color-error-disabled-text: var(--color-color-text-feedback-error-ondefault);
   --color-button-color-error-disabled-icon: var(--color-color-icon-feedback-error-ondefault);
   /* Button Border Radius */
-  --radius-button-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-button-border-radius-default: var(--radius-radius-interactiveelement);
   /* Button Border Weight - Un-tokenized : should be used directly as class `button-border-weight-default`  */
   --button-border-weight-default: var(--border-weight-default);
 
@@ -336,7 +337,7 @@
   --color-label-color-primary-text: var(--color-color-text-primary-default);
   --color-label-color-primary-selectedtext: var(--color-color-text-primary-default);
   /* label Border Radius */
-  --radius-label-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-label-border-radius-default: var(--radius-radius-interactiveelement);
   /* label Border Weight - Un-tokenized : should be used directly as class `label-border-weight-default`  */
   --label-border-weight-default: var(--border-weight-default);
 
@@ -346,8 +347,8 @@
   --color-number_badges-color-primary-bg: var(--color-color-surface-primary-hover_mild);
   --color-number_badges-color-primary-text: var(--color-color-text-primary-default);
   /* Number Badges Border Radius */
-  --radius-number_badges-border-radius-small: var(--border-radius-small);
-  --radius-number_badges-border-radius-round: var(--border-radius-round);
+  --radius-number_badges-border-radius-small: var(--radius-radius-small);
+  --radius-number_badges-border-radius-round: var(--radius-radius-round);
   /* Number Badges Border Weight - Un-tokenized : should be used directly as class `number_badges-border-weight-default`  */
   --number_badges-border-weight-default: var(--border-weight-none);
 
@@ -369,7 +370,7 @@
   --color-toast-color-success-bg: var(--color-color-surface-neutral-subtle_bg);
   --color-toast-color-success-stroke: var(--color-color-border-neutral-default);
   /* Toast Border Radius */
-  --radius-toast-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-toast-border-radius-default: var(--radius-radius-interactiveelement);
   /* Toast Border Weight - Un-tokenized : should be used directly as class `toast-border-weight-default`  */
   --toast-border-weight-default: var(--border-weight-default);
 
@@ -391,7 +392,7 @@
   --color-checkbox-color-primary-disabled: var(--color-color-surface-primary-disabled);
   --color-checkbox-color-primary-tick: var(--color-color-icon-neutral-onneutral);
   /* Checkbox Border Radius */
-  --radius-checkbox-border-radius-default: var(--border-radius-small);
+  --radius-checkbox-border-radius-default: var(--radius-radius-small);
   /* Checkbox Border Weight - Un-tokenized : should be used directly as class `checkbox-border-weight-default`  */
   --checkbox-border-weight-default: var(--border-weight-default);
 
@@ -417,9 +418,9 @@
   --color-icon_button-color-primary-icon: var(--color-color-icon-primary-default);
   --color-icon_button-color-primary-disabled: var(--color-color-icon-primary-disabled);
   /* Icon Button Border Radius */
-  --radius-icon_button-border-radius-default: var(--border-radius-InteractiveElements);
-  --radius-icon_button-border-radius-round: var(--border-radius-round);
-  --radius-icon_button-border-radius-sharp: var(--border-radius-sharp);
+  --radius-icon_button-border-radius-default: var(--radius-radius-interactiveelement);
+  --radius-icon_button-border-radius-round: var(--radius-radius-round);
+  --radius-icon_button-border-radius-sharp: var(--radius-radius-sharp);
   /* Icon Button Border Weight - Un-tokenized : should be used directly as class `icon_button-border-weight-default`  */
   --icon_button-border-weight-default: var(--border-weight-default);
 
@@ -434,18 +435,18 @@
   --color-calendar-color-selected: var(--color-color-surface-primary-default);
   --color-calendar-color-card_stroke: var(--color-color-border-neutral-default);
   /* Calendar Border Radius */
-  --radius-calendar-border-radius-default: var(--border-radius-modal);
+  --radius-calendar-border-radius-default: var(--radius-radius-modal);
   /* Calendar Border Weight - Un-tokenized : should be used directly as class `calendar-border-weight-default`  */
   --calendar-border-weight-default: var(--border-weight-default);
   /* Tooltip classes */
-  --radius-tooltip-border-radius-default: var(--border-radius-sharp);
+  --radius-tooltip-border-radius-default: var(--radius-radius-sharp);
   /* Pagination */
   --color-pagination-color-bg: var(--color-color-surface-neutral-default);
   --color-pagination-color-text: var(--color-color-icon-neutral-default);
   --color-pagination-color-stroke: var(--color-color-border-neutral-default);
   --color-pagination-color-selected: var(--color-color-surface-neutral-hover_default);
   /* Pagination Border Radius */
-  --radius-pagination-border-radius-default: var(--border-radius-round);
+  --radius-pagination-border-radius-default: var(--radius-radius-round);
   /* Pagination Border Weight - Un-tokenized : should be used directly as class `pagination-border-weight-default`  */
   --pagination-border-weight-default: var(--border-weight-default);
 
@@ -457,7 +458,7 @@
   --color-option-color-subtext: var(--color-color-icon-neutral-tertiary);
   --color-option-color-selected: var(--color-color-surface-primary-subtle_bg);
   /* Options Radius */
-  --radius-option-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-option-border-radius-default: var(--radius-radius-interactiveelement);
   /* Options Border Weight - Un-tokenized : should be used directly as class `option-border-weight-default`  */
   --option-border-weight-default: var(--border-weight-none);
 
@@ -465,7 +466,7 @@
   --color-dropdown-color-bg: var(--color-color-surface-neutral-default);
   --color-dropdown-color-stroke: var(--color-color-border-neutral-default);
   /* Dropdowns Border Radius */
-  --radius-dropdown-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-dropdown-border-radius-default: var(--radius-radius-interactiveelement);
   /* Dropdowns Border Weight - Un-tokenized : should be used directly as class `dropdown-border-weight-default`  */
   --dropdown-border-weight-default: var(--border-weight-default);
 
@@ -475,7 +476,7 @@
   --color-tag_selector-color-textdefault: var(--color-color-text-neutral-placeholder);
   --color-tag_selector-color-textselected: var(--color-color-text-neutral-secondary);
   /* Tag Selectors Border Radius */
-  --radius-tag_selector-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-tag_selector-border-radius-default: var(--radius-radius-interactiveelement);
   /* Tag Selectors Border Weight - Un-tokenized : should be used directly as class `tag_selector-border-weight-default`  */
   --tag_selector-border-weight-default: var(--border-weight-default);
 
@@ -486,7 +487,7 @@
   --color-confirmation-color-bodytext: var(--color-color-text-neutral-default);
   --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary) --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
   /* Confirmation Modals Border Radius */
-  --radius-confirmation-border-radius-default: var(--border-radius-modal);
+  --radius-confirmation-border-radius-default: var(--radius-radius-modal);
   /* Confirmation Modals Border Weight - Un-tokenized : should be used directly as class `confirmation-border-weight-default`  */
   --confirmation-border-weight-default: var(--border-weight-default);
 
@@ -498,7 +499,7 @@
   --color-alert_card-color-iconprimary: var(--color-color-icon-neutral-default);
   --color-alert_card-color-iconsecondary: var(--color-color-icon-neutral-tertiary);
   /* Alert Cards Border Radius */
-  --radius-alert_card-border-radius-default: var(--border-radius-modal);
+  --radius-alert_card-border-radius-default: var(--radius-radius-modal);
   /* Alert Cards Border Weight - Un-tokenized : should be used directly as class `alert_card-border-weight-default`  */
   --alert_card-border-weight-default: var(--border-weight-default);
 
@@ -515,7 +516,7 @@
   --color-textinput-bg: var(--color-color-surface-neutral-default);
   --color-textinput-color-icon-error: var(--color-color-icon-feedback-error-default);
   /* Text Input Border Radius */
-  --radius-textinput-border-radius-default: var(--border-radius-InteractiveElements);
+  --radius-textinput-border-radius-default: var(--radius-radius-interactiveelement);
   /* Text Input Border Weight - Un-tokenized : should be used directly as class `textinput-border-weight-default`  */
   --textinput-border-weight-default: var(--border-weight-default);
 }
