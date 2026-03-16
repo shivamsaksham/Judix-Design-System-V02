@@ -62,7 +62,7 @@ export const JudgmentNudge = ({
     return (
         <div
             className={cn(
-                'w-full rounded-modal border border-color-border-neutral-default bg-color-surface-neutral-default overflow-hidden',
+                'w-full rounded-radius-modal border border-color-border-neutral-default bg-color-surface-neutral-default overflow-hidden',
                 className
             )}
         >
@@ -94,7 +94,7 @@ export const JudgmentNudge = ({
             {isExpanded && (
                 <div className="p-4">
                     {/* Inner Judgment Card */}
-                    <div className="rounded-interactiveelement border border-color-border-neutral-default p-4 flex flex-col gap-3">
+                    <div className="rounded-radius-interactiveelement border border-color-border-neutral-default p-4 flex flex-col gap-3">
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-col gap-1">
                                 {/* Title */}
