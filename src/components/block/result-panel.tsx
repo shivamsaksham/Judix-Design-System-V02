@@ -208,7 +208,7 @@ export function ResultPanel({
                             <JudgmentTile
                                 key={index}
                                 {...judgment}
-                                isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
+                                selectionState={activeJudgmentId && judgment.id === activeJudgmentId ? 'selected' : 'default'}
                                 onClick={() => {
                                     onJudgmentClick?.(judgment);
                                 }}

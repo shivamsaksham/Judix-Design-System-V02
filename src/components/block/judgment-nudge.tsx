@@ -13,11 +13,11 @@ export interface JudgmentNudgeProps {
 
     // Judgment Details
     title: string;
-    citation: string;
-    court: string;
-    date: string;
-    bench: string;
-    summary: string;
+    citation?: string;
+    court?: string;
+    year?: string;
+    bench?: string;
+    description: string;
 }
 
 export const JudgmentNudge = ({
@@ -30,9 +30,9 @@ export const JudgmentNudge = ({
     title,
     citation,
     court,
-    date,
+    year,
     bench,
-    summary,
+    description,
 }: JudgmentNudgeProps) => {
     const [internalExpanded, setInternalExpanded] = useState(!isConfirmedProp);
     const [internalConfirmed, setInternalConfirmed] = useState(isConfirmedProp);
@@ -103,22 +103,24 @@ export const JudgmentNudge = ({
                                 </h4>
 
                                 {/* Metadata Tags */}
-                                <span className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                                    {citation}
-                                </span>
+                                {citation && (
+                                    <span className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                                        {citation}
+                                    </span>
+                                )}
                             </div>
                             <div className="flex flex-wrap items-center gap-2 text-style-label-default-regular text-color-text-neutral-default">
-                                <span className="p-1">{court}</span>
-                                <span className="p-1">{date}</span>
-                                <span className="p-1">{bench}</span>
+                                {court && <span className="p-1">{court}</span>}
+                                {year && <span className="p-1">{year}</span>}
+                                {bench && <span className="p-1">{bench}</span>}
                             </div>
                         </div>
                         {/* Divider */}
                         <div className="w-full h-px bg-color-border-neutral-default" />
 
-                        {/* Summary */}
+                        {/* Description */}
                         <p className="p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-emphasis">
-                            {summary}
+                            {description}
                         </p>
                     </div>
 
