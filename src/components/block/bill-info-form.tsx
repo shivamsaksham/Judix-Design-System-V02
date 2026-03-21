@@ -62,6 +62,52 @@ export const BillInfoForm = ({
         gstNumber: initialData?.gstNumber || '',
     });
 
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
+
+    React.useEffect(() => {
+        if (initialData) {
+            setFormData({
+                firstName: initialData.firstName || '',
+                lastName: initialData.lastName || '',
+                phone: initialData.phone || '',
+                email: initialData.email || '',
+                address: initialData.address || '',
+                city: initialData.city || '',
+                state: initialData.state || '',
+                pincode: initialData.pincode || '',
+                needGst: initialData.needGst || false,
+                gstNumber: initialData.gstNumber || '',
+            });
+            setIsVerified(!!initialData.gstNumber);
+        } else {
+            setFormData({
+                firstName: '',
+                lastName: '',
+                phone: '',
+                email: '',
+                address: '',
+                city: '',
+                state: '',
+                pincode: '',
+                needGst: false,
+                gstNumber: '',
+            });
+            setIsVerified(false);
+        }
+    }, [initialData]);
+
+    const handleVerify = () => {
+        if (!formData.gstNumber) return;
+        setIsVerifying(true);
+        // Mock verification delay
+        setTimeout(() => {
+            setIsVerifying(false);
+            setIsVerified(true);
+            console.log("GST Verified");
+        }, 1500);
+    };
+
     const handleChange = (field: keyof BillInfoFormData, value: string | boolean) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -152,7 +198,7 @@ export const BillInfoForm = ({
                             <Icon name="arrow-down-c" className="w-4 h-4 opacity-50" />
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)] border-none shadow-none bg-transparent" align="start">
+                    <PopoverContent className="p-0 w-(--radix-popover-trigger-width) border-none shadow-none bg-transparent" align="start">
                         <Dropdown
                             options={STATES.map(state => ({ value: state, title: state }))}
                             value={formData.state}
@@ -190,31 +236,38 @@ export const BillInfoForm = ({
                     <TextInput
                         placeholder="GST number"
                         value={formData.gstNumber}
-                        onChange={(e) => handleChange('gstNumber', e.target.value)}
+                        onChange={(e) => {
+                            handleChange('gstNumber', e.target.value);
+                            setIsVerified(false);
+                        }}
                         inputSize="medium"
                         trailingAccessory={
                             <Label
                                 colorScheme="primary"
                                 size="small"
                                 selected={true}
-                                className='bg-color-surface-neutral-default cursor-pointer'
-                                onClick={() => { console.log("label clicked")}}
-                            >Verify</Label>
+                                className={cn('bg-color-surface-neutral-default cursor-pointer', isVerifying && "opacity-50")}
+                                onClick={handleVerify}
+                            >
+                                {isVerifying ? "Verifying..." : isVerified ? "Verified" : "Verify"}
+                            </Label>
                         }   
                     />
 
                     {/* GST Preview */}
-                    <div className="flex flex-col">
-                        <h4 className="text-style-body-default-emphasis text-color-text-neutral-default">
-                            JUDIX TECHNOLOGIES PRIVATE LIMITED
-                        </h4>
-                        <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                            Block A1, Chatrapati Shivaji Greens, Ektapuram, Patna 804453
-                        </p>
-                        <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                            10AGGD23556ND20
-                        </p>
-                    </div>
+                    {isVerified && (
+                        <div className="flex flex-col animate-in fade-in slide-in-from-top-1 duration-300">
+                            <h4 className="text-style-body-default-emphasis text-color-text-neutral-default">
+                                JUDIX TECHNOLOGIES PRIVATE LIMITED
+                            </h4>
+                            <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                                Block A1, Chatrapati Shivaji Greens, Ektapuram, Patna 804453
+                            </p>
+                            <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                                {formData.gstNumber}
+                            </p>
+                        </div>
+                    )}
                 </div>
             )}
 

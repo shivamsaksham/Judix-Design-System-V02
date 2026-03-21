@@ -144,7 +144,7 @@ export function MobileNavBar({
                     {/* Context Dropdown as Bottom Sheet */}
                     <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
                         <SheetContent side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
-                            <div className="p-4 border-b border-color-border-neutral-default flex-shrink-0">
+                            <div className="p-4 border-b border-color-border-neutral-default shrink-0">
                                 <SheetTitle className="text-lg font-semibold">Context Window</SheetTitle>
                             </div>
                             <div className="flex-1 overflow-hidden">
@@ -171,7 +171,7 @@ export function MobileNavBar({
                             onClick={() => setShowChatMenu(!showChatMenu)}
                             variant="neutral"
                             size="small"
-                            className='border-none p-2 bg-color-surface-neutral-default m-[1px] gap-1 h-fit'
+                            className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                             iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
                         >
                             <Image

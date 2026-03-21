@@ -121,7 +121,7 @@ export function SearchSection({
                     placeholder={searchPlaceholder}
                     value={searchValue}
                     onChange={onSearchChange}
-                    className="flex-grow h-[42px] w-[300px] py-1 items-center bg-textinput-bg"
+                    className="grow h-[42px] w-[300px] py-1 items-center bg-textinput-bg"
                     trailingAccessory={
                         <Icon name="search-normal-a" className="h-5 w-5 text-color-icon-neutral-tertiary" />
                     }

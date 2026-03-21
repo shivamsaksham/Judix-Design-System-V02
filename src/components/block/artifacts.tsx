@@ -52,7 +52,7 @@ export const Artifacts = ({
                     </div>
 
                     {/* Icon */}
-                    <div className="flex-shrink-0 m-auto">
+                    <div className="shrink-0 m-auto">
                         {/* New Icon Packages used here */}
                         <DocumentTextB
                             color='color-icon-neutral-tertiary'

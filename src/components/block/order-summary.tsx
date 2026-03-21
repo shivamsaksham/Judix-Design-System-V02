@@ -14,10 +14,13 @@ export interface OrderSummaryData {
     subtotal: number;
     gst: number;
     promoCode?: string;
-    promoDiscount?: number;
+    promoBonusCredits?: number;
     isPromoApplied?: boolean;
     autoRenewDate: string;
     yearlyPrice: string;
+    monthlyPrice: string;
+    monthlyCharge?: string;
+    yearlyCharge?: string;
 }
 
 export interface OrderSummaryProps {
@@ -27,6 +30,7 @@ export interface OrderSummaryProps {
     onCheckout?: () => void;
     onFrequencyChange?: (frequency: 'monthly' | 'yearly') => void;
     className?: string;
+    loading?: boolean;
 }
 
 export const OrderSummary = ({
@@ -36,12 +40,11 @@ export const OrderSummary = ({
     onCheckout,
     onFrequencyChange,
     className,
+    loading,
 }: OrderSummaryProps) => {
     const [promoInput, setPromoInput] = useState('');
-    const [selectedFrequency, setSelectedFrequency] = useState<'monthly' | 'yearly'>(data.currentFrequency);
 
     const handleFrequencySelect = (freq: 'monthly' | 'yearly') => {
-        setSelectedFrequency(freq);
         onFrequencyChange?.(freq);
     };
 
@@ -51,7 +54,7 @@ export const OrderSummary = ({
         }
     };
 
-    const total = data.subtotal + data.gst - (data.promoDiscount || 0);
+    const total = data.subtotal + data.gst;
 
     return (
         <div className={cn('flex flex-col gap-6 w-full p-4 bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement', className)}>
@@ -78,24 +81,26 @@ export const OrderSummary = ({
             <div className="flex gap-4 w-full">
                 <PaymentFrequencyCard
                     type="monthly"
-                    price="INR 1249/month + gst"
-                    selected={selectedFrequency === 'monthly'}
+                    price={data.monthlyPrice}
+                    selected={data.currentFrequency === 'monthly'}
                     onClick={() => handleFrequencySelect('monthly')}
+                    className="flex-1"
                 />
                 <PaymentFrequencyCard
                     type="yearly"
                     price={data.yearlyPrice}
-                    selected={selectedFrequency === 'yearly'}
+                    selected={data.currentFrequency === 'yearly'}
                     discountLabel="Save 20%"
                     onClick={() => handleFrequencySelect('yearly')}
+                    className="flex-1"
                 />
             </div>
 
             {/* Auto-renew Notice */}
-            <div className="flex w-[537px] gap-3 p-4 border border-color-border-neutral-default rounded-radius-interactiveelement bg-color-surface-neutral-default">
-                <Icon name="info-circle" className="m-1 mb-0 w-5 h-5 text-color-text-neutral-secondary flex-shrink-0" />
+            <div className="flex w-full gap-3 p-4 border border-color-border-neutral-default rounded-radius-interactiveelement bg-color-surface-neutral-default">
+                <Icon name="info-circle" className="m-1 mb-0 w-5 h-5 text-color-text-neutral-secondary shrink-0" />
                 <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-default">
-                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {selectedFrequency === 'yearly' ? 'USD 200.00/year' : 'INR 1249/month'} + tax.
+                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {data.currentFrequency === 'yearly' ? (data.yearlyCharge || data.yearlyPrice) : (data.monthlyCharge || data.monthlyPrice)} + tax.
                 </p>
             </div>
 
@@ -116,13 +121,13 @@ export const OrderSummary = ({
                     </div>
                     {data.isPromoApplied && (
                         <div className="flex justify-between items-center">
-                            <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Promo code</span>
-                            <span className="p-1 text-style-body-default-regular text-color-neutral-default">- ₹ {data.promoDiscount}</span>
+                            <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Promo applied</span>
+                            <span className="p-1 text-style-body-default-regular text-color-success-default">+{data.promoBonusCredits} Credits</span>
                         </div>
                     )}
                 </div>
 
-                <div className="h-[1px] bg-color-border-neutral-default -my-2" />
+                <div className="h-px bg-color-border-neutral-default -my-2" />
 
                 <div className="flex justify-between items-center">
                     <span className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Total</span>
@@ -142,30 +147,43 @@ export const OrderSummary = ({
                             value={promoInput}
                             onChange={(e) => setPromoInput(e.target.value)}
                             inputSize="small"
-                            className="flex-grow"
+                            className="grow"
+                            disabled={data.isPromoApplied}
                             />
                         <Button
                             variant="neutral"
                             size="small"
                             onClick={handleApplyPromo}
+                            disabled={!promoInput.trim() || data.isPromoApplied || loading}
                         >
-                            Apply
+                            {data.isPromoApplied ? 'Applied' : 'Apply'}
                         </Button>
                     </div>
                 </div>
 
                 {/* Applied Promo Message */}
                 {data.isPromoApplied && (
-                    <div className="flex flex-col">
-                        <p className="p-1 text-style-body-default-regular text-color-text-neutral-default">
-                            <span className="text-color-text-primary-default text-style-body-default-regular uppercase underline">{data.promoCode}</span> applied.
+                    <div className="flex flex-col p-3 bg-color-surface-success-subtle_bg border border-color-border-feedback-success-subtle rounded-radius-interactiveelement">
+                        <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
+                            <span className="font-bold uppercase underline">{data.promoCode}</span> applied successfully!
                         </p>
-                        <p className="p-1 text-style-body-default-regular text-color-text-neutral-default">
-                            You saved {data.promoDiscount} on your subscription
+                        <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
+                            You get {data.promoBonusCredits} extra bonus credits
                         </p>
                     </div>
                 )}
             </div>
+
+            {/* Checkout Button */}
+            <Button
+                variant="primary"
+                size="large"
+                className="w-full"
+                onClick={onCheckout}
+                loading={loading}
+            >
+                Complete payment
+            </Button>
 
             {/* Secure Checkout Footer */}
             <div className="flex items-center justify-center gap-1">

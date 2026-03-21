@@ -47,14 +47,14 @@ export const JudgmentTile = ({
         >
             <div className="flex w-full p-4 gap-4">
                 {/* Index Number Box */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                     <div className="w-12 h-12 flex items-center justify-center rounded-interactiveelement border border-color-border-neutral-default bg-color-surface-neutral-default text-style-body-title-emphasis text-color-text-neutral-default">
                         {String(index).padStart(2, '0')}
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col gap-2 flex-grow min-w-0">
+                <div className="flex flex-col gap-2 grow min-w-0">
                     <div className='flex flex-col gap-1'>
                         <div className="flex flex-col gap-1">
                             {/* Title */}
@@ -83,7 +83,7 @@ export const JudgmentTile = ({
                             Match
                         </span>
 
-                        <div className="flex-grow h-0.5 rounded-full bg-color-surface-neutral-hover_mild overflow-hidden">
+                        <div className="grow h-0.5 rounded-full bg-color-surface-neutral-hover_mild overflow-hidden">
                             <div
                                 className="h-full bg-color-border-primary-default rounded-full"
                                 style={{ width: `${Math.min(100, Math.max(0, matchScore))}%` }}

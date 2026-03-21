@@ -184,7 +184,7 @@ export function NavBar({
                                         onClick={() => setShowChatMenu(!showChatMenu)}
                                         variant="neutral"
                                         size="small"
-                                        className='border-none p-2 bg-color-surface-neutral-default m-[1px] gap-1 h-fit'
+                                        className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                                         iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
                                     >
                                         <Image
@@ -256,7 +256,7 @@ export function NavBar({
                                         variant="neutral"
                                         size="small"
                                         prefixIcon="back-square"
-                                        className='border-none p-0 bg-color-surface-neutral-default m-[1px] gap-1'
+                                        className='border-none p-0 bg-color-surface-neutral-default m-px gap-1'
                                         iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                                     >
                                         <span className="p-1 text-style-body-default-regular">Back to Research</span>
@@ -270,7 +270,7 @@ export function NavBar({
                                         variant="neutral"
                                         size="medium"
                                         corner='sharp'
-                                        className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-[1px] h-fit"
+                                        className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-px h-fit"
                                     >
                                         <Image
                                             src="/ellipsis.svg"
@@ -371,7 +371,7 @@ export function NavBar({
                                     {isMobile ? (
                                         <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
                                             <SheetContent side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
-                                                <div className="p-4 border-b border-color-border-neutral-default flex-shrink-0">
+                                                <div className="p-4 border-b border-color-border-neutral-default shrink-0">
                                                     <SheetTitle className="text-lg font-semibold">Context Window</SheetTitle>
                                                 </div>
                                                 <div className="flex-1 overflow-hidden">
@@ -418,7 +418,7 @@ export function NavBar({
                                                 onClick={() => setShowChatMenu(!showChatMenu)}
                                                 variant="neutral"
                                                 size="small"
-                                                className='border-none p-2 bg-color-surface-neutral-default m-[1px] gap-1 h-fit'
+                                                className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                                                 iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
                                             >
                                                 <Image

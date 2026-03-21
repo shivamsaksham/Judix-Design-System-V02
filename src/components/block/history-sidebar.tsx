@@ -235,7 +235,7 @@ export const HistorySidebar = ({
                             }}
                         >
                             <div className="flex items-center min-w-0 flex-1">
-                                <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center flex-shrink-0">
+                                <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center shrink-0">
                                     <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
                                 </div>
                                 <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
