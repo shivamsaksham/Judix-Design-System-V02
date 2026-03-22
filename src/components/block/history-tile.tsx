@@ -60,7 +60,7 @@ export const HistoryTile = ({
                 variant="neutral"
                 size="medium"
                 className={cn(
-                    'flex-shrink-0 p-0 w-auto h-fit border-none',
+                    'shrink-0 p-0 w-auto h-fit border-none',
                     'transition-all duration-200',
                     isActive
                         ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'

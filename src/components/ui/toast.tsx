@@ -13,9 +13,9 @@ const toastVariants = cva(
     variants: {
       type: {
         loading: "bg-toast-color-error-bg border-toast-color-error-stroke",
-        alert: "bg-toast-color-alert-bg border-toast-color-error-stroke",
+        alert: "bg-toast-color-error-bg border-toast-color-error-stroke",
         success: "bg-toast-color-success-bg border-toast-color-success-stroke",
-        notice: "bg-toast-color-notice-bg border-toast-color-warning-stroke",
+        notice: "bg-toast-color-warning-bg border-toast-color-warning-stroke",
         info: "bg-toast-color-info-bg border-toast-color-info-stroke",
       },
     },
@@ -125,7 +125,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
     <Toaster
       position={position}
       gutter={8}
-      containerClassName="z-[100]"
+      containerClassName="z-[9999]"
       toastOptions={{
         className: "",
         success: { className: "" },
@@ -155,7 +155,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
 
         return (
           <div className={cn(
-            "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
+            "group flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
             "transition-all duration-500 ease-in-out transform",
             t.visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
             t.type === 'success' && "bg-toast-color-success-bg border-toast-color-success-stroke",

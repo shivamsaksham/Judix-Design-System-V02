@@ -45,7 +45,7 @@ export default function Breadcrumb({
         <div className={cn(outerClasses, className)}>
             <div className={innerClasses}>
                 {onUseProject && (
-                    <div className="flex justify-start items-start flex-shrink-0">
+                    <div className="flex justify-start items-start shrink-0">
                         <Button
                             variant="neutral"
                             size="extraSmall"
@@ -60,7 +60,7 @@ export default function Breadcrumb({
                 <div className="flex-1 flex flex-wrap justify-start items-center">
                     {items.map((item, index) => (
                         <React.Fragment key={item.id}>
-                            <div className="p-1 flex justify-center items-center gap-2 flex-shrink-0 overflow-hidden">
+                            <div className="p-1 flex justify-center items-center gap-2 shrink-0 overflow-hidden">
                                 <Label
                                     colorScheme="neutral"
                                     size="small"
@@ -75,7 +75,7 @@ export default function Breadcrumb({
                                 </Label>
                             </div>
                             {index < items.length - 1 && (
-                                <div className="p-1 flex justify-center items-center gap-2 flex-shrink-0">
+                                <div className="p-1 flex justify-center items-center gap-2 shrink-0">
                                     <span className="text-color-text-neutral-secondary text-sm font-normal font-brandprimary">/</span>
                                 </div>
                             )}
@@ -92,7 +92,7 @@ export default function Breadcrumb({
                                         icon="arrow-down-c"
                                         onClick={onDropdownClick}
                                         aria-label="Toggle dropdown"
-                                        className="flex-shrink-0 text-color-icon-neutral-secondary"
+                                        className="shrink-0 text-color-icon-neutral-secondary"
                                     />
                                 </PopoverTrigger>
                                 <PopoverContent className="p-0 w-80 border-none bg-transparent shadow-none" align="end">

@@ -131,7 +131,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
                 {/*  Main Canvas  */}
                 <div className="flex-1 w-full overflow-auto relative flex flex-col items-center justify-center p-4 bg-color-surface-hover-default">
                     <div
-                        className="relative w-[655px] h-[638px] bg-color-surface-neutral-default shadow-sm flex-shrink-0"
+                        className="relative w-[655px] h-[638px] bg-color-surface-neutral-default shadow-sm shrink-0"
                     >
                         {/* Document content injected here */}
                         <div className="absolute inset-0 overflow-hidden text-sm font-['Poppins'] leading-4 tracking-tight text-black pt-[39px] pl-[42px]">

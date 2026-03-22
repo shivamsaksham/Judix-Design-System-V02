@@ -5,13 +5,18 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { SavedBillingDetails, SavedBillingDetailsProps } from './saved-billing-details';
 
+// Each billing detail item can optionally carry an id for selection tracking
+export type SavedBillingDetailItem = Omit<SavedBillingDetailsProps, 'className' | 'onClick'> & {
+    id?: string | number;
+};
+
 export interface SavedBillingInfoTileProps {
-    billingDetails?: Omit<SavedBillingDetailsProps, 'className' | 'onClick'>[];
+    billingDetails?: SavedBillingDetailItem[];
     selectedId?: string | number;
     onAdd?: () => void;
     onEdit?: (index: number) => void;
     onDelete?: (index: number) => void;
-    onSelect?: (index: number) => void;
+    onSelect?: (id: string | number) => void;
     className?: string;
 }
 
@@ -28,16 +33,19 @@ export const SavedBillingInfoTile = ({
         <div className={cn('flex flex-col gap-2 w-full max-w-2xl', className)}>
             {/* List of Saved Billing Details */}
             <div className="flex flex-col gap-3">
-                {billingDetails.map((details, index) => (
-                    <SavedBillingDetails
-                        key={index}
-                        {...details}
-                        selected={selectedId === index}
-                        onClick={() => onSelect?.(index)}
-                        onEdit={() => onEdit?.(index)}
-                        onDelete={() => onDelete?.(index)}
-                    />
-                ))}
+                {billingDetails.map((details, index) => {
+                    const itemId = details.id !== undefined ? details.id : index;
+                    return (
+                        <SavedBillingDetails
+                            key={itemId}
+                            {...details}
+                            selected={selectedId === itemId}
+                            onClick={() => onSelect?.(itemId)}
+                            onEdit={() => onEdit?.(index)}
+                            onDelete={() => onDelete?.(index)}
+                        />
+                    );
+                })}
             </div>
 
             {/* Add Billing Address Button */}
