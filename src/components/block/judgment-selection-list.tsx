@@ -85,7 +85,7 @@ export const JudgmentSelectionList = ({
     return (
         <div
             className={cn(
-                'w-full rounded-modal border border-color-border-neutral-default bg-color-surface-neutral-default overflow-hidden flex flex-col',
+                'w-full rounded-radius-modal border border-color-border-neutral-default bg-color-surface-neutral-default overflow-hidden flex flex-col',
                 className
             )}
         >
