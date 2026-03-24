@@ -104,7 +104,6 @@ export const BillInfoForm = ({
         setTimeout(() => {
             setIsVerifying(false);
             setIsVerified(true);
-            console.log("GST Verified");
         }, 1500);
     };
 
