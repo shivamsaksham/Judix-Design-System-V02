@@ -75,6 +75,8 @@ export const Expanded: Story = {
 export const Completed: Story = {
     args: {
         variant: 'completed',
+        sourcesCount: 16,
+        timeTaken: '115.64 sec',
     },
 };
 
@@ -147,7 +149,7 @@ export const AllVariants: Story = {
                 steps={sampleSteps}
                 isExpanded={true}
             />
-            <AiThinking variant="completed" />
+            <AiThinking variant="completed" sourcesCount={16} timeTaken="115.64 sec"/>
         </div>
     ),
 };

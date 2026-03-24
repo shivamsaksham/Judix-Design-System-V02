@@ -4,11 +4,16 @@ import { cn } from '@/lib/utils';
 import { IconButton } from '@/components/ui/icon-button';
 import { showToast } from '@/components/ui/toast';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dropdown, DropdownOption } from '@/components/ui/dropdown';
+import { Icon } from '@judix/icon';
 export interface ResponseActionsProps {
     onDislike?: () => void;
     onLike?: () => void;
     onRefresh?: () => void;
     onCopy?: () => void;
+    onShare?: () => void;
+    onExport?: (format: string) => void;
     className?: string;
     isLiked?: boolean;
     isDisliked?: boolean;
@@ -20,6 +25,8 @@ export const ResponseActions = ({
     onLike,
     onRefresh,
     onCopy,
+    onShare,
+    onExport,
     className,
     contentToCopy,
     isLiked: externalIsLiked,
@@ -27,6 +34,8 @@ export const ResponseActions = ({
 }: ResponseActionsProps) => {
     const [internalIsLiked, setInternalIsLiked] = useState(false);
     const [internalIsDisliked, setInternalIsDisliked] = useState(false);
+    const [exportOpen, setExportOpen] = useState(false);
+    const [selectedExport, setSelectedExport] = useState<string | null>(null);
 
     // Use external state if provided, otherwise use internal state
     const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
@@ -73,6 +82,42 @@ export const ResponseActions = ({
         } else {
             // Default behavior: just log (parent should handle actual refresh)
             console.log('Refresh clicked - implement refresh logic in parent component');
+        }
+    };
+
+    const handleShare = () => {
+        if (onShare) {
+            onShare();
+        } else {
+            console.log('Share clicked');
+        }
+    };
+
+    const exportOptions: DropdownOption[] = [
+        { 
+            value: 'pdf', 
+            title: 'Export to .pdf',
+            leadingIcon: <Icon name="document-download" className="h-[18px] w-[18px]" />
+        },
+        { 
+            value: 'docx', 
+            title: 'Export to .docx',
+            leadingIcon: <Icon name="document-text-b" className="h-[18px] w-[18px]" />
+        },
+        { 
+            value: 'markdown', 
+            title: 'Download markdown',
+            leadingIcon: <Icon name="document-code-b" className="h-[18px] w-[18px]" />
+        },
+    ];
+
+    const handleExportChange = (value: string) => {
+        setSelectedExport(value);
+        setExportOpen(false);
+        if (onExport) {
+            onExport(value);
+        } else {
+            console.log(`Exporting as ${value}`);
         }
     };
 
@@ -152,6 +197,52 @@ export const ResponseActions = ({
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
                         <p>Copy</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                {/* Share Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+                <IconButton
+                    onClick={handleShare}
+                    variant="neutral"
+                    size="medium"
+                    corner="sharp"
+                    icon="share-a"
+                    aria-label="Share"
+                />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Share</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                {/* Export Button */}
+                <Tooltip>
+                    <Popover open={exportOpen} onOpenChange={setExportOpen}>
+                        <TooltipTrigger asChild >
+                            <PopoverTrigger asChild>
+                                <IconButton
+                                    variant="neutral"
+                                    size="medium"
+                                    corner="sharp"
+                                    icon="export-d"
+                                    aria-label="Export"
+                                />
+                            </PopoverTrigger>
+                        </TooltipTrigger>
+                        <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="end" sideOffset={8}>
+                            <Dropdown
+                                options={exportOptions}
+                                value={selectedExport}
+                                onChange={handleExportChange}
+                                searchbar="off"
+                                className="w-[223px] shadow-lg"
+                            />
+                        </PopoverContent>
+                    </Popover>
+                    <TooltipContent side="bottom">
+                        <p>Export</p>
                     </TooltipContent>
                 </Tooltip>
             </div>

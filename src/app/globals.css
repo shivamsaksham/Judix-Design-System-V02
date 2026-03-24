@@ -485,7 +485,8 @@
   --color-confirmation-color-stroke: var(--color-color-border-neutral-default);
   --color-confirmation-color-titletext: var(--color-color-text-neutral-default);
   --color-confirmation-color-bodytext: var(--color-color-text-neutral-default);
-  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary) --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
+  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary);
+  --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
   /* Confirmation Modals Border Radius */
   --radius-confirmation-border-radius-default: var(--radius-radius-modal);
   /* Confirmation Modals Border Weight - Un-tokenized : should be used directly as class `confirmation-border-weight-default`  */
