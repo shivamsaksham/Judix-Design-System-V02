@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { Icon } from "judix-icon"
-import type { IconProps } from "judix-icon/dist/Icon"
+import { Icon } from "@judix/icon"
+import { Loader2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -58,9 +58,10 @@ export interface ButtonProps extends React.ComponentProps<"button">,
   VariantProps<typeof buttonVariants> {
   iconClassName?: string
   asChild?: boolean
-  prefixIcon?: IconProps['name']
-  suffixIcon?: IconProps['name']
+  prefixIcon?: React.ComponentProps<typeof Icon>['name']
+  suffixIcon?: React.ComponentProps<typeof Icon>['name']
   iconStrokeWidth?: number
+  loading?: boolean
 }
 
 function Button({
@@ -72,10 +73,14 @@ function Button({
   prefixIcon,
   suffixIcon,
   iconStrokeWidth = 1.5,
+  loading = false,
   children,
+  disabled,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button"
+
+  const isDisabled = disabled || loading
 
   // When asChild is true, we can't wrap with icons as Slot expects a single child
   if (asChild) {
@@ -83,6 +88,7 @@ function Button({
       <Comp
         data-slot="button"
         className={cn(buttonVariants({ variant, size, className }))}
+        disabled={isDisabled}
         {...props}
       >
         {children}
@@ -94,19 +100,24 @@ function Button({
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }), "group")}
+      disabled={isDisabled}
       {...props}
     >
-      {prefixIcon && (
-
-        <Icon
-          name={prefixIcon}
-          strokeWidth={iconStrokeWidth}
-          className={cn(iconVariants({ variant, size }), iconClassName)}
-        />
-
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <>
+          {prefixIcon && (
+            <Icon
+              name={prefixIcon}
+              strokeWidth={iconStrokeWidth}
+              className={cn(iconVariants({ variant, size }), iconClassName)}
+            />
+          )}
+        </>
       )}
       {children}
-      {suffixIcon && (
+      {!loading && suffixIcon && (
         <Icon
           name={suffixIcon}
           strokeWidth={iconStrokeWidth}

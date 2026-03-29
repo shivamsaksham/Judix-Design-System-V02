@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
@@ -137,9 +137,11 @@ function ShareSearchDialog({
                 showCloseButton={true}
             >
                 <DialogHeader className="flex-row items-center gap-2">
-                    <Icon
-                        name="Share"
-                        className="h-5 w-5 text-icon_button-color-primary-icon"
+                    <IconButton
+                        icon="share-a"
+                        size="medium"
+                        variant="primary"
+                        boundary="none"
                     />
                     <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
                 </DialogHeader>
@@ -147,6 +149,7 @@ function ShareSearchDialog({
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <TextInput
+                            inputSize="small"
                             label=""
                             className="h-[42px] items-center px-3 py-2"
                             type="email"
@@ -156,7 +159,7 @@ function ShareSearchDialog({
                             onKeyDown={handleKeyDown}
                             trailingAccessory={
                                 <IconButton
-                                    icon="Send2"
+                                    icon="send-a"
                                     size="medium"
                                     variant="primary"
                                     boundary="none"
@@ -204,7 +207,7 @@ function ShareSearchDialog({
                             onChange={(e) => setNote(e.target.value)}
                             leadingIcon={
                                 <Icon
-                                    name="DocumentText1"
+                                    name="document-text-a"
                                     className="h-4 w-4 text-color-text-neutral-secondary"
                                 />
                             }
@@ -214,6 +217,7 @@ function ShareSearchDialog({
 
                     <div className="flex flex-col gap-1">
                         <TextInput
+                            inputSize="small"
                             label=""
                             value={shareLink}
                             className="h-[42px] items-center text-style-body-default-regular px-3 py-2"
@@ -242,7 +246,7 @@ function ShareSearchDialog({
                         type="button"
                         variant="neutral"
                         onClick={onDownloadPdf}
-                        prefixIcon="DocumentDownload"
+                        prefixIcon="document-download"
                         size="extraSmall"
                         className="w-full justify-center sm:w-auto self-start text-style-label-title-regular"
                     >

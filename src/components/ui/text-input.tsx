@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils"
 import { Label as CustomLabel } from "./label"
 
 const inputVariants = cva(
-  "flex w-full rounded-textinput-border-radius-default textinput-border-weight-default border bg-textinput-bg transition-colors duration-200 py-2 px-3",
+  "flex w-full rounded-textinput-border-radius-default textinput-border-weight-default border bg-textinput-bg transition-colors duration-200 overflow-hidden",
   {
     variants: {
       variant: {
@@ -29,15 +29,17 @@ const inputVariants = cva(
 )
 
 const inputFieldVariants = cva(
-  "flex-1 min-w-0 bg-transparent border-none appearance-none textinput-font-placeholder-medium text-textinput-color-text-active placeholder:text-textinput-color-text-default focus:outline-none disabled:cursor-not-allowed disabled:text-color-text-neutral-disabled placeholder:disabled:text-color-text-neutral-disabled",
+  "",
   {
     variants: {
       size: {
-        default: "h-10",
+        small: "h-7",
+        medium: "h-[48px]",
+        large: "h-[56px]",
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "small",
     },
   }
 )
@@ -52,10 +54,10 @@ export interface TextInputProps
   trailingAccessory?: React.ReactNode
   selectedLabels?: { text: string; onRemove: () => void }[]
   showLabelsInline?: boolean
-  inputSize?: "default";
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   inputClassName?: string
+  inputSize?: "small" | "medium" | "large"
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 }
 
 const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
@@ -70,10 +72,10 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       selectedLabels,
       showLabelsInline = false,
       variant: propVariant,
-      inputSize = "default",
+      inputSize = "small",
+      inputClassName,
       onFocus,
       onBlur,
-      inputClassName,
       ...props
     },
     ref
@@ -110,11 +112,13 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             {label}
           </label>
         )}
-        <div className={cn(inputVariants({ variant: currentVariant, className }), {
+        <div className={cn(
+          inputFieldVariants({ size: inputSize }),
+          inputVariants({ variant: currentVariant, className }), {
           "border-textinput-color-stroke-focus": isFocused && !showError && !props.disabled,
         })}>
           {leadingIcon && (
-            <div className={cn("flex items-center", {
+            <div className={cn("flex items-center pl-3", {
               "text-color-icon-neutral-disabled": props.disabled,
               "text-textinput-color-icon-default": !props.disabled
             })}>
@@ -124,7 +128,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
           {/* Inline selected labels */}
           {hasLabels && showLabelsInline && (
-            <div className="flex flex-wrap items-center gap-1.5 pl-1">
+            <div className="flex flex-wrap items-center gap-1.5 pl-3">
               {selectedLabels.map((item, index) => (
                 <CustomLabel
                   key={index}
@@ -141,13 +145,15 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
           <input
             ref={ref}
-            className={cn(inputFieldVariants({ size: inputSize }),
-              "flex-grow appearance-none focus:outline-none focus:ring-0 focus:border-none",
-              {
-                "pl-3": leadingIcon,
-                "pr-3": trailingAccessory,
-                "pl-2": hasLabels && showLabelsInline,
-              },
+            className={cn(
+              "grow appearance-none focus:outline-none focus:ring-0 focus:border-none bg-transparent h-full",
+              !leadingIcon && !hasLabels && "pl-3",
+              (leadingIcon || hasLabels) && "pl-2",
+              !trailingAccessory && "pr-3",
+              trailingAccessory && "pr-2",
+              inputSize === "small" && "placeholder:text-style-label-default-regular",
+              inputSize === "medium" && "placeholder:text-style-body-default-regular",
+              inputSize === "large" && "placeholder:text-style-body-title-regular",
               inputClassName
             )}
             onFocus={handleFocus}
@@ -155,7 +161,7 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             {...props}
           />
           {trailingAccessory && (
-            <div className={cn("flex items-center", {
+            <div className={cn("flex items-center pr-3", {
               "text-color-icon-neutral-disabled": props.disabled,
               "text-textinput-color-icon-error": showError && !props.disabled,
               "text-textinput-color-icon-default": !showError && !props.disabled

@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { Icon } from "@judix/icon"
-import type { IconProps } from "@judix/icon"
+import { Icon } from "judix-icon"
+import type { IconProps } from "judix-icon/dist/Icon"
 
 import { cn } from "@/lib/utils"
 
@@ -41,7 +41,7 @@ const iconVariants = cva("", {
   variants: {
     size: {
       large: "h-6 w-6",
-      medium: "h-4 w-4",
+      medium: "h-5 w-5",
       small: "h-4 w-4",
       extraSmall: "h-3.5 w-3.5",
     }

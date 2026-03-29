@@ -2,17 +2,13 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 import { Toggle } from '@/components/ui/toggle';
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof Toggle> = {
   title: 'UI/Toggle',
   component: Toggle,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: 'centered',
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
     variant: {
       control: { type: 'select' },
@@ -29,14 +25,12 @@ const meta: Meta<typeof Toggle> = {
       control: { type: 'boolean' },
     },
   },
-  // Use `fn` to spy on the onCheckedChange arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: { onCheckedChange: fn() },
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Toggle>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary_Large: Story = {
   args: {
     variant: 'primary',

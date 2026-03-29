@@ -34,7 +34,7 @@ const meta: Meta<typeof Checkbox> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Checkbox>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary_Large: Story = {

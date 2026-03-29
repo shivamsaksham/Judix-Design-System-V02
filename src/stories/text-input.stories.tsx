@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
 import { TextInput } from "@/components/ui/text-input"
-import { Icon } from "judix-icon"
+import { Icon } from "@judix/icon"
 
 const meta: Meta<typeof TextInput> = {
   title: "Components/TextInput",
@@ -33,6 +33,10 @@ const meta: Meta<typeof TextInput> = {
     errorMessage: {
       control: "text",
     },
+    inputSize:{
+      control:"select",
+      options:["small","medium","large"],
+    },
     leadingIcon: {
       control: false,
     },
@@ -49,6 +53,7 @@ const meta: Meta<typeof TextInput> = {
   args: {
     label: "Label",
     placeholder: "Placeholder text",
+    inputSize:"medium",
   },
 }
 
@@ -66,7 +71,7 @@ export const DefaultWithInfoIcon: Story = {
   name: "Row 1: Default w/ Info Icon",
   args: {
     helperText: "Helper text goes here",
-    trailingAccessory: <Icon name="InfoCircle" />,
+    trailingAccessory: <Icon name="info-circle" />,
   },
 }
 
@@ -74,7 +79,7 @@ export const Error: Story = {
   name: "Row 2: Error",
   args: {
     errorMessage: "Error message",
-    trailingAccessory: <Icon name="InfoCircle" />,
+    trailingAccessory: <Icon name="info-circle" />,
   },
 }
 
@@ -193,7 +198,7 @@ export const Disabled: Story = {
   name: "Row 4: Disabled w/ Info Icon",
   args: {
     helperText: "Helper text goes here",
-    trailingAccessory: <Icon name="InfoCircle" />,
+    trailingAccessory: <Icon name="info-circle" />,
     disabled: true,
   },
 }

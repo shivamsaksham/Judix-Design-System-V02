@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { NotesCard } from "@/components/block/notes-card";
 import { downloadNotesAsPDF } from "@/components/block/notes-pdf-generator";
 
@@ -9,10 +9,10 @@ const meta = {
         layout: "fullscreen",
     },
     tags: ["autodocs"],
-} satisfies Meta<typeof NotesCard>;
+} as Meta<typeof NotesCard>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof NotesCard>;
 
 export const Centered: Story = {
     args: {

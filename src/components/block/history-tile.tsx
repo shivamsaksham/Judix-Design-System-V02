@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '../ui';
+import { IconButton } from '../ui/icon-button';
 import Image from 'next/image';
 
 export interface HistoryTileProps {
@@ -30,7 +30,9 @@ export const HistoryTile = ({
         <div
             className={cn(
                 'group relative flex items-center justify-between',
-                'p-2 rounded-lg cursor-pointer transition-colors duration-200',
+                'w-full',
+                'p-2 py-[6px] rounded-lg cursor-pointer transition-colors duration-200',
+                'whitespace-nowrap',
                 isActive
                     ? 'bg-option-color-selected hover:bg-option-color-selected'
                     : 'bg-transparent hover:bg-option-color-hover',
@@ -43,30 +45,32 @@ export const HistoryTile = ({
             {/* Title with truncation */}
             <span
                 className={cn(
-                    'option-font-title',
+                    'text-style-body-default-regular',
                     isActive ? 'text-color-text-neutral-default' : 'text-color-text-neutral-secondary',
                     'overflow-hidden text-ellipsis whitespace-nowrap',
-                    'flex-1 pr-2'
+                    'flex-1 min-w-0',
+                    'p-1'
                 )}
             >
                 {title}
             </span>
 
-            <Button
+            <IconButton
                 onClick={handleMenuClick}
                 variant="neutral"
+                size="medium"
                 className={cn(
-                    'flex-shrink-0 p-0 h-fit border-none rounded-md',
+                    'shrink-0 p-0 w-auto h-fit border-none',
                     'transition-all duration-200',
                     isActive
                         ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'
                         : 'bg-transparent hover:bg-option-color-hover',
-                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none hidden'
                 )}
                 aria-label="Menu"
             >
-                <Image src="ellipsis.svg" alt="ellipsis" width={4} height={12} className="p-1 text-color-icon-neutral-default w-5 h-5" />
-            </Button>
+                <Image src="ellipsis.svg" alt="ellipsis" width={3} height={13} className="m-1 text-color-icon-neutral-default w-5 h-5" />
+            </IconButton>
         </div>
     );
 };

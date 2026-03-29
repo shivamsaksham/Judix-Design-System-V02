@@ -21,10 +21,10 @@ const meta = {
         onOpenChange: fn(),
         onSave: fn()
     }
-} satisfies Meta<typeof RenameDialog>;
+} as Meta<typeof RenameDialog>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RenameDialog>;
 
 export const Default: Story = {};
 

@@ -107,6 +107,6 @@ const meta: Meta<typeof JudgmentDetailsContent> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof JudgmentDetailsContent>;
 
 export const Default: Story = {};

@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { IconButton } from '@/components/ui/icon-button';
 import { showToast } from '@/components/ui/toast';
-
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 export interface ResponseActionsProps {
     onDislike?: () => void;
     onLike?: () => void;
@@ -21,9 +21,9 @@ export const ResponseActions = ({
     onRefresh,
     onCopy,
     className,
+    contentToCopy,
     isLiked: externalIsLiked,
     isDisliked: externalIsDisliked,
-    contentToCopy,
 }: ResponseActionsProps) => {
     const [internalIsLiked, setInternalIsLiked] = useState(false);
     const [internalIsDisliked, setInternalIsDisliked] = useState(false);
@@ -61,7 +61,7 @@ export const ResponseActions = ({
                 } else {
                     showToast.alert('No content to copy');
                 }
-            } catch (error) {
+            } catch {
                 showToast.alert('Failed to copy');
             }
         }
@@ -77,62 +77,84 @@ export const ResponseActions = ({
     };
 
     return (
-        <div
-            className={cn(
-                'flex items-center gap-1 p-2',
-                'bg-color-surface-neutral-default',
-                className
-            )}
-        >
-            {/* Dislike Button */}
-            <Button
-                onClick={handleDislike}
-                variant="neutral"
-                size="small"
-                prefixIcon="Dislike"
+        <TooltipProvider>
+            <div
                 className={cn(
-                    'p-2 h-fit border-none bg-transparent hover:bg-option-color-hover',
-                    isDisliked && 'bg-option-color-selected'
+                    'flex items-center gap-1 p-2',
+                    'bg-color-surface-neutral-default',
+                    className
                 )}
-                iconClassName="w-4 h-4"
-                aria-label="Dislike"
-            />
+            >
+                {/* Dislike Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+                        <IconButton
+                            onClick={handleDislike}
+                            variant={isDisliked ? "primary" : "neutral"}
+                            size="medium"
+                            corner="sharp"
+                            icon="dislike"
+                            aria-label="Dislike"
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Dislike</p>
+                    </TooltipContent>
+                </Tooltip>
 
-            {/* Like Button */}
-            <Button
-                onClick={handleLike}
-                variant="neutral"
-                size="small"
-                prefixIcon="Like1"
-                className={cn(
-                    'p-2 h-fit border-none bg-transparent hover:bg-option-color-hover',
-                    isLiked && 'bg-option-color-selected'
-                )}
-                iconClassName="w-4 h-4"
-                aria-label="Like"
-            />
+                {/* Like Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
 
-            {/* Refresh Button */}
-            <Button
-                onClick={handleRefresh}
-                variant="neutral"
-                size="small"
-                prefixIcon="Refresh2"
-                className="p-2 h-fit border-none bg-transparent hover:bg-option-color-hover"
-                iconClassName="w-4 h-4"
-                aria-label="Refresh2"
-            />
+                <IconButton
+                    onClick={handleLike}
+                    variant={isLiked ? "primary" : "neutral"}
+                    size="medium"
+                    corner="sharp"
+                    icon="like-a"
+                    aria-label="Like"
+                    />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                    <p>Like</p>
+                </TooltipContent>
+                </Tooltip>
 
-            {/* Copy Button */}
-            <Button
-                onClick={handleCopy}
-                variant="neutral"
-                size="small"
-                prefixIcon="Copy"
-                className="p-2 h-fit border-none bg-transparent hover:bg-option-color-hover"
-                iconClassName="w-4 h-4"
-                aria-label="Copy"
-            />
-        </div>
+                {/* Refresh Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+
+                <IconButton
+                    onClick={handleRefresh}
+                    variant="neutral"
+                    size="medium"
+                    corner="sharp"
+                    icon="refresh-a"
+                    aria-label="Refresh"
+                />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Refresh</p>
+                    </TooltipContent>
+                </Tooltip>
+
+                {/* Copy Button */}
+                <Tooltip>
+                    <TooltipTrigger asChild >
+                <IconButton
+                    onClick={handleCopy}
+                    variant="neutral"
+                    size="medium"
+                    corner="sharp"
+                    icon="copy"
+                    aria-label="Copy"
+                />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Copy</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        </TooltipProvider>
     );
 };

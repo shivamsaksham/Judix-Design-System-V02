@@ -3,6 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Option } from '@/components/ui/option';
 import { Label } from '@/components/ui/label';
+import { Icon } from '@judix/icon';
 
 export interface UserMenuItem {
     id: string;
@@ -16,11 +17,69 @@ export interface UserMenuItem {
 }
 
 export interface UserMenuProps {
-    items: UserMenuItem[];
+    items?: UserMenuItem[];
     className?: string;
+
+    onAccount?: () => void;
+    onProjects?: () => void;
+    onSubscriptions?: () => void;
+    onSettings?: () => void;
+    onRefer?: () => void;
+    onHelp?: () => void;
+    onLogout?: () => void;
 }
 
-export const UserMenu = ({ items, className }: UserMenuProps) => {
+const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' | 'onSubscriptions' | 'onSettings' | 'onRefer' | 'onHelp' | 'onLogout'>): UserMenuItem[] => [
+
+    {
+        id: 'account',
+        label: 'My Account',
+        icon: <Icon name="profile-circle" />,
+        onClick: props.onAccount,
+    },
+    {
+        id: 'projects',
+        label: 'Projects',
+        icon: <Icon name="folder-a" />,
+        onClick: props.onProjects,
+    },
+    {
+        id: 'subscriptions',
+        label: 'Subscriptions',
+        icon: <Icon name="wallet-a" />,
+        onClick: props.onSubscriptions,
+    },
+    {
+        id: 'settings',
+        label: 'Settings',
+        icon: <Icon name="setting-e" />,
+        onClick: props.onSettings,
+        dividerAfter: true,
+    },
+    {
+        id: 'refer',
+        label: 'Refer and Earn',
+        icon: <Icon name="gift" />,
+        onClick: props.onRefer,
+    },
+    {
+        id: 'help',
+        label: 'Help & Support',
+        icon: <Icon name="call" />,
+        onClick: props.onHelp,
+        dividerAfter: true,
+    },
+    {
+        id: 'logout',
+        label: 'Logout',
+        icon: <Icon name="logout-b" />,
+        onClick: props.onLogout,
+        variant: 'danger' as const,
+    },
+];
+
+export const UserMenu = ({ items: customItems, className, onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout }: UserMenuProps) => {
+    const items = customItems || getDefaultItems({ onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout });
     return (
         <div
             className={cn(

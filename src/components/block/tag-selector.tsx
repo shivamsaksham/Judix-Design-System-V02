@@ -16,7 +16,7 @@ const tagSelectorVariants = cva(
 
 export interface TagSelectorProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect">,
-    VariantProps<typeof tagSelectorVariants> {
+  VariantProps<typeof tagSelectorVariants> {
   placeholder: string
   availableTags: string[]
   selectedTags: string[]
@@ -58,6 +58,7 @@ const TagSelector = React.forwardRef<HTMLDivElement, TagSelectorProps>(
         {...props}
       >
         <TextInput
+          inputSize="small"
           label=""
           placeholder={placeholder}
           value={inputValue}
@@ -73,7 +74,7 @@ const TagSelector = React.forwardRef<HTMLDivElement, TagSelectorProps>(
           className="border-t-0 border-x-0 rounded-t-none rounded-b-none border-b-tag_selector-color-stroke"
         />
 
-        <div className="flex flex-wrap items-start content-start gap-2 p-4 flex-grow overflow-auto h-[125px]">
+        <div className="flex flex-wrap items-start content-start gap-2 p-4 grow overflow-auto h-[125px]">
           {selectedTags.map((tag) => (
             <Label
               key={`selected-${tag}`}

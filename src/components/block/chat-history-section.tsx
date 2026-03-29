@@ -20,13 +20,13 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
     return (
         <div className={`flex flex-col h-full ${className || ''}`}>
             {/* Fixed Heading */}
-            <h3 className="flex-shrink-0 p-3 text-style-body-default-emphasis text-color-text-neutral-tertiary opacity-60">
+            <h3 className="shrink-0 p-3 text-style-body-default-emphasis text-color-text-neutral-tertiary opacity-60">
                 Chats
             </h3>
 
             {/* Scrollable Content */}
             <div
-                className="flex-1 overflow-y-auto p-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                className="flex-1 overflow-y-auto p-1"
             >
                 {chatHistory.map((chat) => (
                     <HistoryTile

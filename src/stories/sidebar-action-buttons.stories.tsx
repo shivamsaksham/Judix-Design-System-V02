@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { SidebarActionButtons } from '@/components/block/sidebar-action-buttons';
 
 const meta = {
@@ -9,16 +9,16 @@ const meta = {
     },
     decorators: [
         (Story) => (
-            <div className="p-4 bg-dropdown-color-bg w-[300px] border border-dropdown-color-stroke rounded-lg">
+            <div >
                 <Story />
             </div>
         ),
     ],
     tags: ['autodocs'],
-} satisfies Meta<typeof SidebarActionButtons>;
+} as Meta<typeof SidebarActionButtons>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SidebarActionButtons>;
 
 export const Default: Story = {
     args: {

@@ -4,8 +4,10 @@ import { cn } from '@/lib/utils';
 import { UserQuery } from './user-query';
 import { Artifacts } from './artifacts';
 import { ResponseActions } from './response-actions';
+import { FollowUpQuery } from '@/components/block/follow-up-query';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AiThinking, type AiThinkingProps } from './ai-thinking';
 
 export interface ContentProps {
     query: string;
@@ -15,14 +17,20 @@ export interface ContentProps {
     onCaseLawsClick?: () => void;
     onActsClick?: () => void;
     onQueryEdit?: (newQuery: string) => void;
-    // Response Actions callbacks
     onLike?: () => void;
     onDislike?: () => void;
     onRefresh?: () => void;
     onCopy?: () => void;
     isLiked?: boolean;
     isDisliked?: boolean;
+    // Follow-up queries
+    followUpQueries?: string[];
+    onFollowUpQueryClick?: (query: string) => void;
     className?: string;
+    hideQuery?: boolean;
+    animate?: boolean;
+    isStreaming?: boolean;
+    aiThinkingProps?: AiThinkingProps;
 }
 
 export const Content = ({
@@ -39,35 +47,74 @@ export const Content = ({
     onCopy,
     isLiked,
     isDisliked,
+    followUpQueries,
+    onFollowUpQueryClick,
     className,
+    hideQuery,
+    animate = false,
+    isStreaming = false,
+    aiThinkingProps,
 }: ContentProps) => {
+    const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
+
+    React.useEffect(() => {
+        if (!animate) {
+            setDisplayText(markdown);
+            return;
+        }
+
+        let index = 0;
+        setDisplayText("");
+
+        const intervalId = setInterval(() => {
+            setDisplayText((prev) => {
+                if (index >= markdown.length) {
+                    clearInterval(intervalId);
+                    return markdown;
+                }
+                const nextChar = markdown.charAt(index);
+                index++;
+                return prev + nextChar;
+            });
+        }, 5); // Fast typing speed
+
+        return () => clearInterval(intervalId);
+    }, [markdown, animate]);
+
     return (
-        <div className={cn('flex flex-col max-w-4xl mx-auto', className)}>
+        <div className={cn('flex flex-col w-full mx-auto gap-4', className)}>
             {/* User Query Section */}
-            <UserQuery
-                query={query}
-                onEdit={onQueryEdit}
-                className='mb-6'
-            />
+            {!hideQuery && (
+                <UserQuery
+                    query={query}
+                    onEdit={onQueryEdit}
+                />
+            )}
 
-            {/* Results Section */}
-            <div className='p-1'>
-                <div className="mb-6">
-                    <Artifacts
-                        title='Cases'
-                        subtitle={`Found ${caseLawsCount} cases`}
-                        onClick={onCaseLawsClick}
-                        isResult
-                    />
-                    <Artifacts
-                        title='Acts and Sections'
-                        subtitle={`${actsCount} Acts identified`}
-                        onClick={onActsClick}
-                    />
-                </div>
+            {/* AI Thinking Component */}
+            {aiThinkingProps && (
+                <AiThinking {...aiThinkingProps} />
+            )}
 
-                {/* Markdown Content Section */}
-                <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
+            {/* Complete Result Section */}
+            <div className="flex flex-col">
+                {(caseLawsCount > 0 || actsCount > 0) && (
+                    <div className="my-6">
+                        <Artifacts
+                            title='Cases'
+                            subtitle={`Found ${caseLawsCount} cases`}
+                            onClick={onCaseLawsClick}
+                            isResult
+                        />
+                        <Artifacts
+                            title='Acts and Sections'
+                            subtitle={`${actsCount} Acts identified`}
+                            onClick={onActsClick}
+                        />
+                    </div>
+                )}
+
+                {displayText && <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -88,12 +135,11 @@ export const Content = ({
                             a: ({ href, children }) => <a href={href} className="text-color-text-primary-default hover:underline">{children}</a>,
                         }}
                     >
-                        {markdown}
+                        {displayText}
                     </ReactMarkdown>
-                </div>
+                </div>}
 
-                {/* Response Actions */}
-                <ResponseActions
+                {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && <ResponseActions
                     className='w-fit'
                     onLike={onLike}
                     onDislike={onDislike}
@@ -102,7 +148,22 @@ export const Content = ({
                     isLiked={isLiked}
                     isDisliked={isDisliked}
                     contentToCopy={markdown}
-                />
+                />}
+
+                {/* Follow-up Queries */}
+                {followUpQueries && followUpQueries.length > 0 && (
+                    <div>
+                        <div className="flex flex-wrap">
+                            {followUpQueries.map((query, index) => (
+                                <FollowUpQuery
+                                    key={index}
+                                    query={query}
+                                    onClick={() => onFollowUpQueryClick?.(query)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

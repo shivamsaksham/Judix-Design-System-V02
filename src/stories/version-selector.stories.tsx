@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import * as React from "react";
 import { VersionSelector } from "../components/block/version-selector";
 import { DropdownOption } from "../components/ui/dropdown";

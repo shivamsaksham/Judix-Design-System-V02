@@ -49,6 +49,6 @@ const meta: Meta<typeof ToastPreview> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ToastPreview>;
 
 export const Playground: Story = {};

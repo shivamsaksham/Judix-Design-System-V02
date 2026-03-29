@@ -34,44 +34,44 @@ export interface JudgmentDetailsContentProps {
 }
 
 
-const Section = ({ title, content}: { title: string; content: string; }) => (
-  <div className={cn("min-w-[986px] flex flex-col gap-2")}>
-    <div className = {cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
-        <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
-            {title}
-        </div>
+const Section = ({ title, content }: { title: string; content: string; }) => (
+  <div id={title.toLowerCase().replace(/\s+/g, '-')} className={cn("w-full flex flex-col gap-2")}>
+    <div className={cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
+      <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
+        {title}
+      </div>
     </div>
-    <div className = "p-1 mb-4">
-        <div className={cn(
-            "text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default"
-            )}>
-            <ReactMarkdown>{content}</ReactMarkdown>
-        </div>
+    <div className="p-1 mb-4">
+      <div className={cn(
+        "text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default"
+      )}>
+        <ReactMarkdown>{content}</ReactMarkdown>
+      </div>
     </div>
   </div>
 );
 
 const TableSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className={cn("min-w-[986px] flex flex-col gap-2 mb-4")}>
-    <div className = {cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
-        <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
-            {title}
-        </div>
+  <div id={title.toLowerCase().replace(/\s+/g, '-')} className={cn("w-full flex flex-col gap-2 mb-4")}>
+    <div className={cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
+      <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
+        {title}
+      </div>
     </div>
-    <div className = "p-2">
+    <div className="p-2">
       <div>
-          {children}
+        {children}
       </div>
     </div>
   </div>
 );
 
 const KeyWord = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className={cn("min-w-[986px] flex flex-col gap-2 mb-4")}>
-    <div className = {cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
-        <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
-            {title}
-        </div>
+  <div id={title.toLowerCase().replace(/\s+/g, '-')} className={cn("w-full flex flex-col gap-2 mb-4")}>
+    <div className={cn("border-b border-color-border-neutral-default pt-2 pb-2 pl-1")}>
+      <div className='text-style-body-default-emphasis text-color-text-neutral-secondary'>
+        {title}
+      </div>
     </div>
     <div>
       {children}
@@ -79,71 +79,71 @@ const KeyWord = ({ title, children }: { title: string; children: React.ReactNode
   </div>
 );
 
-export function JudgmentDetailsContent({ data, className }: JudgmentDetailsContentProps) {
+export function JudgmentDetailsContent({ data }: JudgmentDetailsContentProps) {
   return (
     <Card className="rounded-none border-none shadow-none bg-transparent">
-        <CardContent>
-          <Section title="OVERALL SUMMARY" content={data.overallSummary}/>
-          <Section title="ISSUE" content={data.issue} />
-          <Section title="FACTS" content={data.facts} />
-          <Section title="ARGUMENTS" content={data.arguments} />
-          <Section title="REASONING" content={data.reasoning} />
-          <Section title="DECISION" content={data.decision} />
-          
-          {data.caseMetadata && (
-            <TableSection title="CASE METADATA">
-              <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
-                <CaseMetadataTable data={data.caseMetadata} />
-              </div>
-            </TableSection>
-          )}
-          
-          {data.actsTable && (
-            <TableSection title="ACTS & SECTION">
-              <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
-                <ActsTable 
-                  data={data.actsTable.data} 
-                  headers={data.actsTable.headers}
-                />
-              </div>
-            </TableSection>
-          )}
-          
-          {data.keywords && data.keywords.length > 0 && (
-            <KeyWord title="KEYWORDS">
-              <div className="flex flex-wrap gap-2">
-                {data.keywords.map((keyword, index) => (
-                  <Label
-                    key={index}
-                    colorScheme="neutral"
-                    size="medium"
-                  >
-                    {keyword}
-                  </Label>
-                ))}
-              </div>
-            </KeyWord>
-          )}
-          
-          {data.citationData && (
-            <TableSection title="CITATION METADATA">
-              <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
-                <CitationData data={data.citationData}/>
-              </div>
-            </TableSection>
-          )}        
-          
-          {data.casesCited && (
-            <TableSection title="CASE CITED">
-              <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0 [&_[class*='grid-cols-']>div:last-child]:!max-w-none [&_.truncate]:!overflow-visible [&_.truncate]:!whitespace-normal [&_.truncate]:!text-clip">
-                <CasesCited 
-                  data={data.casesCited.data} 
-                  headers={data.casesCited.headers}
-                />
-              </div>
-            </TableSection>
-          )}
-        </CardContent>
+      <CardContent>
+        <Section title="OVERALL SUMMARY" content={data.overallSummary} />
+        <Section title="ISSUE" content={data.issue} />
+        <Section title="FACTS" content={data.facts} />
+        <Section title="ARGUMENTS" content={data.arguments} />
+        <Section title="REASONING" content={data.reasoning} />
+        <Section title="DECISION" content={data.decision} />
+
+        {data.caseMetadata && (
+          <TableSection title="CASE METADATA">
+            <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
+              <CaseMetadataTable data={data.caseMetadata} />
+            </div>
+          </TableSection>
+        )}
+
+        {data.actsTable && (
+          <TableSection title="ACTS & SECTION">
+            <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
+              <ActsTable
+                data={data.actsTable.data}
+                headers={data.actsTable.headers}
+              />
+            </div>
+          </TableSection>
+        )}
+
+        {data.keywords && data.keywords.length > 0 && (
+          <KeyWord title="KEYWORDS">
+            <div className="flex flex-wrap gap-2">
+              {data.keywords.map((keyword, index) => (
+                <Label
+                  key={index}
+                  colorScheme="neutral"
+                  size="medium"
+                >
+                  {keyword}
+                </Label>
+              ))}
+            </div>
+          </KeyWord>
+        )}
+
+        {data.citationData && (
+          <TableSection title="CITATION METADATA">
+            <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0">
+              <CitationData data={data.citationData} />
+            </div>
+          </TableSection>
+        )}
+
+        {data.casesCited && (
+          <TableSection title="CASE CITED">
+            <div className="[&>div]:!max-w-none [&>div]:!p-0 [&_[class*='grid-cols-']]:!grid-cols-[auto_auto_1fr] [&_[class*='grid-cols-']>div:last-child]:!min-w-0 [&_[class*='grid-cols-']>div:last-child]:!max-w-none [&_.truncate]:!overflow-visible [&_.truncate]:!whitespace-normal [&_.truncate]:!text-clip">
+              <CasesCited
+                data={data.casesCited.data}
+                headers={data.casesCited.headers}
+              />
+            </div>
+          </TableSection>
+        )}
+      </CardContent>
     </Card>
   );
 }

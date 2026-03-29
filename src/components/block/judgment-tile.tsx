@@ -1,97 +1,117 @@
-"use client";
-
-import * as React from "react";
-import { Icon } from "judix-icon";
-import { cn } from "@/lib/utils";
-import { Label } from "../ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ContextActionMenu } from "./context-action-menu";
-import { IconButton } from "../ui";
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 export interface JudgmentTileProps {
+    id: string;
+    className?: string;
+    index?: string | number;
     title: string;
-    matchPercentage: string;
-    citationCount: number;
-    description: string;
-    year: string;
+    citation?: string; 
     court: string;
+    year: string;
+    bench?: string;
+    description: string;
+    matchPercentage: string;
+    citationCount?: number;
+    selectionState?: 'default' | 'selected' | 'unselected';
+    isSelected?: boolean;
     isAdded?: boolean;
     isBookmarked?: boolean;
     isMentioned?: boolean;
     onAdd?: () => void;
     onBookmark?: () => void;
     onMention?: () => void;
-    className?: string;
+    onClick?: () => void;
 }
 
-export function JudgmentTile({
+export const JudgmentTile = ({
+    className,
+    index = 0,
     title,
-    matchPercentage,
-    citationCount,
-    description,
-    year,
+    citation,
     court,
-    isAdded,
-    isBookmarked,
-    isMentioned,
-    onAdd,
-    onBookmark,
-    onMention,
-    className
-}: JudgmentTileProps) {
-    const [open, setOpen] = React.useState(false);
+    year,
+    bench,
+    description,
+    matchPercentage,
+    selectionState = 'default',
+    isSelected,
+    onClick,
+}: JudgmentTileProps) => {
+
+    // Determine selection state logic
+    const effectiveSelectionState = (isSelected !== undefined)
+        ? (isSelected ? 'selected' : 'default')
+        : selectionState;
+
+    const isSelectedState = effectiveSelectionState === 'selected';
+    const isUnselected = effectiveSelectionState === 'unselected';
+
+    const matchValue = parseFloat(matchPercentage) || 0;
 
     return (
-        <div className={cn(
-            "group relative flex flex-col gap-3 p-3 w-full",
-            "border border-color-border-neutral-default rounded-lg",
-            "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
-            "transition-colors duration-200",
-            className
-        )}>
-            <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1 pr-8">
-                {title}
-            </h3>
+        <div
+            onClick={onClick}
+            className={cn(
+                'flex flex-col md:flex-row w-full bg-color-surface-neutral-default overflow-hidden',
+                isUnselected ? 'opacity-50 transition-opacity' : 'opacity-100 transition-opacity',
+                onClick ? 'cursor-pointer' : '',
+                onClick && !isUnselected ? 'hover:bg-color-surface-neutral-hover_default' : '',
+                className
+            )}
+            style={isSelectedState ? { borderLeftWidth: '8px', borderLeftColor: 'var(--color-color-border-primary-strong)' } : {}}
+        >
+            <div className="flex w-full p-4 gap-4">
+                {/* Index Number Box */}
+                <div className="shrink-0">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-radius-interactiveelement border border-color-border-neutral-default bg-color-surface-neutral-default text-style-body-title-emphasis text-color-text-neutral-default">
+                        {String(index).padStart(2, '0')}
+                    </div>
+                </div>
 
-            <div className="flex flex-wrap gap-1">
-                <Label colorScheme="primary" className="h-6 px-2 rounded-lg">
-                    {matchPercentage}
-                </Label>
-                <Label colorScheme="primary" className="h-6 px-2 rounded-lg">
-                    Cited {citationCount} times
-                </Label>
-            </div>
+                {/* Content */}
+                <div className="flex flex-col gap-2 grow min-w-0">
+                    <div className='flex flex-col gap-1'>
+                        <div className="flex flex-col gap-1">
+                            {/* Title */}
+                            <h4 className="p-1 text-style-body-default-regular text-color-text-primary-default truncate whitespace-normal line-clamp-2">
+                                {title}
+                            </h4>
 
-            <p className="text-color-text-neutral-default text-style-textblock-secondary-subtext-regular">
-                {description}
-            </p>
+                            {/* Metadata Row 1 */}
+                            <div className="flex flex-wrap items-center gap-4 text-style-label-default-regular text-color-text-neutral-default">
+                                {citation && <span className='p-1 text-style-label-default-regular' >{citation}</span>}
+                                <span className='p-1 text-style-label-default-regular' >{court}</span>
+                                <span className='p-1 text-style-label-default-regular' >{year}</span>
+                                {bench && <span className='p-1 text-style-label-default-regular' >{bench}</span>}
+                            </div>
+                        </div>
 
-            <div className="flex items-center justify-between mt-1">
-                <Label colorScheme="neutral" className="h-6 px-2 rounded-md bg-white border border-color-border-neutral-default text-color-label-color-neutral-text">
-                    {year}
-                </Label>
-                <span className="text-color-text-neutral-tertiary text-style-label-default-regular">
-                    {court}
-                </span>
-            </div>
+                        {/* Description */}
+                        <p className="p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-emphasis">
+                            {description}
+                        </p>
+                    </div>
 
-            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <IconButton size="medium" icon="Add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
-                    </PopoverTrigger>
-                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto">
-                        <ContextActionMenu
-                            isAdded={isAdded}
-                            isBookmarked={isBookmarked}
-                            isMentioned={isMentioned}
-                            onAdd={() => { onAdd?.(); }}
-                            onBookmark={() => { onBookmark?.(); }}
-                            onMention={() => { onMention?.(); }}
-                        />
-                    </PopoverContent>
-                </Popover>
+                    {/* Match Score Bar */}
+                    <div className="flex items-center gap-2 py-[3px]">
+                        <span className="text-style-label-default-regular text-color-text-neutral-tertiary">
+                            Match
+                        </span>
+
+                        <div className="grow h-0.5 rounded-full bg-color-surface-neutral-hover_mild overflow-hidden">
+                            <div
+                                className="h-full bg-color-border-primary-default rounded-full"
+                                style={{ width: `${Math.min(100, Math.max(0, matchValue))}%` }}
+                            />
+                        </div>
+
+                        <span className="p-1 text-style-label-default-regular text-color-text-primary-default min-w-[32px] text-right">
+                            {matchPercentage}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     );
-}
+};

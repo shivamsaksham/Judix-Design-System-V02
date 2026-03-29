@@ -30,7 +30,7 @@ const meta: Meta<typeof RadioButton> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RadioButton>;
 
 const options = [
   { label: 'Email', value: 'email' },

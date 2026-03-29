@@ -1,10 +1,11 @@
 'use client';
 import React from 'react';
-import toast, { Toaster, ToastBar } from 'react-hot-toast';
+import toast, { Toaster, resolveValue } from 'react-hot-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { AlertTriangle, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Check, Danger, Icon, TickCircle } from 'judix-icon';
+import { Danger, Icon } from '@judix/icon';
+import Image from 'next/image';
 
 const toastVariants = cva(
   "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
@@ -12,9 +13,9 @@ const toastVariants = cva(
     variants: {
       type: {
         loading: "bg-toast-color-error-bg border-toast-color-error-stroke",
-        alert: "bg-toast-color-alert-bg border-toast-color-error-stroke",
+        alert: "bg-toast-color-error-bg border-toast-color-error-stroke",
         success: "bg-toast-color-success-bg border-toast-color-success-stroke",
-        notice: "bg-toast-color-notice-bg border-toast-color-warning-stroke",
+        notice: "bg-toast-color-warning-bg border-toast-color-warning-stroke",
         info: "bg-toast-color-info-bg border-toast-color-info-stroke",
       },
     },
@@ -61,14 +62,17 @@ const toastTextVariants = cva(
 );
 
 const CustomInfoIcon = ({ className }: { className?: string }) => (
-  <img src="/info-toast.svg" alt="Info" className={className} />
+  <Image src="/info-toast.svg" alt="Information" width={20} height={20} className={className} />
 );
 
 const iconMap = {
   loading: Loader2,
-  alert: Danger,
-  success: TickCircle,
-  notice: Danger,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  alert: (props: React.SVGProps<SVGSVGElement>) => <Icon name="danger" {...props as any} />,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  success: (props: React.SVGProps<SVGSVGElement>) => <Icon name="tick-circle" {...props as any} />,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  notice: (props: React.SVGProps<SVGSVGElement>) => <Icon name="danger" {...props as any} />,
   info: CustomInfoIcon,
 };
 
@@ -76,13 +80,18 @@ interface CustomToastProps extends VariantProps<typeof toastVariants> {
   title?: string;
   message: string;
   toastId: string;
+  visible?: boolean;
 }
 
-const CustomToast: React.FC<CustomToastProps> = ({ type, title, message }) => {
+const CustomToast: React.FC<CustomToastProps> = ({ type, title, message, visible }) => {
   const Icon = iconMap[type || 'info'];
 
   return (
-    <div className={cn(toastVariants({ type }))}>
+    <div className={cn(
+      toastVariants({ type }),
+      "transition-all duration-500 ease-in-out transform",
+      visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+    )}>
       <Icon className={cn(toastIconVariants({ type }))} />
       <div className="flex-1">
         {title && <p className={cn(toastTextVariants({ type }))}>{title}</p>}
@@ -93,23 +102,30 @@ const CustomToast: React.FC<CustomToastProps> = ({ type, title, message }) => {
 };
 
 export const showToast = {
-  alert: (message: string, title?: string) => 
-    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} />, { duration: 4000 }),
-  success: (message: string, title?: string) => 
-    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} />, { duration: 4000 }),
-  notice: (message: string, title?: string) => 
-    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} />, { duration: 4000 }),
-  info: (message: string, title?: string) => 
-    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} />, { duration: 4000 }),
-  promise: (promise: Promise<any>, messages: { loading: string; success: string; error: string; }) => 
-    toast.promise(promise, messages),
+  alert: (message: string, title?: string) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  success: (message: string, title?: string) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  notice: (message: string, title?: string) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  info: (message: string, title?: string) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  promise: <T extends unknown>(
+    promise: Promise<T>,
+    messages: {
+      loading: React.ReactElement | string;
+      success: string | ((data: T) => string);
+      error: string | ((err: any) => string);
+    }
+  ) => toast.promise(promise, messages),
 };
 
-export const ToastContainer = ({ position = 'top-center' }: { position?: any }) => {
+export const ToastContainer = ({ position = 'top-center' }: { position?: "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right" }) => {
   return (
     <Toaster
       position={position}
       gutter={8}
+      containerClassName="z-[9999]"
       toastOptions={{
         className: "",
         success: { className: "" },
@@ -120,19 +136,28 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: any }) 
     >
       {(t) => {
         if (t.type === 'custom') {
-          return <>{t.message}</>;
+          return (
+            <div className={cn(
+              "transition-all duration-500 ease-in-out transform",
+              t.visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+            )}>
+              {resolveValue(t.message, t)}
+            </div>
+          );
         }
 
         const getIcon = () => {
           if (t.type === 'loading') return <Loader2 className="h-6 w-6 shrink-0 text-gray-500 animate-spin" />;
-          if (t.type === 'success') return <Icon name='TickCircle' className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
+          if (t.type === 'success') return <Icon name='tick-circle' className="h-6 w-6 shrink-0 text-toast-color-success-icon" />;
           if (t.type === 'error') return <Danger className="h-6 w-6 shrink-0 text-toast-color-warning-icon" />;
           return <AlertCircle className="h-6 w-6 shrink-0" />;
         };
 
         return (
           <div className={cn(
-            "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
+            "group flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
+            "transition-all duration-500 ease-in-out transform",
+            t.visible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
             t.type === 'success' && "bg-toast-color-success-bg border-toast-color-success-stroke",
             t.type === 'error' && "bg-toast-color-alert-bg border-toast-color-error-stroke",
             t.type === 'loading' && "bg-toast-color-error-bg border-toast-color-error-stroke",

@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { IconButton } from "../ui/icon-button";
 import { TextInput } from "../ui/text-input";
 import { VersionSelector } from "./version-selector";
 import {
@@ -61,7 +60,7 @@ export function SearchSection({
         >
             {dropdownLabel}
             <Icon
-                name="ArrowDown"
+                name="arrow-down-a"
                 className={cn(
                     "h-4 w-4 text-color-icon-neutral-tertiary transition-transform duration-200",
                     open && "rotate-180"
@@ -73,7 +72,7 @@ export function SearchSection({
     return (
         <div className={cn("flex flex-col gap-3 pt-4 px-2 pb-2 bg-color-surface-neutral-subtle_bg", className)}>
 
-            <div className="flex justify-start">
+            <div className="flex items-center justify-between">
                 <VersionSelector
                     options={versionOptions}
                     value={version}
@@ -118,13 +117,13 @@ export function SearchSection({
             <div className="flex gap-3">
                 <TextInput
                     label=""
-                    inputSize="default"
+                    inputSize="small"
                     placeholder={searchPlaceholder}
                     value={searchValue}
                     onChange={onSearchChange}
-                    className="flex-grow h-[42px] w-[300px] py-1 items-center bg-textinput-bg"
+                    className="grow h-[42px] w-[300px] py-1 items-center bg-textinput-bg"
                     trailingAccessory={
-                        <Icon name="SearchNormal1" className="h-5 w-5 text-color-icon-neutral-tertiary" />
+                        <Icon name="search-normal-a" className="h-5 w-5 text-color-icon-neutral-tertiary" />
                     }
                 />
 

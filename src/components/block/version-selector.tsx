@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { cn } from "@/lib/utils";
 import {
     Popover,
@@ -63,7 +63,7 @@ export function VersionSelector({
                         {displayLabel}
                     </span>
                     <Icon
-                        name="ArrowDown"
+                        name="arrow-down-a"
                         className={cn(
                             "h-4 w-4 text-color-icon-neutral-tertiary transition-opacity duration-200",
                             "opacity-0 group-hover:opacity-100",

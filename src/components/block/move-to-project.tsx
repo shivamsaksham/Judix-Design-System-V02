@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "judix-icon";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
@@ -12,7 +11,6 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { Option } from "../ui/option";
 import { TextInput } from "../ui/text-input";
 import { ProjectList } from "./project-list";
 
@@ -108,6 +106,7 @@ function BookmarkDialog({
                 <div className="flex flex-col gap-2">
                     <div className="relative" ref={dropdownRef}>
                         <TextInput
+                            inputSize="medium"
                             ref={inputRef}
                             label=""
                             placeholder={

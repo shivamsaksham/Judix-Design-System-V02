@@ -34,7 +34,7 @@ const meta: Meta<typeof Button> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Button>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary_Large: Story = {
@@ -71,7 +71,7 @@ export const PrimaryExtraSmall: Story = {
 
 export const Primary_Large_Icon: Story = {
   args: {
-    prefixIcon: "Document",
+    prefixIcon: "document-a",
     children: 'Primary Large Icon',
     variant: 'primary',
     size: 'large',
@@ -199,7 +199,7 @@ export const AsChild: Story = {
 // New Stories demonstrating prefix and suffix icons
 export const WithPrefixIcon: Story = {
   args: {
-    prefixIcon: "Document",
+    prefixIcon: "document-a",
     children: "Download File",
     variant: "primary",
     size: "large",
@@ -208,7 +208,7 @@ export const WithPrefixIcon: Story = {
 
 export const WithSuffixIcon: Story = {
   args: {
-    suffixIcon: "ArrowRight",
+    suffixIcon: "arrow-right-a",
     children: "Continue",
     variant: "primary",
     size: "large",
@@ -217,8 +217,8 @@ export const WithSuffixIcon: Story = {
 
 export const WithBothIcons: Story = {
   args: {
-    prefixIcon: "SearchNormal",
-    suffixIcon: "ArrowRight",
+    prefixIcon: "search-normal-a",
+    suffixIcon: "arrow-right-a",
     children: "Search and Navigate",
     variant: "primary",
     size: "large",
@@ -227,7 +227,7 @@ export const WithBothIcons: Story = {
 
 export const PrefixIconMedium: Story = {
   args: {
-    prefixIcon: "Add",
+    prefixIcon: "add",
     children: "Add Item",
     variant: "primary",
     size: "medium",
@@ -236,7 +236,7 @@ export const PrefixIconMedium: Story = {
 
 export const SuffixIconSmall: Story = {
   args: {
-    suffixIcon: "Check",
+    suffixIcon: "check",
     children: "Complete",
     variant: "neutral",
     size: "small",
@@ -245,7 +245,7 @@ export const SuffixIconSmall: Story = {
 
 export const DestructiveWithIcon: Story = {
   args: {
-    prefixIcon: "Trash",
+    prefixIcon: "trash",
     children: "Delete",
     variant: "destructive",
     size: "large",
@@ -254,8 +254,8 @@ export const DestructiveWithIcon: Story = {
 
 export const CustomIconSize: Story = {
   args: {
-    prefixIcon: "Heart",
-    suffixIcon: "Star",
+    prefixIcon: "heart",
+    suffixIcon: "star-a",
     children: "Custom Size Icons",
     iconStrokeWidth: 3,
     variant: "primary",

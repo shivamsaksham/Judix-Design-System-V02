@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Progress } from '@/components/ui/progress';
 import { useState, useEffect } from 'react';
 
@@ -14,10 +14,10 @@ const meta = {
             control: { type: 'range', min: 0, max: 100, step: 1 },
         },
     },
-} satisfies Meta<typeof Progress>;
+} as Meta<typeof Progress>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Progress>;
 
 export const Default: Story = {
     args: {

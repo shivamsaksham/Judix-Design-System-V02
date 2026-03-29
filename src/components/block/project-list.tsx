@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 import { Dropdown } from "../ui/dropdown";
 
 export interface Project {
@@ -22,9 +22,9 @@ export function ProjectList({ projects, selectedProjects, onSelect }: ProjectLis
                 value: project.id,
                 title: project.name,
                 subtext: project.description,
-                leadingIcon: <Icon name="DocumentText1" className="h-4 w-4" />
+                leadingIcon: <Icon name="document-text-a" className="h-4 w-4" />
             }))}
-            value={selectedProjects.map((p) => p.id)}
+            value={selectedProjects.length > 0 ? selectedProjects[0].id : null}
             onChange={(value) => {
                 const project = projects.find((p) => p.id === value);
                 if (project) {

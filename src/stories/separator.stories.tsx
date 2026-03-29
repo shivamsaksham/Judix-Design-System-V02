@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Separator } from '@/components/ui/separator';
 
 const meta = {
@@ -14,10 +14,10 @@ const meta = {
             options: ['horizontal', 'vertical'],
         },
     },
-} satisfies Meta<typeof Separator>;
+} as Meta<typeof Separator>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Separator>;
 
 export const Horizontal: Story = {
     render: () => (

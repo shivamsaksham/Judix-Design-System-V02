@@ -54,6 +54,7 @@ function RenameDialog({
 
                 <div className="flex flex-col gap-4">
                     <TextInput
+                        inputSize="medium"
                         label=""
                         value={name}
                         onChange={(e) => setName(e.target.value)}

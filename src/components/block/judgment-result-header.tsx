@@ -38,17 +38,17 @@ export function JudgmentResultHeader({
             actions={
                 <>
                     <IconButton
-                        icon="Printer"
+                        icon="printer"
                         variant="neutral"
                         boundary="stroked"
                         corner="rounded"
                         size="medium"
                         aria-label="Print"
-                        className="rounded-lg h-[32px] w-[32px]"
+                        className="h-[32px] w-[32px]"
                         onClick={onPrint}
                     />
                     <IconButton
-                        icon="Filter"
+                        icon="filter"
                         variant="neutral"
                         boundary="stroked"
                         corner="rounded"

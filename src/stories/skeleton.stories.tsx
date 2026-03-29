@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Skeleton } from '@/components/ui/skeleton';
 
 const meta = {
@@ -8,10 +8,10 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Skeleton>;
+} as Meta<typeof Skeleton>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Skeleton>;
 
 export const Default: Story = {
     render: () => <Skeleton className="w-[200px] h-[20px]" />,

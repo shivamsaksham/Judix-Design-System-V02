@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ContextWindowDropdown from '@/components/block/context-window-dropdown';
 import { useState } from 'react';
 
@@ -12,7 +12,7 @@ const meta: Meta<typeof ContextWindowDropdown> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ContextWindowDropdown>;
 
 const sampleItems = [
     {
@@ -75,5 +75,17 @@ export const Interactive: Story = {
                 />
             </div>
         );
+    },
+};
+
+export const ManyItems: Story = {
+    args: {
+        items: Array.from({ length: 20 }, (_, i) => ({
+            id: `item-${i + 1}`,
+            title: `Context Item ${i + 1}`,
+            description: `Description for context item ${i + 1}. This demonstrates scrolling behavior.`,
+            checked: false,
+        })),
+        defaultAutoContext: true,
     },
 };

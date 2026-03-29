@@ -19,6 +19,6 @@ const meta: Meta<typeof CitationData> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof CitationData>;
 
 export const Default: Story = {};
