@@ -27,6 +27,7 @@ const generateJudgments = (count: number): JudgmentTileProps[] => {
         isAdded: false,
         isBookmarked: false,
         isMentioned: false,
+        id: `mock-judg-${i}`,
     }));
 };
 
@@ -38,6 +39,7 @@ const generateActs = (count: number): ActResultTileProps[] => {
         isAdded: false,
         isBookmarked: false,
         isMentioned: false,
+        id: `mock-act-${i}`,
     }));
 };
 

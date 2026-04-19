@@ -9,7 +9,10 @@ const sampleTileData = {
     date: '24 August 2017',
     bench: '9-judge bench',
     summary: 'Unanimously held that privacy is a fundamental right under Article 21. Landmark ruling that shaped the constitutional framework for data protection, surveillance, and Aadhaar legislation.',
-    matchScore: 94,
+    matchPercentage: '94%',
+    id: 'sample-id',
+    year: '2017',
+    description: 'Sample judgment description',
 };
 
 const meta = {
