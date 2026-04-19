@@ -15,7 +15,7 @@ function Kbd({ className, ...props }: React.ComponentPropsWithoutRef<"kbd">) {
   )
 }
 
-function KbdGroup({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+function KbdGroup({ className, ...props }: React.ComponentPropsWithoutRef<"kbd">) {
   return (
     <kbd
       data-slot="kbd-group"
