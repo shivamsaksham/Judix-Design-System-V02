@@ -23,6 +23,7 @@ export const Default: Story = {
         isBookmarked: false,
         isMentioned: false,
         className: 'w-[400px]',
+        id: "act-1",
     },
 };
 
@@ -44,6 +45,7 @@ export const Interactive: Story = {
                 onBookmark={() => setState(s => ({ ...s, isBookmarked: !s.isBookmarked }))}
                 onMention={() => setState(s => ({ ...s, isMentioned: !s.isMentioned }))}
                 className='w-[400px]'
+                id="act-2"
             />
         );
     }
