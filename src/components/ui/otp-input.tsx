@@ -4,8 +4,8 @@ import React, { useRef } from "react";
 import { TextInput } from "./text-input";
 
 export interface OtpInputProps {
-    value: string[];
-    onChange: React.Dispatch<React.SetStateAction<string[]>>;
+    value: string;
+    onChange: (value: string) => void;
     disabled?: boolean;
     length?: number;
 }
@@ -14,18 +14,14 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     const handleChange = (element: HTMLInputElement, index: number) => {
-        // Strip out any non-numbers (letters, spaces, invisible characters)
         const digits = element.value.replace(/\D/g, "");
-        // If there are multiple characters, always just take the final typed one
         const val = digits.slice(-1);
 
-        onChange(prev => {
-            const newOtp = [...prev];
-            newOtp[index] = val;
-            return newOtp;
-        });
+        const newOtpArray = value.split("").map((char, i) => (i === index ? val : char));
+        // Fill up to length if needed
+        while (newOtpArray.length < length) newOtpArray.push("");
+        onChange(newOtpArray.join("").slice(0, length));
 
-        // Focus next input immediately if a number was logged
         if (val !== "" && index < length - 1) {
             setTimeout(() => {
                 inputRefs.current[index + 1]?.focus();
@@ -43,29 +39,24 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
 
     const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault();
-        // Strictly filter the clipboard to only accept real digits
         const pasteText = e.clipboardData.getData("text").replace(/\D/g, "");
-        const pasteData = pasteText.slice(0, length).split("");
+        const pasteData = pasteText.slice(0, length);
         
         if (pasteData.length === 0) return;
 
-        onChange(prev => {
-            const newOtp = [...prev];
-            pasteData.forEach((char, i) => {
-                if (i < length) newOtp[i] = char;
-            });
-            return newOtp;
-        });
+        onChange(pasteData);
         
         setTimeout(() => {
             inputRefs.current[Math.min(pasteData.length, length - 1)]?.focus();
         }, 10);
     };
 
+    const displayArray = value.padEnd(length, " ").split("").slice(0, length);
+
     return (
         <div className="flex justify-center">
             <div className="flex gap-1 w-full max-w-[356px] justify-center">
-                {value.map((data, index) => (
+                {displayArray.map((data, index) => (
                     <TextInput
                         key={index}
                         ref={(el) => {
