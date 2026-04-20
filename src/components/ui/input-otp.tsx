@@ -77,7 +77,7 @@ function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
 function OtpInput({ 
   maxLength = 6, 
   ...props 
-}: Omit<React.ComponentProps<typeof InputOTP>, "render">) {
+}: Omit<React.ComponentProps<typeof InputOTP>, "render" | "maxLength"> & { maxLength?: number }) {
   return (
     <InputOTP maxLength={maxLength} {...props}>
       <InputOTPGroup>
