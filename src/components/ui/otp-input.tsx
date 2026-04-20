@@ -17,10 +17,11 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
         const digits = element.value.replace(/\D/g, "");
         const val = digits.slice(-1);
 
-        const newOtpArray = value.split("").map((char, i) => (i === index ? val : char));
-        // Fill up to length if needed
-        while (newOtpArray.length < length) newOtpArray.push("");
-        onChange(newOtpArray.join("").slice(0, length));
+        const currentOtpArray = value.padEnd(length, " ").split("");
+        const newOtpArray = currentOtpArray.map((char, i) => (i === index ? val : char));
+        
+        const finalOtp = newOtpArray.join("").slice(0, length);
+        onChange(finalOtp);
 
         if (val !== "" && index < length - 1) {
             setTimeout(() => {
@@ -30,10 +31,18 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (e.key === "Backspace" && !value[index] && index > 0) {
-            setTimeout(() => {
-                inputRefs.current[index - 1]?.focus();
-            }, 10);
+        if (e.key === "Backspace" && index > 0) {
+            const isCurrentEmpty = !value[index] || value[index] === " ";
+            
+            if (isCurrentEmpty) {
+                const currentOtpArray = value.padEnd(length, " ").split("");
+                currentOtpArray[index - 1] = " "; 
+                onChange(currentOtpArray.join("").slice(0, length));
+                
+                setTimeout(() => {
+                    inputRefs.current[index - 1]?.focus();
+                }, 10);
+            }
         }
     };
 
@@ -47,7 +56,8 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
         onChange(pasteData);
         
         setTimeout(() => {
-            inputRefs.current[Math.min(pasteData.length, length - 1)]?.focus();
+            const nextIndex = Math.min(pasteData.length, length - 1);
+            inputRefs.current[nextIndex]?.focus();
         }, 10);
     };
 
@@ -62,12 +72,12 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
                         ref={(el) => {
                             inputRefs.current[index] = el;
                         }}
-                        className="w-[51.33px] md:w-[56px] shrink-0 h-[51.33px] md:h-[56px] textinput-border-radius-default textinput-border-weight-default text-base md:text-lg"
-                        inputClassName="w-full min-w-0 text-center !p-0 [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
-                        style={{ textAlign: 'center' }}
+                        className="w-[51.33px] md:w-[56px] shrink-0 h-[51.33px] md:h-[56px] textinput-border-radius-default textinput-border-weight-default"
+                        inputClassName="w-full min-w-0 text-center !p-0 text-xl font-bold text-color-text-neutral-emphasis [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
+                        inputSize="large"
                         inputMode="numeric"
                         pattern="[0-9]*"
-                        maxLength={2} // Increased to 2 so you can always type cleanly over an existing digit
+                        maxLength={2}
                         value={data?.trim() || ""}
                         id={`otp-${index}`}
                         name={`otp-${index}`}
