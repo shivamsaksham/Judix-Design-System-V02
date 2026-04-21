@@ -75,6 +75,7 @@ export const BillInfoForm = ({
 
     const [isVerifying, setIsVerifying] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     React.useEffect(() => {
         if (initialData) {
@@ -196,7 +197,7 @@ export const BillInfoForm = ({
                 />
 
                 {/* State */}
-                <Popover>
+                <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger asChild>
                         <Button
                             variant="neutral"
@@ -213,7 +214,10 @@ export const BillInfoForm = ({
                         <Dropdown
                             options={STATES.map(state => ({ value: state, title: state }))}
                             value={formData.state}
-                            onChange={(value) => handleChange('state', value)}
+                            onChange={(value) => {
+                                handleChange('state', value);
+                                setIsPopoverOpen(false);
+                            }}
                             searchbar="attached"
                             className="w-full"
                         />

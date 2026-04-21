@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { TextInput } from "@/components/ui/text-input";
 import { Button } from "@/components/ui/button";
-import { Icon } from "@judix/icon";
 import {
   Select,
   SelectContent,
@@ -235,7 +234,7 @@ export function MyAccount() {
       : "Your Name";
 
   return (
-    <div className="w-full max-w-[696px] md:max-w-3xl lg:max-w-4xl mx-auto bg-white px-4 py-6 md:px-8 lg:px-12">
+    <div className="w-full max-w-[696px] md:max-w-3xl lg:max-w-4xl bg-white">
 
       {/* Header */}
       <div className="flex items-start justify-between mb-1">
