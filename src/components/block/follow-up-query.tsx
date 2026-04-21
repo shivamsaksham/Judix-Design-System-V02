@@ -13,8 +13,7 @@ const FollowUpQuery = React.forwardRef<HTMLButtonElement, FollowUpQueryProps>(
             <button
                 ref={ref}
                 onClick={onClick}
-                className={cn(
-                    "text-style-textblock-primary-subtext-regular",
+                className={`text-style-textblock-primary-subtext-regular ${cn(
                     "text-color-text-primary-default",
                     "bg-color-surface-neutral-default",
                     "hover:bg-color-surface-primary-hover_default",
@@ -26,12 +25,12 @@ const FollowUpQuery = React.forwardRef<HTMLButtonElement, FollowUpQueryProps>(
                     "whitespace-normal break-words text-left",
                     "w-full",
                     className
-                )}
+                )}`}
                 {...props}
             >
                 <div className="p-1">
                     {query}
-                    </div>
+                </div>
             </button>
         )
     }

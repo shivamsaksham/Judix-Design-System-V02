@@ -1553,7 +1553,7 @@ function SearchEngineInput({
                                 className="inline-flex items-center gap-1 p-2 rounded text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors"
                             >
                                 <Icon name="add" className="w-4 h-4 text-color-icon-neutral-secondary shrink-0" />
-                                Add context
+                                Add Sources
                             </button>
 
                             <button
@@ -1603,7 +1603,7 @@ function SearchEngineInput({
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
-                            <ModelDropdown modelName={modelName} onChange={setModelName} />
+                            {/* <ModelDropdown modelName={modelName} onChange={setModelName} /> */}
 
                             <IconButton
                                 onClick={isLoading ? onStop : handleSubmit}

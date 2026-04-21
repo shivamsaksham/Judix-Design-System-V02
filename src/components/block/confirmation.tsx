@@ -55,6 +55,7 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
           <Button variant="neutral" size="extraSmall" onClick={onCancelClick}>{cancelText}</Button>
           <Button size="extraSmall" variant={confirmVariant} onClick={onConfirmClick}>{confirmText}</Button>
         </DialogFooter>
+        
       </DialogContent>
     </Dialog>
   )

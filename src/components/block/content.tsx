@@ -99,7 +99,7 @@ export const Content = ({
             {/* Complete Result Section */}
             <div className="flex flex-col">
                 {(caseLawsCount > 0 || actsCount > 0) && (
-                    <div className="my-6">
+                    <div className="mb-6">
                         <Artifacts
                             title='Cases'
                             subtitle={`Found ${caseLawsCount} cases`}
@@ -114,7 +114,7 @@ export const Content = ({
                     </div>
                 )}
 
-                {displayText && <div className={cn("text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis")}>
+                {displayText && <div className="text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{

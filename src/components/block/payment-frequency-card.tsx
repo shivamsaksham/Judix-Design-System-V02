@@ -28,7 +28,7 @@ export const PaymentFrequencyCard = ({
         <div
             onClick={onClick}
             className={cn(
-                'relative flex flex-col w-full p-4 gap-5 rounded-radius-interactiveelement border transition-all duration-200 cursor-pointer',
+                'relative flex flex-col w-60 p-4 gap-6 rounded-radius-interactiveelement border transition-all duration-200 cursor-pointer',
                 selected
                     ? 'border-color-border-primary-strong bg-color-surface-primary-subtle_bg'
                     : 'border-color-border-neutral-default bg-color-surface-neutral-default hover:bg-color-surface-neutral-hover_default',
@@ -40,7 +40,7 @@ export const PaymentFrequencyCard = ({
                 <RadioButton
                     checked={selected}
                     onChange={onClick}
-                    size="medium"
+                    size="large"
                     color="primary"
                     className="pointer-events-none"
                 />
@@ -48,6 +48,7 @@ export const PaymentFrequencyCard = ({
                     <Label
                         colorScheme={selected ? 'primary' : 'neutral'}
                         size="small"
+                        className='-mb-2'
                     >
                         {discountLabel}
                     </Label>

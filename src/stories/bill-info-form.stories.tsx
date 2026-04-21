@@ -37,3 +37,20 @@ export const PreFilledForm: Story = {
         },
     },
 };
+
+export const CustomCompany: Story = {
+    args: {
+        companyDetails: {
+            name: "XYZ LEGAL SOLUTIONS",
+            address: "Suite 402, Justice Tower, New Delhi 110001",
+            gst: "07AAACX1234F1Z5"
+        },
+        initialData: {
+            firstName: 'Demo',
+            lastName: 'User',
+            email: 'demo@xyz.in',
+            needGst: true,
+            gstNumber: '07AAACX1234F1Z5',
+        }
+    }
+};

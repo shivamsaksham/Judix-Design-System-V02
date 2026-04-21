@@ -25,6 +25,7 @@ const defaultData = {
     isPromoApplied: true,
     autoRenewDate: '09/03/2027',
     yearlyPrice: 'INR 11990/year + gst',
+    monthlyPrice: 'INR 1249/month + gst',
 };
 
 export const Default: Story = {

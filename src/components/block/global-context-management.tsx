@@ -181,7 +181,7 @@ export const GlobalContextManagement = ({
                     <button
                         onClick={handleAddClick}
                         className={cn(
-                            'w-full p-4 min-h-[160px] rounded-label-border-radius-default border border-color-border-neutral-default bg-color-surface-neutral-default',
+                            'w-full p-4 min-h-[176px] rounded-label-border-radius-default border border-color-border-neutral-default bg-color-surface-neutral-default',
                             'flex items-center justify-center',
                             'transition-all duration-200',
                             'hover:bg-color-surface-neutral-hover_default',

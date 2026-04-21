@@ -34,45 +34,45 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' |
     {
         id: 'account',
         label: 'My Account',
-        icon: <Icon name="profile-circle" />,
+        icon: <Icon name="profile-circle" className="w-[18px] h-[18px]" />,
         onClick: props.onAccount,
     },
     {
         id: 'projects',
         label: 'Projects',
-        icon: <Icon name="folder-a" />,
+        icon: <Icon name="folder-a" className="w-[18px] h-[18px]" />,
         onClick: props.onProjects,
     },
     {
         id: 'subscriptions',
         label: 'Subscriptions',
-        icon: <Icon name="wallet-a" />,
+        icon: <Icon name="wallet-a" className="w-[18px] h-[18px]" />,
         onClick: props.onSubscriptions,
     },
     {
         id: 'settings',
         label: 'Settings',
-        icon: <Icon name="setting-e" />,
+        icon: <Icon name="setting-e" className="w-[18px] h-[18px]" />,
         onClick: props.onSettings,
         dividerAfter: true,
     },
     {
         id: 'refer',
         label: 'Refer and Earn',
-        icon: <Icon name="gift" />,
+        icon: <Icon name="gift" className="w-[18px] h-[18px]" />,
         onClick: props.onRefer,
     },
     {
         id: 'help',
         label: 'Help & Support',
-        icon: <Icon name="call" />,
+        icon: <Icon name="call" className="w-[18px] h-[18px]" />,
         onClick: props.onHelp,
         dividerAfter: true,
     },
     {
         id: 'logout',
         label: 'Logout',
-        icon: <Icon name="logout-b" />,
+        icon: <Icon name="logout-b" className="w-[18px] h-[18px]" />,
         onClick: props.onLogout,
         variant: 'danger' as const,
     },
@@ -84,7 +84,7 @@ export const UserMenu = ({ items: customItems, className, onAccount, onProjects,
         <div
             className={cn(
                 'bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default',
-                'w-[320px] p-2',
+                'w-[248px] p-2',
                 className
             )}
         >
@@ -107,7 +107,8 @@ export const UserMenu = ({ items: customItems, className, onAccount, onProjects,
                             onClick={item.onClick}
                             disabled={item.disabled}
                             className={cn(
-                                item.variant === 'danger' && 'text-color-text-feedback-error-default hover:bg-color-surface-feedback-error-subtle'
+                                'text-color-icon-neutral-default hover:text-option-color-text',
+                                item.variant === 'danger' && 'text-color-text-feedback-error-default hover:bg-color-surface-feedback-error-subtle hover:text-color-text-feedback-error-default'
                             )}
                         />
                         {item.dividerAfter && index < items.length - 1 && (

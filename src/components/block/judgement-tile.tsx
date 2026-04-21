@@ -77,7 +77,7 @@ export function JudgementTile({
                 <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
             </div>
 
-            <div className="flex items-center justify-between mt-1">
+            <div className="flex items-center justify-between mt-2">
                 <span className="p-1 text-color-text-neutral-secondary text-style-label-default-regular">
                     Cited {citationCount} {citationCount === 1 ? 'time' : 'times'}
                 </span>

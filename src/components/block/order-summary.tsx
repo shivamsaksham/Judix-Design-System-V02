@@ -154,6 +154,7 @@ export const OrderSummary = ({
                             variant="neutral"
                             size="small"
                             onClick={handleApplyPromo}
+                            className='h-[42px]'
                             disabled={!promoInput.trim() || data.isPromoApplied || loading}
                         >
                             {data.isPromoApplied ? 'Applied' : 'Apply'}

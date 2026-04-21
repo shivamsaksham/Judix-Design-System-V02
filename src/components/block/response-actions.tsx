@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { IconButton } from '@/components/ui/icon-button';
+import { Button } from '@/components/ui/button';
 import { showToast } from '@/components/ui/toast';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -36,6 +37,7 @@ export const ResponseActions = ({
     const [internalIsDisliked, setInternalIsDisliked] = useState(false);
     const [exportOpen, setExportOpen] = useState(false);
     const [selectedExport, setSelectedExport] = useState<string | null>(null);
+    const [isCopied, setIsCopied] = useState(false);
 
     // Use external state if provided, otherwise use internal state
     const isLiked = externalIsLiked !== undefined ? externalIsLiked : internalIsLiked;
@@ -60,6 +62,8 @@ export const ResponseActions = ({
     };
 
     const handleCopy = async () => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
         if (onCopy) {
             onCopy();
         } else {
@@ -188,10 +192,10 @@ export const ResponseActions = ({
                     <TooltipTrigger asChild >
                 <IconButton
                     onClick={handleCopy}
-                    variant="neutral"
+                    variant={isCopied ? "primary" : "neutral"}
                     size="medium"
                     corner="sharp"
-                    icon="copy"
+                    icon={isCopied ? "copy-success" : "copy"}
                     aria-label="Copy"
                 />
                     </TooltipTrigger>
@@ -201,50 +205,40 @@ export const ResponseActions = ({
                 </Tooltip>
 
                 {/* Share Button */}
-                <Tooltip>
-                    <TooltipTrigger asChild >
-                <IconButton
+                <Button
                     onClick={handleShare}
                     variant="neutral"
-                    size="medium"
-                    corner="sharp"
-                    icon="share-a"
+                    size="extraSmall"
+                    prefixIcon="share-a"
                     aria-label="Share"
-                />
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                        <p>Share</p>
-                    </TooltipContent>
-                </Tooltip>
+                    className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
+                >
+                    Share
+                </Button>
 
                 {/* Export Button */}
-                <Tooltip>
-                    <Popover open={exportOpen} onOpenChange={setExportOpen}>
-                        <TooltipTrigger asChild >
-                            <PopoverTrigger asChild>
-                                <IconButton
-                                    variant="neutral"
-                                    size="medium"
-                                    corner="sharp"
-                                    icon="export-d"
-                                    aria-label="Export"
-                                />
-                            </PopoverTrigger>
-                        </TooltipTrigger>
-                        <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="end" sideOffset={8}>
-                            <Dropdown
-                                options={exportOptions}
-                                value={selectedExport}
-                                onChange={handleExportChange}
-                                searchbar="off"
-                                className="w-[223px] shadow-lg"
-                            />
-                        </PopoverContent>
-                    </Popover>
-                    <TooltipContent side="bottom">
-                        <p>Export</p>
-                    </TooltipContent>
-                </Tooltip>
+                <Popover open={exportOpen} onOpenChange={setExportOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="neutral"
+                            size="extraSmall"
+                            prefixIcon="export-d"
+                            aria-label="Export"
+                            className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
+                        >
+                            Export
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="end" sideOffset={8}>
+                        <Dropdown
+                            options={exportOptions}
+                            value={selectedExport}
+                            onChange={handleExportChange}
+                            searchbar="off"
+                            className="w-[223px] shadow-lg"
+                        />
+                    </PopoverContent>
+                </Popover>
             </div>
         </TooltipProvider>
     );

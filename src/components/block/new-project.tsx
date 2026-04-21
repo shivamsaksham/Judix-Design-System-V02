@@ -132,7 +132,7 @@ export const NewProject = ({
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder={titlePlaceholder}
                     autoComplete='off'
-                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-2 border-none bg-transparent focus:outline-none"
+                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none"
                 />
 
                 {/* Description Input */}

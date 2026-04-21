@@ -92,7 +92,7 @@ export default function ContextWindowDropdown({
                     />
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                     <span className={cn(
                         "p-1 text-style-body-default-regular",
                         isAutoContext ? "text-color-text-primary-default" : "text-color-text-neutral-placeholder"
