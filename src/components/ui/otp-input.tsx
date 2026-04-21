@@ -19,7 +19,7 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
 
         const currentOtpArray = value.padEnd(length, " ").split("");
         const newOtpArray = currentOtpArray.map((char, i) => (i === index ? val : char));
-        
+
         const finalOtp = newOtpArray.join("").slice(0, length);
         onChange(finalOtp);
 
@@ -33,12 +33,12 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === "Backspace" && index > 0) {
             const isCurrentEmpty = !value[index] || value[index] === " ";
-            
+
             if (isCurrentEmpty) {
                 const currentOtpArray = value.padEnd(length, " ").split("");
-                currentOtpArray[index - 1] = " "; 
+                currentOtpArray[index - 1] = " ";
                 onChange(currentOtpArray.join("").slice(0, length));
-                
+
                 setTimeout(() => {
                     inputRefs.current[index - 1]?.focus();
                 }, 10);
@@ -50,11 +50,11 @@ export function OtpInput({ value, onChange, disabled = false, length = 6 }: OtpI
         e.preventDefault();
         const pasteText = e.clipboardData.getData("text").replace(/\D/g, "");
         const pasteData = pasteText.slice(0, length);
-        
+
         if (pasteData.length === 0) return;
 
         onChange(pasteData);
-        
+
         setTimeout(() => {
             const nextIndex = Math.min(pasteData.length, length - 1);
             inputRefs.current[nextIndex]?.focus();
