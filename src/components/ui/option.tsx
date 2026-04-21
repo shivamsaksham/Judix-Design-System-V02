@@ -28,9 +28,9 @@ const optionVariants = cva(
 )
 
 export interface OptionProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title">,
   VariantProps<typeof optionVariants> {
-  title: string
+  title: React.ReactNode
   subtext?: React.ReactNode
   selected?: boolean
   highlighted?: boolean

@@ -652,6 +652,22 @@
   line-height: var(--font-line_height-body-large);
 }
 
+@utility text-style-heading-xs-emphasis {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-heading-xs);
+  letter-spacing: var(--font-tracking-body-large);
+  line-height: var(--font-line_height-body-large);
+}
+
+@utility text-style-heading-md-emphasis {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-heading-md);
+  letter-spacing: var(--font-tracking-body-large);
+  line-height: 150%;
+}
+
 @utility text-style-body-large-bold {
   font-family: var(--font-family-brandprimary);
   font-weight: var(--font-weight-semibold);
