@@ -1,6 +1,7 @@
 "use client";
-
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+
 import { TextInput } from "@/components/ui/text-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,6 +73,7 @@ function SelectField({
   disabled,
   placeholder,
   children,
+  className,
 }: {
   label: string;
   value: string;
@@ -79,9 +81,10 @@ function SelectField({
   disabled?: boolean;
   placeholder?: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <div className={`flex flex-col gap-1 ${disabled ? "opacity-60" : ""}`}>
+    <div className={cn("w-full flex flex-col gap-1", disabled ? "opacity-60" : "", className)}>
       <label className="text-xs text-gray-500">{label}</label>
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger className="h-12 w-full">
@@ -195,14 +198,61 @@ function RoleSelector({
   );
 }
 
-export function MyAccount() {
+export function MyAccount({ profile }: { profile?: any }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [role, setRole] = useState<Role>("");
-  const [savedRole, setSavedRole] = useState<Role>("");
+  const [role, setRole] = useState<Role>(profile?.role || "professional");
+  const [savedRole, setSavedRole] = useState<Role>(profile?.role || "professional");
 
-  const userData = fetchUserData();
-  const [formData, setFormData] = useState<FormData>(userData);
-  const [savedData, setSavedData] = useState<FormData>(userData);
+  const [formData, setFormData] = useState<FormData>({
+    firstName: profile?.firstName || "",
+    lastName: profile?.lastName || "",
+    mobile: profile?.phoneNumber || "",
+    email: profile?.email || "",
+    gender: profile?.gender || "",
+    state: profile?.state || "",
+    address: profile?.address || "",
+    pinCode: profile?.pinCode || "",
+    barRegNumber: profile?.barRegNumber || "",
+    barRegYear: profile?.barRegYear || "",
+    practiceForm: profile?.practiceForm || "",
+    currentCourt: profile?.currentCourt || "",
+    practiceArea: profile?.practiceArea || "",
+    collegeName: profile?.collegeName || "",
+    collegeEmail: profile?.collegeEmail || "",
+    graduatingYear: profile?.graduatingYear || "",
+    collegePinCode: profile?.collegePinCode || "",
+    collegeAddress: profile?.collegeAddress || "",
+  });
+  const [savedData, setSavedData] = useState<FormData>(formData);
+
+  React.useEffect(() => {
+    if (profile) {
+      const newFormData = {
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        mobile: profile.phoneNumber || "",
+        email: profile.email || "",
+        gender: profile.gender || "",
+        state: profile.state || "",
+        address: profile.address || "",
+        pinCode: profile.pinCode || "",
+        barRegNumber: profile.barRegNumber || "",
+        barRegYear: profile.barRegYear || "",
+        practiceForm: profile.practiceForm || "",
+        currentCourt: profile.currentCourt || "",
+        practiceArea: profile.practiceArea || "",
+        collegeName: profile.collegeName || "",
+        collegeEmail: profile.collegeEmail || "",
+        graduatingYear: profile.graduatingYear || "",
+        collegePinCode: profile.collegePinCode || "",
+        collegeAddress: profile.collegeAddress || "",
+      };
+      setFormData(newFormData);
+      setSavedData(newFormData);
+      setRole(profile.role || "professional");
+      setSavedRole(profile.role || "professional");
+    }
+  }, [profile]);
 
   const handleChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -234,7 +284,7 @@ export function MyAccount() {
       : "Your Name";
 
   return (
-    <div className="w-full max-w-[696px] md:max-w-3xl lg:max-w-4xl bg-white">
+    <div className="w-full bg-white">
 
       {/* Header */}
       <div className="flex items-start justify-between mb-1">

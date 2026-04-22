@@ -52,7 +52,7 @@ export function MyActivity({
   className,
 }: MyActivityProps) {
   return (
-    <div className={`bg-color-surface-neutral-default ${cn("w-174 h-[1170px] flex flex-col gap-6 pb-12", className)}`}>
+    <div className={`bg-color-surface-neutral-default ${cn("w-full flex flex-col gap-6 pb-12", className)}`}>
       {/* Login History Section */}
       <section className="flex flex-col gap-4">
         <h2 className="p-1 text-style-heading-xs-emphasis text-color-text-neutral-default">Login history</h2>
@@ -65,8 +65,8 @@ export function MyActivity({
       </section>
 
       {/* Active Sessions Section */}
-      <section className="w-141 flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
+      <section className="w-full flex flex-col gap-8 ">
+        <div className="flex flex-col w-full gap-2">
           <h3 className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Active sessions</h3>
           <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-tertiary ">
             You have {sessions.length} active sessions. Sessions older than 30 days are automatically terminated.
@@ -85,12 +85,12 @@ export function MyActivity({
               <div className="flex items-center gap-4">
                 <div className="w-10 flex items-center justify-center">
                   {session.os.toLowerCase().includes("android") || session.os.toLowerCase().includes("ios") ? (
-                    <Image src='/android.svg' alt="Android" width={17.92} height={26.88}/>
+                    <Image src='/android.svg' alt="Android" width={17.92} height={26.88} />
                   ) : (
-                    <Image src='/desktop.svg' alt="Desktop" width={34.56} height={27.05}/>
+                    <Image src='/desktop.svg' alt="Desktop" width={34.56} height={27.05} />
                   )}
                 </div>
-                
+
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">
@@ -135,7 +135,7 @@ export function MyActivity({
           <div className="p-2 flex items-start justify-between gap-12">
             <div className="flex flex-col">
               <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Activity History</h4>
-              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary max-w-[490px]">
+              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
                 Detailed logs of your every data and action spanning across all of your projects.
               </p>
             </div>
@@ -148,7 +148,7 @@ export function MyActivity({
           <div className="p-2 flex items-start justify-between gap-12">
             <div className="flex flex-col">
               <h4 className="t-1 text-style-body-default-emphasis text-color-text-neutral-default">Project logs</h4>
-              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary max-w-[490px]">
+              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
                 Export data and logs of any specific project.
               </p>
             </div>
@@ -177,7 +177,7 @@ export function MyActivity({
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col">
               <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Delete account</h4>
-              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary max-w-140">
+              <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
                 Permanently delete this account, including files, notes and research sessions.
               </p>
             </div>

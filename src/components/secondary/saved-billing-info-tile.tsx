@@ -30,7 +30,7 @@ export const SavedBillingInfoTile = ({
     className,
 }: SavedBillingInfoTileProps) => {
     return (
-        <div className={cn('flex flex-col gap-2 w-full max-w-2xl', className)}>
+        <div className={cn('flex flex-col gap-2 w-full', className)}>
             {/* List of Saved Billing Details */}
             <div className="flex flex-col gap-3">
                 {billingDetails.map((details, index) => {

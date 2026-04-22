@@ -87,7 +87,7 @@ export function Subscription({
   className,
 }: SubscriptionProps) {
   return (
-    <div className={cn("w-[696px] pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
+    <div className={cn("w-full pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
       {/* Header */}
       <div className="flex flex-col gap-2 pb-2 border-b border-color-border-neutral-default">
         <h1 className="p-1 text-style-heading-xs-emphasis text-color-text-neutral-default">Subscriptions</h1>
@@ -161,7 +161,7 @@ export function Subscription({
       </div>
       {/* Cancel Subscription */}
       <div className="flex items-center justify-between py-4 border-color-border-neutral-default gap-12">
-        <div className="flex flex-col max-w-2xl py-2">
+        <div className="flex flex-col w-full py-2">
           <h3 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Cancel Subscription</h3>
           <p className="p-1 text-style-textblock-primary-subtext text-color-text-neutral-tertiary">
             This will cancel your current subscription and move to the free plan in the next billing cycle.

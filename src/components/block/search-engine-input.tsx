@@ -12,6 +12,7 @@ import {
     useInteractions,
     autoUpdate,
 } from "@floating-ui/react";
+import { Button } from "@/components/ui";
 import { ModelDropdown } from "./model-dropdown";
 import { createPortal } from "react-dom";
 import NestedDropdown from "./custom-dropdown-helper";
@@ -260,6 +261,7 @@ function SearchEngineInput({
     const folderBtnRef = useRef<HTMLButtonElement>(null);
     const settingsBtnRef = useRef<HTMLButtonElement>(null);
     const projectBtnRef = useRef<HTMLButtonElement>(null);
+    const addBtnRef = useRef<HTMLButtonElement>(null);
     const [activeTrigger, setActiveTrigger] = useState<TriggerType>(null);
     const [triggerStartIndex, setTriggerStartIndex] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -390,6 +392,7 @@ function SearchEngineInput({
         if (activeDropdown === "folder") refs.setReference(folderBtnRef.current);
         else if (activeDropdown === "settings") refs.setReference(settingsBtnRef.current);
         else if (activeDropdown === "project") refs.setReference(projectBtnRef.current);
+        else if (activeDropdown === "add") refs.setReference(addBtnRef.current);
         else if (activeDropdown === "trigger") refs.setReference(textareaRef.current);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeDropdown]);
@@ -1430,15 +1433,18 @@ function SearchEngineInput({
                 <div className="animate-dropdown-enter">
                     {activeDropdown === "add" ? (
                         <NestedDropdown
-                            options={quickAddOptions}
+                            options={[
+                                { title: "Upload Document", value: "upload_document", leadingIcon: 'document-text-a' },
+                                { title: "Add Text", value: "add_text", leadingIcon:'textalign-left' },
+                            ]}
                             value={null}
-                            onChange={(value) => {
-                                handleOptionSelect(value, true);
-                                if (!DROPDOWN_PICKER_TYPES.includes(value)) setActiveDropdown(null);
-                                setActiveIndex(null);
+                            onChange={(val) => {
+                                if (val === "upload_document" || val === "add_text") {
+                                    setIsContextDialogOpen(true);
+                                }
+                                setActiveDropdown(null);
                             }}
                             activeIndex={activeIndex}
-                            customComponents={{}}
                         />
                     ) : activeDropdown === "settings" ? (
                         <SearchScopeSelector
@@ -1511,7 +1517,7 @@ function SearchEngineInput({
                                 name="folder-a"
                                 className="w-4 h-4 text-color-icon-neutral-secondary shrink-0 -mt-0.5"
                             />
-                            <span>{projectLabel}</span>
+                            <span className="hidden sm:inline">{projectLabel}</span>
                         </button>
                     </div>
                 )}
@@ -1525,7 +1531,7 @@ function SearchEngineInput({
                     </div>
                 )}
 
-                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default p-4 flex flex-col">
+                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default px-6 py-4 flex flex-col gap-3">
                     {/* Editable text area */}
                     <div
                         contentEditable={true}
@@ -1546,73 +1552,86 @@ function SearchEngineInput({
                     />
 
                     {/* Bottom action bar */}
-                    <div className="w-full flex items-center justify-between flex-wrap gap-y-2">
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => setIsContextDialogOpen(true)}
-                                className="inline-flex items-center gap-1 p-2 rounded text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors"
+                    <div className="w-full flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <IconButton
+                                onClick={() => toggleDropdown("add")}
+                                ref={addBtnRef}
+                                variant="neutral"
+                                icon="add"
+                                size="medium"
+                                corner="sharp"
+                                boundary="stroked"
+                                className="w-fit px-2 gap-1.5 sm:border-none"
                             >
-                                <Icon name="add" className="w-4 h-4 text-color-icon-neutral-secondary shrink-0" />
-                                Add Sources
-                            </button>
+                                <Icon name="add" className="w-4 h-4" />
+                                <span className="hidden sm:inline text-style-body-default-regular">Add Sources</span>
+                            </IconButton>
 
-                            <button
+                            <IconButton
                                 onClick={() => toggleDropdown("folder")}
                                 ref={folderBtnRef}
-                                className={`text-style-body-default-regular ${cn(
-                                    "inline-flex items-center gap-1 p-2 rounded hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors",
-                                    activeDropdown === "folder"
-                                        ? "bg-color-surface-primary-subtle_bg text-color-text-primary-default"
-                                        : "text-color-text-neutral-secondary"
+                                variant="neutral"
+                                icon="courthouse"
+                                size="medium"
+                                corner="sharp"
+                                boundary="stroked"
+                                className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
+                                    activeDropdown === "folder" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
                                 )}`}
                             >
-                                <Icon
-                                    name="courthouse"
-                                    className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
-                                />
-                                Jurisdiction
-                            </button>
+                                <Icon name="courthouse" className="w-4 h-4" />
+                                <span className="hidden sm:inline text-style-body-default-regular">Jurisdiction</span>
+                            </IconButton>
 
-                            <button
+                            <IconButton
                                 onClick={() => toggleDropdown("settings")}
                                 ref={settingsBtnRef}
-                                className={`text-style-body-default-regular ${cn(
-                                    "inline-flex items-center gap-1 p-2 rounded hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors",
-                                    activeDropdown === "settings"
-                                        ? "bg-color-surface-primary-subtle_bg text-color-text-primary-default"
-                                        : "text-color-text-neutral-secondary"
+                                variant="neutral"
+                                icon="filter"
+                                size="medium"
+                                corner="sharp"
+                                boundary="stroked"
+                                className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
+                                    activeDropdown === "settings" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
                                 )}`}
                             >
-                                <Icon
-                                    name="filter"
-                                    className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
-                                />
-                                Filters
-                            </button>
+                                <Icon name="filter" className="w-4 h-4" />
+                                <span className="hidden sm:inline text-style-body-default-regular">Filters</span>
+                            </IconButton>
 
-                            <button
+                            <IconButton
                                 onClick={handleImprove}
-                                className="inline-flex items-center gap-1 p-2 rounded text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors"
+                                variant="neutral"
+                                icon="flash-a"
+                                size="medium"
+                                corner="sharp"
+                                boundary="stroked"
+                                className="w-fit px-2 gap-1.5 sm:border-none"
                             >
-                                <Icon
-                                    name="flash-a"
-                                    className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
-                                />
-                                Improve
-                            </button>
+                                <Icon name="flash-a" className="w-4 h-4" />
+                                <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
+                            </IconButton>
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
-                            {/* <ModelDropdown modelName={modelName} onChange={setModelName} /> */}
-
+                            {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
+                                <Button
+                                    size="extraSmall"
+                                    variant="neutral"
+                                    className="hidden md:inline-flex text-color-text-primary-default border-color-surface-primary-default"
+                                >
+                                    Enhance Query
+                                </Button>
+                            )}
                             <IconButton
                                 onClick={isLoading ? onStop : handleSubmit}
-                                color={isLoading ? "neutral" : "primary"}
+                                variant={isLoading ? "neutral" : "primary"}
                                 icon={isLoading ? "stop" : "arrow-up-d"}
                                 size="medium"
                                 corner="sharp"
                                 boundary="stroked"
-                                className="h-[32px] w-[32px]"
+                                className="h-[32px] w-[32px] sm:border-none"
                                 disabled={
                                     !isLoading &&
                                     (!input.trim() || input.trim().split(/\s+/).length < 3)
