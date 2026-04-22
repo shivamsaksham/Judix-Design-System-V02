@@ -13,7 +13,7 @@ export interface JudgmentSelectionListProps {
     selectedIndex?: number | null;
     onToggleExpand?: (expanded: boolean) => void;
     onSelect?: (index: number) => void;
-    onConfirm?: () => void;
+    onConfirm?: (selectedData?: JudgmentNudgeTileProps) => void;
     onReject?: () => void;
     onManualSearch?: (query: string) => void;
     defaultShowManualInput?: boolean;
@@ -75,7 +75,8 @@ export const JudgmentSelectionList = ({
         setInternalConfirmed(true);
         setInternalExpanded(false);
         onToggleExpand?.(false);
-        onConfirm?.();
+        const selectedData = selectedIndex !== null ? judgments[selectedIndex] : undefined;
+        onConfirm?.(selectedData);
     };
 
     const handleManualSearch = () => {

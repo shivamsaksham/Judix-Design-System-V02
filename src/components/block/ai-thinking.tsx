@@ -32,7 +32,7 @@ export interface AiThinkingProps {
     showProNudge?: boolean;
     onProNudgeYesClick?: () => void;
     onProNudgeNoClick?: () => void;
-    onJudgmentConfirm?: () => void;
+    onJudgmentConfirm?: (data?: any) => void;
     onToggle?: (expanded: boolean) => void;
     className?: string;
 }
@@ -283,13 +283,13 @@ export const AiThinking = ({
                                                 bench={step.judgments[0].bench}
                                                 description={step.judgments[0].description}
                                                 isConfirmed={isCompleted}
-                                                onConfirm={onJudgmentConfirm}
+                                                onConfirm={() => onJudgmentConfirm?.(step.judgments![0])}
                                             />
                                         ) : (
                                             <JudgmentSelectionList
                                                 judgments={step.judgments}
                                                 isConfirmed={isCompleted}
-                                                onConfirm={onJudgmentConfirm}
+                                                onConfirm={(data) => onJudgmentConfirm?.(data)}
                                             />
                                         )}
                                     </div>
