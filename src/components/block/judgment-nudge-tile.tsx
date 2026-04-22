@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface JudgmentTileProps {
+export interface JudgmentNudgeTileProps {
     id: string;
     className?: string;
     index?: string | number;
@@ -12,19 +12,12 @@ export interface JudgmentTileProps {
     bench?: string;
     description: string;
     matchPercentage: string;
-    citationCount?: number;
     selectionState?: 'default' | 'selected' | 'unselected';
     isSelected?: boolean;
-    isAdded?: boolean;
-    isBookmarked?: boolean;
-    isMentioned?: boolean;
-    onAdd?: () => void;
-    onBookmark?: () => void;
-    onMention?: () => void;
     onClick?: () => void;
 }
 
-export const JudgmentTile = ({
+export const JudgmentNudgeTile = ({
     className,
     index = 0,
     title,
@@ -37,7 +30,7 @@ export const JudgmentTile = ({
     selectionState = 'default',
     isSelected,
     onClick,
-}: JudgmentTileProps) => {
+}: JudgmentNudgeTileProps) => {
 
     // Determine selection state logic
     const effectiveSelectionState = (isSelected !== undefined)

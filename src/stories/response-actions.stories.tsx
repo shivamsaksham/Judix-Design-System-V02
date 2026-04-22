@@ -14,6 +14,8 @@ const meta: Meta<typeof ResponseActions> = {
         onLike: { action: 'liked' },
         onRefresh: { action: 'refreshed' },
         onCopy: { action: 'copied' },
+        onShare: { action: 'shared' },
+        onExport: { action: 'exported' },
     },
 };
 
@@ -57,6 +59,14 @@ export const Interactive: Story = {
             setTimeout(() => setCopyText('Copy'), 2000);
         };
 
+        const handleShare = () => {
+            console.log('Shared!');
+        };
+
+        const handleExport = (format: string) => {
+            console.log(`Exported as ${format}`);
+        };
+
         return (
             <div className="space-y-4">
                 <ResponseActions
@@ -66,6 +76,8 @@ export const Interactive: Story = {
                     onDislike={handleDislike}
                     onRefresh={() => console.log('Refreshed')}
                     onCopy={handleCopy}
+                    onShare={handleShare}
+                    onExport={handleExport}
                 />
                 <div className="text-center">
                     {copyText === 'Copied!' && <span className="text-green-600">{copyText}</span>}

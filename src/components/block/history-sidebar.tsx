@@ -140,6 +140,35 @@ export const HistorySidebar = ({
         setDeleteConfirmationChatId(null);
     };
 
+    const menuItems = [
+        {
+            id: 'rename',
+            label: 'Rename',
+            icon: <Icon name="edit-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('rename', openMenuChatId!),
+        },
+        {
+            id: 'share',
+            label: 'Share',
+            icon: <Icon name="export-d" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('share', openMenuChatId!),
+        },
+        {
+            id: 'move',
+            label: 'Move to project',
+            icon: <Icon name="folder-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('move', openMenuChatId!),
+            dividerAfter: true,
+        },
+        {
+            id: 'delete',
+            label: 'Delete',
+            icon: <Icon name="trash" className='w-[18px] h-[18px]' />,
+            onClick: () => handleMenuAction('delete', openMenuChatId!),
+            variant: 'danger' as const,
+        },
+    ];
+
     return (
         <div
             className={cn(
@@ -271,34 +300,7 @@ export const HistorySidebar = ({
                             }}
                         >
                             <ChatHistoryMenu
-                                items={[
-                                    {
-                                        id: 'rename',
-                                        label: 'Rename',
-                                        icon: <Icon name="edit-a" />,
-                                        onClick: () => handleMenuAction('rename', openMenuChatId),
-                                    },
-                                    {
-                                        id: 'share',
-                                        label: 'Share',
-                                        icon: <Icon name="export-d" />,
-                                        onClick: () => handleMenuAction('share', openMenuChatId),
-                                    },
-                                    {
-                                        id: 'move',
-                                        label: 'Move to project',
-                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default' />,
-                                        onClick: () => handleMenuAction('move', openMenuChatId),
-                                        dividerAfter: true,
-                                    },
-                                    {
-                                        id: 'delete',
-                                        label: 'Delete',
-                                        icon: <Icon name="trash" />,
-                                        onClick: () => handleMenuAction('delete', openMenuChatId),
-                                        variant: 'danger',
-                                    },
-                                ]}
+                                items={menuItems}
                             />
                         </div>
                     )}

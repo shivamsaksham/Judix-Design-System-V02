@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import * as React from "react";
-import { JudgmentResultHeader } from "../components/block/judgment-result-header";
-import { ActResultHeader } from "../components/block/act-result-header";
+import { ResearchHeader, ResearchTab } from "../components/block/research-header";
 import { DropdownOption } from "../components/ui/dropdown";
 
-const meta: Meta = {
-    title: "Block/Result Headers",
+const meta: Meta<typeof ResearchHeader> = {
+    title: "Block/ResearchHeader",
+    component: ResearchHeader,
     tags: ["autodocs"],
     parameters: {
         layout: "centered",
@@ -13,18 +13,12 @@ const meta: Meta = {
 };
 
 export default meta;
+type Story = StoryObj<typeof ResearchHeader>;
 
-const versionOptions: DropdownOption[] = [
-    { value: "v4", title: "Version 4 . Latest" },
-    { value: "v3", title: "Version 3" },
-    { value: "v2", title: "Version 2" },
-    { value: "v1", title: "Version 1" },
-];
-
-const supremeCourtOptions: DropdownOption[] = [
-    { value: "supreme-court", title: "Supreme Court" },
-    { value: "high-court", title: "High Court" },
-    { value: "district-court", title: "District Court" },
+const courtOptions: DropdownOption[] = [
+    { value: "Supreme Court of India", title: "Supreme Court of India" },
+    { value: "High Court of Delhi", title: "High Court of Delhi" },
+    { value: "District Court", title: "District Court" },
 ];
 
 const actOptions: DropdownOption[] = [
@@ -32,55 +26,52 @@ const actOptions: DropdownOption[] = [
     { value: "state-acts", title: "State Acts" },
 ];
 
-const HeaderWrapper = ({
-    Component,
-    initialDropdownValue,
-    dropdownOptions,
-    ...props
-}: {
-    Component: React.ElementType,
-    initialDropdownValue: string,
-    dropdownOptions: DropdownOption[],
-    [key: string]: unknown;
-}) => {
-    const [version, setVersion] = React.useState<string | null>("v4");
-    const [search, setSearch] = React.useState("");
-    const [dropdownValue, setDropdownValue] = React.useState<string | null>(initialDropdownValue);
+const InteractiveWrapper = ({ initialTab = "judgments" as ResearchTab }) => {
+    const [activeTab, setActiveTab] = React.useState<ResearchTab>(initialTab);
+    const [courtValue, setCourtValue] = React.useState("Supreme Court of India");
+    const [actValue, setActValue] = React.useState("central-acts");
+
+    const dropdownOptions = activeTab === "judgments" ? courtOptions : activeTab === "acts" ? actOptions : undefined;
+    const dropdownValue = activeTab === "judgments" ? courtValue : actValue;
+    const dropdownLabel = activeTab === "judgments"
+        ? (courtOptions.find(o => o.value === courtValue)?.title || "Supreme Court of India")
+        : activeTab === "acts"
+            ? (actOptions.find(o => o.value === actValue)?.title || "Central Acts")
+            : "Web";
+
+    const handleDropdownChange = (value: string) => {
+        if (activeTab === "judgments") setCourtValue(value);
+        else if (activeTab === "acts") setActValue(value);
+    };
 
     return (
-        <div className="w-[424px] border border-color-border-neutral-default rounded-xl bg-white">
-            <Component
-                {...props}
-                version={version}
-                onVersionChange={setVersion}
-                versionOptions={versionOptions}
-                searchValue={search}
-                onSearchChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+        <div className="w-[408px] bg-white overflow-hidden">
+            <ResearchHeader
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                onClose={() => console.log("Close clicked")}
+                dropdownLabel={dropdownLabel}
                 dropdownOptions={dropdownOptions}
                 dropdownValue={dropdownValue}
-                onDropdownChange={setDropdownValue}
-                onDropdownClick={() => console.log("Dropdown clicked")}
-                onPrint={() => console.log("Print clicked")}
-                onFilter={() => console.log("Filter clicked")}
+                onDropdownChange={handleDropdownChange}
+                onShare={() => console.log("Share clicked")}
+                onExport={() => console.log("Export clicked")}
             />
         </div>
     );
 };
 
-export const JudgmentResult: StoryObj<typeof JudgmentResultHeader> = {
-    render: () => <HeaderWrapper
-        Component={JudgmentResultHeader}
-        initialDropdownValue="supreme-court"
-        dropdownOptions={supremeCourtOptions}
-    />,
-    name: "Judgment Result Header",
+export const JudgmentsTab: Story = {
+    render: () => <InteractiveWrapper initialTab="judgments" />,
+    name: "Judgments Tab Active",
 };
 
-export const ActResult: StoryObj<typeof ActResultHeader> = {
-    render: () => <HeaderWrapper
-        Component={ActResultHeader}
-        initialDropdownValue="central-acts"
-        dropdownOptions={actOptions}
-    />,
-    name: "Act Result Header",
+export const ActsTab: Story = {
+    render: () => <InteractiveWrapper initialTab="acts" />,
+    name: "Acts Tab Active",
+};
+
+export const WebTab: Story = {
+    render: () => <InteractiveWrapper initialTab="web" />,
+    name: "Web Tab Active",
 };

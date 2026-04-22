@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import Breadcrumb from '@/components/block/bread-crumb';
 
 const meta: Meta<typeof Breadcrumb> = {
@@ -8,61 +9,12 @@ const meta: Meta<typeof Breadcrumb> = {
     parameters: {
         layout: 'centered',
     },
-    argTypes: {
-        onDropdownClick: { action: 'dropdown clicked' },
-    },
 };
 
 export default meta;
 type Story = StoryObj<typeof Breadcrumb>;
 
-const defaultItems = [
-    { id: '1', label: 'Home', onClick: () => console.log('Home clicked') },
-    { id: '2', label: 'Projects', onClick: () => console.log('Projects clicked') },
-    { id: '3', label: 'Legal Case Analysis', onClick: () => console.log('Case clicked') },
-];
-
 export const Default: Story = {
-    args: {
-        items: defaultItems,
-    },
-};
-
-export const WithDropdown: Story = {
-    args: {
-        items: defaultItems,
-        showDropdown: true,
-    },
-};
-
-export const SingleItem: Story = {
-    args: {
-        items: [{ id: '1', label: 'Home', onClick: () => console.log('Home clicked') }],
-    },
-};
-
-export const WithLongLabels: Story = {
-    args: {
-        items: [
-            { id: '1', label: 'Home', onClick: () => console.log('Home clicked') },
-            { id: '2', label: 'Very Long Project Name That Might Truncate', onClick: () => console.log('Project clicked') },
-            { id: '3', label: 'Specific Judgment File', onClick: () => console.log('File clicked') },
-        ],
-        className: 'max-w-lg',
-    },
-};
-
-export const NonClickableItems: Story = {
-    args: {
-        items: [
-            { id: '1', label: 'Home', onClick: () => console.log('Home clicked') },
-            { id: '2', label: 'Middle Step (Static)', onClick: undefined },
-            { id: '3', label: 'Current Page', onClick: () => console.log('Current clicked') },
-        ],
-    },
-};
-
-export const WithUseProjectButton: Story = {
     args: {
         items: [
             { id: '1', label: 'Shridhar Apartment Case', onClick: () => console.log('Case clicked') },
@@ -70,7 +22,73 @@ export const WithUseProjectButton: Story = {
             { id: '3', label: 'Anticipatory bail in domestic violence cases', onClick: () => console.log('Chat clicked') },
         ],
         onUseProject: () => console.log('Use project clicked'),
-        showDropdown: true,
-        className: 'w-[800px]',
     },
+};
+
+export const WithDropdown: Story = {
+    args: {
+        items: [
+            { id: '1', label: 'Shridhar Apartment Case', onClick: () => console.log('Case clicked') },
+            { id: '2', label: 'Archive', onClick: () => console.log('Archive clicked') },
+            { id: '3', label: 'Judgment.pdf', onClick: () => console.log('File clicked') },
+        ],
+        onUseProject: () => console.log('Use project clicked'),
+        showDropdown: true,
+        onDropdownClick: () => console.log('Dropdown toggled'),
+        onHistorySelect: (id: string) => console.log('Selected history:', id)
+    },
+};
+
+export const DynamicInteraction: Story = {
+    render: () => {
+        const [context, setContext] = React.useState<'archive' | 'chat'>('archive');
+
+        const archiveItems = [
+            { id: '1', label: 'Shridhar Apartment Case' },
+            { id: '2', label: 'Archive' },
+            { id: '3', label: 'Research.pdf' },
+        ];
+
+        const chatItems = [
+            { id: '1', label: 'Shridhar Apartment Case' },
+            { id: '2', label: 'Chats' },
+            { id: '3', label: 'My Legal Inquiry' },
+        ];
+
+        return (
+            <div className="flex flex-col gap-8 w-[800px]">
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => setContext('archive')}
+                        className={`px-4 py-2 rounded-lg border ${context === 'archive' ? 'bg-color-surface-primary-default border-color-border-primary-default text-white' : 'bg-white border-color-border-neutral-default'}`}
+                    >
+                        Archive Context (File Tree)
+                    </button>
+                    <button 
+                        onClick={() => setContext('chat')}
+                        className={`px-4 py-2 rounded-lg border ${context === 'chat' ? 'bg-color-surface-primary-default border-color-border-primary-default text-white' : 'bg-white border-color-border-neutral-default'}`}
+                    >
+                        Chat Context
+                    </button>
+                </div>
+                
+                <div>
+                    <h3 className="mb-4 text-style-body-default-emphasis">Breadcrumb Behavior:</h3>
+                    <Breadcrumb 
+                        items={context === 'archive' ? archiveItems : chatItems}
+                        showDropdown={true}
+                        onHistorySelect={(id) => alert(`Action selected: ${id}`)}
+                    />
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                    <p className="text-style-label-default-regular text-color-text-neutral-tertiary">
+                        {context === 'archive' 
+                            ? '✅ Dropdown is VISIBLE. Open it to see the "Remove from saved" action.' 
+                            : '❌ Dropdown is HIDDEN automatically for Chat context.'}
+                    </p>
+                </div>
+            </div>
+        );
+    }
 };

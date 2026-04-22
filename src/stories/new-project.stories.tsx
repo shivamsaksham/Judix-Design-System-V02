@@ -15,7 +15,7 @@ type Story = StoryObj<typeof NewProject>;
 
 export const EmptyState: Story = {
     args: {
-        sectionTitle: 'Global context files',
+        sectionTitle: 'Case context files',
         emptyStateText: 'Click to add project-wide global context information like case facts, client discussions etc.',
         initialContextFiles: [],
         onContextChange: (files) => console.log('Context changed:', files),

@@ -132,13 +132,15 @@ const FileTreeNode = ({
         if (node.type === "folder") {
             return "folder-a";
         }
+
+        // Keeping the logic same as if any other file type is added in future we can add it here
         switch (node.fileType) {
             case "chat":
-                return "message-a";
+                return "note-a";
             case "note":
                 return "note-a";
             case "archive":
-                return "save-b";
+                return "note-a";
             default:
                 return "document-a";
         }
@@ -161,7 +163,7 @@ const FileTreeNode = ({
         <div className="select-none">
             <div
                 className={cn(
-                    "group flex items-center gap-2 py-1.5 px-2 rounded-lg cursor-pointer transition-colors duration-200",
+                    "group flex items-center gap-1 py-1.5 px-2 rounded-lg cursor-pointer transition-colors duration-200 mx-1",
                     isActive
                         ? node.type === "folder"
                             ? "bg-color-surface-neutral-subtle_bg text-color-text-neutral-default"
@@ -171,6 +173,7 @@ const FileTreeNode = ({
                 )}
                 onClick={node.type === "folder" ? handleToggle : handleSelect}
             >
+                {/* Icon */}
                 <div className={cn(
                     "flex items-center justify-center w-5 h-5 shrink-0 transition-transform duration-200",
                     isActive
@@ -180,12 +183,13 @@ const FileTreeNode = ({
                             : "text-color-icon-neutral-default"
                 )}>
                     {node.type === "folder" ? (
-                        <IconButton icon={(isOpen ? "folder-open" : "folder-a")} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent" />
+                        <IconButton icon={(isOpen ? "folder-open" : "folder-a")} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent p-0" />
                     ) : (
-                        <IconButton icon={getIcon()} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent" />
+                        <IconButton icon={getIcon()} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent p-0" />
                     )}
                 </div>
 
+                {/* Name */}
                 {isEditing ? (
                     <input
                         ref={inputRef}
@@ -200,7 +204,7 @@ const FileTreeNode = ({
                 ) : (
                     <span
                         className={cn(
-                            "truncate text-style-body-default-regular flex-1 min-w-0"
+                            "p-1 truncate text-style-body-default-regular flex-1 min-w-0"
                         )}
                         title={node.name}
                     >

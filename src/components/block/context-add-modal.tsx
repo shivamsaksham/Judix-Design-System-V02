@@ -88,7 +88,7 @@ export default function AddToContext({
                 'bg-color-surface-neutral-subtle_bg',
                 'border border-color-border-neutral-default',
                 'rounded-lg',
-                'p-6 flex flex-col gap-2',
+                'p-4 flex flex-col gap-2',
                 className
             )}
         >
@@ -168,14 +168,14 @@ export default function AddToContext({
                 <Button
                     onClick={handleCancel}
                     variant="neutral"
-                    size="small"
+                    size="extraSmall"
                 >
                     Cancel
                 </Button>
                 <Button
                     onClick={handleSave}
                     variant="primary"
-                    size="small"
+                    size="extraSmall"
                     disabled={!title.trim() || !content.trim() || content.length < MIN_CHARACTERS}
                 >
                     Save

@@ -31,9 +31,9 @@ export const ProNudge = ({
 
     if (isConfirmed) {
         return (
-            <div className={cn('flex items-center gap-2 px-4 py-2 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default text-color-text-neutral-secondary text-style-label-default-regular', className)}>
+            <div className={cn('flex items-center gap-2 px-4 py-2 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default text-color-text-neutral-secondary', className)}>
                 <Icon name={accepted ? "tick-circle" : "close-circle"} className={cn("w-4 h-4", accepted ? "text-color-text-feedback-success-default" : "text-color-text-neutral-tertiary")} />
-                <span>{accepted ? "Switched to Judix-pro v1.6" : "Continuing with current model"}</span>
+                <span className='p-1 text-style-body-default-emphasis'>{accepted ? "Switched to Judix-pro v1.6" : "Continuing with current model"}</span>
             </div>
         );
     }
@@ -41,17 +41,17 @@ export const ProNudge = ({
     return (
         <div
             className={cn(
-                'flex flex-col md:flex-row md:items-center justify-between gap-4 px-4 py-3 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default',
+                'flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2 pb-4 px-4 md:py-2 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default w-[369px] md:w-[1003px]',
                 className
             )}
         >
             <div className="flex items-start gap-2">
-                <Icon name="crown-a" className="w-5 h-5 py-1 text-color-text-primary-default shrink-0 mt-0.5 md:mt-0" />
-                <div className="flex flex-col gap-1">
-                    <span className="text-style-body-default-emphasis text-color-text-primary-default">
+                <Icon name="crown-a" className="w-5 h-5 py-1 text-color-icon-neutral-default shrink-0 mt-0.5 md:mt-0" />
+                <div className="flex flex-col">
+                    <span className="p-1 text-style-body-default-emphasis text-color-text-primary-default">
                         Pro handles this better. Use Judix-pro v1.6 for this query ?
                     </span>
-                    <span className="text-style-textblock-primary-caption-regular text-color-text-neutral-secondary">
+                    <span className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary">
                         Complex judgment retrieval is 40% more accurate on pro model
                     </span>
                     {/* Mobile buttons */}

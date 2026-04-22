@@ -30,22 +30,20 @@ export function CaseMetadataTable({ data, className }: CaseMetadataTableProps) {
   ];
 
   return (
-    <div className={cn("w-full max-w-4xl bg-color-surface-neutral-default p-2", className)}>
-      <Card className="rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0">
-        <CardContent>
-          {rows.map((row, index) => (
-            <TableRow
-              key={index}
-              columns={[
-                { content: row.label, minWidth: "min-w-42" },
-                { content: row.value, minWidth: "min-w-[802px]" }
-              ]}
-              isLast={index === rows.length - 1}
-            />
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full", className)}>
+      <CardContent>
+        {rows.map((row, index) => (
+          <TableRow
+            key={index}
+            columns={[
+              { content: row.label, minWidth: "min-w-42" },
+              { content: row.value, minWidth: "min-w-[802px]" }
+            ]}
+            isLast={index === rows.length - 1}
+          />
+        ))}
+      </CardContent>
+    </Card>
   );
 }
 

@@ -86,7 +86,7 @@ export function VersionSelector({
                     }}
                     searchbar="off"
                     placeholder="Search versions..."
-                    className="w-[240px] shadow-lg"
+                    className="w-54 shadow-lg"
                 />
             </PopoverContent>
         </Popover>

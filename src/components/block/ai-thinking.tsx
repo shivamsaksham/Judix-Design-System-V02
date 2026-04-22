@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { Label } from '@/components/ui/label';
 import { ProNudge } from './pro-nudge';
-import { JudgmentTileProps } from './judgment-tile';
+import { JudgmentNudgeTileProps } from './judgment-nudge-tile';
 import { JudgmentNudge } from './judgment-nudge';
 import { JudgmentSelectionList } from './judgment-selection-list';
 
@@ -13,40 +13,26 @@ import { JudgmentSelectionList } from './judgment-selection-list';
 export type AiThinkingVariant = 'collapsed' | 'expanded' | 'completed';
 
 export interface ThinkingStep {
-    /* Title / label of the step */
     title: string;
-    /* Optional supporting detail shown when expanded */
     description?: string;
-    /* Duration string, e.g. "2.3 sec" */
     duration?: string;
-    /* Whether this individual step is done */
     completed?: boolean;
-    /* Judgments discovered in this step */
-    judgments?: JudgmentTileProps[];
+    judgments?: JudgmentNudgeTileProps[];
 }
 
 export interface AiThinkingProps {
-    /* Current ui variant */
     variant?: AiThinkingVariant;
-    /* Primary label shown in the header, e.g. "Judix is thinking..." */
     label?: string;
-    /* Badge text, e.g. "4 of 6 steps" */
     badge?: string;
-    /* Short description shown in collapsed header */
     description?: string;
-    /* List of thinking steps rendered in the expanded body */
     steps?: ThinkingStep[];
-    /* Allow parent to control open/close */
+    sourcesCount?: number;
+    timeTaken?: string;
     isExpanded?: boolean;
-    /* Show the ProNudge prompt below the steps when expanded */
     showProNudge?: boolean;
-    /* Callback when user clicks Yes on the ProNudge prompt */
     onProNudgeYesClick?: () => void;
-    /* Callback when user clicks No on the ProNudge prompt */
     onProNudgeNoClick?: () => void;
-    /* Callback when user confirms a judgment nudge or selection */
     onJudgmentConfirm?: () => void;
-    /* Callback when expand/collapse is toggled */
     onToggle?: (expanded: boolean) => void;
     className?: string;
 }
@@ -110,6 +96,8 @@ export const AiThinking = ({
     badge,
     description,
     steps = [],
+    sourcesCount,
+    timeTaken,
     isExpanded: isExpandedProp,
     showProNudge = false,
     onProNudgeYesClick,
@@ -125,10 +113,10 @@ export const AiThinking = ({
 
     const isCompleted = variant === 'completed';
 
-    const reachedNudgeCount = 
-        (showProNudge && steps.every(s => s.completed) ? 1 : 0) + 
+    const reachedNudgeCount =
+        (showProNudge && steps.every(s => s.completed) ? 1 : 0) +
         steps.filter((s, i) => s.judgments && s.judgments.length > 0 && steps.slice(0, i).every(prev => prev.completed)).length;
-        
+
     const prevReachedNudgeRef = React.useRef(reachedNudgeCount);
 
     // Auto-expand when a new nudge is reached
@@ -184,11 +172,23 @@ export const AiThinking = ({
                 </div>
 
                 {/* Label */}
-                <span
-                    className='p-1 text-color-text-primary-default text-style-body-default-regular  '
-                >
-                    {isCompleted ? 'Research complete.' : label}
-                </span>
+                <>
+                    {isCompleted ? (
+                        <span className='flex flex-row items-center gap-2 text-style-label-default-regular'>
+                            <p className='p-1 text-color-text-primary-default text-style-body-default-regular'>Research complete.</p>
+                            {sourcesCount !== undefined && (
+                                <p className='p-1 text-color-text-neutral-tertiary italic'>Found {sourcesCount} sources</p>
+                            )}
+                            {timeTaken && (
+                                <p className='p-1 text-color-text-neutral-tertiary italic'>Took {timeTaken}</p>
+                            )}
+                        </span>
+                    ) : (
+                        <span className='p-1 text-color-text-primary-default text-style-body-default-regular'>
+                            {label}
+                        </span>
+                    )}
+                </>
 
                 {/* Badge / Label  shown when not completed */}
                 {!isCompleted && badge && (

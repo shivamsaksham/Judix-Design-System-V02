@@ -5,6 +5,7 @@ import { GlobalContextManagement, ContextFile } from './global-context-managemen
 import { Label } from '@/components/ui/label';
 import { IconButton } from '@/components/ui/icon-button';
 import { Button } from '@/components/ui/button';
+import { TextInput } from '@/components/ui/text-input';
 
 export interface NewProjectProps {
     titlePlaceholder?: string;
@@ -22,6 +23,14 @@ export interface NewProjectProps {
     className?: string;
     submitButtonText?: string;
     isMobile?: boolean;
+    initialClientName?: string;
+    initialCourt?: string;
+    initialCaseType?: string;
+    initialCaseNumber?: string;
+    onClientNameChange?: (val: string) => void;
+    onCourtChange?: (val: string) => void;
+    onCaseTypeChange?: (val: string) => void;
+    onCaseNumberChange?: (val: string) => void;
 }
 
 export const NewProject = ({
@@ -29,7 +38,7 @@ export const NewProject = ({
     initialDescription = '',
     titlePlaceholder = 'Type your project name here...',
     descriptionPlaceholder = 'Description of your project and what it is for.',
-    sectionTitle = 'Global context files',
+    sectionTitle = 'Case context files',
     emptyStateText = 'Click to add project-wide global context information like case facts, client discussions etc.',
     initialContextFiles = [],
     onContextChange,
@@ -40,17 +49,33 @@ export const NewProject = ({
     className,
     submitButtonText = 'Create',
     // isMobile = false,
+    initialClientName = '',
+    initialCourt = '',
+    initialCaseType = '',
+    initialCaseNumber = '',
+    onClientNameChange,
+    onCourtChange,
+    onCaseTypeChange,
+    onCaseNumberChange,
 
 }: NewProjectProps) => {
     const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState(initialDescription);
+    const [clientName, setClientName] = useState(initialClientName);
+    const [court, setCourt] = useState(initialCourt);
+    const [caseType, setCaseType] = useState(initialCaseType);
+    const [caseNumber, setCaseNumber] = useState(initialCaseNumber);
     // const [contextFiles, setContextFiles] = useState(initialContextFiles); // We might need to sync this too
 
     // Sync state with props when switching projects
     React.useEffect(() => {
         setTitle(initialTitle);
         setDescription(initialDescription);
-    }, [initialTitle, initialDescription]);
+        setClientName(initialClientName);
+        setCourt(initialCourt);
+        setCaseType(initialCaseType);
+        setCaseNumber(initialCaseNumber);
+    }, [initialTitle, initialDescription, initialClientName, initialCourt, initialCaseType, initialCaseNumber]);
 
     // Note: GlobalContextManagement handles its own state but accepts initialContextFiles. 
     // If we want to reset it, we might need a key or similar mechanism.
@@ -65,6 +90,26 @@ export const NewProject = ({
     const handleDescriptionChange = (value: string) => {
         setDescription(value);
         onDescriptionChange?.(value);
+    };
+
+    const handleClientNameChange = (value: string) => {
+        setClientName(value);
+        onClientNameChange?.(value);
+    };
+
+    const handleCourtChange = (value: string) => {
+        setCourt(value);
+        onCourtChange?.(value);
+    };
+
+    const handleCaseTypeChange = (value: string) => {
+        setCaseType(value);
+        onCaseTypeChange?.(value);
+    };
+
+    const handleCaseNumberChange = (value: string) => {
+        setCaseNumber(value);
+        onCaseNumberChange?.(value);
     };
     return (
         <div className={cn('w-full max-w-[882px] p-6 bg-color-surface-neutral-default text-left items-start', className)}>
@@ -87,7 +132,7 @@ export const NewProject = ({
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder={titlePlaceholder}
                     autoComplete='off'
-                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-2 border-none bg-transparent focus:outline-none"
+                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none"
                 />
 
                 {/* Description Input */}
@@ -115,6 +160,40 @@ export const NewProject = ({
                 initialContextFiles={initialContextFiles}
                 onContextChange={onContextChange}
             />
+
+            <div className="flex flex-col gap-4 mt-6">
+                <TextInput
+                    label="Client name"
+                    inputSize='medium'
+                    placeholder="Enter your client name here."
+                    value={clientName}
+                    onChange={(e) => handleClientNameChange(e.target.value)}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <TextInput
+                        label="Court"
+                        inputSize='medium'
+                        placeholder="e.g. Patna High Court"
+                        value={court}
+                        onChange={(e) => handleCourtChange(e.target.value)}
+                        />
+                    <TextInput
+                        label="Case type"
+                        inputSize='medium'
+                        placeholder="e.g. Civil Appeal"
+                        value={caseType}
+                        onChange={(e) => handleCaseTypeChange(e.target.value)}
+                        />
+                    <TextInput
+                        label="Case Number"
+                        inputSize='medium'
+                        placeholder="e.g. 1234/2024"
+                        value={caseNumber}
+                        onChange={(e) => handleCaseNumberChange(e.target.value)}
+                    />
+                </div>
+            </div>
 
             {/* Action Buttons */}
             <div className="flex gap-2 mt-12">

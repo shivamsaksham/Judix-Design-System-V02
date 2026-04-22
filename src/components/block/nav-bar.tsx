@@ -14,7 +14,7 @@ import Link from 'next/link';
 // removed in favor of prop
 
 export interface NavBarProps {
-    variant?: 'default' | 'project';
+    variant?: 'default' | 'project' | 'secondary';
     onIndependentClick?: () => void;
     onConnectorClick?: () => void;
     onContextClick?: () => void;
@@ -126,7 +126,33 @@ export function NavBar({
             )}
             style={{ paddingRight: !isMobile && isResultPanelOpen ? '450px' : '1.25rem' }}
         >
-            {variant === 'project' ? (
+            {variant === 'secondary' ? (
+                <>
+                    <div className="flex items-center gap-2">
+                        <Link href="/">
+                            <div className="flex items-center cursor-pointer">
+                                <Image
+                                    src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
+                                    alt="Logo"
+                                    width={isMobile ? 32 : 92}
+                                    height={32}
+                                />
+                            </div>
+                        </Link>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="neutral"
+                            size="small"
+                            prefixIcon="back-square"
+                            onClick={onBackToResearch}
+                            className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg"
+                        >
+                            Back to research
+                        </Button>
+                    </div>
+                </>
+            ) : variant === 'project' ? (
                 <>
                     <div className="flex items-center gap-2">
                         <div className="md:hidden">

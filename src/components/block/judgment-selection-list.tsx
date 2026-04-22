@@ -3,11 +3,11 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { Button } from '@/components/ui/button';
 import { TextInput } from '@/components/ui/text-input';
-import { JudgmentTile, JudgmentTileProps } from './judgment-tile';
+import { JudgmentNudgeTile, JudgmentNudgeTileProps } from './judgment-nudge-tile';
 
 export interface JudgmentSelectionListProps {
     className?: string;
-    judgments: JudgmentTileProps[];
+    judgments: JudgmentNudgeTileProps[];
     isConfirmed?: boolean;
     isExpanded?: boolean;
     selectedIndex?: number | null;
@@ -130,7 +130,7 @@ export const JudgmentSelectionList = ({
 
                             return (
                                 <div key={idx} className={cn("border-b border-color-border-neutral-default last:border-b-0")}>
-                                    <JudgmentTile
+                                    <JudgmentNudgeTile
                                         {...judgment}
                                         selectionState={tileState}
                                         onClick={() => handleSelect(idx)}

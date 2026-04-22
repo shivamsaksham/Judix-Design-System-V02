@@ -521,7 +521,7 @@ export function NotesCard({
                                     <Icon name="note-a" className="h-4 w-4 text-color-text-neutral-default" />
                                     <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-2">
                                     <IconButton
                                         icon="send-c"
                                         className="bg-transparent"
