@@ -40,6 +40,7 @@ export interface HistorySidebarProps {
     onProjects?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
+    onSettings?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
     onMove?: (chatId: string) => void;
@@ -61,6 +62,7 @@ export const HistorySidebar = ({
     onProjects,
     onResetChat,
     onUpgrade,
+    onSettings,
     onRename,
     // onShare,
     onMove,
@@ -330,7 +332,8 @@ export const HistorySidebar = ({
                                 }}
                                 onSettings={() => {
                                     setIsUserMenuOpen(false);
-                                    console.log('Settings clicked');
+                                    if (onSettings) onSettings();
+                                    else console.log('Settings clicked');
                                 }}
                                 onRefer={() => {
                                     setIsUserMenuOpen(false);

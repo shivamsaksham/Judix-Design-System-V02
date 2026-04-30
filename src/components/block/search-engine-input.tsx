@@ -21,9 +21,11 @@ import { ContextItem } from "./context-window";
 import { CourtSelector, CourtCategory } from "./court-selector";
 import { ProjectChoiceDropdown, ProjectChoiceItem } from "./project-choice-dropdown";
 import { MentionDropdown } from "./mention-dropdown";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
 import { Option } from "@/components/ui/option";
+import { AddDocumentDialog } from "./add-document-dialog";
+import { SearchEngineArtifact } from "./search-engine-artifact";
 
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
@@ -208,6 +210,9 @@ interface SearchEngineInputProps {
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
+    artifacts?: Array<{ id: string, title: string, type: 'file' | 'text' }>;
+    onUpload?: (files: File[]) => void;
+    onAddText?: (title: string, content: string) => void;
 }
 
 function SearchEngineInput({
@@ -230,6 +235,9 @@ function SearchEngineInput({
     modelName: propModelName = "Judix Default",
     projects = [],
     showProjectSelector = true,
+    artifacts: propArtifacts = [],
+    onUpload,
+    onAddText,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
 
@@ -238,6 +246,8 @@ function SearchEngineInput({
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
+    const [isAddDocumentDialogOpen, setIsAddDocumentDialogOpen] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [modelName, setModelName] = useState(propModelName);
 
     const effectiveSelectedCourts =
@@ -1434,13 +1444,23 @@ function SearchEngineInput({
                     {activeDropdown === "add" ? (
                         <NestedDropdown
                             options={[
-                                { title: "Upload Document", value: "upload_document", leadingIcon: 'document-text-a' },
-                                { title: "Add Text", value: "add_text", leadingIcon:'textalign-left' },
+                                {
+                                    title: "Upload Document",
+                                    value: "upload_document",
+                                    leadingIcon: <Icon name="document-text-a" className="w-[18px] h-[18px]" />,
+                                },
+                                {
+                                    title: "Add Text",
+                                    value: "add_text",
+                                    leadingIcon: <Icon name="textalign-left" className="w-[18px] h-[18px]" />,
+                                },
                             ]}
                             value={null}
                             onChange={(val) => {
-                                if (val === "upload_document" || val === "add_text") {
+                                if (val === "add_text") {
                                     setIsContextDialogOpen(true);
+                                } else if (val === "upload_document") {
+                                    setIsAddDocumentDialogOpen(true);
                                 }
                                 setActiveDropdown(null);
                             }}
@@ -1531,7 +1551,15 @@ function SearchEngineInput({
                     </div>
                 )}
 
-                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default px-6 py-4 flex flex-col gap-3">
+                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default px-6 py-4 flex flex-col gap-4">
+                    {propArtifacts.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {propArtifacts.map((art, i) => (
+                                <SearchEngineArtifact key={art.id || i} title={art.title} />
+                            ))}
+                        </div>
+                    )}
+
                     {/* Editable text area */}
                     <div
                         contentEditable={true}
@@ -1645,14 +1673,45 @@ function SearchEngineInput({
             {renderTriggerDropdown()}
             {renderButtonDropdown()}
 
+            {/* Add document dialog */}
+            <AddDocumentDialog
+                open={isAddDocumentDialogOpen}
+                onOpenChange={(open) => {
+                    setIsAddDocumentDialogOpen(open);
+                    if (!open) setSelectedFiles([]); // Reset on close
+                }}
+                files={selectedFiles.map(f => ({
+                    fileName: f.name,
+                    fileSize: (f.size / (1024 * 1024)).toFixed(2) + " MB",
+                    progress: 100,
+                    state: 'processed'
+                }))}
+                onFilesSelected={(files) => setSelectedFiles(prev => [...prev, ...files])}
+                onUploadClick={() => {
+                    if (onUpload && selectedFiles.length > 0) {
+                        onUpload(selectedFiles);
+                    }
+                    setIsAddDocumentDialogOpen(false);
+                    setSelectedFiles([]);
+                }}
+                onCancelClick={() => {
+                    setIsAddDocumentDialogOpen(false);
+                    setSelectedFiles([]);
+                }}
+            />
+
             {/* Add to context dialog */}
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
-                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]">
+                <DialogContent className="max-w-[600px] p-0 overflow-hidden" showCloseButton={true}>
                     <DialogTitle className="sr-only">Add to context</DialogTitle>
                     <AddToContext
-                        onSave={() => setIsContextDialogOpen(false)}
+                        onSave={(title, content) => {
+                            if (onAddText) onAddText(title, content);
+                            setIsContextDialogOpen(false);
+                        }}
                         onCancel={() => setIsContextDialogOpen(false)}
                         onClose={() => setIsContextDialogOpen(false)}
+                        className="border-none w-full h-full shadow-none"
                     />
                 </DialogContent>
             </Dialog>
