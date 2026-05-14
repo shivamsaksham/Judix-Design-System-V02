@@ -98,7 +98,7 @@ export function ContactUs({
                   <Icon name="arrow-down-c" className="w-4 h-4 text-color-icon-neutral-secondary" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="p-0 border-none bg-transparent shadow-none w-[var(--radix-popover-trigger-width)]" align="start">
+              <PopoverContent className="p-0 border-none bg-transparent shadow-none w-(--radix-popover-trigger-width)]" align="start">
                 <Dropdown
                   options={PURPOSE_OPTIONS}
                   value={purpose}
@@ -126,7 +126,7 @@ export function ContactUs({
                     <Icon name="arrow-down-c" className="w-4 h-4 text-color-icon-neutral-secondary" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0 border-none bg-transparent shadow-none w-[var(--radix-popover-trigger-width)]" align="start">
+                <PopoverContent className="p-0 border-none bg-transparent shadow-none w-(--radix-popover-trigger-width)]" align="start">
                   <Dropdown
                     options={DATE_OPTIONS}
                     value={date}
@@ -151,7 +151,7 @@ export function ContactUs({
                     <Icon name="arrow-down-c" className="w-4 h-4 text-color-icon-neutral-secondary" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0 border-none bg-transparent shadow-none w-[var(--radix-popover-trigger-width)]" align="start">
+                <PopoverContent className="p-0 border-none bg-transparent shadow-none w-(--radix-popover-trigger-width)]" align="start">
                   <Dropdown
                     options={TIME_OPTIONS}
                     value={time}

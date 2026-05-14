@@ -139,9 +139,9 @@ export function Subscription({
               These usage limits are renewed every month.
             </p>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-4">
             {usageLimits.map((metric) => (
-              <UsageCard key={metric.label} metric={metric} className="w-[240px]" />
+              <UsageCard key={metric.label} metric={metric} className="w-full lg:w-[240px]" />
             ))}
           </div>
         </div>
@@ -162,7 +162,7 @@ export function Subscription({
         </div>
       </div>
       {/* Cancel Subscription */}
-      <div className="flex items-center justify-between py-4 border-color-border-neutral-default gap-12">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 border-color-border-neutral-default gap-4 md:gap-12">
         <div className="flex flex-col w-full py-2">
           <h3 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Cancel Subscription</h3>
           <p className="p-1 text-style-textblock-primary-subtext text-color-text-neutral-tertiary">

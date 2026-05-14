@@ -78,7 +78,7 @@ export function SecondarySidebar({
 
   return (
     <div className={cn(
-      "w-60 p-4 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-radius-interactiveelement flex flex-col gap-6",
+      "w-60 p-4 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-radius-interactiveelement flex flex-col gap-6 relative z-10 pointer-events-auto",
       className
     )}>
       {renderSection("general", "General settings")}
