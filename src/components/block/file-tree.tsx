@@ -53,7 +53,7 @@ const hasActiveDescendant = (
     });
 };
 
-const FileTreeNode = ({
+export const FileTreeNode = ({
     node,
     level = 0,
     activeId,
@@ -163,7 +163,7 @@ const FileTreeNode = ({
         <div className="select-none">
             <div
                 className={cn(
-                    "group flex items-center gap-1 py-1.5 px-2 rounded-lg cursor-pointer transition-colors duration-200 mx-1",
+                    "group flex items-center gap-1 px-1 rounded-lg cursor-pointer transition-colors duration-200",
                     isActive
                         ? node.type === "folder"
                             ? "bg-color-surface-neutral-subtle_bg text-color-text-neutral-default"
@@ -222,7 +222,7 @@ const FileTreeNode = ({
                         transition={{ duration: 0.2, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
-                        <div className="flex flex-col ml-[11px] pl-2 border-l border-color-border-neutral-default">
+                        <div className={cn("flex flex-col ml-3 pl-3 border-l border-color-border-neutral-default", node.children.some(child => child.type === "folder") ? "gap-2" : "gap-1")}>
                             {node.children.map((child) => (
                                 <FileTreeNode
                                     key={child.id}

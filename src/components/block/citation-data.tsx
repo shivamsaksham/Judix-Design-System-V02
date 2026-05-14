@@ -24,7 +24,7 @@ export function CitationData({ data, className }: CitationDataProps) {
   ];
 
   return (
-    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full", className)}>
+    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full m-2", className)}>
       <CardContent>
         {rows.map((row, index) => (
           <TableRow

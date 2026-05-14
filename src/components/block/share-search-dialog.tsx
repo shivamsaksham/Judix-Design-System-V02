@@ -147,72 +147,68 @@ function ShareSearchDialog({
                 </DialogHeader>
 
                 <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                        <TextInput
-                            inputSize="small"
-                            label=""
-                            className="h-[42px] items-center px-3 py-2"
-                            type="email"
-                            placeholder="Email ID"
-                            value={emailInput}
-                            onChange={handleEmailChange}
-                            onKeyDown={handleKeyDown}
-                            trailingAccessory={
-                                <IconButton
-                                    icon="send-a"
-                                    size="medium"
-                                    variant="primary"
-                                    boundary="none"
-                                    onClick={handleAddRecipient}
-                                    disabled={!emailInput.trim()}
-                                />
-                            }
-                        />
-
-                        {recipients.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                                {recipients.map((recipient) => (
-                                    <Label
-                                        key={recipient.id}
-                                        colorScheme="primary"
+                    <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-2">
+                            <TextInput
+                                inputSize="small"
+                                label=""
+                                className="h-[42px] items-center px-3 py-2"
+                                type="email"
+                                placeholder="Email ID"
+                                value={emailInput}
+                                onChange={handleEmailChange}
+                                onKeyDown={handleKeyDown}
+                                trailingAccessory={
+                                    <IconButton
+                                        icon="send-a"
                                         size="medium"
-                                        selected={recipient.isConfirmed}
-                                        onRemove={
-                                            recipient.isConfirmed
-                                                ? () => handleRemoveRecipient(recipient.id)
-                                                : undefined
-                                        }
-                                        onClick={
-                                            !recipient.isConfirmed
-                                                ? () => handleConfirmRecipient(recipient.id)
-                                                : undefined
-                                        }
-                                        className={cn({
-                                            "cursor-pointer text-style-body-default-regular": !recipient.isConfirmed
-                                        })}
-                                    >
-                                        {recipient.name}
-                                        {!recipient.isConfirmed && " +"}
-                                    </Label>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                        variant="primary"
+                                        boundary="none"
+                                        onClick={handleAddRecipient}
+                                        disabled={!emailInput.trim()}
+                                    />
+                                }
+                            />
 
-                    <div className="flex flex-col gap-2">
-                        <TextInput
-                            label=""
-                            placeholder="Add note"
-                            value={note}
-                            onChange={(e) => setNote(e.target.value)}
-                            leadingIcon={
-                                <Icon
-                                    name="document-text-a"
-                                    className="h-4 w-4 text-color-text-neutral-secondary"
-                                />
-                            }
-                            className="border-none bg-transparent shadow-none focus-within:border-none p-0 h-[24px] items-center text-style-label-title-regular"
-                        />
+                            {recipients.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {recipients.map((recipient) => (
+                                        <Label
+                                            key={recipient.id}
+                                            colorScheme="primary"
+                                            size="medium"
+                                            selected={recipient.isConfirmed}
+                                            onRemove={
+                                                recipient.isConfirmed
+                                                    ? () => handleRemoveRecipient(recipient.id)
+                                                    : undefined
+                                            }
+                                            onClick={
+                                                !recipient.isConfirmed
+                                                    ? () => handleConfirmRecipient(recipient.id)
+                                                    : undefined
+                                            }
+                                            className={cn({
+                                                "cursor-pointer text-style-body-default-regular": !recipient.isConfirmed
+                                            })}
+                                        >
+                                            {recipient.name}
+                                            {!recipient.isConfirmed && " +"}
+                                        </Label>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <Button
+                            variant="neutral"
+                            size="small"
+                            prefixIcon="document-a"
+                            iconClassName="text-color-icon-neutral-tertiary"
+                            className="w-fit px-3 py-[6px] border-none bg-color-surface-neutral-default text-color-text-neutral-tertiary text-style-label-default-regular -my-1"
+                        >
+                            Add note
+                        </Button>
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -237,7 +233,7 @@ function ShareSearchDialog({
                                 </Button>
                             }
                         />
-                        <span className="text-style-body-default-regular text-color-text-neutral-tertiary">
+                        <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">
                             Anyone with the link can view
                         </span>
                     </div>
@@ -248,7 +244,7 @@ function ShareSearchDialog({
                         onClick={onDownloadPdf}
                         prefixIcon="document-download"
                         size="extraSmall"
-                        className="w-full justify-center sm:w-auto self-start text-style-label-title-regular"
+                        className="w-fit"
                     >
                         Download as PDF
                     </Button>

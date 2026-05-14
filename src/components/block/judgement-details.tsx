@@ -37,7 +37,7 @@ function JudgementDetails({
   return (
     <div
       className={cn(
-        "flex w-full h-full flex-col items-start gap-2 p-4 bg-color-surface-neutral-default overflow-hidden",
+        "flex w-full h-full flex-col items-start gap-2 bg-color-surface-neutral-default overflow-hidden",
         className
       )}
     >
@@ -76,7 +76,7 @@ function JudgementDetails({
               <div className="flex items-center gap-1">
                 <IconButton icon="add" variant="neutral" size="medium" />
                 <IconButton icon="at" variant="neutral" size="medium" />
-                <IconButton icon="bookmark-a" variant="neutral" size="medium" />
+                <IconButton icon="save-b" variant="neutral" size="medium" />
                 <IconButton icon="share-a" variant="neutral" size="medium" />
               </div>
             </div>
@@ -92,16 +92,17 @@ function JudgementDetails({
         <div className="flex items-start gap-2 flex-1 self-stretch overflow-hidden">
           {/* Frame 6082 */}
           {contentSections && (
-            <aside className="hidden md:block w-[200px] shrink-0 overflow-y-auto pr-2 border-r border-color-border-neutral-default custom-scrollbar">
+            <aside className="hidden md:block w-[240px] shrink-0 overflow-y-auto border-r border-color-border-neutral-default custom-scrollbar">
               <ContentTree
                 sections={contentSections}
                 activeItemId={activeItemId}
                 onItemClick={onItemClick}
+                className="w-full"
               />
             </aside>
           )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto px-4 pb-20 custom-scrollbar scroll-smooth">
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto pb-20 custom-scrollbar scroll-smooth">
             {children ? (
               children
             ) : content ? (

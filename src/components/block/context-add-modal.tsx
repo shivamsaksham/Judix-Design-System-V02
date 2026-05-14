@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { TextInput } from '@/components/ui/text-input';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@judix/icon';
 
 //To use Add to context modal wrap it in a dialog component one such demo is added below
 /* 
@@ -97,6 +98,9 @@ export default function AddToContext({
                 <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label">
                     Add to context
                 </h2>
+                <button onClick={onClose} className="cursor-pointer text-color-textinput-color-text-label hover:opacity-80 transition-opacity">
+                    <Icon name="cross" className="w-4 h-4" />
+                </button>
             </div>
 
             {/* Title Input */}

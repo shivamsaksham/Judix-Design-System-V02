@@ -64,7 +64,7 @@ export const HistoryTile = ({
                     isActive
                         ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'
                         : 'bg-transparent hover:bg-option-color-hover',
-                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none hidden'
+                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
                 aria-label="Menu"
             >

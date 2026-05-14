@@ -29,7 +29,7 @@ export const Default: Story = {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
-                    <p className="text-sm">Dialog content goes here.</p>
+                    <p>Dialog content goes here.</p>
                 </div>
             </DialogContent>
         </Dialog>
@@ -50,8 +50,8 @@ export const WithFooter: Story = {
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="neutral">Cancel</Button>
-                    <Button>Confirm</Button>
+                    <Button variant="neutral" size="extraSmall">Cancel</Button>
+                    <Button size="extraSmall">Confirm</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

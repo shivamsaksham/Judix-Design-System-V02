@@ -121,7 +121,7 @@ export function ContextWindow({
                             </p>
 
                             <div className="space-y-2">
-                                <h4 className="font-medium text-color-text-primary-default">Auto Context</h4>
+                                <h4 className="font-medium text-color-text-primary-default">Auto Cahontext</h4>
                                 <p className="text-color-text-neutral-subtle">
                                     Judix automatically includes the most recent 10 items in your session. No manual selection required.
                                 </p>

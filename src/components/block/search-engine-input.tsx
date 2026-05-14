@@ -23,6 +23,7 @@ import { ProjectChoiceDropdown, ProjectChoiceItem } from "./project-choice-dropd
 import { MentionDropdown } from "./mention-dropdown";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
+import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
 
 export interface OptionHelper extends DropdownOption {
@@ -238,6 +239,7 @@ function SearchEngineInput({
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
     const [modelName, setModelName] = useState(propModelName);
 
     const effectiveSelectedCourts =
@@ -1434,12 +1436,22 @@ function SearchEngineInput({
                     {activeDropdown === "add" ? (
                         <NestedDropdown
                             options={[
-                                { title: "Upload Document", value: "upload_document", leadingIcon: 'document-text-a' },
-                                { title: "Add Text", value: "add_text", leadingIcon:'textalign-left' },
+                                {
+                                    title: "Upload Document",
+                                    value: "upload_document",
+                                    leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
+                                },
+                                {
+                                    title: "Add Text",
+                                    value: "add_text",
+                                    leadingIcon: <Icon name="textalign-left" className="w-4 h-4" />
+                                },
                             ]}
                             value={null}
                             onChange={(val) => {
-                                if (val === "upload_document" || val === "add_text") {
+                                if (val === "upload_document") {
+                                    setIsUploadDialogOpen(true);
+                                } else if (val === "add_text") {
                                     setIsContextDialogOpen(true);
                                 }
                                 setActiveDropdown(null);
@@ -1647,8 +1659,7 @@ function SearchEngineInput({
 
             {/* Add to context dialog */}
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
-                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]">
-                    <DialogTitle className="sr-only">Add to context</DialogTitle>
+                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]" showCloseButton={false}>
                     <AddToContext
                         onSave={() => setIsContextDialogOpen(false)}
                         onCancel={() => setIsContextDialogOpen(false)}
@@ -1656,6 +1667,14 @@ function SearchEngineInput({
                     />
                 </DialogContent>
             </Dialog>
+
+            {/* Upload document dialog */}
+            <AddDocumentDialog 
+                open={isUploadDialogOpen} 
+                onOpenChange={setIsUploadDialogOpen}
+                onCancelClick={() => setIsUploadDialogOpen(false)}
+                onUploadClick={() => setIsUploadDialogOpen(false)}
+            />
 
             {/* Invisible anchor for predictive suggestion chip positioning */}
             <span

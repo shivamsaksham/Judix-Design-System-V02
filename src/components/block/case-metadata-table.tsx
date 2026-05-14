@@ -30,7 +30,7 @@ export function CaseMetadataTable({ data, className }: CaseMetadataTableProps) {
   ];
 
   return (
-    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full", className)}>
+    <Card className={cn("m-2 rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full", className)}>
       <CardContent>
         {rows.map((row, index) => (
           <TableRow

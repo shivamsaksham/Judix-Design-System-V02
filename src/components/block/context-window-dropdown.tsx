@@ -73,13 +73,13 @@ export default function ContextWindowDropdown({
         <div
             className={cn(
                 'w-full flex flex-col',
-                isMobile ? 'h-full' : 'sm:w-[400px] max-h-[554px] p-2 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg',
+                isMobile ? 'h-full' : 'sm:w-100 max-h-[554px] p-2 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg',
                 className
             )}
         >
             <div className="p-4 shrink-0">
                 <div className="flex items-center justify-between mb-2">
-                    <h3 className="p-1 text-style-body-large-default text-color-text-neutral-default">
+                    <h3 className="p-1 text-style-body-default-regular text-color-text-neutral-default">
                         Context Window
                     </h3>
                     <Button
@@ -87,7 +87,7 @@ export default function ContextWindowDropdown({
                         variant="neutral"
                         size="small"
                         prefixIcon="info-circle"
-                        className='border-none p-1 h-fit bg-color-surface-neutral-default'
+                        className='border-none p-0 h-fit bg-color-surface-neutral-default'
                         iconClassName="w-5 h-5 relative text-color-icon-neutral-secondary"
                     />
                 </div>

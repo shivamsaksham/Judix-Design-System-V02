@@ -19,7 +19,7 @@ export interface ActsTableProps {
 
 export function ActsTable({ data, headers, className }: ActsTableProps) {
   return (
-    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full", className)}>
+    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 m-2 w-full", className)}>
       <CardContent>
         <TableRow 
           columns={[

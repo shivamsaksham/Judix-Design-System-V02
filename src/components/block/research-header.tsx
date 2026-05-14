@@ -80,14 +80,10 @@ export function ResearchHeader({
                     Research results
                 </h2>
                 {onClose && (
-                    <IconButton
-                        icon="cross"
-                        variant="neutral"
-                        size="medium"
-                        boundary="none"
+                    <Icon
+                        name="cross"
                         onClick={onClose}
-                        aria-label="Close"
-                        className="bg-color-surface-neutral-subtle_bg text-color-icon-neutral-tertiary"
+                        className="cursor-pointer text-color-icon-neutral-tertiary h-5 w-5"
                     />
                 )}
             </div>
@@ -114,7 +110,7 @@ export function ResearchHeader({
             </div>
 
             {/* Sub-header: dropdown + actions */}
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between mt-1">
                 {/* Dropdown */}
                 {dropdownOptions ? (
                     <Popover open={open} onOpenChange={setOpen}>

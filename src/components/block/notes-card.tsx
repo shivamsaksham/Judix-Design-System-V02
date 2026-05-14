@@ -17,6 +17,12 @@ import { LinkDialog } from "./link-dialog";
 import { TextEditor } from "../ui/text-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "../ui/tooltip";
 import { FileTree, FileTreeNodeType, FolderItem } from "./file-tree";
 
 const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
@@ -274,40 +280,47 @@ export function NotesCard({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="flex flex-col h-full w-full gap-2"
+                            className="flex flex-col h-full w-full gap-4"
                         >
                             {!isEmbedded && (
-                                <div className="flex items-center justify-between shrink-0 mb-2">
+                                <div className="flex items-center justify-between shrink-0">
                                     <div className="flex items-center gap-3">
                                         <IconButton icon="note-a" size="medium" variant="neutral" boundary="none" />
                                         <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <Button variant="neutral" size="small" className="gap-2" onClick={onOpenInNewTab}>
+                                    <div className="flex items-center gap-6">
+                                        <Label
+                                            colorScheme="neutral"
+                                            size="small"
+                                            className="gap-2 hover:bg-color-label-color-neutral-bg cursor-pointer"
+                                            onClick={onOpenInNewTab}
+                                        >
                                             Open in new tab
-                                        </Button>
-                                        <IconButton
-                                            icon="received"
-                                            size="medium"
-                                            variant="neutral"
-                                            boundary="none"
-                                            className="rotate-180"
-                                            onClick={() => {
-                                                setIsEnlargeOpen(false);
-                                                onSend?.(false);
-                                            }}
-                                        />
-                                        <IconButton
-                                            icon="cross"
-                                            size="medium"
-                                            variant="neutral"
-                                            boundary="none"
-                                            onClick={() => {
-                                                setIsEnlargeOpen(false);
-                                                onCancel?.();
-                                            }}
-                                            className="rotate-180"
-                                        />
+                                        </Label>
+                                        <div className="flex items-center gap-2">
+                                            <IconButton
+                                                icon="received"
+                                                size="medium"
+                                                variant="neutral"
+                                                boundary="none"
+                                                className="rotate-180"
+                                                onClick={() => {
+                                                    setIsEnlargeOpen(false);
+                                                    onSend?.(false);
+                                                }}
+                                            />
+                                            <IconButton
+                                                icon="cross"
+                                                size="medium"
+                                                variant="neutral"
+                                                boundary="none"
+                                                onClick={() => {
+                                                    setIsEnlargeOpen(false);
+                                                    onCancel?.();
+                                                }}
+                                                className="rotate-180"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -316,8 +329,8 @@ export function NotesCard({
                                 {showSidebar && (
                                     <>
                                         <div className="w-[240px] flex flex-col shrink-0">
-                                            <div className="flex items-center justify-between py-2">
-                                                <span className="text-style-body-default-regular text-color-text-neutral-default">My Files</span>
+                                            <div className="flex items-center justify-between">
+                                                <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                 <div className="flex items-center gap-0.5">
                                                     <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} disabled={!activeFileId} />
                                                     <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={!activeFileId} />
@@ -343,23 +356,23 @@ export function NotesCard({
                                     </>
                                 )}
 
-                                <div className="flex-1 flex flex-col min-w-0 gap-1">
+                                <div className="flex-1 flex flex-col min-w-0x">
                                     <div className={cn(
-                                        "flex items-center h-auto min-h-[34px] shrink-0 py-2 gap-y-2 justify-between flex-wrap",
+                                        "flex items-center h-auto min-h-[34px] shrink-0 gap-y-2 justify-between flex-wrap",
                                         isEmbedded ? "w-full px-6" : "w-full max-w-[720px] px-0"
                                     )}>
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
                                                 <PopoverTrigger asChild>
                                                     <div
-                                                        className={cn(
-                                                            "flex items-center justify-between gap-2 px-2 py-1 rounded-md cursor-pointer select-none min-w-[100px]",
-                                                            "text-size-body-main text-color-text-neutral-default hover:bg-color-surface-neutral-hover_default",
-                                                            headingOpen && "bg-color-surface-neutral-hover_default"
-                                                        )}
+                                                        className={`button-font-small ${cn(
+                                                            "flex items-center justify-between gap-9 px-4 py-2 cursor-pointer select-none min-w-[100px] bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement",
+                                                            "text-color-text-neutral-default hover:bg-color-surface-neutral-hover_default",
+                                                            headingOpen && "bg-color-surface-neutral-subtle_bg"
+                                                        )}`}
                                                     >
                                                         <span className="truncate">{currentHeadingLabel}</span>
-                                                        <IconButton icon="arrow-down-c" size="medium" variant="neutral" boundary="none" />
+                                                        <Icon name="arrow-down-c" className="w-[14px] h-[14px]" />
                                                     </div>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="start" sideOffset={4}>
@@ -377,92 +390,143 @@ export function NotesCard({
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton
-                                                icon="text-bold"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => editor?.chain().focus().toggleBold().run()}
-                                            />
-                                            <IconButton
-                                                icon="text-italic"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                                            />
-                                            <IconButton
-                                                icon="text-underline"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => editor?.chain().focus().toggleUnderline?.().run()}
-                                            />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="text-bold"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => editor?.chain().focus().toggleBold().run()}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Bold</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="text-italic"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => editor?.chain().focus().toggleItalic().run()}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Italic</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="text-underline"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => editor?.chain().focus().toggleUnderline?.().run()}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Underline</TooltipContent>
+                                            </Tooltip>
                                         </div>
 
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton
-                                                icon="textalign-left"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => handleTextAlign('left')}
-                                            />
-                                            <IconButton
-                                                icon="textalign-center"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => handleTextAlign('center')}
-                                            />
-                                            <IconButton
-                                                icon="textalign-right"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => handleTextAlign('right')}
-                                            />
-                                            <IconButton
-                                                icon="textalign-justifycenter"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => handleTextAlign('justify')}
-                                            />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="textalign-left"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => handleTextAlign('left')}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Align Left</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="textalign-center"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => handleTextAlign('center')}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Align Center</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="textalign-right"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => handleTextAlign('right')}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Align Right</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="textalign-justifycenter"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => handleTextAlign('justify')}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Justify</TooltipContent>
+                                            </Tooltip>
                                         </div>
 
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton
-                                                icon="link-b"
-                                                size="medium"
-                                                variant="neutral"
-                                                className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                boundary="none"
-                                                onClick={() => {
-                                                    if (!editor || editor.state.selection.empty) return;
-                                                    const previousUrl = editor.getAttributes('link').href;
-                                                    setCurrentLinkUrl(previousUrl || "");
-                                                    setIsLinkDialogOpen(true);
-                                                }}
-                                            />
-                                            <IconButton
-                                                icon="image"
-                                                size="medium"
-                                                variant="neutral"
-                                                boundary="none"
-                                                onClick={() => fileInputRef.current?.click()}
-                                            />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="link-b"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
+                                                        boundary="none"
+                                                        onClick={() => {
+                                                            if (!editor || editor.state.selection.empty) return;
+                                                            const previousUrl = editor.getAttributes('link').href;
+                                                            setCurrentLinkUrl(previousUrl || "");
+                                                            setIsLinkDialogOpen(true);
+                                                        }}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Insert Link</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton
+                                                        icon="image"
+                                                        size="medium"
+                                                        variant="neutral"
+                                                        boundary="none"
+                                                        onClick={() => fileInputRef.current?.click()}
+                                                    />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Upload Image</TooltipContent>
+                                            </Tooltip>
                                             <input
                                                 type="file"
                                                 ref={fileInputRef}
@@ -475,8 +539,19 @@ export function NotesCard({
                                         <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
-                                            <IconButton icon="at" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
-                                            <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton icon="at" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Mentions</TooltipContent>
+                                            </Tooltip>
+
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
+                                                </TooltipTrigger>
+                                                <TooltipContent>Share Note</TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </div>
 
@@ -487,7 +562,7 @@ export function NotesCard({
                                         isEmbedded ? "w-full border border-color-border-neutral-default" : "w-[720px] border border-color-border-neutral-default"
                                     )}>
                                         <TextEditor
-                                            className="w-full h-full p-6 text-color-text-neutral-default"
+                                            className="w-full h-full text-color-text-neutral-default"
                                             placeholder="Type your notes here"
                                             onEditorReady={setEditor}
                                             content={noteContent}
