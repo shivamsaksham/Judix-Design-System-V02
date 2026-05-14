@@ -43,7 +43,7 @@ export function SecondaryBreadcrumb({
         </button>
       )}
 
-      <ol className="flex items-center  m-0 p-0 list-none">
+      <ol className="flex items-center flex-wrap m-0 p-0 list-none">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
           const isActive = item.active || isLast

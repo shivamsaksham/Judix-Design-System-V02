@@ -44,10 +44,10 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
         </DialogHeader>
 
         <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext flex flex-col gap-1'>
-          <span className='p-1'>
+          <span className='p-1 leading-normal'>
             {mainText}
           </span>
-          <span className='p-1  text-confirmation-color-subtext confirmation-font-subtext'>
+          <span className='p-1 text-confirmation-color-subtext confirmation-font-subtext leading-normal'>
             {subText}
           </span>
         </DialogDescription>

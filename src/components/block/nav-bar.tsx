@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { useMediaQuery } from '@/hooks/use-mobile-query'; // I'll create this hook if needed, or check if it exists
 import Image from 'next/image';
 import ContextWindowDropdown, { ContextItem } from './context-window-dropdown';
 import { ChatHistoryMenu } from './chat-history-menu';
@@ -111,8 +112,11 @@ export function NavBar({
     isSessionContextChecked = false,
     onSessionContextToggle,
     isNewChat = false,
-    isMobile = false,
+    isMobile: isMobileProp,
 }: NavBarProps) {
+    const isMobileDevice = useMediaQuery("(max-width: 1024px)");
+    const isMobile = isMobileProp ?? isMobileDevice;
+
     const [showContextDropdown, setShowContextDropdown] = useState(false);
     const [showChatMenu, setShowChatMenu] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -240,7 +244,10 @@ export function NavBar({
         >
             {variant === 'secondary' && (
                 <>
-                    <NavLogo isMobile={isMobile} />
+                    <div className="flex items-center gap-2">
+                        {renderMobileSidebarTrigger()}
+                        <NavLogo isMobile={isMobile} />
+                    </div>
                     <BackToResearchButton onClick={onBackToResearch} />
                 </>
             )}

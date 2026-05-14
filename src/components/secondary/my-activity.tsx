@@ -4,6 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import Confirmation from "@/components/block/confirmation"
 import { ChevronDown } from "lucide-react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import {
@@ -51,6 +52,9 @@ export function MyActivity({
   onDeleteAccount,
   className,
 }: MyActivityProps) {
+  const [showLogoutAllConfirm, setShowLogoutAllConfirm] = React.useState(false)
+  const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = React.useState(false)
+  
   return (
     <div className={`bg-color-surface-neutral-default ${cn("w-full flex flex-col gap-6 pb-12", className)}`}>
       {/* Login History Section */}
@@ -117,14 +121,26 @@ export function MyActivity({
           ))}
         </div>
 
-        <Button
-          variant="neutral"
-          size="extraSmall"
-          onClick={onLogoutAll}
-          className="w-fit"
+        <Confirmation
+          open={showLogoutAllConfirm}
+          onOpenChange={setShowLogoutAllConfirm}
+          mainText="Logout from all devices"
+          subText="Are you sure you want to logout from all of your active sessions?"
+          confirmText="Logout all"
+          onConfirmClick={() => {
+            onLogoutAll?.()
+            setShowLogoutAllConfirm(false)
+          }}
+          onCancelClick={() => setShowLogoutAllConfirm(false)}
         >
-          Logout of all devices
-        </Button>
+          <Button
+            variant="neutral"
+            size="extraSmall"
+            className="w-fit"
+          >
+            Logout of all devices
+          </Button>
+        </Confirmation>
       </section>
 
       {/* Export Section */}
@@ -132,7 +148,7 @@ export function MyActivity({
         <h2 className="p-1 text-style-heading-xs-emphasis text-color-text-neutral-default">Export</h2>
         <div className="flex flex-col border-t border-color-border-neutral-default pt-6 gap-4">
           {/* Activity History Export */}
-          <div className="p-2 flex items-start justify-between gap-12">
+          <div className="p-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-12">
             <div className="flex flex-col">
               <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Activity History</h4>
               <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
@@ -145,7 +161,7 @@ export function MyActivity({
           </div>
 
           {/* Project Logs Export */}
-          <div className="p-2 flex items-start justify-between gap-12">
+          <div className="p-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-12">
             <div className="flex flex-col">
               <h4 className="t-1 text-style-body-default-emphasis text-color-text-neutral-default">Project logs</h4>
               <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
@@ -174,16 +190,30 @@ export function MyActivity({
       <section className="flex flex-col gap-4 pt-6 pb-22">
         <h2 className="p-1 text-style-heading-xs-emphasis text-color-text-neutral-default">Danger zone</h2>
         <div className="flex flex-col border-t border-color-border-neutral-default pt-6 gap-4">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex flex-col">
               <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Delete account</h4>
               <p className="p-1 text-style-textblock-primary-subtext-regular text-color-text-neutral-tertiary w-full">
                 Permanently delete this account, including files, notes and research sessions.
               </p>
             </div>
-            <Button variant="destructive" size="extraSmall" onClick={onDeleteAccount}>
-              Delete
-            </Button>
+            <Confirmation
+              open={showDeleteAccountConfirm}
+              onOpenChange={setShowDeleteAccountConfirm}
+              mainText="Delete Account"
+              subText="Are you sure you want to permanently delete your account? This action cannot be undone."
+              confirmVariant="destructive"
+              confirmText="Delete Account"
+              onConfirmClick={() => {
+                onDeleteAccount?.()
+                setShowDeleteAccountConfirm(false)
+              }}
+              onCancelClick={() => setShowDeleteAccountConfirm(false)}
+            >
+              <Button variant="destructive" size="extraSmall">
+                Delete
+              </Button>
+            </Confirmation>
           </div>
           <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-tertiary">
             You can still recover your account within 30 days by writing an email to contact@judix.in

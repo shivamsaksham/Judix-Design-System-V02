@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
+import Confirmation from "@/components/block/confirmation"
 
 export interface UsageMetric {
   label: string
@@ -86,6 +87,7 @@ export function Subscription({
   onCancelSubscription,
   className,
 }: SubscriptionProps) {
+  const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
   return (
     <div className={cn("w-full pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
       {/* Header */}
@@ -137,9 +139,9 @@ export function Subscription({
               These usage limits are renewed every month.
             </p>
           </div>
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-4">
             {usageLimits.map((metric) => (
-              <UsageCard key={metric.label} metric={metric} className="w-[240px]" />
+              <UsageCard key={metric.label} metric={metric} className="w-full lg:w-[240px]" />
             ))}
           </div>
         </div>
@@ -160,16 +162,30 @@ export function Subscription({
         </div>
       </div>
       {/* Cancel Subscription */}
-      <div className="flex items-center justify-between py-4 border-color-border-neutral-default gap-12">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 border-color-border-neutral-default gap-4 md:gap-12">
         <div className="flex flex-col w-full py-2">
           <h3 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Cancel Subscription</h3>
           <p className="p-1 text-style-textblock-primary-subtext text-color-text-neutral-tertiary">
             This will cancel your current subscription and move to the free plan in the next billing cycle.
           </p>
         </div>
-        <Button variant="destructive" size="extraSmall" onClick={onCancelSubscription}>
-          Cancel
-        </Button>
+        <Confirmation
+          open={showCancelConfirm}
+          onOpenChange={setShowCancelConfirm}
+          mainText="Cancel Subscription"
+          subText="Are you sure you want to cancel your subscription? This will move you to the free plan in the next billing cycle."
+          confirmVariant="destructive"
+          confirmText="Cancel Subscription"
+          onConfirmClick={() => {
+            onCancelSubscription?.()
+            setShowCancelConfirm(false)
+          }}
+          onCancelClick={() => setShowCancelConfirm(false)}
+        >
+          <Button variant="destructive" size="extraSmall">
+            Cancel
+          </Button>
+        </Confirmation>
       </div>
 
       {/* Footer Support */}

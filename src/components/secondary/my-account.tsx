@@ -488,14 +488,15 @@ export function MyAccount({ profile }: { profile?: any }) {
       <div className="flex justify-end gap-3 mt-8 mb-6">
         {isEditing ? (
           <>
-            <Button variant="neutral" onClick={handleCancel}>
+            <Button variant="neutral" onClick={handleCancel} size="small">
               Cancel
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleSave} size="small">Save</Button>
           </>
         ) : (
           <Button onClick={handleEdit}
             prefixIcon="edit-a"
+            size="small"
           >
             Edit profile
           </Button>
