@@ -485,7 +485,8 @@
   --color-confirmation-color-stroke: var(--color-color-border-neutral-default);
   --color-confirmation-color-titletext: var(--color-color-text-neutral-default);
   --color-confirmation-color-bodytext: var(--color-color-text-neutral-default);
-  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary) --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
+  --color-confirmation-color-subtext: var(--color-color-text-neutral-tertiary);
+  --color-confirmation-color-icon: var(--color-color-icon-neutral-tertiary);
   /* Confirmation Modals Border Radius */
   --radius-confirmation-border-radius-default: var(--radius-radius-modal);
   /* Confirmation Modals Border Weight - Un-tokenized : should be used directly as class `confirmation-border-weight-default`  */
@@ -649,6 +650,22 @@
   font-size: var(--font-size-body-large);
   letter-spacing: var(--font-tracking-body-large);
   line-height: var(--font-line_height-body-large);
+}
+
+@utility text-style-heading-xs-emphasis {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-heading-xs);
+  letter-spacing: var(--font-tracking-body-large);
+  line-height: var(--font-line_height-body-large);
+}
+
+@utility text-style-heading-md-emphasis {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-heading-md);
+  letter-spacing: var(--font-tracking-body-large);
+  line-height: 150%;
 }
 
 @utility text-style-body-large-bold {

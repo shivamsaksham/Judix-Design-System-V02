@@ -27,26 +27,26 @@ export const Default: Story = {
             {
                 id: 'rename',
                 label: 'Rename',
-                icon: <Icon name="edit-a" />,
+                icon: <Icon name="edit-a" className='w-[18px] h-[18px]' />,
                 onClick: () => console.log('Rename clicked'),
             },
             {
                 id: 'share',
                 label: 'Share',
-                icon: <Icon name="export-d" />,
+                icon: <Icon name="export-d" className='w-[18px] h-[18px]' />,
                 onClick: () => console.log('Share clicked'),
             },
             {
                 id: 'move',
                 label: 'Move to project',
-                icon: <Icon name="document-copy" />,
+                icon: <Icon name="folder-a" className='w-[18px] h-[18px]' />,
                 onClick: () => console.log('Move clicked'),
                 dividerAfter: true, // Border after this item
             },
             {
                 id: 'delete',
                 label: 'Delete',
-                icon: <Icon name="trash" />,
+                icon: <Icon name="trash" className='w-[18px] h-[18px]' />,
                 onClick: () => console.log('Delete clicked'),
                 variant: 'danger',
             },

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { TextInput } from '@/components/ui/text-input';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@judix/icon';
 
 //To use Add to context modal wrap it in a dialog component one such demo is added below
 /* 
@@ -88,7 +89,7 @@ export default function AddToContext({
                 'bg-color-surface-neutral-subtle_bg',
                 'border border-color-border-neutral-default',
                 'rounded-lg',
-                'p-6 flex flex-col gap-2',
+                'p-4 flex flex-col gap-2',
                 className
             )}
         >
@@ -97,6 +98,9 @@ export default function AddToContext({
                 <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label">
                     Add to context
                 </h2>
+                <button onClick={onClose} className="cursor-pointer text-color-textinput-color-text-label hover:opacity-80 transition-opacity">
+                    <Icon name="cross" className="w-4 h-4" />
+                </button>
             </div>
 
             {/* Title Input */}
@@ -168,14 +172,14 @@ export default function AddToContext({
                 <Button
                     onClick={handleCancel}
                     variant="neutral"
-                    size="small"
+                    size="extraSmall"
                 >
                     Cancel
                 </Button>
                 <Button
                     onClick={handleSave}
                     variant="primary"
-                    size="small"
+                    size="extraSmall"
                     disabled={!title.trim() || !content.trim() || content.length < MIN_CHARACTERS}
                 >
                     Save

@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { TextInput } from "../ui/text-input";
 import { ProjectList } from "./project-list";
-
+import { useRouter } from "next/navigation";
 
 export interface Project {
     id: string;
@@ -27,7 +27,7 @@ export interface BookmarkDialogProps {
     projects: Project[];
     recentProjects: Project[];
     onSave: (projects: Project[]) => void;
-    onCreateNewProject: () => void;
+    onCreateNewProject?: () => void;
     className?: string;
 }
 
@@ -40,6 +40,7 @@ function BookmarkDialog({
     onCreateNewProject,
     className
 }: BookmarkDialogProps) {
+    const router = useRouter();
     const [search, setSearch] = React.useState("");
     const [selectedProjects, setSelectedProjects] = React.useState<Project[]>(
         []
@@ -79,11 +80,13 @@ function BookmarkDialog({
             setSelectedProjects(prev => [...prev, project]);
         }
         setSearch("");
+        setIsDropdownOpen(false);
     };
 
     const handleRemoveProject = (projectId: string) => {
         setSelectedProjects(prev => prev.filter(p => p.id !== projectId));
         inputRef.current?.focus();
+        setIsDropdownOpen(true);
     };
 
     const handleSave = () => {
@@ -106,7 +109,7 @@ function BookmarkDialog({
                 <div className="flex flex-col gap-2">
                     <div className="relative" ref={dropdownRef}>
                         <TextInput
-                            inputSize="medium"
+                            inputSize="small"
                             ref={inputRef}
                             label=""
                             placeholder={
@@ -118,6 +121,7 @@ function BookmarkDialog({
                                 setIsDropdownOpen(true);
                             }}
                             onFocus={() => setIsDropdownOpen(true)}
+                            onClick={() => setIsDropdownOpen(true)}
                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                 if (
                                     e.key === "Backspace" &&
@@ -170,8 +174,12 @@ function BookmarkDialog({
                 <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-between sm:space-x-0 gap-3 sm:gap-0">
                     <Button
                         variant="neutral"
-                        size="medium"
-                        onClick={onCreateNewProject}
+                        size="small"
+                        onClick={() => {
+                            onCreateNewProject?.();
+                            router.push("/projects");
+                            onOpenChange(false);
+                        }}
                         className="p-2 rounded-lg text-style-body-default-regular"
                     >
                         Create new project
@@ -179,7 +187,7 @@ function BookmarkDialog({
                     <div className="flex items-center gap-2 self-end sm:self-auto">
                         <Button
                             variant="neutral"
-                            size="medium"
+                            size="small"
                             onClick={() => onOpenChange(false)}
                             className="h-auto text-style-body-default-regular"
                         >
@@ -187,7 +195,7 @@ function BookmarkDialog({
                         </Button>
                         <Button
                             variant="primary"
-                            size="medium"
+                            size="small"
                             onClick={handleSave}
                             disabled={selectedProjects.length === 0}
                             className="h-auto"

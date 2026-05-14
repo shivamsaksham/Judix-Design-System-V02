@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@judix/icon";
-import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
 
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -134,7 +133,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
                         className="relative w-[655px] h-[638px] bg-color-surface-neutral-default shadow-sm shrink-0"
                     >
                         {/* Document content injected here */}
-                        <div className="absolute inset-0 overflow-hidden text-sm font-['Poppins'] leading-4 tracking-tight text-black pt-[39px] pl-[42px]">
+                        <div className="absolute inset-0 overflow-hidden text-style-body-default-regular text-black py-[39px] px-[42px]">
                             {file ? (
                                 <Document
                                     file={file}

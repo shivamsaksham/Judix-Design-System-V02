@@ -13,7 +13,6 @@ import {
     PopoverTrigger,
 } from '../ui';
 import { Icon } from '@judix/icon';
-import { CloudCog } from 'lucide-react';
 
 export interface BillInfoFormData {
     firstName: string;
@@ -28,8 +27,15 @@ export interface BillInfoFormData {
     gstNumber: string;
 }
 
+export interface CompanyDetails {
+    name: string;
+    address: string;
+    gst: string;
+}
+
 export interface BillInfoFormProps {
     initialData?: Partial<BillInfoFormData>;
+    companyDetails?: CompanyDetails;
     onSave?: (data: BillInfoFormData) => void;
     onDiscard?: () => void;
     className?: string;
@@ -45,6 +51,11 @@ const STATES = [
 
 export const BillInfoForm = ({
     initialData,
+    companyDetails = {
+        name: "JUDIX TECHNOLOGIES PRIVATE LIMITED",
+        address: "Block A1, Chatrapati Shivaji Greens, Ektapuram, Patna 804453",
+        gst: "10AGGD23556ND20"
+    },
     onSave,
     onDiscard,
     className,
@@ -104,7 +115,6 @@ export const BillInfoForm = ({
         setTimeout(() => {
             setIsVerifying(false);
             setIsVerified(true);
-            console.log("GST Verified");
         }, 1500);
     };
 
@@ -253,23 +263,20 @@ export const BillInfoForm = ({
                             </Label>
                         }   
                     />
-
-                    {/* GST Preview */}
-                    {isVerified && (
-                        <div className="flex flex-col animate-in fade-in slide-in-from-top-1 duration-300">
-                            <h4 className="text-style-body-default-emphasis text-color-text-neutral-default">
-                                JUDIX TECHNOLOGIES PRIVATE LIMITED
-                            </h4>
-                            <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                                Block A1, Chatrapati Shivaji Greens, Ektapuram, Patna 804453
-                            </p>
-                            <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                                {formData.gstNumber}
-                            </p>
-                        </div>
-                    )}
                 </div>
             )}
+
+            <div className="flex flex-col">
+                <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
+                    {companyDetails.name}
+                </h4>
+                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                    {companyDetails.address}
+                </p>
+                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                    {companyDetails.gst}
+                </p>
+            </div>
 
             {/* Actions */}
             <div className="flex items-center py-2 gap-2">

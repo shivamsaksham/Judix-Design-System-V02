@@ -21,16 +21,16 @@ export function SearchScopeSelector({
     return (
         <div
             className={cn(
-                "py-4 bg-color-surface-neutral-default rounded-2xl shadow-sm border border-color-border-neutral-default w-full max-w-[353px] min-h-[130px] flex flex-col gap-3",
+                "px-3 py-2 bg-color-surface-neutral-default rounded-2xl shadow-sm border border-color-border-neutral-default w-full max-w-[353px] min-h-[130px] flex flex-col gap-3",
                 className
             )}
             {...props}
         >
-            <h3 className="px-4 text-color-text-primary-default text-style-body-default-emphasis">
+            <h3 className="p-1 text-color-text-primary-default text-style-body-default-emphasis">
                 Configure your search :
             </h3>
             <Separator className="bg-color-border-neutral-default" orientation="horizontal" />
-            <div className="px-4 flex flex-wrap gap-2">
+            <div className="p-3 flex flex-wrap gap-2">
                 {availableScopes.map(scope => {
                     const isSelected = selectedScopes.includes(scope);
                     return (

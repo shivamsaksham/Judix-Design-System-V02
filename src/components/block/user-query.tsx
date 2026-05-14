@@ -154,7 +154,7 @@ export const UserQuery = ({
                 <>
                     {/* Default/Hover State */}
                     <div className="relative p-1 pb-5 ">
-                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default leading-7">
+                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
                             {renderParsedQuery(query)}
                         </p>
 

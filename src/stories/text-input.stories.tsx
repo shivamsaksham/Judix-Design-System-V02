@@ -4,7 +4,7 @@ import { TextInput } from "@/components/ui/text-input"
 import { Icon } from "@judix/icon"
 
 const meta: Meta<typeof TextInput> = {
-  title: "Components/TextInput",
+  title: "ui/TextInput",
   component: TextInput,
   parameters: {
     layout: "centered",

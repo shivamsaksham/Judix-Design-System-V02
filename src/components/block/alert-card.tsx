@@ -29,7 +29,7 @@ function AlertCard({ onButtonClick = () => { }, hideAble = true, children }: Ale
   return (
     <Card className={`${hidden ? 'hidden' : ''} rounded-alert_card-border-radius-default border-alert_card-border-weight-default bg-alert_card-color-bg alert_card-border-weight-default border-alert_card-color-stroke sm:max-w-[493px]`} >
       <CardHeader >
-        <CardTitle className='flex flex-row gap-1 alert_card-font-title'>
+        <CardTitle className='p-1 flex flex-row gap-2 alert_card-font-title'>
           <Icon name="danger"></Icon>
           Alert
         </CardTitle>

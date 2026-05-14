@@ -1,4 +1,4 @@
-
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
 import { BookmarkDialog, Project } from "@/components/block/move-to-project";
@@ -72,6 +72,22 @@ export default meta;
 type Story = StoryObj<typeof BookmarkDialog>;
 
 export const Default: Story = {};
+
+export const Stateful: Story = {
+    render: (args) => {
+        const [open, setOpen] = React.useState(args.open);
+        return (
+            <BookmarkDialog 
+                {...args} 
+                open={open} 
+                onOpenChange={(v) => {
+                    setOpen(v);
+                    args.onOpenChange(v);
+                }} 
+            />
+        );
+    }
+};
 
 export const WithNoRecentProjects: Story = {
     args: {

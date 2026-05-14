@@ -41,7 +41,7 @@ export function LinkDialog({
                 <DialogHeader>
                     <DialogTitle className="text-style-body-title-regular">Add Link</DialogTitle>
                 </DialogHeader>
-                <div className="flex items-center space-x-2 py-4">
+                <div className="flex items-center py-2">
                     <TextInput
                         label="URL"
                         placeholder="https://example.com"

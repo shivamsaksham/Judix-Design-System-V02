@@ -2,37 +2,32 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ProNudge } from '@/components/block/pro-nudge';
 
 const meta = {
-    title: 'Block/ProNudge',
-    component: ProNudge,
-    parameters: {
-        layout: 'centered',
-    },
-    tags: ['autodocs'],
-    argTypes: {
-        onYesClick: { action: 'onYesClick' },
-        onNoClick: { action: 'onNoClick' },
-        className: { control: 'text' },
-    },
+  title: 'Block/ProNudge',
+  component: ProNudge,
+  parameters: {
+    layout: 'fullscreen', // important: gives full width
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    onYesClick: { action: 'onYesClick' },
+    onNoClick: { action: 'onNoClick' },
+    className: { control: 'text' },
+  },
 } satisfies Meta<typeof ProNudge>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const DefaultResponsive: Story = {
-    args: {},
-    render: (args) => (
-        <div className="w-[1000px] max-w-full p-8 flex flex-col gap-8 bg-color-surface-neutral-default">
-            {/* Wide container (desktop view) */}
-            <div className="w-full">
-                <p className="text-sm text-color-text-neutral-secondary mb-2">Desktop View (Wide)</p>
-                <ProNudge {...args} />
-            </div>
+export const Default: Story = {
+  args: {},
+  render: (args) => (
+    <div className="w-full max-w-screen-lg mx-auto p-4 bg-color-surface-neutral-default">
+      
+      <p className="text-xs text-color-text-neutral-secondary mb-3">
+        Note: Resize the viewport (or use Storybook’s device toolbar) to view the mobile layout.
+      </p>
 
-            {/* Narrow container (mobile view) */}
-            <div className="w-[350px]">
-                <p className="text-sm text-color-text-neutral-secondary mb-2">Mobile View (Narrow)</p>
-                <ProNudge {...args} />
-            </div>
-        </div>
-    )
+      <ProNudge {...args} />
+    </div>
+  ),
 };

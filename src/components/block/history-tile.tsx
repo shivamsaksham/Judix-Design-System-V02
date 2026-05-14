@@ -44,13 +44,12 @@ export const HistoryTile = ({
         >
             {/* Title with truncation */}
             <span
-                className={cn(
-                    'text-style-body-default-regular',
+                className={`text-style-label-title-regular ${cn(
                     isActive ? 'text-color-text-neutral-default' : 'text-color-text-neutral-secondary',
                     'overflow-hidden text-ellipsis whitespace-nowrap',
                     'flex-1 min-w-0',
                     'p-1'
-                )}
+                )}`}
             >
                 {title}
             </span>
@@ -65,7 +64,7 @@ export const HistoryTile = ({
                     isActive
                         ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'
                         : 'bg-transparent hover:bg-option-color-hover',
-                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none hidden'
+                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 )}
                 aria-label="Menu"
             >

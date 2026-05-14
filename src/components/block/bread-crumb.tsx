@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Button, IconButton, Label, Popover, PopoverContent, PopoverTrigger, Dropdown } from '@/components/ui';
+import { Button, IconButton, Popover, PopoverContent, PopoverTrigger } from '@/components/ui';
+import { ChatHistoryMenu } from './chat-history-menu';
+import { Icon } from '@judix/icon';
 
 export interface BreadcrumbItem {
     id: string;
@@ -13,77 +15,117 @@ export interface BreadcrumbItem {
 export interface BreadcrumbProps {
     items: BreadcrumbItem[];
     className?: string;
+    onUseProject?: () => void;
+    buttonLabel?: string;
     showDropdown?: boolean;
     onDropdownClick?: () => void;
-    onUseProject?: () => void;
-    variant?: 'default' | 'header';
-    buttonLabel?: string;
-    historyItems?: { id: string; label: string; items: { id: string; label: string; type: string }[] }[];
+    options?: { 
+        value: string; 
+        title: string; 
+        subtext?: string; 
+        iconName?: string; 
+        dividerAfter?: boolean; 
+        variant?: 'default' | 'danger';
+    }[];
     onHistorySelect?: (id: string) => void;
 }
 
 export default function Breadcrumb({
     items,
     className,
+    onUseProject,
+    buttonLabel = 'Use this project',
     showDropdown = false,
     onDropdownClick,
-    onUseProject,
-    variant = 'default',
-    buttonLabel = 'Use this project',
-    historyItems = [],
+    options = [],
     onHistorySelect,
 }: BreadcrumbProps) {
-    const outerClasses = variant === 'header'
-        ? 'self-stretch inline-flex justify-start items-center gap-2 bg-white sticky top-0 z-40'
-        : 'w-full';
+    const outerClasses = 'w-full items-center';
 
     const innerClasses = cn(
-        'flex flex-wrap justify-start items-center gap-y-2 gap-x-2 pl-2 pr-4 py-2 bg-color-surface-neutral-subtle_bg rounded-lg min-h-[44px] h-auto',
-        variant === 'header' ? 'flex-1 max-w-[1024px] mx-auto' : 'w-full'
+        'flex justify-start items-center gap-x-2 pl-2 pr-4 py-2 bg-color-surface-neutral-subtle_bg rounded-lg h-auto w-full'
     );
+
+    const isChatOrNote = items.some(item =>
+        item.label.toLowerCase().includes('chat') ||
+        item.label.toLowerCase().includes('note')
+    );
+    const effectiveShowDropdown = showDropdown && !isChatOrNote;
+
+    const menuActions = [
+        {
+            value: 'rename',
+            title: 'Rename',
+            iconName: 'edit-a',
+        },
+        {   
+            value: 'share',
+            title: 'Share',
+            iconName: 'export-d',
+        },
+        {
+            value: 'move',
+            title: 'Move to project',
+            iconName: 'folder-a',
+            dividerAfter: true,
+        },
+        {
+            value: 'remove-from-saved',
+            title: 'Remove from saved',
+            iconName: 'note-remove',
+        },
+        {
+            value: 'delete',
+            title: 'Delete',
+            iconName: 'trash',
+            variant: 'danger',
+        },
+    ];
+
+    const isArchive = items.some(item => item.label.toLowerCase().includes('archive'));
+
+    const filteredMenuActions = menuActions.filter(action => {
+        if (action.value === 'remove-from-saved') return isArchive;
+        return true;
+    });
+
+    const currentOptions = options.length > 0 ? options : filteredMenuActions;
+
     return (
+        //Chat History Menu is used here to use w-full of the parent which is not available for the dropdown component
         <div className={cn(outerClasses, className)}>
             <div className={innerClasses}>
                 {onUseProject && (
-                    <div className="flex justify-start items-start shrink-0">
+                    <div className="flex justify-start items-center shrink-0">
                         <Button
                             variant="neutral"
-                            size="extraSmall"
+                            size="medium"
                             onClick={onUseProject}
-                            className="h-7 px-3"
                         >
                             {buttonLabel}
                         </Button>
                     </div>
                 )}
 
-                <div className="flex-1 flex flex-wrap justify-start items-center">
+                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-2">
                     {items.map((item, index) => (
                         <React.Fragment key={item.id}>
-                            <div className="p-1 flex justify-center items-center gap-2 shrink-0 overflow-hidden">
-                                <Label
-                                    colorScheme="neutral"
-                                    size="small"
-                                    onSelect={item.onClick}
-                                    className={cn(
-                                        "truncate border-0",
-                                        item.onClick ? "cursor-pointer" : "cursor-default",
-                                        index === items.length - 1 ? "text-color-text-neutral-default font-medium" : "text-color-text-neutral-secondary font-normal"
-                                    )}
-                                >
-                                    {item.label}
-                                </Label>
+                            <div
+                                className="p-1 font-body-default-regular text-color-text-neutral-secondary cursor-pointer flex justify-start items-center shrink-0"
+                                onClick={item.onClick}
+                            >
+                                {item.label}
                             </div>
                             {index < items.length - 1 && (
-                                <div className="p-1 flex justify-center items-center gap-2 shrink-0">
-                                    <span className="text-color-text-neutral-secondary text-sm font-normal font-brandprimary">/</span>
+                                <div className="px-2 flex justify-center items-center shrink-0">
+                                    <span className="font-body-default-regular text-color-text-neutral-secondary flex items-center">/</span>
                                 </div>
                             )}
                         </React.Fragment>
                     ))}
 
-                    {showDropdown && (
-                        <div className="flex justify-end items-center gap-2 ml-auto pl-2">
+                    {effectiveShowDropdown && (
+                        <div className="flex justify-end items-center gap-2 ml-auto pl-2 shrink-0">
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <IconButton
@@ -95,18 +137,24 @@ export default function Breadcrumb({
                                         className="shrink-0 text-color-icon-neutral-secondary"
                                     />
                                 </PopoverTrigger>
-                                <PopoverContent className="p-0 w-80 border-none bg-transparent shadow-none" align="end">
-                                    <Dropdown
-                                        options={historyItems.map(h => ({
-                                            value: h.id,
-                                            title: h.label,
-                                            subtext: h.items.map(i => i.label).join(' > ')
+                                <PopoverContent className="p-0 w-fit border-none bg-transparent shadow-none" align="end">
+                                    <ChatHistoryMenu
+                                        items={currentOptions.map(opt => ({
+                                            id: opt.value,
+                                            label: opt.title || '',
+                                            icon: opt.iconName ? (
+                                                <Icon 
+                                                    name={opt.iconName as any} 
+                                                    className={opt.iconName === 'folder-a' ? 'text-color-icon-neutral-default' : ''} 
+                                                />
+                                            ) : undefined,
+                                            dividerAfter: opt.dividerAfter,
+                                            variant: opt.variant as "default" | "danger" | undefined,
+                                            onClick: () => {
+                                                onHistorySelect?.(opt.value);
+                                            }
                                         }))}
-                                        value={null}
-                                        onChange={(value) => {
-                                            onHistorySelect?.(value);
-                                        }}
-                                        className="w-full"
+                                        className="w-[216px]"
                                     />
                                 </PopoverContent>
                             </Popover>

@@ -7,7 +7,7 @@ const DEFAULT_SECTIONS: ContentTreeSection[] = [
     id: "summaries",
     title: "Summaries",
     items: [
-      { id: "summary", label: "Summary" },
+      { id: "summary", label: "Overall Summary" },
       { id: "issue", label: "Issue" },
       { id: "facts", label: "Facts" },
       { id: "arguments", label: "Arguments" },

@@ -45,7 +45,7 @@ function RenameDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className={cn("sm:max-w-[432px] gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
+                className={cn("w-120 gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
                 <DialogHeader>
@@ -64,12 +64,12 @@ function RenameDialog({
                 </div>
 
                 <DialogFooter className="flex-row justify-end space-x-2">
-                    <Button variant="neutral" size="medium" onClick={() => onOpenChange(false)} className="text-style-body-default-regular">
+                    <Button variant="neutral" size="small" onClick={() => onOpenChange(false)} className="text-style-body-default-regular">
                         Cancel
                     </Button>
                     <Button
                         variant="primary"
-                        size="medium"
+                        size="small"
                         onClick={handleSave}
                         disabled={name.trim().length < minLength}
                         className="h-auto"

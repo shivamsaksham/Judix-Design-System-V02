@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon } from "judix-icon";
+import { Icon } from "@judix/icon";
 
 export type ScoreBoxProps = {
     title: string;
@@ -31,18 +31,14 @@ function ScoreBox({ score, subtitle, showInfo = false, variant = 'default' }: Sc
 
                 <div className="flex content-center items-center gap-1">
                     {/* 5976 */}
-                    <div className="flex p-1 content-center items-center gap-2">
+                    <div className="flex content-center items-center gap-2">
                         {/* Frame 5972 */}
-                        <p className="text-color-text-primary-default 
-                    font-satoshi text-style-textblock-secondary-largetext-bold">{score}</p>
-                        {/* TODO: this text-style class giving semibold from Global css, but we want bold.
-                        Also its not loading the satoshi fonts */}
+                        <p className="p-1 text-color-text-primary-default text-style-textblock-secondary-largetext-bold">{score}</p>
                     </div>
 
                     {showInfo && (
                         <div className="flex w-[20px] h-[20px] content-center items-center aspect-square">
-                            {/* ! Icon */}
-                            <Icon name="InfoCircle" className="flex w-5 h-5 items-center justify-center 
+                            <Icon name="info-circle" className="flex w-5 h-5 items-center justify-center 
                         aspect-square text-color-icon-primary-default"  />
                         </div>
                     )}

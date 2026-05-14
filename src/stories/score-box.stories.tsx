@@ -10,7 +10,6 @@ export default meta;
 
 type Story = StoryObj<typeof ScoreBox>;
 
-/* ---------------- Default ---------------- */
 
 export const Default: Story = {
   args: {
@@ -20,7 +19,6 @@ export const Default: Story = {
   },
 };
 
-/* ---------------- High Score ---------------- */
 
 export const HighScore: Story = {
   args: {
@@ -30,7 +28,6 @@ export const HighScore: Story = {
   },
 };
 
-/* ---------------- Low Score ---------------- */
 
 export const LowScore: Story = {
   args: {
@@ -40,12 +37,20 @@ export const LowScore: Story = {
   },
 };
 
-/* ---------------- Edge Case: Zero ---------------- */
 
 export const ZeroScore: Story = {
   args: {
     title: "Score",
     score: "0%",
     subtitle: "No Similarity",
+  },
+};
+
+export const WithInfo: Story = {
+  args: {
+    title: "Score",
+    score: "93.42%",
+    subtitle: "Similar to Issues",
+    showInfo: true,
   },
 };

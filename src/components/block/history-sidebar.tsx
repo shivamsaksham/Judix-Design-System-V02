@@ -40,6 +40,7 @@ export interface HistorySidebarProps {
     onProjects?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
+    onSettings?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
     onMove?: (chatId: string) => void;
@@ -61,6 +62,7 @@ export const HistorySidebar = ({
     onProjects,
     onResetChat,
     onUpgrade,
+    onSettings,
     onRename,
     // onShare,
     onMove,
@@ -140,10 +142,39 @@ export const HistorySidebar = ({
         setDeleteConfirmationChatId(null);
     };
 
+    const menuItems = [
+        {
+            id: 'rename',
+            label: 'Rename',
+            icon: <Icon name="edit-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('rename', openMenuChatId!),
+        },
+        {
+            id: 'share',
+            label: 'Share',
+            icon: <Icon name="export-d" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('share', openMenuChatId!),
+        },
+        {
+            id: 'move',
+            label: 'Move to project',
+            icon: <Icon name="folder-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            onClick: () => handleMenuAction('move', openMenuChatId!),
+            dividerAfter: true,
+        },
+        {
+            id: 'delete',
+            label: 'Delete',
+            icon: <Icon name="trash" className='w-[18px] h-[18px]' />,
+            onClick: () => handleMenuAction('delete', openMenuChatId!),
+            variant: 'danger' as const,
+        },
+    ];
+
     return (
         <div
             className={cn(
-                'flex flex-col h-screen overflow-hidden',
+                'flex flex-col h-screen overflow-hidden relative',
                 isExpanded ? 'w-[256px]' : 'w-[56px]',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
@@ -154,297 +185,267 @@ export const HistorySidebar = ({
                 willChange: 'width'
             }}
         >
-            {isExpanded ? (
-                <>
-                    <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
+            <div className={cn("flex flex-col h-full w-full transition-opacity duration-300", isExpanded ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0")}>
+                <div className="flex items-center justify-between px-3 pt-4 pb-2 border-b border-dropdown-color-stroke -mb-px">
+                    <IconButton
+                        onClick={handleToggle}
+                        icon={showCloseButton ? "cross" : "sidebar-left"}
+                        variant="neutral"
+                        size="medium"
+                        corner="sharp"
+                        className="bg-color-neutral-default hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
+                        iconClassName='text-icon_button-color-neutral-icon'
+                        aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
+                    />
+                    <Label
+                        colorScheme="neutral"
+                        size="small"
+                        onClick={onResetChat}
+                        className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
+                    >
+                        Reset Chat
+                    </Label>
+                </div>
+
+                <SidebarActionButtons
+                    onNewChat={onNewChat}
+                    onNotes={onNotes}
+                    onProjects={onProjects}
+                    className="sidebar-fade-in-up-1"
+                />
+
+                <ChatHistorySection
+                    chatHistory={chatHistory}
+                    activeChatId={activeChatId}
+                    onMenuClick={handleMenuClick}
+                    className="ml-1 mr-3 flex-1 min-h-0"
+                />
+
+                <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
+                    <div className="flex items-center gap-2 mb-3 ">
+                        <span className=" p-1 
+                                        text-style-body-default-regular
+                                        text-color-text-neutral-default">Usage</span>
+                        <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
+                    </div>
+                    <div className="w-full 
+                                    bg-button-color-neutral-disabled-stroke 
+                                    rounded-full h-2 mb-1">
+                        <div
+                            className="
+                                    bg-color-text-primary-default
+                                    h-2
+                                    rounded-full transition-all"
+                            style={{ width: `${(usageStats.current / usageStats.total) * 100}%` }}
+                        />
+                    </div>
+                    <div className="flex items-center justify-between min-w-0">
+                        <span className="text-color-text-neutral-tertiary p-1 text-style-label-title-regular whitespace-nowrap">{usageStats.label}</span>
+                        <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
+                            {usageStats.current}/{usageStats.total}
+                        </span>
+                    </div>
+                </div>
+
+                {/* User Profile Section */}
+                <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-um-3">
+                    <div
+                        className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
+                        onClick={(e) => {
+                            const containerRect = e.currentTarget.getBoundingClientRect();
+                            const userNameRect = userNameRef.current?.getBoundingClientRect();
+                            // Calculate bottom distance so menu's bottom aligns with userName box's bottom
+                            const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
+                            setUserMenuPosition({
+                                top: bottomDistance,
+                                //fix left
+                                left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
+                            });
+                            setIsUserMenuOpen(!isUserMenuOpen);
+                        }}
+                    >
+                        <div className="flex items-center min-w-0 flex-1">
+                            <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center shrink-0">
+                                <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
+                            </div>
+                            <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
+                                <span className="w-full text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
+                                    {userProfile.name}
+                                </span>
+                                <span className="w-full text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
+                                    {userProfile.tier}
+                                </span>
+                            </div>
+                        </div>
+                        <Label
+                            colorScheme="primary"
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onUpgrade?.();
+                            }}
+                            className="cursor-pointer mr-2"
+                        >
+                            Upgrade
+                        </Label>
+                    </div>
+                </div>
+
+                {openMenuChatId && (
+                    <div
+                        ref={menuRef}
+                        className="fixed z-50"
+                        style={{
+                            top: `${menuPosition.top}px`,
+                            left: `${menuPosition.left}px`,
+                        }}
+                    >
+                        <ChatHistoryMenu
+                            items={menuItems}
+                        />
+                    </div>
+                )}
+
+                {isUserMenuOpen && (
+                    <div
+                        ref={userMenuRef}
+                        className="fixed z-50"
+                        style={{
+                            bottom: `${userMenuPosition.top}px`,
+                            left: `${userMenuPosition.left}px`,
+                        }}
+                    >
+                        <UserMenu
+
+                            onAccount={() => {
+                                setIsUserMenuOpen(false);
+                                console.log('My Account clicked');
+                            }}
+                            onProjects={() => {
+                                setIsUserMenuOpen(false);
+                                onProjects?.();
+                            }}
+                            onSubscriptions={() => {
+                                setIsUserMenuOpen(false);
+                                console.log('Subscriptions clicked');
+                            }}
+                            onSettings={() => {
+                                setIsUserMenuOpen(false);
+                                if (onSettings) onSettings();
+                                else console.log('Settings clicked');
+                            }}
+                            onRefer={() => {
+                                setIsUserMenuOpen(false);
+                                console.log('Refer and Earn clicked');
+                            }}
+                            onHelp={() => {
+                                setIsUserMenuOpen(false);
+                                console.log('Help & Support clicked');
+                            }}
+                            onLogout={() => {
+                                setIsUserMenuOpen(false);
+                                console.log('Logout clicked');
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+
+            <div className={cn("flex flex-col h-full w-full items-center transition-opacity duration-300", !isExpanded ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0")}>
+                <Tooltip>
+                    <TooltipTrigger asChild>
                         <IconButton
                             onClick={handleToggle}
-                            icon={showCloseButton ? "cross" : "sidebar-left"}
+                            icon="sidebar-right"
                             variant="neutral"
                             size="medium"
                             corner="sharp"
-                            className="bg-color-neutral-default hover:bg-option-color-hover transition-colors sidebar-fade-in-left"
-                            iconClassName='text-icon_button-color-neutral-icon'
-                            aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
+                            className="mt-4 mb-2 mx-3 bg-color-neutral-default
+                            hover:bg-option-color-hover"
+                            iconClassName='h-fit text-icon_button-color-neutral-icon'
+                            aria-label="Toggle Sidebar"
                         />
-                        <Label
-                            colorScheme="neutral"
-                            size="small"
-                            onClick={onResetChat}
-                            className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
-                        >
-                            Reset Chat
-                        </Label>
-                    </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        Expand Sidebar
+                    </TooltipContent>
+                </Tooltip>
 
-                    <SidebarActionButtons
-                        onNewChat={onNewChat}
-                        onNotes={onNotes}
-                        onProjects={onProjects}
-                        className="sidebar-fade-in-up-1"
-                    />
-
-                    <ChatHistorySection
-                        chatHistory={chatHistory}
-                        activeChatId={activeChatId}
-                        onMenuClick={handleMenuClick}
-                        className="ml-1 mr-3 flex-1 min-h-0"
-                    />
-
-                    <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
-                        <div className="flex items-center gap-2 mb-3 ">
-                            <span className=" p-1 
-                                            text-style-body-default-regular
-                                            text-color-text-neutral-default">Usage</span>
-                            <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
-                        </div>
-                        <div className="w-full 
-                                        bg-button-color-neutral-disabled-stroke 
-                                        rounded-full h-2 mb-1">
-                            <div
-                                className="
-                                        bg-color-text-primary-default
-                                        h-2
-                                        rounded-full transition-all"
-                                style={{ width: `${(usageStats.current / usageStats.total) * 100}%` }}
-                            />
-                        </div>
-                        <div className="flex items-center justify-between min-w-0">
-                            <span className="text-color-text-neutral-tertiary p-1 text-style-label-title-regular whitespace-nowrap">{usageStats.label}</span>
-                            <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
-                                {usageStats.current}/{usageStats.total}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* User Profile Section */}
-                    <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-um-3">
-                        <div
-                            className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
-                            onClick={(e) => {
-                                const containerRect = e.currentTarget.getBoundingClientRect();
-                                const userNameRect = userNameRef.current?.getBoundingClientRect();
-                                // Calculate bottom distance so menu's bottom aligns with userName box's bottom
-                                const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
-                                setUserMenuPosition({
-                                    top: bottomDistance,
-                                    //fix left
-                                    left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
-                                });
-                                setIsUserMenuOpen(!isUserMenuOpen);
-                            }}
-                        >
-                            <div className="flex items-center min-w-0 flex-1">
-                                <div className="w-10 h-10 p-2 rounded-full  flex items-center justify-center shrink-0">
-                                    <Icon name="profile" className="w-6 h-6 icon-neutral-default" />
-                                </div>
-                                <div ref={userNameRef} className="flex flex-col py-1 flex-1 min-w-0">
-                                    <span className="w-full text-style-label-title-regular text-color-text-neutral-default px-1 py-0.5 truncate">
-                                        {userProfile.name}
-                                    </span>
-                                    <span className="w-full text-style-label-secondary-regular text-color-text-neutral-tertiary px-1 py-0.5 truncate">
-                                        {userProfile.tier}
-                                    </span>
-                                </div>
-                            </div>
-                            <Label
-                                colorScheme="primary"
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onUpgrade?.();
-                                }}
-                                className="cursor-pointer mr-2"
-                            >
-                                Upgrade
-                            </Label>
-                        </div>
-                    </div>
-
-                    {openMenuChatId && (
-                        <div
-                            ref={menuRef}
-                            className="fixed z-50"
-                            style={{
-                                top: `${menuPosition.top}px`,
-                                left: `${menuPosition.left}px`,
-                            }}
-                        >
-                            <ChatHistoryMenu
-                                items={[
-                                    {
-                                        id: 'rename',
-                                        label: 'Rename',
-                                        icon: <Icon name="edit-a" />,
-                                        onClick: () => handleMenuAction('rename', openMenuChatId),
-                                    },
-                                    {
-                                        id: 'share',
-                                        label: 'Share',
-                                        icon: <Icon name="export-d" />,
-                                        onClick: () => handleMenuAction('share', openMenuChatId),
-                                    },
-                                    {
-                                        id: 'move',
-                                        label: 'Move to project',
-                                        icon: <Icon name="folder-a" className='text-color-icon-neutral-default' />,
-                                        onClick: () => handleMenuAction('move', openMenuChatId),
-                                        dividerAfter: true,
-                                    },
-                                    {
-                                        id: 'delete',
-                                        label: 'Delete',
-                                        icon: <Icon name="trash" />,
-                                        onClick: () => handleMenuAction('delete', openMenuChatId),
-                                        variant: 'danger',
-                                    },
-                                ]}
-                            />
-                        </div>
-                    )}
-
-                    {isUserMenuOpen && (
-                        <div
-                            ref={userMenuRef}
-                            className="fixed z-50"
-                            style={{
-                                bottom: `${userMenuPosition.top}px`,
-                                left: `${userMenuPosition.left}px`,
-                            }}
-                        >
-                            <UserMenu
-
-                                onAccount={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('My Account clicked');
-                                }}
-                                onProjects={() => {
-                                    setIsUserMenuOpen(false);
-                                    onProjects?.();
-                                }}
-                                onSubscriptions={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Subscriptions clicked');
-                                }}
-                                onSettings={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Settings clicked');
-                                }}
-                                onRefer={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Refer and Earn clicked');
-                                }}
-                                onHelp={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Help & Support clicked');
-                                }}
-                                onLogout={() => {
-                                    setIsUserMenuOpen(false);
-                                    console.log('Logout clicked');
-                                }}
-                            />
-                        </div>
-                    )}
-                </>
-            ) : (
-                <>
-                    <div className="flex flex-col items-center h-full">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
+                {/* Action Icons */}
+                <div className="px-2 py-1 flex flex-col">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className='p-1'>
                                 <IconButton
-                                    onClick={handleToggle}
-                                    icon="sidebar-right"
+                                    onClick={onNewChat}
+                                    icon="edit-b"
                                     variant="neutral"
                                     size="medium"
-                                    corner="sharp"
-                                    className="mt-4 mb-2 mx-3 bg-color-neutral-default
-                                    hover:bg-option-color-hover"
-                                    iconClassName='h-fit text-icon_button-color-neutral-icon'
-                                    aria-label="Toggle Sidebar"
+                                    className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                    iconClassName='text-icon_button-color-neutral-icon'
+                                    aria-label="New Chat"
                                 />
-                            </TooltipTrigger>
-                            <TooltipContent side="right">
-                                Expand Sidebar
-                            </TooltipContent>
-                        </Tooltip>
-
-                        {/* Action Icons */}
-                        <div className="px-2 py-1 flex flex-col">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div className='p-1'>
-                                        <IconButton
-                                            onClick={onNewChat}
-                                            icon="edit-b"
-                                            variant="neutral"
-                                            size="medium"
-                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
-                                            iconClassName='text-icon_button-color-neutral-icon'
-                                            aria-label="New Chat"
-                                        />
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    New Chat
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div className='p-1'>
-                                        <IconButton
-                                            onClick={onNotes}
-                                            icon="note-a"
-                                            variant="neutral"
-                                            size="medium"
-                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
-                                            iconClassName='text-icon_button-color-neutral-icon'
-                                            aria-label="Notes"
-                                        />
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    Notes
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <div className='p-1'>
-                                        <IconButton
-                                            onClick={onProjects}
-                                            icon="folder-a"
-                                            variant="neutral"
-                                            size="medium"
-                                            className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
-                                            iconClassName='text-icon_button-color-neutral-icon'
-                                            aria-label="Projects"
-                                        />
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    Projects
-                                </TooltipContent>
-                            </Tooltip>
-                        </div>
-
-                        <div className="flex-1"></div>
-
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    className=" bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
-                                    aria-label="Profile"
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            New Chat
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className='p-1'>
+                                <IconButton
+                                    onClick={onNotes}
+                                    icon="note-a"
                                     variant="neutral"
                                     size="medium"
-                                    prefixIcon="profile"
+                                    className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                    iconClassName='text-icon_button-color-neutral-icon'
+                                    aria-label="Notes"
                                 />
-                            </TooltipTrigger>
-                            <TooltipContent side="right">
-                                Profile
-                            </TooltipContent>
-                        </Tooltip>
-                    </div>
-                </>
-            )}
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            Notes
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className='p-1'>
+                                <IconButton
+                                    onClick={onProjects}
+                                    icon="folder-a"
+                                    variant="neutral"
+                                    size="medium"
+                                    className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                    iconClassName='text-icon_button-color-neutral-icon'
+                                    aria-label="Projects"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            Projects
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
+
+                <div className="flex-1"></div>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            className="mx-1 my-3 bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
+                            aria-label="Profile"
+                            variant="neutral"
+                            size="large"
+                            icon="profile"
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        Profile
+                    </TooltipContent>
+                </Tooltip>
+            </div>
             <Confirmation
                 open={!!deleteConfirmationChatId}
                 onOpenChange={(open) => !open && setDeleteConfirmationChatId(null)}

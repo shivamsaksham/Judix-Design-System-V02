@@ -1,73 +1,66 @@
 "use client";
 
 import * as React from "react";
+import { ResearchHeader, ResearchHeaderProps, ResearchTab } from "./research-header";
 import { DropdownOption } from "../ui/dropdown";
-import { JudgmentResultHeader } from "./judgment-result-header";
-import { ActResultHeader } from "./act-result-header";
 
-const JUDGMENT_OPTIONS: DropdownOption[] = [
-    { value: "supreme-court", title: "Supreme Court" }
+const COURT_OPTIONS: DropdownOption[] = [
+    { value: "Supreme Court of India", title: "Supreme Court of India" },
 ];
 
 const ACT_OPTIONS: DropdownOption[] = [
-    { value: "central-acts", title: "Central Acts" }
+    { value: "central-acts", title: "Central Acts" },
+    { value: "state-acts", title: "State Acts" },
 ];
 
-const ALL_OPTIONS = [...JUDGMENT_OPTIONS, ...ACT_OPTIONS];
-
 export interface SearchHeaderLayoutProps {
-    version?: string | null;
-    onVersionChange?: (value: string) => void;
-    versionOptions: DropdownOption[];
+    initialTab?: ResearchTab;
+    onClose?: () => void;
+    onShare?: () => void;
+    onExport?: () => void;
     searchValue?: string;
     onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    initialDropdownValue?: string;
-    onPrint?: () => void;
-    onFilter?: () => void;
     className?: string;
 }
 
 export function SearchHeaderLayout({
-    version,
-    onVersionChange,
-    versionOptions,
+    initialTab = "judgments",
+    onClose,
+    onShare,
+    onExport,
     searchValue,
     onSearchChange,
-    initialDropdownValue = "supreme-court",
-    onPrint,
-    onFilter,
-    className
+    className,
 }: SearchHeaderLayoutProps) {
-    const [dropdownValue, setDropdownValue] = React.useState<string | null>(initialDropdownValue);
+    const [activeTab, setActiveTab] = React.useState<ResearchTab>(initialTab);
+    const [courtValue, setCourtValue] = React.useState("Supreme Court of India");
+    const [actValue, setActValue] = React.useState("central-acts");
 
-    // Determine if the selected value corresponds to a Judgment or an Act
-    const isJudgment = JUDGMENT_OPTIONS.some(opt => opt.value === dropdownValue);
+    const dropdownOptions = activeTab === "judgments" ? COURT_OPTIONS : activeTab === "acts" ? ACT_OPTIONS : undefined;
+    const dropdownValue = activeTab === "judgments" ? courtValue : actValue;
+    const dropdownLabel = activeTab === "judgments"
+        ? (COURT_OPTIONS.find(o => o.value === courtValue)?.title || "Supreme Court of India")
+        : activeTab === "acts"
+            ? (ACT_OPTIONS.find(o => o.value === actValue)?.title || "Central Acts")
+            : "Web";
 
-    const commonProps = {
-        version: version ?? null,
-        onVersionChange: onVersionChange || (() => { }),
-        versionOptions,
-        searchValue,
-        onSearchChange,
-        dropdownOptions: ALL_OPTIONS,
-        dropdownValue,
-        onDropdownChange: setDropdownValue,
-        onPrint,
-        className
+    const handleDropdownChange = (value: string) => {
+        if (activeTab === "judgments") setCourtValue(value);
+        else if (activeTab === "acts") setActValue(value);
     };
 
-    if (isJudgment) {
-        return (
-            <JudgmentResultHeader
-                {...commonProps}
-                onFilter={onFilter}
-            />
-        );
-    }
-
     return (
-        <ActResultHeader
-            {...commonProps}
+        <ResearchHeader
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            onClose={onClose}
+            dropdownLabel={dropdownLabel}
+            dropdownOptions={dropdownOptions}
+            dropdownValue={dropdownValue}
+            onDropdownChange={handleDropdownChange}
+            onShare={onShare}
+            onExport={onExport}
+            className={className}
         />
     );
 }

@@ -6,6 +6,7 @@ import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ContextActionMenu } from "./context-action-menu";
 import { IconButton } from "../ui";
+import { Icon } from "@judix/icon";
 
 export interface ActResultTileProps {
     title: string;
@@ -64,27 +65,26 @@ export function ActResultTile({
         )}
             onClick={onClick}
         >
+            <div className="flex flex-col gap-1">
+                {/* Title and section */}
+                <div className="flex flex-col gap-[6px] pr-8">
+                    <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
+                        {title}
+                    </h3>
+                    <span className="p-1 text-color-text-neutral-tertiary text-style-label-default-regular">
+                        {section}
+                    </span>
+                </div>
 
-            <div className="flex flex-col gap-1 pr-8">
-                <h3 className="text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
-                    {title}
-                </h3>
-                <span className="text-color-text-neutral-tertiary text-style-label-default-regular">
-                    {section}
-                </span>
+                {/* Description */}
+                <p
+                    ref={descriptionRef}
+                    className={`p-1 text-style-textblock-secondary-subtext-regular text-color-color-text-neutral-default ${!expanded && "line-clamp-3"}`}>
+                    {description}
+                </p>
             </div>
 
-
-            <p
-                ref={descriptionRef}
-                className={cn(
-                    "text-style-textblock-primary-subtext-regular text-color-color-text-neutral-default",
-                    !expanded && "line-clamp-3"
-                )}>
-                {description}
-            </p>
-
-
+            {/* Read more */}
             <div className="flex items-center gap-2">
                 {showReadMore && (
                     <Label
@@ -95,10 +95,11 @@ export function ActResultTile({
                             e.stopPropagation();
                             setExpanded(!expanded);
                         }}
+
                     >
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-[6px]">
                             {expanded ? "Show less" : "Read more"}
-                            <IconButton icon="arrow-down-a" variant="neutral" boundary="stroked" corner="rounded" size="medium" className={cn("w-3 h-3 transition-transform duration-200 bg-transparent", expanded && "rotate-180")} />
+                            <Icon name="arrow-down-c" className={cn("h-[13px] w-[13px] transition-transform duration-200 bg-transparent text-label-color-neutral-text", expanded && "rotate-180")} />
                         </span>
                     </Label>
                 )}

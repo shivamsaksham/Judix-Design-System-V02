@@ -24,22 +24,20 @@ export function CitationData({ data, className }: CitationDataProps) {
   ];
 
   return (
-    <div className={cn("w-full max-w-4xl bg-color-surface-neutral-default p-2", className)}>
-      <Card className="rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0">
-        <CardContent>
-          {rows.map((row, index) => (
-            <TableRow
-              key={index}
-              columns={[
-                { content: row.label, minWidth: "min-w-[205px]" },
-                { content: row.value, minWidth: "min-w-[437px]" }
-              ]}
-              isLast={index === rows.length - 1}
-            />
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+    <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full m-2", className)}>
+      <CardContent>
+        {rows.map((row, index) => (
+          <TableRow
+            key={index}
+            columns={[
+              { content: row.label, minWidth: "min-w-[205px]" },
+              { content: row.value, minWidth: "min-w-[437px]" }
+            ]}
+            isLast={index === rows.length - 1}
+          />
+        ))}
+      </CardContent>
+    </Card>
   );
 }
 

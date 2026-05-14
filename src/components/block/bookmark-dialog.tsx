@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "@judix/icon";
+import { IconButton } from "../ui";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
@@ -100,18 +100,19 @@ function BookmarkDialog({
                 className={cn("sm:max-w-[480px] p-6 rounded-2xl gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
-                <DialogHeader className="flex-row items-center gap-2">
-                    <Icon
-                        name="document-text-a"
-                        className="h-5 w-5 text-icon_button-color-primary-icon"
-                    />
-                    <DialogTitle className="text-style-body-title-regular">Bookmark</DialogTitle>
+                <DialogHeader className="flex-row items-center gap-1">
+                    <IconButton
+                        icon="bookmark-a"
+                        size='medium'
+                        className="h-[34px] w-9 "
+                    >
+                    </IconButton>
+                    <DialogTitle className="p-1 text-style-body-title-regular">Bookmark</DialogTitle>
                 </DialogHeader>
 
                 <div className="flex flex-col gap-2">
                     <div className="relative" ref={dropdownRef}>
                         <TextInput
-
                             inputSize="medium"
                             ref={inputRef}
                             label=""
@@ -150,8 +151,8 @@ function BookmarkDialog({
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-style-label-default-regular text-color-text-neutral-secondary">
+                    <div className="flex flex-col gap-1">
+                        <span className="p-1 text-style-label-default-regular text-color-text-neutral-default">
                             Recent projects
                         </span>
                         <div className="flex flex-wrap gap-2">
@@ -173,10 +174,10 @@ function BookmarkDialog({
                 </div>
 
 
-                <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-between sm:space-x-0 gap-3 sm:gap-0">
+                <DialogFooter className="flex-col-reverse mt-2 sm:flex-row sm:justify-between sm:space-x-0 gap-3 sm:gap-0">
                     <Button
                         variant="neutral"
-                        size="medium"
+                        size="small"
                         onClick={onCreateNewProject}
                         className="p-2 rounded-lg text-style-body-default-regular"
                     >
@@ -185,7 +186,7 @@ function BookmarkDialog({
                     <div className="flex items-center gap-2 self-end sm:self-auto">
                         <Button
                             variant="neutral"
-                            size="medium"
+                            size="small"
                             onClick={() => onOpenChange(false)}
                             className="h-auto text-style-body-default-regular"
                         >
@@ -193,7 +194,7 @@ function BookmarkDialog({
                         </Button>
                         <Button
                             variant="primary"
-                            size="medium"
+                            size="small"
                             onClick={handleSave}
                             disabled={selectedProjects.length === 0}
                             className="h-auto"

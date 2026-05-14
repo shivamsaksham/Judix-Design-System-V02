@@ -93,7 +93,7 @@ export const Default: Story = {
     },
     args: {
         data: generateMockData(),
-        className: "w-[342px] max-h-[660px] overflow-y-auto",
+        className: "w-[342px] overflow-y-auto",
     },
 };
 
@@ -114,7 +114,7 @@ export const SelectedItem: Story = {
     args: {
         data: generateMockData(),
         activeId: "proj1-chat-1",
-        className: "w-[400px] h-[600px]  rounded-xl",
+        className: "w-[400px] rounded-xl",
     },
 };
 
@@ -147,6 +147,6 @@ export const FolderAndFileSelected: Story = {
     args: {
         data: generateMockData(),
         activeIds: ["project-1", "project-1-chat-1"],
-        className: "w-[400px] h-[600px] rounded-xl",
+        className: "w-[400px] rounded-xl",
     },
 };

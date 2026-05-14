@@ -8,6 +8,7 @@ import { Dropdown } from "@/components/ui/dropdown";
 import { useFloating, offset, flip, shift, autoUpdate, useDismiss, useInteractions } from "@floating-ui/react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import { TextInput } from "@/components/ui/text-input";
 
 export interface FileBarProps {
     data: FileTreeNodeType[];
@@ -41,6 +42,7 @@ export function FileBar({
     onCancelEdit,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const { refs, floatingStyles, context } = useFloating({
         placement: "bottom-start",
@@ -71,8 +73,8 @@ export function FileBar({
 
     return (
         <div className={cn("flex flex-col w-full h-full bg-color-surface-neutral-default", className)}>
-            <div className="flex items-center justify-between px-3 py-2 border-b border-color-border-neutral-default shrink-0">
-                <span className="text-style-body-title-regular text-color-text-neutral-default">
+            <div className="flex items-center justify-between py-1 shrink-0 border-b -my-[1px] border-color-border-neutral-default">
+                <span className="p-1 text-style-body-title-regular text-color-text-neutral-default">
                     My Files
                 </span>
                 <div className="flex items-center gap-1">
@@ -106,6 +108,15 @@ export function FileBar({
                         disabled={!activeId}
                     />
                 </div>
+            </div>
+            <div className="px-3 pb-3">
+                <TextInput
+                    inputSize="small"
+                    placeholder="Search in here"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-color-surface-neutral-default mt-2 h-[42px]"
+                />
             </div>
 
             <div className="flex-1 min-h-0">

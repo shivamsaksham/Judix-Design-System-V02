@@ -19,18 +19,23 @@ const optionVariants = cva(
       shape: {
         rounded: "rounded-option-border-radius-default",
         sharp: "rounded-none",
+      },
+      variant: {
+        default: "",
+        primary: "text-color-text-primary-default hover:text-color-text-primary-default",
       }
     },
     defaultVariants: {
       shape: "rounded",
+      variant: "default",
     },
   }
 )
 
 export interface OptionProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title">,
   VariantProps<typeof optionVariants> {
-  title: string
+  title: React.ReactNode
   subtext?: React.ReactNode
   selected?: boolean
   highlighted?: boolean
@@ -40,23 +45,23 @@ export interface OptionProps
 }
 
 const Option = React.forwardRef<HTMLDivElement, OptionProps>(
-  ({ className, selected, highlighted, disabled, shape, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
+  ({ className, selected, highlighted, disabled, shape, variant, title, subtext, prefixSlot, suffixSlot, ...props }, ref) => {
     return (
       <div
-        className={cn(optionVariants({ selected, highlighted, disabled, shape, className }))}
+        className={cn(optionVariants({ selected, highlighted, disabled, shape, variant, className }))}
         ref={ref}
         {...props}
       >
 
 
-        <div className="grow flex flex-row justify-between">
-          <div className="flex items-start gap-2">
+        <div className="grow flex flex-row justify-between items-center">
+          <div className="flex items-center gap-1">
             {prefixSlot &&
-              <div className="text-color-icon-neutral-default w-6 h-6 shrink-0 flex items-center justify-center">
+              <div className="w-6 h-6 shrink-0 flex items-center justify-center">
                 {prefixSlot}
               </div>
             }
-            <div className="option-font-title text-style-font-heading-heading-6 pt-0.5">
+            <div className={cn("p-1", variant === "primary" ? "text-style-body-default-emphasis" : "option-font-title")}>
               {title}
             </div>
           </div>
@@ -66,7 +71,7 @@ const Option = React.forwardRef<HTMLDivElement, OptionProps>(
             </div>
           }
         </div>
-        {subtext && <div className="text-option-color-subtext option-font-subtext px-1 pb-1 ml-8">{subtext}</div>}
+        {subtext && <div className="text-option-color-subtext option-font-subtext p-1">{subtext}</div>}
 
       </div>
     )

@@ -50,22 +50,19 @@ export const ContextWindowInfo = ({ onCloseClick, className }: ContextWindowInfo
                 className
             )}
         >
-            {/* Title with Icon */}
-            <div className="flex items-center justify-between gap-2 mb-6">
-                <h2 className="w-fit p-1 text-style-body-title-regular text-color-text-neutral-default">
+            <div className="flex items-center justify-between gap-2 mb-6 w-full">
+                <h2 className="text-left p-1 text-style-body-title-regular text-color-text-neutral-default">
                     Context Window
                 </h2>
-                {onCloseClick && (
-                    <Button
-                        onClick={onCloseClick}
-                        variant="neutral"
-                        size="small"
-                        prefixIcon="cross"
-                        className="border-none p-1 h-fit bg-color-surface-neutral-default"
-                        iconClassName="w-5 h-5 my-[3px] p-[4.17px] relative text-color-icon-neutral-tertiary"
-                        aria-label="Close"
-                    />
-                )}
+                <Button
+                    onClick={onCloseClick}
+                    variant="neutral"
+                    size="small"
+                    prefixIcon="cross"
+                    className="border-none p-0 h-fit bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg"
+                    iconClassName="w-5 h-5 relative text-color-icon-neutral-tertiary"
+                    aria-label="Close"
+                />
             </div>
 
             {/* Description */}
