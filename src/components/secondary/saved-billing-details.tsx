@@ -3,6 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { IconButton } from '../ui/icon-button';
+import Confirmation from '../block/confirmation';
 
 export interface SavedBillingDetailsProps {
     name: string;
@@ -27,6 +28,8 @@ export const SavedBillingDetails = ({
     onClick,
     className,
 }: SavedBillingDetailsProps) => {
+    const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+
     return (
         <div
             onClick={onClick}
@@ -77,17 +80,31 @@ export const SavedBillingDetails = ({
                     />
                 )}
                 {onDelete && (
-                    <IconButton
-                        icon="trash"
-                        variant="primary"
-                        size="medium"
-                        corner="sharp"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onDelete(e);
+                    <Confirmation
+                        open={showDeleteConfirm}
+                        onOpenChange={setShowDeleteConfirm}
+                        mainText="Delete Billing Address"
+                        subText="Are you sure you want to delete this billing address?"
+                        confirmVariant="destructive"
+                        confirmText="Delete"
+                        onConfirmClick={() => {
+                            onDelete({ stopPropagation: () => {} } as any);
+                            setShowDeleteConfirm(false);
                         }}
-                        className="bg-transparent hover:bg-color-surface-neutral-hover_mild"
-                    />
+                        onCancelClick={() => setShowDeleteConfirm(false)}
+                    >
+                        <IconButton
+                            icon="trash"
+                            variant="primary"
+                            size="medium"
+                            corner="sharp"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowDeleteConfirm(true);
+                            }}
+                            className="bg-transparent hover:bg-color-surface-neutral-hover_mild"
+                        />
+                    </Confirmation>
                 )}
             </div>
         </div>

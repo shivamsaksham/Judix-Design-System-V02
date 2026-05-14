@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
+import Confirmation from "@/components/block/confirmation"
 
 export interface UsageMetric {
   label: string
@@ -86,6 +87,7 @@ export function Subscription({
   onCancelSubscription,
   className,
 }: SubscriptionProps) {
+  const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
   return (
     <div className={cn("w-full pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
       {/* Header */}
@@ -167,9 +169,23 @@ export function Subscription({
             This will cancel your current subscription and move to the free plan in the next billing cycle.
           </p>
         </div>
-        <Button variant="destructive" size="extraSmall" onClick={onCancelSubscription}>
-          Cancel
-        </Button>
+        <Confirmation
+          open={showCancelConfirm}
+          onOpenChange={setShowCancelConfirm}
+          mainText="Cancel Subscription"
+          subText="Are you sure you want to cancel your subscription? This will move you to the free plan in the next billing cycle."
+          confirmVariant="destructive"
+          confirmText="Cancel Subscription"
+          onConfirmClick={() => {
+            onCancelSubscription?.()
+            setShowCancelConfirm(false)
+          }}
+          onCancelClick={() => setShowCancelConfirm(false)}
+        >
+          <Button variant="destructive" size="extraSmall">
+            Cancel
+          </Button>
+        </Confirmation>
       </div>
 
       {/* Footer Support */}

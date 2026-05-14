@@ -68,7 +68,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
-            className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-6 right-6 rounded-lg opacity-70 transition-all hover:opacity-100 hover:bg-color-surface-neutral-hover_default p-1 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none z-[110] cursor-pointer"
+            className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-6 right-6 rounded-lg opacity-70 transition-all hover:opacity-100 hover:bg-color-surface-neutral-hover_default p-1 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none z-110 cursor-pointer"
           >
             <Icon name="cross" className="w-5 h-5" />
             <span className="sr-only">Close</span>

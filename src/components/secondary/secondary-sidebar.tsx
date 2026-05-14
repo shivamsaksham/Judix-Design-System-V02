@@ -5,6 +5,7 @@ import { Icon } from "@judix/icon"
 import { cn } from "@/lib/utils"
 import { Option } from "@/components/ui/option"
 import { Separator } from "@/components/ui/separator"
+import Confirmation from "@/components/block/confirmation"
 
 export interface SidebarItem {
   id: string
@@ -31,7 +32,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { id: "subscription", label: "Subscriptions", icon: "refresh-a", section: "subscriptions" },
   
   // Help & Support
-  { id: "helpdesk", label: "Helpdesk", icon: "call", section: "support" },
+  { id: "contact-us", label: "Contact us", icon: "call", section: "support" },
   { id: "how-to-use", label: "How to use Judix?", icon: "video-square", section: "support" },
   { id: "refer", label: "Refer and earn", icon: "user", section: "support" },
 ]
@@ -42,6 +43,8 @@ export function SecondarySidebar({
   onLogout,
   className,
 }: SecondarySidebarProps) {
+  const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false)
+
   const renderSection = (section: SidebarItem["section"], title?: string) => {
     const items = SIDEBAR_ITEMS.filter((item) => item.section === section)
     
@@ -84,18 +87,30 @@ export function SecondarySidebar({
       
       <div className="flex flex-col gap-2">
         <Separator className="bg-color-border-neutral-default" />
-        <Option
-          title={<span className="text-color-text-feedback-error-default font-medium">Logout</span>}
-          onClick={onLogout}
-          prefixSlot={
-            <Icon 
-              name="logout-b" 
-              size={20} 
-              className="text-color-text-feedback-error-default" 
-            />
-          }
-          className="h-10"
-        />
+        <Confirmation
+          open={showLogoutConfirm}
+          onOpenChange={setShowLogoutConfirm}
+          mainText="Logout"
+          subText="Are you sure you want to logout from Judix?"
+          confirmText="Logout"
+          onConfirmClick={() => {
+            onLogout?.()
+            setShowLogoutConfirm(false)
+          }}
+          onCancelClick={() => setShowLogoutConfirm(false)}
+        >
+          <Option
+            title={<span className="text-color-text-feedback-error-default font-medium">Logout</span>}
+            prefixSlot={
+              <Icon 
+                name="logout-b" 
+                size={20} 
+                className="text-color-text-feedback-error-default" 
+              />
+            }
+            className="h-10"
+          />
+        </Confirmation>
       </div>
     </div>
   )
