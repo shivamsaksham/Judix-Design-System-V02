@@ -59,7 +59,6 @@ function RenameDialog({
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Existing name"
-                        autoFocus
                         className="bg-color-textinput-bg [&_input]:h-8"
                     />
                 </div>

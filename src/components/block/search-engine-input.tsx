@@ -357,12 +357,6 @@ function SearchEngineInput({
     const CENTER_HEIGHT = 78;
     const BOTTOM_HEIGHT = 48;
 
-    React.useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.focus();
-        }
-    }, []);
-
     const { refs, floatingStyles, context } = useFloating({
         placement: activeDropdown === "trigger" ? "top-start" : "bottom-start",
         whileElementsMounted: autoUpdate,

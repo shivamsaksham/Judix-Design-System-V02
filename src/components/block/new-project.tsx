@@ -128,12 +128,15 @@ export const NewProject = ({
                 {/* Title Input */}
                 <input
                     type="text"
+                    autoFocus
                     value={title}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder={titlePlaceholder}
                     autoComplete='off'
-                    autoFocus
-                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none"
+                    className={cn(
+                        "w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none",
+                        title ? "text-color-text-neutral-default" : "text-color-text-neutral-disabled"
+                    )}
                 />
 
                 {/* Description Input */}

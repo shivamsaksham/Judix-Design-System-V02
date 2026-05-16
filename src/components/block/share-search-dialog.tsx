@@ -158,7 +158,6 @@ function ShareSearchDialog({
                                 value={emailInput}
                                 onChange={handleEmailChange}
                                 onKeyDown={handleKeyDown}
-                                autoFocus
                                 trailingAccessory={
                                     <IconButton
                                         icon="send-a"
