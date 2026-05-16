@@ -40,6 +40,11 @@ export interface HistorySidebarProps {
     onProjects?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
+    onAccount?: () => void;
+    onSubscriptions?: () => void;
+    onRefer?: () => void;
+    onHelp?: () => void;
+    onLogout?: () => void;
     onSettings?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
@@ -63,6 +68,11 @@ export const HistorySidebar = ({
     onResetChat,
     onUpgrade,
     onSettings,
+    onAccount,
+    onSubscriptions,
+    onRefer,
+    onHelp,
+    onLogout,
     onRename,
     // onShare,
     onMove,
@@ -226,7 +236,7 @@ export const HistorySidebar = ({
                         <span className=" p-1 
                                         text-style-body-default-regular
                                         text-color-text-neutral-default">Usage</span>
-                        <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
+                        {/* <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" /> */}
                     </div>
                     <div className="w-full 
                                     bg-button-color-neutral-disabled-stroke 
@@ -319,7 +329,7 @@ export const HistorySidebar = ({
 
                             onAccount={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('My Account clicked');
+                                onAccount?.();
                             }}
                             onProjects={() => {
                                 setIsUserMenuOpen(false);
@@ -327,7 +337,7 @@ export const HistorySidebar = ({
                             }}
                             onSubscriptions={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Subscriptions clicked');
+                                onSubscriptions?.();
                             }}
                             onSettings={() => {
                                 setIsUserMenuOpen(false);
@@ -336,15 +346,15 @@ export const HistorySidebar = ({
                             }}
                             onRefer={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Refer and Earn clicked');
+                                onRefer?.();
                             }}
                             onHelp={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Help & Support clicked');
+                                onHelp?.();
                             }}
                             onLogout={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Logout clicked');
+                                onLogout?.();
                             }}
                         />
                     </div>

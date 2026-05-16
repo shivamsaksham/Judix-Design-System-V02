@@ -357,6 +357,12 @@ function SearchEngineInput({
     const CENTER_HEIGHT = 78;
     const BOTTOM_HEIGHT = 48;
 
+    React.useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.focus();
+        }
+    }, []);
+
     const { refs, floatingStyles, context } = useFloating({
         placement: activeDropdown === "trigger" ? "top-start" : "bottom-start",
         whileElementsMounted: autoUpdate,
@@ -1612,18 +1618,20 @@ function SearchEngineInput({
                                 <span className="hidden sm:inline text-style-body-default-regular">Filters</span>
                             </IconButton>
 
-                            <IconButton
-                                onClick={handleImprove}
-                                variant="neutral"
-                                icon="flash-a"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
-                            >
-                                <Icon name="flash-a" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
-                            </IconButton>
+                            {input.trim().split(/\s+/).filter(Boolean).length > 10 && (
+                                <IconButton
+                                    onClick={handleImprove}
+                                    variant="neutral"
+                                    icon="flash-a"
+                                    size="medium"
+                                    corner="sharp"
+                                    boundary="stroked"
+                                    className="w-fit px-2 gap-1.5 sm:border-none"
+                                >
+                                    <Icon name="flash-a" className="w-4 h-4" />
+                                    <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
+                                </IconButton>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">

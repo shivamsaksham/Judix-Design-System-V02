@@ -26,7 +26,7 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
 
             {/* Scrollable Content */}
             <div
-                className="flex-1 overflow-y-auto p-1"
+                className="flex-1 overflow-y-auto no-scrollbar p-1"
             >
                 {chatHistory.map((chat) => (
                     <HistoryTile

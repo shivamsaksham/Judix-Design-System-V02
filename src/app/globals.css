@@ -579,6 +579,14 @@
   border-width: var(--textinput-border-weight-default);
 }
 
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Test Styles Semantics */
 @utility text-style-chat-heading-main {
   font-family: var(--font-family-brandprimary);
