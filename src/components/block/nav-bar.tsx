@@ -38,14 +38,24 @@ export interface NavBarProps {
 /**
  * Shared Logo Component
  */
-const NavLogo = ({ isMobile }: { isMobile: boolean }) => (
+const NavLogo = () => (
     <Link href="/">
         <div className="flex items-center cursor-pointer">
             <Image
-                src={isMobile ? "/mobile-logo.svg" : "/logo.svg"}
+                src="/logo.svg"
                 alt="Logo"
-                width={isMobile ? 32 : 92}
+                width={92}
                 height={32}
+                className="hidden md:block"
+                priority
+            />
+            <Image
+                src="/mobile-logo.svg"
+                alt="Logo"
+                width={32}
+                height={32}
+                className="block md:hidden"
+                priority
             />
         </div>
     </Link>
@@ -246,7 +256,7 @@ export function NavBar({
                 <>
                     <div className="flex items-center gap-2">
                         {renderMobileSidebarTrigger()}
-                        <NavLogo isMobile={isMobile} />
+                        <NavLogo />
                     </div>
                     <BackToResearchButton onClick={onBackToResearch} />
                 </>
@@ -256,7 +266,7 @@ export function NavBar({
                 <>
                     <div className="flex items-center gap-2">
                         {renderMobileSidebarTrigger()}
-                        <NavLogo isMobile={isMobile} />
+                        <NavLogo />
                     </div>
                     <div className="flex items-center gap-2">
                         <BackToResearchButton onClick={onBackToResearch} />
@@ -283,7 +293,7 @@ export function NavBar({
                         <div className="flex items-center justify-between w-full">
                             <div className="flex items-center gap-2">
                                 {renderMobileSidebarTrigger()}
-                                <Image src="/mobile-logo.svg" alt="Logo" width={32} height={32} />
+                                <NavLogo />
                             </div>
                             <div className="flex items-center gap-3">
                                 {onBackToResearch && <BackToResearchButton onClick={onBackToResearch} />}
@@ -305,7 +315,7 @@ export function NavBar({
                         <div className="flex items-center justify-between w-full my-1">
                             <div className="flex items-center gap-2">
                                 {renderMobileSidebarTrigger()}
-                                <NavLogo isMobile={isMobile} />
+                                <NavLogo />
                             </div>
 
                             {isResultPanelOpen && (
