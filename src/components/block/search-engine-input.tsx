@@ -209,6 +209,9 @@ interface SearchEngineInputProps {
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
+    artifacts?: { id: string, title: string, type: 'file' | 'text' }[];
+    onUpload?: (files: File[]) => void;
+    onAddText?: (title: string, content: string) => void;
 }
 
 function SearchEngineInput({
@@ -231,6 +234,9 @@ function SearchEngineInput({
     modelName: propModelName = "Judix Default",
     projects = [],
     showProjectSelector = true,
+    artifacts = [],
+    onUpload,
+    onAddText,
 }: SearchEngineInputProps) {
     const TRIGGER_CONFIG = triggers;
 
@@ -240,6 +246,7 @@ function SearchEngineInput({
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [uploadFiles, setUploadFiles] = useState<File[]>([]);
     const [modelName, setModelName] = useState(propModelName);
 
     const effectiveSelectedCourts =
@@ -1629,15 +1636,7 @@ function SearchEngineInput({
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
-                            {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
-                                <Button
-                                    size="extraSmall"
-                                    variant="neutral"
-                                    className="hidden md:inline-flex text-color-text-primary-default border-color-surface-primary-default"
-                                >
-                                    Enhance Query
-                                </Button>
-                            )}
+
                             <IconButton
                                 onClick={isLoading ? onStop : handleSubmit}
                                 variant={isLoading ? "neutral" : "primary"}
@@ -1663,7 +1662,10 @@ function SearchEngineInput({
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
                 <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]" showCloseButton={false}>
                     <AddToContext
-                        onSave={() => setIsContextDialogOpen(false)}
+                        onSave={(title, content) => {
+                            onAddText?.(title, content);
+                            setIsContextDialogOpen(false);
+                        }}
                         onCancel={() => setIsContextDialogOpen(false)}
                         onClose={() => setIsContextDialogOpen(false)}
                     />
@@ -1673,9 +1675,26 @@ function SearchEngineInput({
             {/* Upload document dialog */}
             <AddDocumentDialog 
                 open={isUploadDialogOpen} 
-                onOpenChange={setIsUploadDialogOpen}
-                onCancelClick={() => setIsUploadDialogOpen(false)}
-                onUploadClick={() => setIsUploadDialogOpen(false)}
+                onOpenChange={(open) => {
+                    setIsUploadDialogOpen(open);
+                    if (!open) setUploadFiles([]);
+                }}
+                files={uploadFiles.map((f, i) => ({
+                    fileName: f.name,
+                    fileSize: (f.size / 1024 / 1024).toFixed(2) + ' MB',
+                    state: 'processed',
+                    onRemove: () => setUploadFiles(prev => prev.filter((_, idx) => idx !== i))
+                }))}
+                onFilesSelected={(files) => setUploadFiles(prev => [...prev, ...files])}
+                onCancelClick={() => {
+                    setUploadFiles([]);
+                    setIsUploadDialogOpen(false);
+                }}
+                onUploadClick={() => {
+                    onUpload?.(uploadFiles);
+                    setUploadFiles([]);
+                    setIsUploadDialogOpen(false);
+                }}
             />
 
             {/* Invisible anchor for predictive suggestion chip positioning */}

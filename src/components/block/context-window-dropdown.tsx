@@ -127,18 +127,20 @@ export default function ContextWindowDropdown({
                     }}
                     disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
                     prefixSlot={
-                        <Checkbox
-                            id="session-context"
-                            checked={isSessionContextChecked}
-                            onCheckedChange={() => {
-                                const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
-                                const isLimitReached = checkedCount >= 10;
-                                if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
-                                    handleSessionContextToggleInternal(!isSessionContextChecked);
-                                }
-                            }}
-                            disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
-                        />
+                        <span onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                                id="session-context"
+                                checked={isSessionContextChecked}
+                                onCheckedChange={() => {
+                                    const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
+                                    const isLimitReached = checkedCount >= 10;
+                                    if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
+                                        handleSessionContextToggleInternal(!isSessionContextChecked);
+                                    }
+                                }}
+                                disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
+                            />
+                        </span>
                     }
                 />
                 {items.map((item) => {
@@ -154,12 +156,14 @@ export default function ContextWindowDropdown({
                             onClick={() => !isDisabled && handleItemCheck(item.id, !item.checked)}
                             disabled={isDisabled}
                             prefixSlot={
-                                <Checkbox
-                                    id={item.id}
-                                    checked={item.checked}
-                                    onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
-                                    disabled={isDisabled}
-                                />
+                                <span onClick={(e) => e.stopPropagation()}>
+                                    <Checkbox
+                                        id={item.id}
+                                        checked={item.checked}
+                                        onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                                        disabled={isDisabled}
+                                    />
+                                </span>
                             }
                         />
                     );

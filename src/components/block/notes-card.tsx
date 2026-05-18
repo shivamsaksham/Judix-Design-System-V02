@@ -387,7 +387,7 @@ export function NotesCard({
                                             </Popover>
                                         </div>
 
-                                        <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Tooltip>
@@ -433,7 +433,7 @@ export function NotesCard({
                                             </Tooltip>
                                         </div>
 
-                                        <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Tooltip>
@@ -493,7 +493,7 @@ export function NotesCard({
                                             </Tooltip>
                                         </div>
 
-                                        <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Tooltip>
@@ -536,7 +536,7 @@ export function NotesCard({
                                             />
                                         </div>
 
-                                        <Separator orientation="vertical" className="!h-6 bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
 
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Tooltip>
