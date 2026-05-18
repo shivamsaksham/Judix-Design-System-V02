@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Button, IconButton, Popover, PopoverContent, PopoverTrigger } from '@/components/ui';
+import { IconButton, Popover, PopoverContent, PopoverTrigger } from '@/components/ui';
+import { Label } from '@/components/ui/label';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { Icon } from '@judix/icon';
 
@@ -43,7 +44,7 @@ export default function Breadcrumb({
     const outerClasses = 'w-full items-center';
 
     const innerClasses = cn(
-        'flex justify-start items-center gap-x-2 pl-2 pr-4 py-2 bg-color-surface-neutral-subtle_bg rounded-lg h-auto w-full'
+        'flex flex-col md:flex-row justify-start items-start md:items-center gap-3 md:gap-x-2 pl-3 pr-4 py-3 bg-color-surface-neutral-subtle_bg rounded-lg h-auto w-full'
     );
 
     const isChatOrNote = items.some(item =>
@@ -91,23 +92,27 @@ export default function Breadcrumb({
 
     const currentOptions = options.length > 0 ? options : filteredMenuActions;
 
+    const parentItems = items.slice(0, items.length - 1);
+    const activeItem = items[items.length - 1];
+
     return (
-        //Chat History Menu is used here to use w-full of the parent which is not available for the dropdown component
         <div className={cn(outerClasses, className)}>
-            <div className={innerClasses}>
+            {/* Desktop Layout */}
+            <div className={cn(innerClasses, "hidden md:flex")}>
                 {onUseProject && (
-                    <div className="flex justify-start items-center shrink-0">
-                        <Button
-                            variant="neutral"
+                    <div className="flex justify-start items-center shrink-0 order-2 md:order-0 cursor-pointer">
+                        <Label
+                            colorScheme="neutral"
                             size="medium"
+                            className="cursor-pointer"
                             onClick={onUseProject}
                         >
                             {buttonLabel}
-                        </Button>
+                        </Label>
                     </div>
                 )}
 
-                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-2">
+                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-2 order-1 md:order-0 w-full md:w-auto">
                     {items.map((item, index) => (
                         <React.Fragment key={item.id}>
                             <div
@@ -158,6 +163,64 @@ export default function Breadcrumb({
                                     />
                                 </PopoverContent>
                             </Popover>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Mobile Layout */}
+            <div className="flex md:hidden flex-col w-full md:gap-2 pl-4 pr-4 py-3 bg-color-surface-neutral-subtle_bg rounded-lg">
+                <div className="flex flex-wrap items-center text-style-body-default-regular text-color-text-neutral-secondary">
+                    {parentItems.map((item) => (
+                        <React.Fragment key={item.id}>
+                            <span 
+                                onClick={item.onClick} 
+                                className="p-1 cursor-pointer hover:text-color-text-neutral-default hover:underline"
+                            >
+                                {item.label}
+                            </span>
+                            <span className="p-1 text-color-text-neutral-placeholder">/</span>
+                        </React.Fragment>
+                    ))}
+                </div>
+
+                <div className="flex items-center gap-2 w-full">
+                    {activeItem && (
+                        <div className="flex-1 min-w-0">
+                            {showDropdown ? (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <button className="flex items-center justify-between text-style-body-default-regular text-color-text-neutral-secondary hover:opacity-85 active:opacity-70 focus:outline-none w-full p-1">
+                                            <span className="truncate max-w-[calc(100vw-120px)]">{activeItem.label}</span>
+                                            <Icon name="arrow-down-c" className="w-4 h-4 shrink-0 text-color-icon-neutral-secondary" />
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 w-fit border-none bg-transparent shadow-none" align="start">
+                                        <ChatHistoryMenu
+                                            items={currentOptions.map(opt => ({
+                                                id: opt.value,
+                                                label: opt.title || '',
+                                                icon: opt.iconName ? (
+                                                    <Icon 
+                                                        name={opt.iconName as any} 
+                                                        className={opt.iconName === 'folder-a' ? 'text-color-icon-neutral-default' : ''} 
+                                                    />
+                                                ) : undefined,
+                                                dividerAfter: opt.dividerAfter,
+                                                variant: opt.variant as "default" | "danger" | undefined,
+                                                onClick: () => {
+                                                    onHistorySelect?.(opt.value);
+                                                }
+                                            }))}
+                                            className="w-[216px]"
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            ) : (
+                                <span className="p-1 text-style-body-default-regular text-color-text-neutral-secondary truncate block">
+                                    {activeItem.label}
+                                </span>
+                            )}
                         </div>
                     )}
                 </div>

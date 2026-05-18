@@ -19,6 +19,7 @@ export interface GlobalContextManagementProps {
     initialContextFiles?: ContextFile[];
     onContextChange?: (files: ContextFile[]) => void;
     className?: string;
+    disabled?: boolean;
 }
 
 export const GlobalContextManagement = ({
@@ -26,6 +27,7 @@ export const GlobalContextManagement = ({
     initialContextFiles = [],
     onContextChange,
     className,
+    disabled = false,
 }: GlobalContextManagementProps) => {
     const [contextFiles, setContextFiles] = useState<ContextFile[]>(initialContextFiles);
     const [showModal, setShowModal] = useState(false);
@@ -33,6 +35,11 @@ export const GlobalContextManagement = ({
     const [selectedContext, setSelectedContext] = useState<{ title: string; content: string } | null>(null);
     const [deletingTitle, setDeletingTitle] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+
+    // Sync local state when changing projects/context files
+    React.useEffect(() => {
+        setContextFiles(initialContextFiles);
+    }, [initialContextFiles]);
 
     const hasContext = contextFiles.length > 0;
 
@@ -42,6 +49,7 @@ export const GlobalContextManagement = ({
     // };
 
     const handleAddClick = () => {
+        if (disabled) return;
         setSelectedContext({ title: '', content: '' });
         setShowModal(true);
     };
@@ -117,6 +125,7 @@ export const GlobalContextManagement = ({
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
+        if (disabled) return;
         setIsDragging(true);
     };
 
@@ -128,6 +137,7 @@ export const GlobalContextManagement = ({
     const handleDrop = async (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
+        if (disabled) return;
 
         const files = Array.from(e.dataTransfer.files);
         if (files.length === 0) return;
@@ -180,12 +190,12 @@ export const GlobalContextManagement = ({
                     /* Empty State */
                     <button
                         onClick={handleAddClick}
+                        disabled={disabled}
                         className={cn(
                             'w-full p-4 min-h-[176px] rounded-label-border-radius-default border border-color-border-neutral-default bg-color-surface-neutral-default',
                             'flex items-center justify-center',
                             'transition-all duration-200',
-                            'hover:bg-color-surface-neutral-hover_default',
-                            'cursor-pointer '
+                            disabled ? 'opacity-60 cursor-not-allowed' : 'hover:bg-color-surface-neutral-hover_default cursor-pointer'
                         )}
                     >
                         {/* Centered Container with Icon and Text */}
@@ -219,26 +229,28 @@ export const GlobalContextManagement = ({
                                 >
                                     <GlobalContext
                                         {...file}
-                                        onEdit={() => handleEdit(file.title)}
-                                        onDelete={() => handleDelete(file.title)}
+                                        onEdit={disabled ? undefined : () => handleEdit(file.title)}
+                                        onDelete={disabled ? undefined : () => handleDelete(file.title)}
                                     />
                                 </div>
                             ))}
 
                             {/* Add Button */}
-                            <Button
-                                onClick={handleAddClick}
-                                variant="neutral"
-                                size="small"
-                                prefixIcon="add"
-                                className={cn(
-                                    'p-2 w-fit rounded-button-border-radius-default border',
-                                    'border-color-border-neutral-default bg-color-surface-neutral-default',
-                                    'flex items-center justify-center',
-                                    'hover:border-color-border-primary-default hover:bg-color-surface-neutral-hover_default'
-                                )}
-                                iconClassName="w-6 h-6 text-icon_button-color-neutral-icon"
-                            />
+                            {!disabled && (
+                                <Button
+                                    onClick={handleAddClick}
+                                    variant="neutral"
+                                    size="small"
+                                    prefixIcon="add"
+                                    className={cn(
+                                        'p-2 w-fit rounded-button-border-radius-default border',
+                                        'border-color-border-neutral-default bg-color-surface-neutral-default',
+                                        'flex items-center justify-center',
+                                        'hover:border-color-border-primary-default hover:bg-color-surface-neutral-hover_default'
+                                    )}
+                                    iconClassName="w-6 h-6 text-icon_button-color-neutral-icon"
+                                />
+                            )}
                         </div>
                     </div>
                 )}

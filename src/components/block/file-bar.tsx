@@ -73,7 +73,7 @@ export function FileBar({
 
     return (
         <div className={cn("flex flex-col w-full h-full bg-color-surface-neutral-default", className)}>
-            <div className="flex items-center justify-between py-1 shrink-0 border-b -my-[1px] border-color-border-neutral-default">
+            <div className="flex items-center justify-between py-1 shrink-0 border-b -my-px border-color-border-neutral-default">
                 <span className="p-1 text-style-body-title-regular text-color-text-neutral-default">
                     My Files
                 </span>

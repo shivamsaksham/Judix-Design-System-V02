@@ -280,7 +280,7 @@ export function NotesCard({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="flex flex-col h-full w-full gap-4"
+                            className={cn("flex flex-col h-full w-full", isEmbedded ? "gap-2" : "gap-4")}
                         >
                             {!isEmbedded && (
                                 <div className="flex items-center justify-between shrink-0">
@@ -325,7 +325,7 @@ export function NotesCard({
                                 </div>
                             )}
 
-                            <div className="flex flex-1 min-h-0 gap-4">
+                            <div className={cn("flex flex-1 min-h-0", isEmbedded ? "gap-2" : "gap-4")}>
                                 {showSidebar && (
                                     <>
                                         <div className="w-[240px] flex flex-col shrink-0">
@@ -358,8 +358,10 @@ export function NotesCard({
 
                                 <div className="flex-1 flex flex-col min-w-0x">
                                     <div className={cn(
-                                        "flex items-center h-auto min-h-[34px] shrink-0 gap-y-2 justify-between flex-wrap",
-                                        isEmbedded ? "w-full px-6" : "w-full max-w-[720px] px-0"
+                                        "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap",
+                                        isEmbedded 
+                                            ? "w-full justify-start gap-2" 
+                                            : "w-full max-w-[720px] px-0 justify-between gap-y-2"
                                     )}>
                                         <div className="flex items-center gap-1 shrink-0">
                                             <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
@@ -571,8 +573,8 @@ export function NotesCard({
                                     </div>
 
                                     <div className={cn(
-                                        "flex items-center justify-end py-3 gap-3 shrink-0",
-                                        isEmbedded ? "w-full px-6" : "w-[720px] px-0"
+                                        "flex items-center justify-end py-3 shrink-0",
+                                        isEmbedded ? "w-full px-6 gap-2" : "w-[720px] px-0 gap-3"
                                     )}>
                                         <Button variant="neutral" onClick={() => { setIsEnlargeOpen(false); onCancel?.(); }} size="small">Cancel</Button>
                                         <Button variant="primary" onClick={() => { setIsEnlargeOpen(false); onSave?.(noteContent); }} size="small">Save</Button>
