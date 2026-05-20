@@ -6,7 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ContextWindowInfo } from './context-window-info';
 import { Option } from '@/components/ui/option';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export interface ContextItem {
     id: string;
@@ -175,6 +175,7 @@ export default function ContextWindowDropdown({
 
             <Dialog open={showInfo} onOpenChange={setShowInfo}>
                 <DialogContent className="max-w-2xl p-0 border-none" showCloseButton={false}>
+                    <DialogTitle className="sr-only">Context Window Information</DialogTitle>
                     <ContextWindowInfo onCloseClick={() => setShowInfo(false)} />
                 </DialogContent>
             </Dialog>

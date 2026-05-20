@@ -1661,6 +1661,7 @@ function SearchEngineInput({
             {/* Add to context dialog */}
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
                 <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]" showCloseButton={false}>
+                    <DialogTitle className="sr-only">Add to context</DialogTitle>
                     <AddToContext
                         onSave={(title, content) => {
                             onAddText?.(title, content);

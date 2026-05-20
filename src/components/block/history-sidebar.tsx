@@ -185,7 +185,7 @@ export const HistorySidebar = ({
         <div
             className={cn(
                 'flex flex-col h-screen overflow-hidden relative',
-                isExpanded ? 'w-full lg:w-[256px]' : 'w-[56px]',
+                isExpanded ? 'w-full md:w-[256px]' : 'w-[56px]',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
                 className
