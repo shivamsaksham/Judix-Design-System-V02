@@ -41,6 +41,11 @@ export interface HistorySidebarProps {
     onResetChat?: () => void;
     onUpgrade?: () => void;
     onSettings?: () => void;
+    onAccount?: () => void;
+    onSubscriptions?: () => void;
+    onRefer?: () => void;
+    onHelp?: () => void;
+    onLogout?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
     onMove?: (chatId: string) => void;
@@ -63,6 +68,11 @@ export const HistorySidebar = ({
     onResetChat,
     onUpgrade,
     onSettings,
+    onAccount,
+    onSubscriptions,
+    onRefer,
+    onHelp,
+    onLogout,
     onRename,
     // onShare,
     onMove,
@@ -319,7 +329,8 @@ export const HistorySidebar = ({
 
                             onAccount={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('My Account clicked');
+                                if (onAccount) onAccount();
+                                else console.log('My Account clicked');
                             }}
                             onProjects={() => {
                                 setIsUserMenuOpen(false);
@@ -327,7 +338,8 @@ export const HistorySidebar = ({
                             }}
                             onSubscriptions={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Subscriptions clicked');
+                                if (onSubscriptions) onSubscriptions();
+                                else console.log('Subscriptions clicked');
                             }}
                             onSettings={() => {
                                 setIsUserMenuOpen(false);
@@ -336,15 +348,18 @@ export const HistorySidebar = ({
                             }}
                             onRefer={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Refer and Earn clicked');
+                                if (onRefer) onRefer();
+                                else console.log('Refer and Earn clicked');
                             }}
                             onHelp={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Help & Support clicked');
+                                if (onHelp) onHelp();
+                                else console.log('Help & Support clicked');
                             }}
                             onLogout={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Logout clicked');
+                                if (onLogout) onLogout();
+                                else console.log('Logout clicked');
                             }}
                         />
                     </div>
