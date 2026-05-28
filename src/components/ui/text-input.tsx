@@ -1,7 +1,9 @@
+"use client"
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
-import { Label as CustomLabel } from "@/components/ui/label"
+import { cn } from "../../lib/utils"
+import { Label as CustomLabel } from "./label"
 
 const inputVariants = cva(
   "flex w-full rounded-textinput-border-radius-default textinput-border-weight-default border bg-textinput-bg transition-colors duration-200 overflow-hidden",
@@ -52,10 +54,10 @@ export interface TextInputProps
   trailingAccessory?: React.ReactNode
   selectedLabels?: { text: string; onRemove: () => void }[]
   showLabelsInline?: boolean
-  inputClassName?: string;
-  inputSize?: "small" | "medium" | "large";
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  inputClassName?: string
+  inputSize?: "small" | "medium" | "large"
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
 }
 
 const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(

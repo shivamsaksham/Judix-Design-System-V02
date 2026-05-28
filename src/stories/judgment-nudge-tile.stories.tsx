@@ -9,8 +9,9 @@ const sampleTileData = {
     court: 'Supreme Court of India',
     year: '2017',
     bench: '9-judge bench',
-    description: 'Unanimously held that privacy is a fundamental right under Article 21. Landmark ruling that shaped the constitutional framework for data protection, surveillance, and Aadhaar legislation.',
+    summary: 'Unanimously held that privacy is a fundamental right under Article 21. Landmark ruling that shaped the constitutional framework for data protection, surveillance, and Aadhaar legislation.',
     matchPercentage: '94%',
+    description: 'Sample judgment description',
 };
 
 const meta = {

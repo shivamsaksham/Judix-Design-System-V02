@@ -209,7 +209,7 @@ interface SearchEngineInputProps {
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
-    artifacts?: { id: string, title: string, type: 'file' | 'text' }[];
+    artifacts?: Array<{ id: string, title: string, type: 'file' | 'text' }>;
     onUpload?: (files: File[]) => void;
     onAddText?: (title: string, content: string) => void;
 }
