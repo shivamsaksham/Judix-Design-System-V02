@@ -45,16 +45,11 @@ export interface HistorySidebarProps {
     onRefer?: () => void;
     onHelp?: () => void;
     onLogout?: () => void;
-    onSettings?: () => void;
-    onAccount?: () => void;
-    onSubscriptions?: () => void;
-    onRefer?: () => void;
-    onHelp?: () => void;
-    onLogout?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
     onMove?: (chatId: string) => void;
     onDelete?: (chatId: string) => void;
+    onSettings?: () => void;
     activeChatId?: string;
     className?: string;
     isExpanded?: boolean;
