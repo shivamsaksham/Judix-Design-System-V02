@@ -6,28 +6,22 @@ import { Button } from '@/components/ui/button';
 import { showToast } from '@/components/ui/toast';
 
 const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | 'command' }) => {
+    const className = "text-color-text-primary-default font-normal";
+
     if (type === 'token') {
         const match = text.match(/^\[(.*?):-(.*?)\]$/);
-        const label = match ? `${match[1]}: ${match[2]}` : text;
+        const label = match ? `[${match[1]}: ${match[2]}]` : text;
 
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-blue-50 text-blue-700 border border-blue-200 mx-0.5 align-baseline">
+            <span className={className}>
                 {label}
             </span>
         );
     }
 
-    if (type === 'mention') {
+    if (type === 'mention' || type === 'command') {
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-orange-50 text-orange-700 border border-orange-200 mx-0.5 align-baseline">
-                {text}
-            </span>
-        );
-    }
-
-    if (type === 'command') {
-        return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-purple-50 text-purple-700 border border-purple-200 mx-0.5 align-baseline">
+            <span className={className}>
                 {text}
             </span>
         );
@@ -37,7 +31,7 @@ const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | '
 }
 
 const renderParsedQuery = (text: string) => {
-    const parts = text.split(/(\[[^\]]+\]|@\S+|^\/[\w\s]+)/g);
+    const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
 
     return parts.map((part, index) => {
         if (!part) return null;
