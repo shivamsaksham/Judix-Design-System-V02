@@ -58,8 +58,10 @@ export const Content = ({
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
 
     React.useEffect(() => {
+        const processedMarkdown = markdown ? markdown.replace(/\[\[(?:source:)?query:[a-zA-Z0-9]+\]\]/gi, query || "") : "";
+
         if (!animate) {
-            setDisplayText(markdown);
+            setDisplayText(processedMarkdown);
             return;
         }
 
@@ -68,18 +70,18 @@ export const Content = ({
 
         const intervalId = setInterval(() => {
             setDisplayText((prev) => {
-                if (index >= markdown.length) {
+                if (index >= processedMarkdown.length) {
                     clearInterval(intervalId);
-                    return markdown;
+                    return processedMarkdown;
                 }
-                const nextChar = markdown.charAt(index);
+                const nextChar = processedMarkdown.charAt(index);
                 index++;
                 return prev + nextChar;
             });
         }, 5); // Fast typing speed
 
         return () => clearInterval(intervalId);
-    }, [markdown, animate]);
+    }, [markdown, animate, query]);
 
     return (
         <div className={cn('flex flex-col w-full mx-auto gap-4', className)}>
