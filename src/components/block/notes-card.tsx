@@ -257,7 +257,10 @@ export function NotesCard({
                 className={cn(
                     "transition-all duration-300 ease-in-out relative",
                     isEnlargeOpen && "z-50",
-                    isEmbedded ? "w-full h-full" : cn(isExpanded ? "w-140" : "w-80", isExpanded ? "h-100" : "h-14")
+                    isEmbedded ? "w-full h-full" : cn(
+                        isExpanded ? "w-[calc(100vw-32px)] sm:w-140" : "w-[calc(100vw-32px)] sm:w-80",
+                        isExpanded ? "h-[80vh] sm:h-100" : "h-14"
+                    )
                 )}
             >
                 <motion.div
