@@ -25,6 +25,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
@@ -368,7 +369,7 @@ function SearchEngineInput({
         placement: activeDropdown === "trigger" ? "top-start" : "bottom-start",
         whileElementsMounted: autoUpdate,
         middleware: [
-            offset({ mainAxis: 12 }),
+            offset({ mainAxis: (activeDropdown === "add" || activeDropdown === "folder" || activeDropdown === "project") ? 4 : 12 }),
             flip({
                 fallbackPlacements:
                     activeDropdown === "trigger"
@@ -841,7 +842,7 @@ function SearchEngineInput({
             e.key === "Enter" &&
             !e.shiftKey &&
             input.trim() !== "" &&
-            input.trim().split(/\s+/).length >= 3
+            (input.trim().split(/\s+/).length >= 3 || input.trim().length >= 20)
         ) {
             e.preventDefault();
             handleSubmit();
@@ -1530,7 +1531,7 @@ function SearchEngineInput({
                                 setActiveDropdown((prev) => (prev === "project" ? null : "project"))
                             }
                             ref={projectBtnRef}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-neutral-secondary cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
                         >
                             <Icon
                                 name="folder-a"
@@ -1550,7 +1551,7 @@ function SearchEngineInput({
                     </div>
                 )}
 
-                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default px-6 py-4 flex flex-col gap-3">
+                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default p-4 flex flex-col gap-3">
                     {/* Editable text area */}
                     <div
                         contentEditable={true}
@@ -1581,7 +1582,9 @@ function SearchEngineInput({
                                 size="medium"
                                 corner="sharp"
                                 boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
+                                className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
+                                    activeDropdown === "add" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
+                                )}`}
                             >
                                 <Icon name="add" className="w-4 h-4" />
                                 <span className="hidden sm:inline text-style-body-default-regular">Add Sources</span>
@@ -1603,7 +1606,7 @@ function SearchEngineInput({
                                 <span className="hidden sm:inline text-style-body-default-regular">Jurisdiction</span>
                             </IconButton>
 
-                            <IconButton
+                            {/* <IconButton
                                 onClick={() => toggleDropdown("settings")}
                                 ref={settingsBtnRef}
                                 variant="neutral"
@@ -1617,7 +1620,7 @@ function SearchEngineInput({
                             >
                                 <Icon name="filter" className="w-4 h-4" />
                                 <span className="hidden sm:inline text-style-body-default-regular">Filters</span>
-                            </IconButton>
+                            </IconButton> */}
 
                             {input.trim().split(/\s+/).filter(Boolean).length > 10 && (
                                 <IconButton
@@ -1636,20 +1639,32 @@ function SearchEngineInput({
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
-
-                            <IconButton
-                                onClick={isLoading ? onStop : handleSubmit}
-                                variant={isLoading ? "neutral" : "primary"}
-                                icon={isLoading ? "stop" : "arrow-up-d"}
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="h-[32px] w-[32px] sm:border-none"
-                                disabled={
-                                    !isLoading &&
-                                    (!input.trim() || input.trim().split(/\s+/).length < 3)
-                                }
-                            />
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="inline-block">
+                                            <IconButton
+                                                onClick={isLoading ? onStop : handleSubmit}
+                                                variant={isLoading ? "neutral" : "primary"}
+                                                icon={isLoading ? "stop" : "arrow-up-d"}
+                                                size="medium"
+                                                corner="sharp"
+                                                boundary="stroked"
+                                                className="h-[32px] w-[32px] sm:border-none"
+                                                disabled={
+                                                    !isLoading &&
+                                                    (!input.trim() || (input.trim().split(/\s+/).length < 3 && input.trim().length < 20))
+                                                }
+                                            />
+                                        </div>
+                                    </TooltipTrigger>
+                                    {!isLoading && (!input.trim() || (input.trim().split(/\s+/).length < 3 && input.trim().length < 20)) && (
+                                        <TooltipContent side="top">
+                                            Please enter at least 3 words or 20 characters
+                                        </TooltipContent>
+                                    )}
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
                 </div>

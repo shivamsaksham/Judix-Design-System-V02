@@ -149,10 +149,10 @@ const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           <input
             ref={ref}
             className={cn(
-              "grow appearance-none focus:outline-none focus:ring-0 focus:border-none bg-transparent h-full min-w-0 p-1",
-              inputSize === "small" && "placeholder:text-style-label-default-regular",
-              inputSize === "medium" && "placeholder:text-style-body-default-regular",
-              inputSize === "large" && "placeholder:text-style-body-title-regular",
+              "grow appearance-none focus:outline-none focus:ring-0 focus:border-none bg-transparent min-w-0 p-1",
+              inputSize === "small" && "text-style-body-default-regular-tight placeholder:text-style-body-default-regular-tight",
+              inputSize === "medium" && "text-style-body-default-regular placeholder:text-style-body-default-regular",
+              inputSize === "large" && "text-style-body-title-regular placeholder:text-style-body-title-regular",
               inputClassName
             )}
             onFocus={handleFocus}

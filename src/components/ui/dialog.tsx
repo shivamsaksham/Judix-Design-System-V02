@@ -122,7 +122,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={`confirmation-font-content ${cn("p-1", className)}`}
+      className={`confirmation-font-content ${cn(className)}`}
       {...props}
     />
   )

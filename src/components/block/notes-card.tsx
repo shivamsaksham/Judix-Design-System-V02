@@ -62,7 +62,7 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     onFileSelect?: (node: FileTreeNodeType) => void;
     activeFileId?: string | null;
     content?: string;
-    variant?: 'floating' | 'embedded';
+    variant?: 'floating' | 'embedded' | 'drawer';
     showSidebar?: boolean;
 }
 
@@ -92,8 +92,10 @@ export function NotesCard({
     showSidebar = true,
 }: NotesCardProps) {
     const isEmbedded = variant === 'embedded';
-    const [isExpanded, setIsExpanded] = React.useState(isEmbedded ? true : defaultExpanded);
-    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isEmbedded ? false : defaultEnlarged);
+    const isDrawer = variant === 'drawer';
+    const isFullView = isEmbedded || isDrawer;
+    const [isExpanded, setIsExpanded] = React.useState(isFullView ? true : defaultExpanded);
+    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isFullView ? false : defaultEnlarged);
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
@@ -257,7 +259,7 @@ export function NotesCard({
                 className={cn(
                     "transition-all duration-300 ease-in-out relative",
                     isEnlargeOpen && "z-50",
-                    isEmbedded ? "w-full h-full" : cn(
+                    isFullView ? "w-full h-full" : cn(
                         isExpanded ? "w-[calc(100vw-32px)] sm:w-140" : "w-[calc(100vw-32px)] sm:w-80",
                         isExpanded ? "h-[80vh] sm:h-100" : "h-14"
                     )
@@ -267,46 +269,44 @@ export function NotesCard({
                     layout
                     className={cn(
                         "bg-white overflow-hidden flex flex-col",
-                        !isEmbedded && "border border-color-border-neutral-default shadow-xl",
-                        isEnlargeOpen && !isEmbedded
-                            ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[1050px] h-[680px] rounded-lg p-6 gap-2"
+                        !isFullView && "border border-color-border-neutral-default shadow-xl",
+                        isEnlargeOpen && !isFullView
+                            ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100vw-32px)] lg:w-[1050px] h-[calc(100vh-32px)] lg:h-[680px] rounded-lg p-4 md:p-6 gap-2"
                             : cn(
                                 "absolute inset-0 w-full h-full",
-                                !isEmbedded && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
+                                !isFullView && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
                             ),
                         className
                     )}
                     transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
                 >
-                    {isEnlargeOpen || isEmbedded ? (
+                    {isEnlargeOpen || isFullView ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className={cn("flex flex-col h-full w-full", isEmbedded ? "gap-2" : "gap-4")}
+                            className={cn("flex flex-col h-full w-full", isFullView ? "gap-2" : "gap-4")}
                         >
-                            {!isEmbedded && (
+                            {!isFullView && (
                                 <div className="flex items-center justify-between shrink-0">
                                     <div className="flex items-center gap-3">
-                                        <IconButton icon="note-a" size="medium" variant="neutral" boundary="none" />
                                         <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                     </div>
                                     <div className="flex items-center gap-6">
-                                        <Label
+                                        {/* <Label
                                             colorScheme="neutral"
                                             size="small"
                                             className="gap-2 hover:bg-color-label-color-neutral-bg cursor-pointer"
                                             onClick={onOpenInNewTab}
                                         >
                                             Open in new tab
-                                        </Label>
+                                        </Label> */}
                                         <div className="flex items-center gap-2">
                                             <IconButton
                                                 icon="received"
                                                 size="medium"
                                                 variant="neutral"
                                                 boundary="none"
-                                                className="rotate-180"
                                                 onClick={() => {
                                                     setIsEnlargeOpen(false);
                                                     onSend?.(false);
@@ -328,10 +328,10 @@ export function NotesCard({
                                 </div>
                             )}
 
-                            <div className={cn("flex flex-1 min-h-0", isEmbedded ? "gap-2" : "gap-4")}>
+                            <div className={cn("flex flex-1 min-h-0", isFullView ? "gap-2" : "gap-4")}>
                                 {showSidebar && (
                                     <>
-                                        <div className="w-[240px] flex flex-col shrink-0">
+                                        <div className="hidden md:flex w-[240px] flex-col shrink-0">
                                             <div className="flex items-center justify-between">
                                                 <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                 <div className="flex items-center gap-0.5">
@@ -355,14 +355,14 @@ export function NotesCard({
                                             </div>
                                         </div>
 
-                                        <Separator orientation="vertical" className="w-px h-full bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className="hidden md:block w-px h-full bg-color-border-neutral-default" />
                                     </>
                                 )}
 
-                                <div className="flex-1 flex flex-col min-w-0x">
+                                <div className="flex-1 flex flex-col min-w-0 ">
                                     <div className={cn(
-                                        "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap",
-                                        isEmbedded 
+                                        "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
+                                        isFullView 
                                             ? "w-full justify-start gap-2" 
                                             : "w-full max-w-[720px] px-0 justify-between gap-y-2"
                                     )}>
@@ -564,7 +564,7 @@ export function NotesCard({
 
                                     <div className={cn(
                                         "flex-1 bg-white relative overflow-hidden",
-                                        isEmbedded ? "w-full border border-color-border-neutral-default" : "w-[720px] border border-color-border-neutral-default"
+                                        isFullView ? "w-full border border-color-border-neutral-default" : "w-full max-w-[720px] border border-color-border-neutral-default"
                                     )}>
                                         <TextEditor
                                             className="w-full h-full text-color-text-neutral-default"
@@ -577,7 +577,7 @@ export function NotesCard({
 
                                     <div className={cn(
                                         "flex items-center justify-end py-3 shrink-0",
-                                        isEmbedded ? "w-full px-6 gap-2" : "w-[720px] px-0 gap-3"
+                                        isFullView ? "w-full px-6 gap-2" : "w-full max-w-[720px] px-0 gap-3"
                                     )}>
                                         <Button variant="neutral" onClick={() => { setIsEnlargeOpen(false); onCancel?.(); }} size="small">Cancel</Button>
                                         <Button variant="primary" onClick={() => { setIsEnlargeOpen(false); onSave?.(noteContent); }} size="small">Save</Button>

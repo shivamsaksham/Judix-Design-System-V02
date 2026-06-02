@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { FileTree, FileTreeNodeType} from "@/components/block/file-tree";
 import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Icon } from "@judix/icon";
 import { Dropdown } from "@/components/ui/dropdown";
 import { useFloating, offset, flip, shift, autoUpdate, useDismiss, useInteractions } from "@floating-ui/react";
 import { createPortal } from "react-dom";
@@ -73,23 +75,28 @@ export function FileBar({
 
     return (
         <div className={cn("flex flex-col w-full h-full bg-color-surface-neutral-default", className)}>
-            <div className="flex items-center justify-between py-1 shrink-0 border-b -my-px border-color-border-neutral-default">
+            <div className="flex items-center justify-between py-1 shrink-0">
                 <span className="p-1 text-style-body-title-regular text-color-text-neutral-default">
                     My Files
                 </span>
                 <div className="flex items-center gap-1">
-                    <Button
+                    <Label
                         ref={refs.setReference}
                         {...getReferenceProps()}
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        variant="neutral"
-                        size="extraSmall"
-                        suffixIcon="arrow-down-c"
-                        className="h-8"
-                        disabled={!activeId}
+                        onClick={() => {
+                            if (activeId) {
+                                setIsDropdownOpen(!isDropdownOpen);
+                            }
+                        }}
+                        colorScheme="neutral"
+                        size="medium"
+                        className={cn("cursor-pointer select-none", !activeId && "opacity-50 pointer-events-none")}
                     >
-                        Create new
-                    </Button>
+                        <span className="flex items-center gap-[6px] whitespace-nowrap">
+                            Create new
+                            <Icon name="arrow-down-c" className="w-3 h-3 text-color-icon-neutral-secondary shrink-0" />
+                        </span>
+                    </Label>
 
                     <IconButton
                         icon="edit-a"
@@ -109,15 +116,13 @@ export function FileBar({
                     />
                 </div>
             </div>
-            <div className="px-3 pb-3">
                 <TextInput
                     inputSize="small"
                     placeholder="Search in here"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-color-surface-neutral-default mt-2 h-[42px]"
+                    className="bg-color-surface-neutral-default mt-2 h-[42px] mb-3"
                 />
-            </div>
 
             <div className="flex-1 min-h-0">
                 <FileTree
@@ -129,7 +134,6 @@ export function FileBar({
                     onToggle={onToggle}
                     onRename={onRename}
                     onCancelEdit={onCancelEdit}
-                    className="p-2"
                 />
             </div>
 

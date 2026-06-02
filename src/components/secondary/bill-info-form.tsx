@@ -75,6 +75,7 @@ export const BillInfoForm = ({
 
     const [isVerifying, setIsVerifying] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
+    const [verifiedCompany, setVerifiedCompany] = useState<CompanyDetails | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     React.useEffect(() => {
@@ -92,6 +93,14 @@ export const BillInfoForm = ({
                 gstNumber: initialData.gstNumber || '',
             });
             setIsVerified(!!initialData.gstNumber);
+            if (initialData.gstNumber) {
+                setVerifiedCompany({
+                    ...companyDetails,
+                    gst: initialData.gstNumber
+                });
+            } else {
+                setVerifiedCompany(null);
+            }
         } else {
             setFormData({
                 firstName: '',
@@ -106,6 +115,7 @@ export const BillInfoForm = ({
                 gstNumber: '',
             });
             setIsVerified(false);
+            setVerifiedCompany(null);
         }
     }, [initialData]);
 
@@ -116,6 +126,10 @@ export const BillInfoForm = ({
         setTimeout(() => {
             setIsVerifying(false);
             setIsVerified(true);
+            setVerifiedCompany({
+                ...companyDetails,
+                gst: formData.gstNumber
+            });
             console.log("GST Verified");
         }, 1500);
     };
@@ -124,7 +138,20 @@ export const BillInfoForm = ({
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    const isValid = !!(
+        formData.firstName.trim() &&
+        formData.lastName.trim() &&
+        formData.phone.trim().length === 10 &&
+        formData.email.trim() &&
+        formData.address.trim() &&
+        formData.city.trim() &&
+        formData.state.trim() &&
+        formData.pincode.trim().length === 6 &&
+        (!formData.needGst || (formData.needGst && formData.gstNumber.trim() && isVerified))
+    );
+
     const handleSave = () => {
+        if (!isValid) return;
         onSave?.(formData);
     };
 
@@ -141,6 +168,8 @@ export const BillInfoForm = ({
             needGst: false,
             gstNumber: '',
         });
+        setVerifiedCompany(null);
+        setIsVerified(false);
         onDiscard?.();
     };
 
@@ -166,7 +195,10 @@ export const BillInfoForm = ({
             <TextInput
                 placeholder="Phone"
                 value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
+                onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    if (val.length <= 10) handleChange('phone', val);
+                }}
                 inputSize="medium"
             />
 
@@ -228,7 +260,10 @@ export const BillInfoForm = ({
                 <TextInput
                     placeholder="Pin code"
                     value={formData.pincode}
-                    onChange={(e) => handleChange('pincode', e.target.value)}
+                    onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 6) handleChange('pincode', val);
+                    }}
                     inputSize="medium"
                 />
             </div>
@@ -238,7 +273,6 @@ export const BillInfoForm = ({
                 <Checkbox
                     id="needGst"
                     size='medium'
-
                     checked={formData.needGst}
                     onCheckedChange={(checked) => handleChange('needGst', checked === true)}
                 />
@@ -254,6 +288,7 @@ export const BillInfoForm = ({
                         onChange={(e) => {
                             handleChange('gstNumber', e.target.value);
                             setIsVerified(false);
+                            setVerifiedCompany(null);
                         }}
                         inputSize="medium"
                         trailingAccessory={
@@ -271,17 +306,19 @@ export const BillInfoForm = ({
                 </div>
             )}
 
-            <div className="flex flex-col">
-                <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
-                    {companyDetails.name}
-                </h4>
-                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                    {companyDetails.address}
-                </p>
-                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                    {companyDetails.gst}
-                </p>
-            </div>
+            {isVerified && verifiedCompany && (
+                <div className="flex flex-col">
+                    <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
+                        {verifiedCompany.name}
+                    </h4>
+                    <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                        {verifiedCompany.address}
+                    </p>
+                    <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                        {verifiedCompany.gst}
+                    </p>
+                </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center py-2 gap-2">
@@ -289,6 +326,7 @@ export const BillInfoForm = ({
                     variant="primary"
                     size="small"
                     onClick={handleSave}
+                    disabled={!isValid}
                 >
                     Save
                 </Button>
@@ -303,3 +341,4 @@ export const BillInfoForm = ({
         </div>
     );
 };
+

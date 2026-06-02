@@ -144,14 +144,14 @@ export const NewProject = ({
                 />
 
                 {/* Description Input */}
-                <input
-                    type="text"
+                <textarea
                     disabled={disabled}
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     placeholder={descriptionPlaceholder}
+                    rows={4}
                     className={cn(
-                        "w-full p-1 text-style-body-title-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none",
+                    "w-full p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none resize-none",
                         disabled && "opacity-60 cursor-not-allowed"
                     )}
                 />
@@ -216,15 +216,15 @@ export const NewProject = ({
             <div className="flex gap-2 mt-12">
                 <Button
                     variant="primary"
-                    size="small"
+                    size="extraSmall"
                     onClick={onCreate}
                     disabled={disabled}
-                >
+                    >
                     {submitButtonText}
                 </Button>
                 <Button
                     variant="neutral"
-                    size="small"
+                    size="extraSmall"
                     onClick={onCancel}
                 >
                     Cancel
