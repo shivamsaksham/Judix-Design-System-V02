@@ -22,10 +22,10 @@ export function LoginHistoryCard({
   ...props
 }: LoginHistoryCardProps) {
   return (
-    <Card className={cn("w-[498px] p-6 rounded-radius-modal border-none", className)} {...props}>
+    <Card className={cn("w-[498px] bg-color-surface-neutral-default p-6 rounded-radius-modal border-none", className)} {...props}>
       <CardHeader className="text-style-body-default-emphasis text-color-text-neutral-default flex flex-row items-center justify-between">
         <CardTitle className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Previous logins</CardTitle>
-        <CardAction className="row-span-1 col-start-2 items-center">
+        <CardAction className="row-span-1 col-start-2 items-center cursor-pointer" onClick={onClose}>
           <Icon name="cross" className="text-color-icon-neutral-default" />
         </CardAction>
       </CardHeader>

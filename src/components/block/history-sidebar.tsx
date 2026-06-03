@@ -264,12 +264,12 @@ export const HistorySidebar = ({
                         onClick={(e) => {
                             const containerRect = e.currentTarget.getBoundingClientRect();
                             const userNameRect = userNameRef.current?.getBoundingClientRect();
+                            const isMobileOrTablet = window.innerWidth < 1024;
                             // Calculate bottom distance so menu's bottom aligns with userName box's bottom
                             const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
                             setUserMenuPosition({
-                                top: bottomDistance,
-                                //fix left
-                                left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
+                                top: isMobileOrTablet ? window.innerHeight - containerRect.top + 8 : bottomDistance,
+                                left: isMobileOrTablet ? containerRect.left : (userNameRect ? userNameRect.right + 0 : containerRect.left + 8),
                             });
                             setIsUserMenuOpen(!isUserMenuOpen);
                         }}

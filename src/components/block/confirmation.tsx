@@ -37,16 +37,13 @@ function Confirmation({ onConfirmClick, onCancelClick, mainText, subText, childr
       )}
       <DialogContent showCloseButton={false} className=" bg-confirmation-color-bg border-confirmation-color-stroke w-[366px]">
         <DialogHeader className='flex-row justify-between'>
-          <DialogTitle className='confirmation-font-title p-1'>Confirmation</DialogTitle>
+          <DialogTitle className='confirmation-font-title p-1'>{mainText}</DialogTitle>
           <DialogClose className='cursor-pointer'>
             <Icon name="cross"></Icon>
           </DialogClose>
         </DialogHeader>
 
         <DialogDescription className='confirmation-font-content text-confirmation-color-bodytext flex flex-col gap-1'>
-          <span className='p-1 leading-normal'>
-            {mainText}
-          </span>
           <span className='p-1 text-confirmation-color-subtext confirmation-font-subtext leading-normal'>
             {subText}
           </span>

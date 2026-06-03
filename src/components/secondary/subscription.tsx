@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent } from "@/components/ui/card"
 import Confirmation from "@/components/block/confirmation"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 export interface UsageMetric {
   label: string
@@ -14,6 +15,7 @@ export interface UsageMetric {
   total: number
   unit?: string
   icon: React.ElementType
+  tooltipText?: string
 }
 
 export interface SubscriptionProps {
@@ -25,7 +27,10 @@ export interface SubscriptionProps {
   fixedQuotas: UsageMetric[]
   onChangePlan?: () => void
   onViewInvoice?: () => void
+  invoiceUrl?: string
   onCancelSubscription?: () => void
+  whatsappUrl?: string
+  supportEmail?: string
   className?: string
 }
 
@@ -45,9 +50,16 @@ function UsageCard({ metric, className }: { metric: UsageMetric, className?: str
               {metric.label}
             </span>
           </div>
-          <button className="text-color-text-neutral-disabled hover:text-color-text-neutral-default transition-colors">
-            <Icon name="info-circle" size={16} />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="text-color-text-neutral-disabled hover:text-color-text-neutral-default transition-colors">
+                <Icon name="info-circle" size={16} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[280px] wrap-break whitespace-normal">
+              {metric.tooltipText || `Tooltip content for ${metric.label} goes here.`}
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -84,7 +96,10 @@ export function Subscription({
   fixedQuotas,
   onChangePlan,
   onViewInvoice,
+  invoiceUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
   onCancelSubscription,
+  whatsappUrl = "https://wa.me/918076045610",
+  supportEmail = "support@judix.in",
   className,
 }: SubscriptionProps) {
   const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
@@ -122,7 +137,14 @@ export function Subscription({
             <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
               Last payment on {lastPaymentDate}. {" "}
               <button
-                onClick={onViewInvoice}
+                onClick={() => {
+                  // Comment: Opens the PDF invoice of the last payment made in a new tab
+                  if (onViewInvoice) {
+                    onViewInvoice();
+                  } else if (invoiceUrl) {
+                    window.open(invoiceUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
                 className="italic text-color-text-feedback-info-default hover:underline cursor-pointer"
               >
                 View Invoice
@@ -150,7 +172,7 @@ export function Subscription({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
             <h2 className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Fixed Quota</h2>
-            <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
+            <p className="p-1 text-style-body-default-regular text-color-text-neutral-tertiary">
               These are one-time quota and is bound to the plan subscribed.
             </p>
           </div>
@@ -192,12 +214,12 @@ export function Subscription({
       <div className="flex flex-col gap-2">
         <div className="flex items-center flex-wrap text-style-body-default-regular text-color-text-neutral-secondary">
           <span className="p-1">For any issue, contact us directly on</span>
-          <a href="#" className="p-1 flex items-center gap-1 text-color-text-feedback-info-default hover:underline cursor-pointer">
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="p-1 flex items-center gap-1 text-color-text-feedback-info-default hover:underline cursor-pointer">
             WhatsApp
           </a>
           <span className="p-1">or email us at</span>
-          <a href="mailto:support@judix.in" className="p-1 text-color-text-feedback-info-default hover:underline cursor-pointer">
-            support@judix.in
+          <a href={`mailto:${supportEmail}`} className="p-1 text-color-text-feedback-info-default hover:underline cursor-pointer">
+            {supportEmail}
           </a>
         </div>
         <p className="p-1 text-style-body-default-regular italic text-color-text-neutral-secondary">
