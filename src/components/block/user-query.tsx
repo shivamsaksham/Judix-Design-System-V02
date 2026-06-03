@@ -8,18 +8,19 @@ import { showToast } from '@/components/ui/toast';
 const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | 'command' }) => {
     if (type === 'token') {
         const match = text.match(/^\[(.*?):-(.*?)\]$/);
-        const label = match ? `${match[1]}: ${match[2]}` : text;
+        const label = match ? `[${match[1]}: ${match[2]}]` : text;
 
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-blue-50 text-blue-700 border border-blue-200 mx-0.5 align-baseline">
+            // Have to check if it is correct
+            <span className="text-color-text-primary-default ">
                 {label}
             </span>
         );
     }
 
-    if (type === 'mention') {
+    if (type === 'mention' || type === 'command') {
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-orange-50 text-orange-700 border border-orange-200 mx-0.5 align-baseline">
+            <span className="text-color-text-primary-default">
                 {text}
             </span>
         );
@@ -37,7 +38,7 @@ const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | '
 }
 
 const renderParsedQuery = (text: string) => {
-    const parts = text.split(/(\[[^\]]+\]|@\S+|^\/[\w\s]+)/g);
+    const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
 
     return parts.map((part, index) => {
         if (!part) return null;

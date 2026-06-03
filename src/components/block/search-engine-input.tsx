@@ -206,7 +206,7 @@ interface SearchEngineInputProps {
     onStop?: () => void;
     isMobile?: boolean;
     projectLabel?: string;
-    onProjectClick?: () => void;
+    onProjectSelect?: (project: ProjectChoiceItem) => void;
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
@@ -231,7 +231,7 @@ function SearchEngineInput({
     isLoading = false,
     onStop,
     projectLabel = "Choose project",
-    onProjectClick,
+    onProjectSelect,
     modelName: propModelName = "Judix Default",
     projects = [],
     showProjectSelector = true,
@@ -988,13 +988,13 @@ function SearchEngineInput({
                 if (startOffset === 0) {
                     const prev = startNode.previousSibling;
                     if (isTokenEl(prev)) { e.preventDefault(); prev!.remove(); return; }
-                    if (prev?.nodeType === Node.TEXT_NODE && prev.textContent === "\u00A0") {
+                    if (prev?.nodeType === Node.TEXT_NODE && (prev.textContent === "\u00A0" || prev.textContent === " ")) {
                         const badge = prev.previousSibling;
                         if (isTokenEl(badge)) {
                             e.preventDefault(); prev.remove(); badge!.remove(); return;
                         }
                     }
-                } else if (startOffset === 1 && startNode.textContent?.charAt(0) === "\u00A0") {
+                } else if (startOffset === 1 && (startNode.textContent?.charAt(0) === "\u00A0" || startNode.textContent?.charAt(0) === " ")) {
                     const prev = startNode.previousSibling;
                     if (isTokenEl(prev)) {
                         e.preventDefault();
@@ -1007,7 +1007,7 @@ function SearchEngineInput({
             } else if (startNode.nodeType === Node.ELEMENT_NODE && startOffset > 0) {
                 const prevChild = startNode.childNodes[startOffset - 1];
                 if (isTokenEl(prevChild)) { e.preventDefault(); prevChild.remove(); return; }
-                if (prevChild?.nodeType === Node.TEXT_NODE && prevChild.textContent === "\u00A0") {
+                if (prevChild?.nodeType === Node.TEXT_NODE && (prevChild.textContent === "\u00A0" || prevChild.textContent === " ")) {
                     const badge = prevChild.previousSibling;
                     if (isTokenEl(badge)) {
                         e.preventDefault(); prevChild.remove(); badge!.remove(); return;
@@ -1049,7 +1049,37 @@ function SearchEngineInput({
     const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         const text = e.clipboardData.getData("text/plain");
-        document.execCommand("insertText", false, text);
+
+        const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
+        let html = "";
+
+        parts.forEach(part => {
+            if (!part) return;
+
+            if (part.startsWith('[') && part.endsWith(']')) {
+                const match = part.match(/^\[(.*?):-(.*?)\]$/);
+                if (match) {
+                    const typeKey = match[1];
+                    const value = match[2];
+                    html += `<span class="static-data-wrapper" style="color: var(--color-color-text-primary-default); font-weight: 400;" contenteditable="false" data-type="${typeKey}"><span>[${typeKey}: </span><span class="static-value-input" style="outline: none; min-width: 10px; display: inline-block;" contenteditable="true">${value}</span><span>]</span></span>`;
+                    return;
+                }
+            }
+            if (part.startsWith('@')) {
+                html += `<span class="mention-badge" data-type="@" data-value="${part}" style="color: var(--color-color-text-primary-default);" contenteditable="false">${part}</span>`;
+                return;
+            }
+            if (part.startsWith('/')) {
+                html += `<span class="mention-badge" data-type="/" data-value="${part}" style="color: var(--color-color-text-primary-default);" contenteditable="false">${part}</span>`;
+                return;
+            }
+
+            const div = document.createElement("div");
+            div.innerText = part;
+            html += div.innerHTML;
+        });
+
+        document.execCommand("insertHTML", false, html);
     };
 
     const handleImprove = () => {
@@ -1490,8 +1520,8 @@ function SearchEngineInput({
                                     ]
                             }
                             selectedProjectId={null}
-                            onSelect={() => {
-                                if (onProjectClick) onProjectClick();
+                            onSelect={(project) => {
+                                if (onProjectSelect) onProjectSelect(project);
                                 setActiveDropdown(null);
                             }}
                         />
