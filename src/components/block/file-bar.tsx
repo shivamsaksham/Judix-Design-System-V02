@@ -20,7 +20,7 @@ export interface FileBarProps {
     editDisabled?: boolean;
     onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
-    onCreateNew?: (type: "chat" | "note") => void;
+    onCreateNew?: (type: "project" | "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
     onToggle?: (node: FileTreeNodeType) => void;
@@ -62,13 +62,14 @@ export function FileBar({
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
     const handleCreateOption = (val: string) => {
-        if (val === "chat" || val === "note") {
-            onCreateNew?.(val);
+        if (val === "project" || val === "chat" || val === "note") {
+            onCreateNew?.(val as "project" | "chat" | "note");
             setIsDropdownOpen(false);
         }
     };
 
     const createOptions = [
+        { value: "project", title: "Project" },
         { value: "chat", title: "Chat" },
         { value: "note", title: "Note file" },
     ];

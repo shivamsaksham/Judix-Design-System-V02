@@ -43,6 +43,7 @@ const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
                     alt="Icon"
                     width={22}
                     height={22}
+                    style={{ height: 'auto' }}
                     priority
                 />
             )}
@@ -51,6 +52,7 @@ const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
                 alt="Logo"
                 width={53}
                 height={16}
+                style={{ height: 'auto' }}
                 priority
             />
         </div>
@@ -141,7 +143,7 @@ export function NavBar({
                 className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                 iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
             >
-                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" />
+                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" style={{ height: 'auto' }}/>
             </Button>
             {showChatMenu && (
                 <div ref={chatMenuRef} className="absolute top-full right-0 mt-2 z-50">

@@ -112,7 +112,7 @@ export default function Breadcrumb({
                     </div>
                 )}
 
-                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-2 order-1 md:order-0 w-full md:w-auto">
+                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-1 order-1 md:order-0 w-full md:w-auto">
                     {items.map((item, index) => (
                         <React.Fragment key={item.id}>
                             <div
@@ -122,8 +122,8 @@ export default function Breadcrumb({
                                 {item.label}
                             </div>
                             {index < items.length - 1 && (
-                                <div className="px-2 flex justify-center items-center shrink-0">
-                                    <span className="font-body-default-regular text-color-text-neutral-secondary flex items-center">/</span>
+                                <div className="flex justify-center items-center shrink-0">
+                                    <span className="p-1 font-body-default-regular text-color-text-neutral-secondary flex items-center">/</span>
                                 </div>
                             )}
                         </React.Fragment>
