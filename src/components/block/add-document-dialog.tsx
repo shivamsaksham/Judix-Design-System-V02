@@ -28,13 +28,17 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
     onFilesSelected,
 }) => {
     const hasFiles = files.length > 0;
+    const isUploading = files.some(f => f.state === 'processing');
+    const allUploaded = hasFiles && files.every(f => f.state === 'processed' && f.subtitle === 'Uploaded');
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleTriggerFileSelect = () => {
+        if (isUploading) return;
         inputRef.current?.click();
     };
 
     const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isUploading) return;
         const selectedFiles = Array.from(e.target.files || []);
         if (selectedFiles.length > 0) {
             onFilesSelected?.(selectedFiles);
@@ -46,6 +50,7 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        if (isUploading) return;
         const droppedFiles = Array.from(e.dataTransfer.files);
         if (droppedFiles.length > 0) {
             onFilesSelected?.(droppedFiles);
@@ -57,7 +62,7 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={isUploading ? undefined : onOpenChange}>
             {/* Hidden native file input */}
             <input 
                 type="file" 
@@ -66,11 +71,12 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
                 multiple 
                 accept=".pdf,.doc,.docx"
                 onChange={handleFileInputChange} 
+                disabled={isUploading}
             />
             
             <DialogContent 
                 className="sm:max-w-[645px] w-[645px] h-[448px] flex flex-col gap-6 bg-color-surface-neutral-default border-color-border-neutral-default" 
-                showCloseButton={true}
+                showCloseButton={!isUploading}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
             >
@@ -105,13 +111,13 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
                         </div>
                     ) : (
                         /* Added State: File List */
-                        <div className="flex flex-col py-2 gap-5 w-full">
+                        <div className="flex flex-col py-2 gap-5 w-full max-h-[290px] overflow-y-auto pr-1 scrollbar-thin">
                             {files.map((file, index) => (
                                 <React.Fragment key={index}>
                                     <FileUploadItem {...file} />
                                     {/* Separator between items, except for the last one */}
                                     {index < files.length - 1 && (
-                                        <div className="h-[1px] w-full bg-color-border-neutral-default" />
+                                        <div className="h-px w-full bg-color-border-neutral-default" />
                                     )}
                                 </React.Fragment>
                             ))}
@@ -124,6 +130,7 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
                         <Button 
                             variant="neutral" 
                             size='extraSmall' 
+                            disabled={isUploading}
                             onClick={() => {
                                 handleTriggerFileSelect();
                                 onAddMoreFilesClick?.();
@@ -133,8 +140,22 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
                         </Button>
                     )}
                     <div className="flex items-center gap-3">
-                        <Button variant="neutral" size='extraSmall' onClick={onCancelClick || (() => onOpenChange?.(false))}>Cancel</Button>
-                        <Button variant="primary" size='extraSmall' onClick={onUploadClick}>Upload files</Button>
+                        <Button 
+                            variant="neutral" 
+                            size='extraSmall' 
+                            disabled={isUploading}
+                            onClick={onCancelClick || (() => onOpenChange?.(false))}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            size='extraSmall' 
+                            disabled={isUploading || allUploaded}
+                            onClick={onUploadClick}
+                        >
+                            {isUploading ? 'Uploading...' : 'Upload files'}
+                        </Button>
                     </div>
                 </DialogFooter>
             </DialogContent>

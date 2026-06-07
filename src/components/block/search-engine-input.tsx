@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
-import { IconButton, Dropdown, DropdownOption } from "@/components/ui";
+import { IconButton, Dropdown, DropdownOption, showToast } from "@/components/ui";
 import { Icon } from "@judix/icon";
 import {
     useFloating,
@@ -211,7 +211,7 @@ interface SearchEngineInputProps {
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
     artifacts?: Array<{ id: string, title: string, type: 'file' | 'text' }>;
-    onUpload?: (files: File[]) => void;
+    onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<any>;
     onAddText?: (title: string, content: string) => void;
 }
 
@@ -247,22 +247,84 @@ function SearchEngineInput({
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-    const [uploadFiles, setUploadFiles] = useState<File[]>([]);
+    const [uploadFiles, setUploadFiles] = useState<{
+        file: File;
+        state: 'pending' | 'processing' | 'processed' | 'failed';
+        progress?: number;
+        subtitle?: string;
+    }[]>([]);
     const [modelName, setModelName] = useState(propModelName);
+
+    const uploadFilesRef = useRef(uploadFiles);
+    React.useEffect(() => {
+        uploadFilesRef.current = uploadFiles;
+    }, [uploadFiles]);
+
+    const handleSingleFileUpload = useCallback(async (index: number) => {
+        const item = uploadFilesRef.current[index];
+        if (!item) return;
+
+        // Set to processing with 0% progress
+        setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processing', progress: 0, subtitle: undefined } : f));
+
+        let currentProgress = 0;
+
+        try {
+            await onUpload?.(item.file, (actualProgress) => {
+                if (actualProgress > currentProgress) {
+                    currentProgress = actualProgress;
+                    setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, progress: actualProgress } : f));
+                }
+            });
+
+            // Hold briefly at 100% before marking as complete
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processed', subtitle: 'Uploaded', progress: 100 } : f));
+        } catch (err) {
+            console.error("Single file upload failed:", err);
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed' } : f));
+        }
+    }, [onUpload]);
+
+    const handleUploadAll = useCallback(async () => {
+        const currentFiles = uploadFilesRef.current;
+        const indicesToUpload = currentFiles
+            .map((f, idx) => ({ f, idx }))
+            .filter(({ f }) => f.state === 'failed' || f.state === 'pending')
+            .map(({ idx }) => idx);
+
+        if (indicesToUpload.length === 0) return;
+
+        await Promise.all(indicesToUpload.map(idx => handleSingleFileUpload(idx)));
+    }, [handleSingleFileUpload]);
+
+
 
     const effectiveSelectedCourts =
         propSelectedCourts !== undefined ? propSelectedCourts : internalSelectedCourts;
 
-    const handleCourtsChange = (newCourts: string[]) => {
+    const handleCourtsChange = useCallback((newCourts: string[]) => {
         if (onCourtsChange) onCourtsChange(newCourts);
         if (propSelectedCourts === undefined) setInternalSelectedCourts(newCourts);
-    };
+    }, [onCourtsChange, propSelectedCourts]);
 
     const [selectedContextItems, setSelectedContextItems] = useState<string[]>([]);
     const [contextMode] = useState<"auto" | "self-managed">("self-managed");
     const [activeDropdown, setActiveDropdown] = useState<
         "add" | "settings" | "folder" | "project" | "trigger" | null
     >(null);
+
+    const prevActiveDropdownRef = useRef<typeof activeDropdown>(null);
+
+    React.useEffect(() => {
+        if (prevActiveDropdownRef.current === "folder" && activeDropdown !== "folder") {
+            if (effectiveSelectedCourts.length === 0) {
+                handleCourtsChange(["Supreme Court of India"]);
+            }
+        }
+        prevActiveDropdownRef.current = activeDropdown;
+    }, [activeDropdown, effectiveSelectedCourts, handleCourtsChange]);
 
     const textareaRef = useRef<HTMLDivElement>(null);
 
@@ -558,7 +620,7 @@ function SearchEngineInput({
 
         filters.scopes = selectedScopes;
         filters.contextItems = selectedContextItems;
-        filters.courts = effectiveSelectedCourts;
+        filters.courts = effectiveSelectedCourts.length === 0 ? ["Supreme Court of India"] : effectiveSelectedCourts;
 
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
@@ -579,13 +641,17 @@ function SearchEngineInput({
         setSectionChip(null);
         textareaRef.current.innerHTML = "";
 
+        if (effectiveSelectedCourts.length === 0) {
+            handleCourtsChange(["Supreme Court of India"]);
+        }
+
         requestAnimationFrame(() => {
             if (textareaRef.current) {
                 textareaRef.current.style.height = `${BOTTOM_HEIGHT}px`;
                 textareaRef.current.style.overflowY = "hidden";
             }
         });
-    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit]);
+    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit, effectiveSelectedCourts, handleCourtsChange]);
 
     // Positions the "Enter Section" chip just below the Act wrapper
     const showSectionChip = (wrapperEl: HTMLElement) => {
@@ -1726,21 +1792,44 @@ function SearchEngineInput({
                     if (!open) setUploadFiles([]);
                 }}
                 files={uploadFiles.map((f, i) => ({
-                    fileName: f.name,
-                    fileSize: (f.size / 1024 / 1024).toFixed(2) + ' MB',
-                    state: 'processed',
-                    onRemove: () => setUploadFiles(prev => prev.filter((_, idx) => idx !== i))
+                    fileName: f.file.name,
+                    fileSize: (f.file.size / 1024 / 1024).toFixed(2) + ' MB',
+                    state: f.state,
+                    progress: f.progress,
+                    subtitle: f.subtitle,
+                    onRemove: f.state !== 'processing' ? () => setUploadFiles(prev => prev.filter((_, idx) => idx !== i)) : undefined,
+                    onRetry: f.state === 'failed' ? () => handleSingleFileUpload(i) : undefined
                 }))}
-                onFilesSelected={(files) => setUploadFiles(prev => [...prev, ...files])}
+                onFilesSelected={(selectedFiles) => {
+                    const filtered = selectedFiles.filter(file => {
+                        const isDuplicateInModal = uploadFiles.some(f => f.file.name === file.name);
+                        if (isDuplicateInModal) {
+                            showToast.alert(`"${file.name}" is already in the list to be uploaded.`);
+                            return false;
+                        }
+                        const isDuplicateInArtifacts = artifacts.some(a => a.title === file.name && a.type === 'file');
+                        if (isDuplicateInArtifacts) {
+                            showToast.alert(`"${file.name}" has already been uploaded.`);
+                            return false;
+                        }
+                        return true;
+                    });
+                    if (filtered.length > 0) {
+                        setUploadFiles(prev => [
+                            ...prev,
+                            ...filtered.map(file => ({
+                                file,
+                                state: 'pending' as const,
+                                progress: 0
+                            }))
+                        ]);
+                    }
+                }}
                 onCancelClick={() => {
                     setUploadFiles([]);
                     setIsUploadDialogOpen(false);
                 }}
-                onUploadClick={() => {
-                    onUpload?.(uploadFiles);
-                    setUploadFiles([]);
-                    setIsUploadDialogOpen(false);
-                }}
+                onUploadClick={handleUploadAll}
             />
 
             {/* Invisible anchor for predictive suggestion chip positioning */}
