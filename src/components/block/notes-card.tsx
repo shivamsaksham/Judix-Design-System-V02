@@ -287,6 +287,29 @@ export function NotesCard({
         return foundType;
     }, [activeFileId, fileTreeData]);
 
+    const activeFileNode = React.useMemo(() => {
+        if (!activeFileId) return null;
+        let foundNode: FileTreeNodeType | null = null;
+        const findNode = (nodes: FileTreeNodeType[]) => {
+            for (const node of nodes) {
+                if (node.id === activeFileId) {
+                    foundNode = node;
+                    return;
+                }
+                if (node.type === 'folder' && node.children) {
+                    findNode(node.children);
+                }
+            }
+        };
+        findNode(fileTreeData);
+        return foundNode;
+    }, [activeFileId, fileTreeData]);
+
+    const isNoteActive = React.useMemo(() => {
+        const node = activeFileNode as any;
+        return node?.type === 'file' && node?.fileType === 'note';
+    }, [activeFileNode]);
+
     const handleExpandToggle = () => {
         const newExpandedState = !isExpanded;
         setIsExpanded(newExpandedState);
@@ -438,6 +461,37 @@ export function NotesCard({
                             exit={{ opacity: 0 }}
                             className={cn("flex flex-col h-full w-full", isFullView ? "gap-2" : "gap-4")}
                         >
+                            {isDrawer && (
+                                <div className="flex items-center justify-between shrink-0 px-4 py-3 border-b border-color-border-neutral-default">
+                                    <div className="flex items-center gap-3">
+                                        {isNoteActive && (
+                                            <IconButton
+                                                icon="arrow-left-a"
+                                                size="medium"
+                                                variant="neutral"
+                                                boundary="none"
+                                                onClick={() => {
+                                                    onFileSelect?.({ id: '', name: '', type: 'folder', children: [] });
+                                                }}
+                                            />
+                                        )}
+                                        <CardTitle className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate max-w-[200px]">
+                                            {isNoteActive ? title : "My Files"}
+                                        </CardTitle>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <IconButton
+                                            icon="cross"
+                                            size="medium"
+                                            variant="neutral"
+                                            boundary="none"
+                                            onClick={onCancel}
+                                            className="rotate-180"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                             {!isFullView && (
                                 <div className="flex items-center justify-between shrink-0">
                                     <div className="flex items-center gap-3">
@@ -487,7 +541,12 @@ export function NotesCard({
                             <div className={cn("flex flex-1 min-h-0", isFullView ? "gap-2" : "gap-4")}>
                                 {showSidebar && (
                                     <>
-                                        <div className="hidden md:flex w-[240px] flex-col shrink-0">
+                                        <div className={cn(
+                                            "w-[240px] flex-col shrink-0",
+                                            isDrawer 
+                                                ? (isNoteActive ? "hidden" : "flex w-full px-4 pb-4") 
+                                                : "hidden md:flex"
+                                        )}>
                                             <div className="flex items-center justify-between">
                                                 <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                 <div className="flex items-center gap-0.5">
@@ -515,11 +574,15 @@ export function NotesCard({
                                             </div>
                                         </div>
 
-                                        <Separator orientation="vertical" className="hidden md:block w-px h-full bg-color-border-neutral-default" />
+                                        <Separator orientation="vertical" className={cn("w-px h-full bg-color-border-neutral-default", isDrawer ? "hidden" : "hidden md:block")} />
                                     </>
                                 )}
 
-                                <div className="flex-1 flex flex-col min-h-0 min-w-0">
+                                <div className={cn(
+                                    "flex-1 flex flex-col min-h-0 min-w-0",
+                                    isDrawer && "px-4 pb-4",
+                                    isDrawer && !isNoteActive && "hidden"
+                                )}>
                                     <div className={cn(
                                         "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
                                         isFullView 

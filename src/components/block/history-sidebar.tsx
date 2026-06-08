@@ -128,9 +128,20 @@ export const HistorySidebar = ({
 
     const handleMenuClick = (chatId: string, event: React.MouseEvent) => {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
+        const menuWidth = 216; // width of ChatHistoryMenu is w-[216px]
+        let leftPos = rect.left;
+        
+        if (rect.left + menuWidth > window.innerWidth) {
+            leftPos = rect.right - menuWidth;
+        }
+        
+        if (leftPos < 8) {
+            leftPos = 8;
+        }
+
         setMenuPosition({
             top: rect.bottom,
-            left: rect.left,
+            left: leftPos,
         });
         setOpenMenuChatId(chatId);
     };
