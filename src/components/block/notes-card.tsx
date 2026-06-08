@@ -18,6 +18,7 @@ import { TextEditor } from "../ui/text-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import Confirmation from "./confirmation";
 import {
     Tooltip,
     TooltipContent,
@@ -54,7 +55,7 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     onShare?: (editor: Editor | null, title: string) => void;
     onSave?: (content: string) => void;
     onCancel?: () => void;
-    onAddFile?: () => void;
+    onAddFile?: (projectId: string, noteName: string) => void;
     onEditFile?: () => void;
     onDeleteFile?: () => void;
     onImageUpload?: (file: File, editor: Editor | null) => void;
@@ -100,14 +101,142 @@ export function NotesCard({
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
     const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+    const [editingId, setEditingId] = React.useState<string | null>(null);
+
+    const getProjectFolderOfActiveFile = React.useCallback((fileId: string | null | undefined): string | null => {
+        if (!fileId) return null;
+        for (const root of fileTreeData) {
+            if (root.id === fileId) {
+                return root.id;
+            }
+            if (root.type === "folder" && root.children && root.children.some((child: FileTreeNodeType) => child.id === fileId)) {
+                return root.id;
+            }
+        }
+        return null;
+    }, [fileTreeData]);
+
+    const handleAddNoteClick = () => {
+        if (editingId === "temp-new-note") return;
+
+        const targetFolderId = getProjectFolderOfActiveFile(activeFileId);
+        if (!targetFolderId) return;
+
+        setFileTreeData(prevTree => prevTree.map(root => {
+            if (root.id === targetFolderId && root.type === "folder") {
+                const children = root.children || [];
+                if (children.some((c: FileTreeNodeType) => c.id === "temp-new-note")) return root;
+                return {
+                    ...root,
+                    isOpen: true,
+                    children: [...children, {
+                        id: "temp-new-note",
+                        name: "",
+                        type: "file" as const,
+                        fileType: "note" as const
+                    }]
+                };
+            }
+            return root;
+        }));
+
+        setEditingId("temp-new-note");
+        setActiveFileId("temp-new-note");
+    };
+
+    const handleRenameFile = (nodeId: string, newName: string) => {
+        if (nodeId === "temp-new-note") {
+            const targetFolderId = getProjectFolderOfActiveFile("temp-new-note") || getProjectFolderOfActiveFile(activeFileId);
+            setFileTreeData(prevTree => prevTree.map(root => {
+                if (root.id === targetFolderId && root.type === "folder") {
+                    return {
+                        ...root,
+                        children: (root.children || []).filter((c: FileTreeNodeType) => c.id !== "temp-new-note")
+                    };
+                }
+                return root;
+            }));
+            setEditingId(null);
+
+            if (targetFolderId && newName.trim()) {
+                onAddFile?.(targetFolderId, newName.trim());
+            }
+        }
+    };
+
+    const handleCancelEdit = () => {
+        if (editingId === "temp-new-note") {
+            const targetFolderId = getProjectFolderOfActiveFile("temp-new-note") || getProjectFolderOfActiveFile(activeFileId);
+            setFileTreeData(prevTree => prevTree.map(root => {
+                if (root.id === targetFolderId && root.type === "folder") {
+                    return {
+                        ...root,
+                        children: (root.children || []).filter((c: FileTreeNodeType) => c.id !== "temp-new-note")
+                    };
+                }
+                return root;
+            }));
+            setActiveFileId(targetFolderId || undefined);
+        }
+        setEditingId(null);
+    };
 
     React.useEffect(() => {
-        setFileTreeData(fileTree);
-    }, [fileTree]);
+        if (editingId === "temp-new-note") {
+            let targetFolderId = null;
+            for (const root of fileTreeData) {
+                if (root.id === "temp-new-note") {
+                    targetFolderId = root.id;
+                    break;
+                }
+                if (root.type === "folder" && root.children && root.children.some((child: FileTreeNodeType) => child.id === "temp-new-note")) {
+                    targetFolderId = root.id;
+                    break;
+                }
+            }
+            if (!targetFolderId) {
+                for (const root of fileTreeData) {
+                    if (root.id === activeFileId) {
+                        targetFolderId = root.id;
+                        break;
+                    }
+                    if (root.type === "folder" && root.children && root.children.some((child: FileTreeNodeType) => child.id === activeFileId)) {
+                        targetFolderId = root.id;
+                        break;
+                    }
+                }
+            }
+
+            const mergedTree = fileTree.map(root => {
+                if (root.id === targetFolderId && root.type === "folder") {
+                    const children = root.children || [];
+                    if (children.some((c: FileTreeNodeType) => c.id === "temp-new-note")) return root;
+                    return {
+                        ...root,
+                        isOpen: true,
+                        children: [...children, {
+                            id: "temp-new-note",
+                            name: "",
+                            type: "file" as const,
+                            fileType: "note" as const
+                        }]
+                    };
+                }
+                return root;
+            });
+            setFileTreeData(mergedTree);
+        } else {
+            setFileTreeData(fileTree);
+        }
+    }, [fileTree, editingId]);
 
     React.useEffect(() => {
         if (propActiveFileId !== undefined) {
             setActiveFileId(propActiveFileId || undefined);
+            if (editingId === "temp-new-note" && propActiveFileId !== "temp-new-note") {
+                setEditingId(null);
+            }
         }
     }, [propActiveFileId]);
 
@@ -118,7 +247,7 @@ export function NotesCard({
                 editor.commands.setContent(propContent);
             }
         }
-    }, [propContent, editor]);
+    }, [propContent, editor, propActiveFileId]);
 
     const handleFileTreeToggle = (toggledNode: FolderItem) => {
         const isRoot = fileTreeData.some(f => f.id === toggledNode.id);
@@ -137,6 +266,26 @@ export function NotesCard({
             setFileTreeData(toggleNodeRecursive(fileTreeData, toggledNode.id));
         }
     };
+
+    const activeNodeType = React.useMemo(() => {
+        if (!activeFileId) return null;
+        let foundType: 'folder' | 'file' | null = null;
+        
+        const findNode = (nodes: FileTreeNodeType[]) => {
+            for (const node of nodes) {
+                if (node.id === activeFileId) {
+                    foundType = node.type;
+                    return;
+                }
+                if (node.type === 'folder' && node.children) {
+                    findNode(node.children);
+                }
+            }
+        };
+        
+        findNode(fileTreeData);
+        return foundType;
+    }, [activeFileId, fileTreeData]);
 
     const handleExpandToggle = () => {
         const newExpandedState = !isExpanded;
@@ -255,15 +404,17 @@ export function NotesCard({
                     />
                 )}
             </AnimatePresence>
-            <div
+            <motion.div
+                layout
                 className={cn(
-                    "transition-all duration-300 ease-in-out relative",
+                    "relative",
                     isEnlargeOpen && "z-50",
                     isFullView ? "w-full h-full" : cn(
-                        isExpanded ? "w-[calc(100vw-32px)] sm:w-140" : "w-[calc(100vw-32px)] sm:w-80",
-                        isExpanded ? "h-[80vh] sm:h-100" : "h-14"
+                        isExpanded ? "w-[calc(100vw-32px)] sm:w-[560px]" : "w-[calc(100vw-32px)] sm:w-80",
+                        isExpanded ? "h-[80vh] sm:h-[400px]" : "h-14"
                     )
                 )}
+                transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
             >
                 <motion.div
                     layout
@@ -271,7 +422,7 @@ export function NotesCard({
                         "bg-white overflow-hidden flex flex-col",
                         !isFullView && "border border-color-border-neutral-default shadow-xl",
                         isEnlargeOpen && !isFullView
-                            ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100vw-32px)] lg:w-[1050px] h-[calc(100vh-32px)] lg:h-[680px] rounded-lg p-4 md:p-6 gap-2"
+                            ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100vw-32px)] lg:w-[1050px] h-[calc(100vh-32px)] lg:h-[680px] max-h-[calc(100vh-32px)] lg:max-h-[calc(100vh-48px)] rounded-lg p-4 md:p-6 gap-2"
                             : cn(
                                 "absolute inset-0 w-full h-full",
                                 !isFullView && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
@@ -290,7 +441,7 @@ export function NotesCard({
                             {!isFullView && (
                                 <div className="flex items-center justify-between shrink-0">
                                     <div className="flex items-center gap-3">
-                                        <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
+                                        <CardTitle className="p-1 text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
                                     </div>
                                     <div className="flex items-center gap-6">
                                         {/* <Label
@@ -311,6 +462,7 @@ export function NotesCard({
                                                     setIsEnlargeOpen(false);
                                                     onSend?.(false);
                                                 }}
+                                                className="scale-x-[-1]"
                                             />
                                             <IconButton
                                                 icon="cross"
@@ -318,8 +470,12 @@ export function NotesCard({
                                                 variant="neutral"
                                                 boundary="none"
                                                 onClick={() => {
-                                                    setIsEnlargeOpen(false);
-                                                    onCancel?.();
+                                                    if (isFullView) {
+                                                        onCancel?.();
+                                                    } else {
+                                                        setIsEnlargeOpen(false);
+                                                        setIsExpanded(false);
+                                                    }
                                                 }}
                                                 className="rotate-180"
                                             />
@@ -335,9 +491,9 @@ export function NotesCard({
                                             <div className="flex items-center justify-between">
                                                 <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                 <div className="flex items-center gap-0.5">
-                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={onAddFile} disabled={!activeFileId} />
-                                                    <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={!activeFileId} />
-                                                    <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={onDeleteFile} disabled={!activeFileId} />
+                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={!activeFileId || editingId === "temp-new-note"} />
+                                                    <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={activeNodeType !== 'file'} />
+                                                    <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={() => setIsDeleteDialogOpen(true)} disabled={activeNodeType !== 'file'} />
                                                 </div>
                                             </div>
                                             <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
@@ -345,11 +501,15 @@ export function NotesCard({
                                                 <FileTree
                                                     data={fileTreeData}
                                                     activeId={activeFileId}
+                                                    editingId={editingId}
                                                     onSelect={(node: FileTreeNodeType) => {
+                                                        if (node.id === "temp-new-note") return;
                                                         setActiveFileId(node.id);
                                                         onFileSelect?.(node);
                                                     }}
                                                     onToggle={handleFileTreeToggle}
+                                                    onRename={handleRenameFile}
+                                                    onCancelEdit={handleCancelEdit}
                                                     className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                                                 />
                                             </div>
@@ -359,7 +519,7 @@ export function NotesCard({
                                     </>
                                 )}
 
-                                <div className="flex-1 flex flex-col min-w-0 ">
+                                <div className="flex-1 flex flex-col min-h-0 min-w-0">
                                     <div className={cn(
                                         "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
                                         isFullView 
@@ -579,8 +739,15 @@ export function NotesCard({
                                         "flex items-center justify-end py-3 shrink-0",
                                         isFullView ? "w-full px-6 gap-2" : "w-full max-w-[720px] px-0 gap-3"
                                     )}>
-                                        <Button variant="neutral" onClick={() => { setIsEnlargeOpen(false); onCancel?.(); }} size="small">Cancel</Button>
-                                        <Button variant="primary" onClick={() => { setIsEnlargeOpen(false); onSave?.(noteContent); }} size="small">Save</Button>
+                                        <Button variant="neutral" onClick={() => {
+                                            if (isFullView) {
+                                                onCancel?.();
+                                            } else {
+                                                setIsEnlargeOpen(false);
+                                                setIsExpanded(false);
+                                            }
+                                        }} size="extraSmall">Cancel</Button>
+                                        <Button variant="primary" onClick={() => { onSave?.(noteContent); }} size="extraSmall">Save</Button>
                                     </div>
                                 </div>
                             </div>
@@ -597,9 +764,12 @@ export function NotesCard({
                                 "flex flex-row items-center justify-between px-4 py-3 h-14 border-b space-y-0 bg-color-surface-neutral-subtle_bg z-10 relative transition-colors duration-300 shrink-0",
                                 isExpanded ? "border-color-border-neutral-default" : "border-transparent"
                             )}>
-                                <div className="flex items-center gap-2">
-                                    <Icon name="note-a" className="h-4 w-4 text-color-text-neutral-default" />
-                                    <CardTitle className="text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
+                                {/* Minimised variant */}
+                                <div className="flex items-center min-w-0 flex-1">
+                                    <div className="p-2">
+                                        <Icon name="note-a" className="h-4 w-4 text-color-text-neutral-default shrink-0" />
+                                    </div>
+                                    <CardTitle className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate whitespace-nowrap">{title}</CardTitle>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <IconButton
@@ -615,7 +785,7 @@ export function NotesCard({
                                             onSend?.(true);
                                         }}
                                     />
-                                    <IconButton
+                                    {/* <IconButton
                                         icon="export-b"
                                         className="bg-transparent"
                                         size="medium"
@@ -623,7 +793,7 @@ export function NotesCard({
                                         boundary="none"
                                         aria-label="Share as PDF"
                                         onClick={handleShare}
-                                    />
+                                    /> */}
                                     <IconButton
                                         icon="arrow-down-c"
                                         className="bg-transparent"
@@ -661,12 +831,26 @@ export function NotesCard({
                         </motion.div>
                     )}
                 </motion.div>
-            </div>
+            </motion.div>
             <LinkDialog
                 open={isLinkDialogOpen}
                 onOpenChange={setIsLinkDialogOpen}
                 initialUrl={currentLinkUrl}
                 onSave={handleLinkSave}
+            />
+            <Confirmation
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+                mainText="Delete Note"
+                subText="Are you sure you want to delete this note? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="destructive"
+                onConfirmClick={() => {
+                    setIsDeleteDialogOpen(false);
+                    onDeleteFile?.();
+                }}
+                onCancelClick={() => setIsDeleteDialogOpen(false)}
             />
         </>
     );

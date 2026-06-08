@@ -1578,14 +1578,16 @@ function SearchEngineInput({
                         <ProjectChoiceDropdown
                             projects={
                                 projects.length > 0
-                                    ? projects
+                                    ? projects.filter((p) => p.name?.toLowerCase() !== "independent")
                                     : [
                                         { id: "1", name: "Default Project", description: "Your main workspace" },
                                         { id: "2", name: "Legal Research 2024", description: "Active cases" },
                                         { id: "3", name: "Appeals Q1", description: "Archived" },
                                     ]
                             }
-                            selectedProjectId={null}
+                            selectedProjectId={
+                                projects.find((p) => p.name === projectLabel)?.id || null
+                            }
                             onSelect={(project) => {
                                 if (onProjectSelect) onProjectSelect(project);
                                 setActiveDropdown(null);
@@ -1633,7 +1635,9 @@ function SearchEngineInput({
                                 name="folder-a"
                                 className="w-4 h-4 text-color-icon-neutral-secondary shrink-0 -mt-0.5"
                             />
-                            <span className="hidden sm:inline">{projectLabel}</span>
+                            <span className="hidden sm:inline">
+                                {(!projectLabel || projectLabel.toLowerCase() === "choose project") ? "Independent" : projectLabel}
+                            </span>
                         </button>
                     </div>
                 )}

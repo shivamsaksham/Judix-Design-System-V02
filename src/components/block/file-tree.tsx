@@ -199,7 +199,7 @@ export const FileTreeNode = ({
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={handleRenameSubmit}
                         onKeyDown={handleKeyDown}
-                        className="truncate text-style-body-default-regular flex-1 min-w-0 bg-color-surface-neutral-default border border-color-border-primary-default rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-color-border-primary-default"
+                        className="truncate text-style-body-default-regular flex-1 min-w-0 bg-transparent rounded px-1 py-0.5 focus:outline-none"
                         onClick={(e) => e.stopPropagation()}
                     />
                 ) : (
