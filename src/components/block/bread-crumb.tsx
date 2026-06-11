@@ -169,7 +169,7 @@ export default function Breadcrumb({
             </div>
 
             {/* Mobile Layout */}
-            <div className="flex md:hidden flex-col w-full md:gap-2 pl-4 pr-4 py-3 bg-color-surface-neutral-subtle_bg rounded-lg">
+            <div className="flex md:hidden flex-col w-full md:gap-2 pl-4 pr-4 py-3 bg-color-surface-neutral-subtle_bg rounded-lg ">
                 <div className="flex flex-wrap items-center text-style-body-default-regular text-color-text-neutral-secondary">
                     {parentItems.map((item) => (
                         <React.Fragment key={item.id}>

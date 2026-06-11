@@ -65,6 +65,7 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     content?: string;
     variant?: 'floating' | 'embedded' | 'drawer';
     showSidebar?: boolean;
+    onFolderToggle?: (node: FileTreeNodeType) => void;
 }
 
 export function NotesCard({
@@ -91,6 +92,7 @@ export function NotesCard({
     content: propContent,
     variant = 'floating',
     showSidebar = true,
+    onFolderToggle,
 }: NotesCardProps) {
     const isEmbedded = variant === 'embedded';
     const isDrawer = variant === 'drawer';
@@ -101,6 +103,40 @@ export function NotesCard({
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
     const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
+    const [expandedFolderIds, setExpandedFolderIds] = React.useState<Set<string>>(() => {
+        const initial = new Set<string>();
+        const findOpen = (nodes: FileTreeNodeType[]) => {
+            nodes.forEach(n => {
+                if (n.type === 'folder' && n.isOpen) {
+                    initial.add(n.id);
+                }
+                if (n.type === 'folder' && n.children) {
+                    findOpen(n.children);
+                }
+            });
+        };
+        findOpen(fileTree);
+        return initial;
+    });
+
+    React.useEffect(() => {
+        const findOpen = (nodes: FileTreeNodeType[]) => {
+            nodes.forEach(n => {
+                if (n.type === 'folder' && n.isOpen) {
+                    setExpandedFolderIds(prev => {
+                        if (prev.has(n.id)) return prev;
+                        const next = new Set(prev);
+                        next.add(n.id);
+                        return next;
+                    });
+                }
+                if (n.type === 'folder' && n.children) {
+                    findOpen(n.children);
+                }
+            });
+        };
+        findOpen(fileTree);
+    }, [fileTree]);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
     const [editingId, setEditingId] = React.useState<string | null>(null);
 
@@ -183,8 +219,36 @@ export function NotesCard({
     };
 
     React.useEffect(() => {
+        const applyExpansionAndMergeTemp = (nodes: FileTreeNodeType[], targetFolderId: string | null): FileTreeNodeType[] => {
+            return nodes.map(n => {
+                if (n.type === 'folder') {
+                    let children = n.children ? applyExpansionAndMergeTemp(n.children, targetFolderId) : [];
+                    let isOpen = expandedFolderIds.has(n.id) || !!n.isOpen;
+                    
+                    if (editingId === "temp-new-note" && n.id === targetFolderId) {
+                        isOpen = true;
+                        if (!children.some(c => c.id === "temp-new-note")) {
+                            children = [...children, {
+                                id: "temp-new-note",
+                                name: "",
+                                type: "file" as const,
+                                fileType: "note" as const
+                            }];
+                        }
+                    }
+
+                    return {
+                        ...n,
+                        isOpen,
+                        children
+                    };
+                }
+                return n;
+            });
+        };
+
+        let targetFolderId: string | null = null;
         if (editingId === "temp-new-note") {
-            let targetFolderId = null;
             for (const root of fileTreeData) {
                 if (root.id === "temp-new-note") {
                     targetFolderId = root.id;
@@ -207,29 +271,10 @@ export function NotesCard({
                     }
                 }
             }
-
-            const mergedTree = fileTree.map(root => {
-                if (root.id === targetFolderId && root.type === "folder") {
-                    const children = root.children || [];
-                    if (children.some((c: FileTreeNodeType) => c.id === "temp-new-note")) return root;
-                    return {
-                        ...root,
-                        isOpen: true,
-                        children: [...children, {
-                            id: "temp-new-note",
-                            name: "",
-                            type: "file" as const,
-                            fileType: "note" as const
-                        }]
-                    };
-                }
-                return root;
-            });
-            setFileTreeData(mergedTree);
-        } else {
-            setFileTreeData(fileTree);
         }
-    }, [fileTree, editingId]);
+
+        setFileTreeData(applyExpansionAndMergeTemp(fileTree, targetFolderId));
+    }, [fileTree, editingId, expandedFolderIds]);
 
     React.useEffect(() => {
         if (propActiveFileId !== undefined) {
@@ -250,7 +295,31 @@ export function NotesCard({
     }, [propContent, editor, propActiveFileId]);
 
     const handleFileTreeToggle = (toggledNode: FolderItem) => {
+        onFolderToggle?.(toggledNode);
         const isRoot = fileTreeData.some(f => f.id === toggledNode.id);
+
+        setExpandedFolderIds(prev => {
+            const next = new Set(prev);
+            const wasOpen = next.has(toggledNode.id);
+
+            if (isRoot) {
+                if (wasOpen) {
+                    next.delete(toggledNode.id);
+                } else {
+                    fileTreeData.forEach(f => {
+                        if (f.type === 'folder') next.delete(f.id);
+                    });
+                    next.add(toggledNode.id);
+                }
+            } else {
+                if (wasOpen) {
+                    next.delete(toggledNode.id);
+                } else {
+                    next.add(toggledNode.id);
+                }
+            }
+            return next;
+        });
 
         if (isRoot) {
             setFileTreeData(fileTreeData.map(f => {
