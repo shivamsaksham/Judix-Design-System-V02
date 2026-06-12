@@ -18,6 +18,7 @@ export interface Session {
   os: string
   location: string
   date: string
+  time?: string
   isCurrent: boolean
 }
 
@@ -114,7 +115,7 @@ export function MyActivity({
                     )}
                   </div>
                   <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
-                    {session.location} • {session.date}
+                    {session.location} • {session.date}{session.time ? ` at ${session.time}` : ""}
                   </p>
                 </div>
               </div>
@@ -128,7 +129,7 @@ export function MyActivity({
           ))}
         </div>
 
-        <Confirmation
+        {/* <Confirmation
           open={showLogoutAllConfirm}
           onOpenChange={setShowLogoutAllConfirm}
           mainText="Logout from all devices"
@@ -147,7 +148,7 @@ export function MyActivity({
           >
             Logout of all devices
           </Button>
-        </Confirmation>
+        </Confirmation> */}
 
         <Dialog open={showLoginHistory} onOpenChange={setShowLoginHistory}>
           <DialogContent className="p-0 border-none bg-transparent shadow-none w-auto max-w-fit" showCloseButton={false}>
