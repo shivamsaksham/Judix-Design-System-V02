@@ -73,7 +73,7 @@ export function SecondarySidebar({
               }
               suffixSlot={
                 item.id === "notifications" && unreadNotificationsCount > 0 ? (
-                  <div className="bg-color-surface-feedback-error-default text-color-text-feedback-error-on-fill text-xs font-medium px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-[20px]">
+                  <div className="bg-button-color-primary-default-bg text-button-color-primary-default-text text-xs font-medium px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-[20px]">
                     {unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount}
                   </div>
                 ) : undefined
