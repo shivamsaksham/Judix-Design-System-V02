@@ -33,6 +33,7 @@ export interface OrderSummaryProps {
     onFrequencyChange?: (frequency: 'monthly' | 'yearly') => void;
     className?: string;
     loading?: boolean;
+    backendPlans?: any[];
 }
 
 export const OrderSummary = ({
@@ -43,6 +44,7 @@ export const OrderSummary = ({
     onFrequencyChange,
     className,
     loading,
+    backendPlans = [],
 }: OrderSummaryProps) => {
     const [promoInput, setPromoInput] = useState('');
     const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
@@ -81,9 +83,10 @@ export const OrderSummary = ({
             </div>
 
             <Dialog open={isChangePlanOpen} onOpenChange={setIsChangePlanOpen}>
-                <DialogContent className="max-w-[95vw] lg:max-w-6xl w-full max-h-[90vh] overflow-y-auto bg-color-surface-neutral-default">
+                <DialogContent className="max-w-[95vw] lg:max-w-6xl w-full max-h-[90vh] overflow-y-auto no-scrollbar bg-color-surface-neutral-default">
                     <DialogTitle className="sr-only">Change Subscription Plan</DialogTitle>
                     <PricingTable
+                        backendPlans={backendPlans}
                         onSelectPlan={(plan, frequency) => {
                             setIsChangePlanOpen(false);
                             onChangePlan?.(plan, frequency);

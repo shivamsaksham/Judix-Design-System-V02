@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 const monthlyPlans: PricingCardProps[] = [
   {
-    tier: "Free",
+    tier: "Lite",
     description: "For lawyers just getting started with AI research",
     price: 0,
     usage: [
@@ -102,12 +102,26 @@ const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
 
 export interface PricingTableProps {
   onSelectPlan?: (planName: string, billingCycle: "monthly" | "yearly") => void;
+  backendPlans?: any[]; // Array of plans from the backend
 }
 
-export function PricingTable({ onSelectPlan }: PricingTableProps) {
+export function PricingTable({ onSelectPlan, backendPlans = [] }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
-  const plans = billingCycle === "monthly" ? monthlyPlans : yearlyPlans;
+  // Merge backend prices with hardcoded features
+  const mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => {
+    const backendPlan = backendPlans.find(bp => 
+      bp.name.toLowerCase() === plan.tier.toLowerCase() && 
+      bp.interval === billingCycle
+    );
+    
+    return {
+      ...plan,
+      price: backendPlan ? backendPlan.price : plan.price,
+      // If we want to override usage metrics, we could do it here too:
+      // usage: ...
+    };
+  });
 
   return (
     <div className="w-full max-w-[1264px] lg:max-w-[1280px] xl:max-w-[1312px] mx-auto flex flex-col items-center">
@@ -135,7 +149,7 @@ export function PricingTable({ onSelectPlan }: PricingTableProps) {
 
       {/* Pricing Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-10 gap-y-24 mb-9 pt-20 justify-items-center">
-        {plans.map((plan) => (
+        {mergedPlans.map((plan) => (
           <PricingCard key={plan.tier} {...plan} onSelect={() => onSelectPlan?.(plan.tier, billingCycle)} />
         ))}
       </div>
