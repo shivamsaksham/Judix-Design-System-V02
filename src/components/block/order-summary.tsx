@@ -6,6 +6,8 @@ import { Button } from '../ui/button';
 import { TextInput } from '../ui/text-input';
 import { Icon } from '@judix/icon';
 import { PaymentFrequencyCard } from './payment-frequency-card';
+import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
+import { PricingTable } from './pricing-table';
 
 export interface OrderSummaryData {
     planName: string;
@@ -25,7 +27,7 @@ export interface OrderSummaryData {
 
 export interface OrderSummaryProps {
     data: OrderSummaryData;
-    onChangePlan?: () => void;
+    onChangePlan?: (planName?: string, frequency?: 'monthly' | 'yearly') => void;
     onApplyPromo?: (code: string) => void;
     onCheckout?: () => void;
     onFrequencyChange?: (frequency: 'monthly' | 'yearly') => void;
@@ -43,6 +45,7 @@ export const OrderSummary = ({
     loading,
 }: OrderSummaryProps) => {
     const [promoInput, setPromoInput] = useState('');
+    const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
 
     const handleFrequencySelect = (freq: 'monthly' | 'yearly') => {
         onFrequencyChange?.(freq);
@@ -71,11 +74,23 @@ export const OrderSummary = ({
                 <Button
                     variant="neutral"
                     size="extraSmall"
-                    onClick={onChangePlan}
+                    onClick={() => setIsChangePlanOpen(true)}
                 >
                     Change plan
                 </Button>
             </div>
+
+            <Dialog open={isChangePlanOpen} onOpenChange={setIsChangePlanOpen}>
+                <DialogContent className="max-w-[95vw] lg:max-w-6xl w-full max-h-[90vh] overflow-y-auto bg-color-surface-neutral-default">
+                    <DialogTitle className="sr-only">Change Subscription Plan</DialogTitle>
+                    <PricingTable
+                        onSelectPlan={(plan, frequency) => {
+                            setIsChangePlanOpen(false);
+                            onChangePlan?.(plan, frequency);
+                        }}
+                    />
+                </DialogContent>
+            </Dialog>
 
             {/* Payment Frequency Section */}
             <div className="flex gap-4 w-full">
@@ -109,7 +124,7 @@ export const OrderSummary = ({
                 <h3 className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">
                     Order summary
                 </h3>
-                
+
                 <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Subtotal</span>
@@ -149,7 +164,7 @@ export const OrderSummary = ({
                             inputSize="small"
                             className="grow"
                             disabled={data.isPromoApplied}
-                            />
+                        />
                         <Button
                             variant="neutral"
                             size="small"

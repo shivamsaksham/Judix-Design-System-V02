@@ -583,6 +583,7 @@ export function NotesCard({
                                                 boundary="none"
                                                 onClick={() => {
                                                     setIsEnlargeOpen(false);
+                                                    setIsExpanded(true);
                                                     onSend?.(false);
                                                 }}
                                                 className="scale-x-[-1]"

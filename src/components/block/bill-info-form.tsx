@@ -266,17 +266,20 @@ export const BillInfoForm = ({
                 </div>
             )}
 
-            <div className="flex flex-col">
-                <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
-                    {companyDetails.name}
-                </h4>
-                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                    {companyDetails.address}
-                </p>
-                <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
-                    {companyDetails.gst}
-                </p>
-            </div>
+            {/* Company Details (Visible only when GST is verified) */}
+            {formData.needGst && isVerified && (
+                <div className="flex flex-col animate-in fade-in duration-300 mt-2">
+                    <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
+                        {companyDetails.name}
+                    </h4>
+                    <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                        {companyDetails.address}
+                    </p>
+                    <p className="p-1 text-style-label-default-regular text-color-text-neutral-default">
+                        {companyDetails.gst}
+                    </p>
+                </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center py-2 gap-2">
