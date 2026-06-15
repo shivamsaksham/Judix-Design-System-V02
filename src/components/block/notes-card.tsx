@@ -775,6 +775,7 @@ export function NotesCard({
                                                     onClick={() => {
                                                         setEnlargeState(false);
                                                         setIsExpanded(false);
+                                                        onCancel?.();
                                                     }}
                                                     className="rotate-180"
                                                 />
