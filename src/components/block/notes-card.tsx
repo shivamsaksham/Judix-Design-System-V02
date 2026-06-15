@@ -46,6 +46,8 @@ function toggleNodeRecursive(nodes: FileTreeNodeType[], targetId: string): FileT
 export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     defaultExpanded?: boolean;
     defaultEnlarged?: boolean;
+    isEnlarged?: boolean;
+    onEnlargeChange?: (enlarged: boolean) => void;
     title?: string;
     children?: React.ReactNode;
     onExpandChange?: (expanded: boolean) => void;
@@ -72,6 +74,8 @@ export function NotesCard({
     className,
     defaultExpanded = false,
     defaultEnlarged = false,
+    isEnlarged,
+    onEnlargeChange,
     title = "Notes",
     children,
     onExpandChange,
@@ -98,7 +102,17 @@ export function NotesCard({
     const isDrawer = variant === 'drawer';
     const isFullView = isEmbedded || isDrawer;
     const [isExpanded, setIsExpanded] = React.useState(isFullView ? true : defaultExpanded);
-    const [isEnlargeOpen, setIsEnlargeOpen] = React.useState(isFullView ? false : defaultEnlarged);
+    const [isEnlargeOpenInternal, setIsEnlargeOpenInternal] = React.useState(isFullView ? false : defaultEnlarged);
+    
+    const isEnlargeOpen = isFullView ? false : (isEnlarged !== undefined ? isEnlarged : isEnlargeOpenInternal);
+
+    const setEnlargeState = React.useCallback((val: boolean) => {
+        if (isEnlarged === undefined) {
+            setIsEnlargeOpenInternal(val);
+        }
+        onEnlargeChange?.(val);
+    }, [isEnlarged, onEnlargeChange]);
+
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
@@ -139,6 +153,8 @@ export function NotesCard({
     }, [fileTree]);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
     const [editingId, setEditingId] = React.useState<string | null>(null);
+
+    // Controlled prop syncs are not needed since we derive isEnlargeOpen on the fly.
 
     const getProjectFolderOfActiveFile = React.useCallback((fileId: string | null | undefined): string | null => {
         if (!fileId) return null;
@@ -482,52 +498,381 @@ export function NotesCard({
         onShare?.(editor, title);
     };
 
+    const enlargedToolbar = (
+        <div className={cn(
+            "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
+            isFullView
+                ? "w-full justify-start gap-2"
+                : "w-full max-w-[720px] px-0 justify-between gap-y-2"
+        )}>
+            <div className="flex items-center gap-1 shrink-0">
+                <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
+                    <PopoverTrigger asChild>
+                        <div
+                            className={`button-font-small ${cn(
+                                "flex items-center justify-between gap-9 px-4 py-2 cursor-pointer select-none min-w-[100px] bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement",
+                                "text-color-text-neutral-default hover:bg-color-surface-neutral-hover_default",
+                                headingOpen && "bg-color-surface-neutral-subtle_bg"
+                            )}`}
+                        >
+                            <span className="truncate">{currentHeadingLabel}</span>
+                            <Icon name="arrow-down-c" className="w-[14px] h-[14px]" />
+                        </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="start" sideOffset={4}>
+                        <Dropdown
+                            options={headingOptions}
+                            value={getCurrentHeadingValue()}
+                            onChange={handleHeadingChange}
+                            searchbar="off"
+                            className="w-[140px] shadow-lg"
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
 
+            <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
+
+            <div className="flex items-center gap-1 shrink-0">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="text-bold"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => editor?.chain().focus().toggleBold().run()}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Bold</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="text-italic"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => editor?.chain().focus().toggleItalic().run()}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Italic</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="text-underline"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => editor?.chain().focus().toggleUnderline?.().run()}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Underline</TooltipContent>
+                </Tooltip>
+            </div>
+
+            <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
+
+            <div className="flex items-center gap-1 shrink-0">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="textalign-left"
+                            size="medium"
+                            variant="neutral"
+                            className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => handleTextAlign('left')}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Align Left</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="textalign-center"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => handleTextAlign('center')}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Align Center</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="textalign-right"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => handleTextAlign('right')}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Align Right</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="textalign-justifycenter"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => handleTextAlign('justify')}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Justify</TooltipContent>
+                </Tooltip>
+            </div>
+
+            <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
+
+            <div className="flex items-center gap-1 shrink-0">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="link-b"
+                            size="medium"
+                            variant="neutral"
+                            className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
+                            boundary="none"
+                            onClick={() => {
+                                if (!editor || editor.state.selection.empty) return;
+                                const previousUrl = editor.getAttributes('link').href;
+                                setCurrentLinkUrl(previousUrl || "");
+                                setIsLinkDialogOpen(true);
+                            }}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Insert Link</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton
+                            icon="image"
+                            size="medium"
+                            variant="neutral"
+                            boundary="none"
+                            onClick={() => fileInputRef.current?.click()}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>Upload Image</TooltipContent>
+                </Tooltip>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                />
+            </div>
+
+            <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
+
+            <div className="flex items-center gap-1 shrink-0">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton icon="at" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
+                    </TooltipTrigger>
+                    <TooltipContent>Mentions</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
+                    </TooltipTrigger>
+                    <TooltipContent>Share Note</TooltipContent>
+                </Tooltip>
+            </div>
+        </div>
+    );
 
     return (
         <>
             <AnimatePresence>
                 {isEnlargeOpen && (
                     <motion.div
+                        key="notes-backdrop"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         className="fixed inset-0 bg-black/50 z-40"
                     />
                 )}
             </AnimatePresence>
-            <motion.div
-                layout
+            <div
                 className={cn(
                     "relative",
-                    isEnlargeOpen && "z-50",
+                    !isEnlargeOpen && isEnlargeOpen !== undefined && "z-0",
                     isFullView ? "w-full h-full" : cn(
                         isExpanded ? "w-[calc(100vw-32px)] sm:w-[560px]" : "w-[calc(100vw-32px)] sm:w-80",
-                        isExpanded ? "h-[80vh] sm:h-[400px]" : "h-14"
+                        isExpanded ? "h-[80vh] sm:h-[400px]" : "h-14",
+                        "transition-[width,height] duration-300 ease-in-out"
                     )
                 )}
-                transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
             >
-                <motion.div
-                    layout
+                {/* Enlarged (fixed/modal) state */}
+                <AnimatePresence>
+                    {(isEnlargeOpen && !isFullView) && (
+                        <motion.div
+                            key="notes-enlarged"
+                            initial={{ opacity: 0, scale: 0.96 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.96 }}
+                            transition={{ type: "spring", bounce: 0.05, duration: 0.3 }}
+                            className={cn(
+                                "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50",
+                                "bg-white overflow-hidden flex flex-col",
+                                "border border-color-border-neutral-default shadow-xl",
+                                "w-[calc(100vw-32px)] lg:w-[1050px] h-[calc(100vh-32px)] lg:h-[680px]",
+                                "max-h-[calc(100vh-32px)] lg:max-h-[calc(100vh-48px)] rounded-lg p-4 md:p-6 gap-2",
+                                className
+                            )}
+                        >
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className={cn("flex flex-col h-full w-full", "gap-4")}
+                            >
+                                {!isFullView && (
+                                    <div className="flex items-center justify-between shrink-0">
+                                        <div className="flex items-center gap-3">
+                                            <CardTitle className="p-1 text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
+                                        </div>
+                                        <div className="flex items-center gap-6">
+                                            <div className="flex items-center gap-2">
+                                                <IconButton
+                                                    icon="received"
+                                                    size="medium"
+                                                    variant="neutral"
+                                                    boundary="none"
+                                                    onClick={() => {
+                                                        setEnlargeState(false);
+                                                        setIsExpanded(true);
+                                                        onSend?.(false);
+                                                    }}
+                                                    className="scale-x-[-1]"
+                                                />
+                                                <IconButton
+                                                    icon="cross"
+                                                    size="medium"
+                                                    variant="neutral"
+                                                    boundary="none"
+                                                    onClick={() => {
+                                                        setEnlargeState(false);
+                                                        setIsExpanded(false);
+                                                    }}
+                                                    className="rotate-180"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className={cn("flex flex-1 min-h-0", "gap-4")}>
+                                    {showSidebar && (
+                                        <>
+                                            <div className={cn(
+                                                "w-[240px] flex-col shrink-0",
+                                                "hidden md:flex"
+                                            )}>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
+                                                    <div className="flex items-center gap-0.5">
+                                                        <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={!activeFileId || editingId === "temp-new-note"} />
+                                                        <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={activeNodeType !== 'file'} />
+                                                        <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={() => setIsDeleteDialogOpen(true)} disabled={activeNodeType !== 'file'} />
+                                                    </div>
+                                                </div>
+                                                <Separator className="shrink-0 h-px w-full bg-color-border-neutral-default mb-2" />
+                                                <div className="flex-1 overflow-hidden -ml-2">
+                                                    <FileTree
+                                                        data={fileTreeData}
+                                                        activeId={activeFileId}
+                                                        editingId={editingId}
+                                                        onSelect={(node: FileTreeNodeType) => {
+                                                            if (node.id === "temp-new-note") return;
+                                                            setActiveFileId(node.id);
+                                                            onFileSelect?.(node);
+                                                        }}
+                                                        onToggle={handleFileTreeToggle}
+                                                        onRename={handleRenameFile}
+                                                        onCancelEdit={handleCancelEdit}
+                                                        className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <Separator orientation="vertical" className={cn("w-px h-full bg-color-border-neutral-default", "hidden md:block")} />
+                                        </>
+                                    )}
+
+                                    <div className={cn("flex-1 flex flex-col min-h-0 min-w-0")}>
+                                        {enlargedToolbar}
+
+                                        <div className={cn(
+                                            "flex-1 bg-white relative overflow-hidden",
+                                            "w-full max-w-[720px] border border-color-border-neutral-default"
+                                        )}>
+                                            <TextEditor
+                                                className="w-full h-full text-color-text-neutral-default"
+                                                placeholder="Type your notes here"
+                                                onEditorReady={setEditor}
+                                                content={noteContent}
+                                                onChange={setNoteContent}
+                                            />
+                                        </div>
+
+                                        <div className={cn(
+                                            "flex items-center justify-end py-3 shrink-0",
+                                            "w-full max-w-[720px] px-0 gap-3"
+                                        )}>
+                                            <Button variant="neutral" onClick={() => {
+                                                setEnlargeState(false);
+                                                setIsExpanded(false);
+                                            }} size="extraSmall">Cancel</Button>
+                                            <Button variant="primary" onClick={() => { onSave?.(noteContent); }} size="extraSmall">Save</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Normal (absolute/relative) state — embedded, drawer, or floating card */}
+                <div
                     className={cn(
                         "bg-white overflow-hidden flex flex-col",
                         !isFullView && "border border-color-border-neutral-default shadow-xl",
-                        isEnlargeOpen && !isFullView
-                            ? "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100vw-32px)] lg:w-[1050px] h-[calc(100vh-32px)] lg:h-[680px] max-h-[calc(100vh-32px)] lg:max-h-[calc(100vh-48px)] rounded-lg p-4 md:p-6 gap-2"
+                        isEnlargeOpen && !isFullView ? "invisible" : "",
+                        isFullView
+                            ? "absolute inset-0 w-full h-full"
                             : cn(
                                 "absolute inset-0 w-full h-full",
-                                !isFullView && (isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0")
+                                isExpanded ? "rounded-xl" : "rounded-t-xl border-b-0"
                             ),
-                        className
+                        isFullView ? "" : className
                     )}
-                    transition={{ type: "spring", bounce: 0.1, duration: 0.4 }}
                 >
-                    {isEnlargeOpen || isFullView ? (
+                    {isFullView ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
                             className={cn("flex flex-col h-full w-full", isFullView ? "gap-2" : "gap-4")}
                         >
                             {isDrawer && (
@@ -561,60 +906,13 @@ export function NotesCard({
                                 </div>
                             )}
 
-                            {!isFullView && (
-                                <div className="flex items-center justify-between shrink-0">
-                                    <div className="flex items-center gap-3">
-                                        <CardTitle className="p-1 text-style-body-title-regular text-color-text-neutral-default">{title}</CardTitle>
-                                    </div>
-                                    <div className="flex items-center gap-6">
-                                        {/* <Label
-                                            colorScheme="neutral"
-                                            size="small"
-                                            className="gap-2 hover:bg-color-label-color-neutral-bg cursor-pointer"
-                                            onClick={onOpenInNewTab}
-                                        >
-                                            Open in new tab
-                                        </Label> */}
-                                        <div className="flex items-center gap-2">
-                                            <IconButton
-                                                icon="received"
-                                                size="medium"
-                                                variant="neutral"
-                                                boundary="none"
-                                                onClick={() => {
-                                                    setIsEnlargeOpen(false);
-                                                    setIsExpanded(true);
-                                                    onSend?.(false);
-                                                }}
-                                                className="scale-x-[-1]"
-                                            />
-                                            <IconButton
-                                                icon="cross"
-                                                size="medium"
-                                                variant="neutral"
-                                                boundary="none"
-                                                onClick={() => {
-                                                    if (isFullView) {
-                                                        onCancel?.();
-                                                    } else {
-                                                        setIsEnlargeOpen(false);
-                                                        setIsExpanded(false);
-                                                    }
-                                                }}
-                                                className="rotate-180"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
                             <div className={cn("flex flex-1 min-h-0", isFullView ? "gap-2" : "gap-4")}>
                                 {showSidebar && (
                                     <>
                                         <div className={cn(
                                             "w-[240px] flex-col shrink-0",
-                                            isDrawer 
-                                                ? (isNoteActive ? "hidden" : "flex w-full px-4 pb-4") 
+                                            isDrawer
+                                                ? (isNoteActive ? "hidden" : "flex w-full px-4 pb-4")
                                                 : "hidden md:flex"
                                         )}>
                                             <div className="flex items-center justify-between">
@@ -653,207 +951,7 @@ export function NotesCard({
                                     isDrawer && "px-4 pb-4",
                                     isDrawer && !isNoteActive && "hidden"
                                 )}>
-                                    <div className={cn(
-                                        "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
-                                        isFullView 
-                                            ? "w-full justify-start gap-2" 
-                                            : "w-full max-w-[720px] px-0 justify-between gap-y-2"
-                                    )}>
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <Popover open={headingOpen} onOpenChange={setHeadingOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <div
-                                                        className={`button-font-small ${cn(
-                                                            "flex items-center justify-between gap-9 px-4 py-2 cursor-pointer select-none min-w-[100px] bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement",
-                                                            "text-color-text-neutral-default hover:bg-color-surface-neutral-hover_default",
-                                                            headingOpen && "bg-color-surface-neutral-subtle_bg"
-                                                        )}`}
-                                                    >
-                                                        <span className="truncate">{currentHeadingLabel}</span>
-                                                        <Icon name="arrow-down-c" className="w-[14px] h-[14px]" />
-                                                    </div>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="start" sideOffset={4}>
-                                                    <Dropdown
-                                                        options={headingOptions}
-                                                        value={getCurrentHeadingValue()}
-                                                        onChange={handleHeadingChange}
-                                                        searchbar="off"
-                                                        className="w-[140px] shadow-lg"
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-
-                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="text-bold"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive('bold') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => editor?.chain().focus().toggleBold().run()}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Bold</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="text-italic"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive('italic') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => editor?.chain().focus().toggleItalic().run()}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Italic</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="text-underline"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive('underline') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => editor?.chain().focus().toggleUnderline?.().run()}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Underline</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-
-                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="textalign-left"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={(editor?.isActive({ textAlign: 'left' }) || (!editor?.isActive({ textAlign: 'center' }) && !editor?.isActive({ textAlign: 'right' }) && !editor?.isActive({ textAlign: 'justify' }))) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => handleTextAlign('left')}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Align Left</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="textalign-center"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive({ textAlign: 'center' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => handleTextAlign('center')}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Align Center</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="textalign-right"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive({ textAlign: 'right' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => handleTextAlign('right')}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Align Right</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="textalign-justifycenter"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive({ textAlign: 'justify' }) ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => handleTextAlign('justify')}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Justify</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-
-                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="link-b"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        className={editor?.isActive('link') ? "bg-icon_button-color-neutral-hover" : ""}
-                                                        boundary="none"
-                                                        onClick={() => {
-                                                            if (!editor || editor.state.selection.empty) return;
-                                                            const previousUrl = editor.getAttributes('link').href;
-                                                            setCurrentLinkUrl(previousUrl || "");
-                                                            setIsLinkDialogOpen(true);
-                                                        }}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Insert Link</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton
-                                                        icon="image"
-                                                        size="medium"
-                                                        variant="neutral"
-                                                        boundary="none"
-                                                        onClick={() => fileInputRef.current?.click()}
-                                                    />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Upload Image</TooltipContent>
-                                            </Tooltip>
-                                            <input
-                                                type="file"
-                                                ref={fileInputRef}
-                                                className="hidden"
-                                                accept="image/*"
-                                                onChange={handleImageUpload}
-                                            />
-                                        </div>
-
-                                        <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
-
-                                        <div className="flex items-center gap-1 shrink-0">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton icon="at" size="medium" variant="neutral" boundary="none" onClick={() => console.log('At clicked')} />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Mentions</TooltipContent>
-                                            </Tooltip>
-
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <IconButton icon="share-a" size="medium" variant="neutral" boundary="none" onClick={handleShare} />
-                                                </TooltipTrigger>
-                                                <TooltipContent>Share Note</TooltipContent>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-
-
+                                    {enlargedToolbar}
 
                                     <div className={cn(
                                         "flex-1 bg-white relative overflow-hidden",
@@ -876,7 +974,7 @@ export function NotesCard({
                                             if (isFullView) {
                                                 onCancel?.();
                                             } else {
-                                                setIsEnlargeOpen(false);
+                                                setEnlargeState(false);
                                                 setIsExpanded(false);
                                             }
                                         }} size="extraSmall">Cancel</Button>
@@ -891,12 +989,16 @@ export function NotesCard({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
+                            transition={{ duration: 0.15 }}
                         >
-                            <CardHeader className={cn(
-                                "flex flex-row items-center justify-between px-4 py-3 h-14 border-b space-y-0 bg-color-surface-neutral-subtle_bg z-10 relative transition-colors duration-300 shrink-0",
-                                isExpanded ? "border-color-border-neutral-default" : "border-transparent"
-                            )}>
+                            <CardHeader
+                                className={cn(
+                                    "flex flex-row items-center justify-between px-4 py-3 h-14 border-b space-y-0 bg-color-surface-neutral-subtle_bg z-10 relative transition-colors duration-300 shrink-0",
+                                    isExpanded ? "border-color-border-neutral-default" : "border-transparent",
+                                    !isExpanded && "cursor-pointer"
+                                )}
+                                onClick={!isExpanded ? handleExpandToggle : undefined}
+                            >
                                 {/* Minimised variant */}
                                 <div className="flex items-center min-w-0 flex-1">
                                     <div className="p-2">
@@ -913,20 +1015,12 @@ export function NotesCard({
                                         variant="neutral"
                                         boundary="none"
                                         aria-label="Open enlarge view"
-                                        onClick={() => {
-                                            setIsEnlargeOpen(true);
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setEnlargeState(true);
                                             onSend?.(true);
                                         }}
                                     />
-                                    {/* <IconButton
-                                        icon="export-b"
-                                        className="bg-transparent"
-                                        size="medium"
-                                        variant="neutral"
-                                        boundary="none"
-                                        aria-label="Share as PDF"
-                                        onClick={handleShare}
-                                    /> */}
                                     <IconButton
                                         icon="arrow-down-c"
                                         className="bg-transparent"
@@ -934,7 +1028,10 @@ export function NotesCard({
                                         size="medium"
                                         variant="neutral"
                                         boundary="none"
-                                        onClick={handleExpandToggle}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleExpandToggle();
+                                        }}
                                         aria-label={isExpanded ? "Minimize" : "Maximize"}
                                     />
                                 </div>
@@ -963,8 +1060,8 @@ export function NotesCard({
                             </div>
                         </motion.div>
                     )}
-                </motion.div>
-            </motion.div>
+                </div>
+            </div>
             <LinkDialog
                 open={isLinkDialogOpen}
                 onOpenChange={setIsLinkDialogOpen}
