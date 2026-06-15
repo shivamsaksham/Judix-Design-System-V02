@@ -6,14 +6,11 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Confirmation from "@/components/block/confirmation"
 import { ChevronDown } from "lucide-react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Dropdown } from "@/components/ui/dropdown"
 import { cn } from "@/lib/utils"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { LoginHistoryCard, LoginHistoryEntry } from "./login-history-card"
 
 export interface Session {
   id: string
@@ -38,6 +35,7 @@ export interface MyActivityProps {
   onExportActivity?: () => void
   onSelectProject?: (projectId: string) => void
   onDeleteAccount?: () => void
+  loginHistory?: LoginHistoryEntry[]
   className?: string
 }
 
@@ -50,10 +48,16 @@ export function MyActivity({
   onExportActivity,
   onSelectProject,
   onDeleteAccount,
+  loginHistory = [],
   className,
 }: MyActivityProps) {
   const [showLogoutAllConfirm, setShowLogoutAllConfirm] = React.useState(false)
   const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = React.useState(false)
+  const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+  const selectedProject = projects.find(p => p.id === selectedProjectId)
+  const [showExportProjectConfirm, setShowExportProjectConfirm] = React.useState(false)
+  const [pendingProjectId, setPendingProjectId] = React.useState<string | null>(null)
+  const [showLoginHistory, setShowLoginHistory] = React.useState(false)
   
   return (
     <div className={`bg-color-surface-neutral-default ${cn("w-full flex flex-col gap-6 pb-12", className)}`}>
@@ -74,7 +78,10 @@ export function MyActivity({
           <h3 className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Active sessions</h3>
           <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-tertiary ">
             You have {sessions.length} active sessions. Sessions older than 30 days are automatically terminated.
-            <button className="text-style-textblock-primary-caption-regular text-color-text-feedback-info-default hover:underline cursor-pointer">
+            <button 
+              onClick={() => setShowLoginHistory(true)}
+              className="text-style-textblock-primary-caption-regular text-color-text-feedback-info-default hover:underline cursor-pointer ml-1"
+            >
               See login history
             </button>
           </p>
@@ -141,6 +148,13 @@ export function MyActivity({
             Logout of all devices
           </Button>
         </Confirmation>
+
+        <Dialog open={showLoginHistory} onOpenChange={setShowLoginHistory}>
+          <DialogContent className="p-0 border-none bg-transparent shadow-none w-auto max-w-fit" showCloseButton={false}>
+            <DialogTitle className="sr-only">Login History</DialogTitle>
+            <LoginHistoryCard logins={loginHistory} onClose={() => setShowLoginHistory(false)} />
+          </DialogContent>
+        </Dialog>
       </section>
 
       {/* Export Section */}
@@ -168,20 +182,44 @@ export function MyActivity({
                 Export data and logs of any specific project.
               </p>
             </div>
-            <Select onValueChange={onSelectProject}>
-              <SelectPrimitive.Trigger asChild>
+            <Popover>
+              <PopoverTrigger asChild>
                 <Button variant="neutral" size="extraSmall" suffixIcon="arrow-down-c">
-                  <SelectValue placeholder="Select a project" />
+                  {selectedProject ? selectedProject.name : "Select a project"}
                 </Button>
-              </SelectPrimitive.Trigger>
-              <SelectContent>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 border-none bg-transparent shadow-none w-auto" align="end">
+                <Dropdown
+                  options={projects.map((project) => ({
+                    value: project.id,
+                    title: project.name,
+                  }))}
+                  value={selectedProjectId}
+                  onChange={(value) => {
+                    setPendingProjectId(value)
+                    setShowExportProjectConfirm(true)
+                  }}
+                  searchbar="off"
+                  className="w-[180px]"
+                />
+              </PopoverContent>
+            </Popover>
+            <Confirmation
+              open={showExportProjectConfirm}
+              onOpenChange={setShowExportProjectConfirm}
+              mainText="Export activity logs"
+              subText="Are you sure you want to export your activity logs? You will receive them on your registered email address within 24 hours."
+              confirmText="Proceed"
+              cancelText="Discard"
+              onConfirmClick={() => {
+                if (pendingProjectId) {
+                  setSelectedProjectId(pendingProjectId)
+                  onSelectProject?.(pendingProjectId)
+                }
+                setShowExportProjectConfirm(false)
+              }}
+              onCancelClick={() => setShowExportProjectConfirm(false)}
+            />
           </div>
         </div>
       </section>
@@ -189,7 +227,7 @@ export function MyActivity({
       {/* Danger Zone Section */}
       <section className="flex flex-col gap-4 pt-6 pb-22">
         <h2 className="p-1 text-style-heading-xs-emphasis text-color-text-neutral-default">Danger zone</h2>
-        <div className="flex flex-col border-t border-color-border-neutral-default pt-6 gap-4">
+        <div className="p-2 flex flex-col border-t border-color-border-neutral-default pt-8 gap-4">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex flex-col">
               <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Delete account</h4>

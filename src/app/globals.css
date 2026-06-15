@@ -91,6 +91,7 @@
   --primitives-font-spacing-400: 0.5px;
   --primitives-font-spacing-500: 0.75px;
   --primitives-font-height-000: 12px;
+  --primitives-font-height-75:14px;
   --primitives-font-height-100: 15px;
   --primitives-font-height-200: 18px;
   --primitives-font-height-300: 21px;
@@ -596,6 +597,13 @@
   letter-spacing: var(--font-tracking-body-large);
 }
 
+@utility text-style-body-default-regular-tight {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-body-default);
+  letter-spacing: var(--font-tracking-body-default);
+  line-height: var(--primitives-font-height-75);
+}
 @utility text-style-body-default-regular {
   font-family: var(--font-family-brandprimary);
   font-weight: var(--font-weight-regular);

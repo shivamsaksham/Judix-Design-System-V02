@@ -55,8 +55,8 @@ export function ProjectChoiceDropdown({
     );
 
     return (
-        <div className={cn("w-90", containerClasses)}>
-            <div className="flex items-center justify-between gap-2 border-b border-textinput-color-stroke-default p-2">
+        <div className={cn("w-95", containerClasses)}>
+            <div className="flex items-center justify-between border-b gap-2 border-textinput-color-stroke-default p-2 pr-5">
                 <TextInput
                     inputSize="medium"
                     label=""

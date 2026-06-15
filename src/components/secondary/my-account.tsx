@@ -4,13 +4,9 @@ import { cn } from "@/lib/utils";
 
 import { TextInput } from "@/components/ui/text-input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dropdown } from "@/components/ui/dropdown";
+import { Icon } from "@judix/icon";
 
 type Role = "student" | "professional" | "";
 
@@ -60,7 +56,7 @@ const fetchUserData = (): FormData => ({
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <h2 className="text-sm font-medium text-gray-500 mb-4 mt-6 uppercase tracking-wide">
+    <h2 className="p-1 text-style-label-default-emphasis text-color-text-neutral-tertiary mb-4 mt-6 uppercase">
       {title}
     </h2>
   );
@@ -72,7 +68,7 @@ function SelectField({
   onValueChange,
   disabled,
   placeholder,
-  children,
+  options,
   className,
 }: {
   label: string;
@@ -80,20 +76,53 @@ function SelectField({
   onValueChange: (val: string) => void;
   disabled?: boolean;
   placeholder?: string;
-  children: React.ReactNode;
+  options: { value: string; title: string }[];
   className?: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const selectedOption = options.find((opt) => opt.value === value);
+  const displayText = selectedOption ? selectedOption.title : "";
+
   return (
-    <div className={cn("w-full flex flex-col gap-1", disabled ? "opacity-60" : "", className)}>
-      <label className="text-xs text-gray-500">{label}</label>
-      <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-        <SelectTrigger className="h-12 w-full">
-          <SelectValue placeholder={placeholder ?? "Select..."} />
-        </SelectTrigger>
-        <SelectContent position="popper" className="z-50">
-          {children}
-        </SelectContent>
-      </Select>
+    <div className={cn("w-full", className)}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <div className="w-full cursor-pointer">
+            <TextInput
+              label={label}
+              value={displayText}
+              placeholder={placeholder ?? "Select..."}
+              disabled={disabled}
+              readOnly
+              inputSize="small"
+              className="cursor-pointer"
+              inputClassName="cursor-pointer select-none"
+              trailingAccessory={
+                <Icon
+                  name="arrow-down-c"
+                  className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
+                />
+              }
+            />
+          </div>
+        </PopoverTrigger>
+        <PopoverContent 
+          className="p-0 border-none bg-transparent shadow-none" 
+          style={{ width: "var(--radix-popover-trigger-width)" }}
+          align="start"
+        >
+          <Dropdown
+            options={options}
+            value={value}
+            onChange={(val) => {
+              onValueChange(val);
+              setOpen(false);
+            }}
+            searchbar="off"
+            className="w-full"
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
@@ -106,35 +135,78 @@ function FileUploadButton({
   disabled?: boolean;
 }) {
   const [fileName, setFileName] = useState(initialLabel);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, "_blank");
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFile(null);
+    setFileName(initialLabel);
+  };
+
+  if (file) {
+    return (
+      <div className="flex items-center justify-between border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 bg-color-surface-neutral-subtle_bg w-fit gap-6">
+        <div className="flex items-center gap-2 text-style-body-default-regular text-color-text-neutral-default">
+          <Icon
+            name="document-a"
+            className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
+          />
+          <span className="p-1 max-w-[200px] truncate">{fileName}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="neutral"
+            size="extraSmall"
+            onClick={handleView}
+          >
+            View
+          </Button>
+          <Button
+            type="button"
+            variant="neutral"
+            size="extraSmall"
+            onClick={handleDelete}
+            className="text-color-icon-feedback-error-default! hover:bg-color-surface-feedback-error-disabled!"
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <label
-      className={`inline-flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-sm w-fit transition-colors
-        ${disabled
-          ? "opacity-60 cursor-not-allowed bg-gray-50"
-          : "cursor-pointer hover:bg-gray-50"
-        }`}
+      className={cn(
+        "inline-flex items-center gap-2 border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 text-style-body-default-regular w-fit transition-colors",
+        disabled
+          ? "opacity-60 cursor-not-allowed bg-color-surface-neutral-hover_default text-color-text-neutral-disabled"
+          : "cursor-pointer bg-color-surface-neutral-subtle_bg text-color-text-neutral-default hover:bg-color-surface-neutral-subtle"
+      )}
     >
-      <svg
-        className="w-4 h-4 text-gray-500"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.5}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-      <span className="text-gray-700">{fileName}</span>
+      <Icon
+        name="document-a"
+        className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
+      />
+      <span className="p-1">{fileName}</span>
       <input
         type="file"
         className="hidden"
         disabled={disabled}
         onChange={(e) => {
           if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
             setFileName(e.target.files[0].name);
           }
         }}
@@ -197,6 +269,19 @@ function RoleSelector({
     </div>
   );
 }
+
+const GENDER_OPTIONS = [
+  { value: "male", title: "Male" },
+  { value: "female", title: "Female" },
+  { value: "other", title: "Other" },
+];
+
+const STATE_OPTIONS = [
+  { value: "outside-india", title: "Outside India" },
+  { value: "bihar", title: "Bihar" },
+  { value: "delhi", title: "Delhi" },
+  { value: "maharashtra", title: "Maharashtra" },
+];
 
 export function MyAccount({ profile }: { profile?: any }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -322,6 +407,7 @@ export function MyAccount({ profile }: { profile?: any }) {
           placeholder="Enter your first name"
           onChange={(e) => handleChange("firstName", e.target.value)}
           disabled={!isEditing}
+          inputSize="small"
         />
         <TextInput
           label="Last name"
@@ -329,6 +415,7 @@ export function MyAccount({ profile }: { profile?: any }) {
           placeholder="Enter your last name"
           onChange={(e) => handleChange("lastName", e.target.value)}
           disabled={!isEditing}
+          inputSize="small"
         />
       </div>
 
@@ -338,12 +425,14 @@ export function MyAccount({ profile }: { profile?: any }) {
           value={formData.mobile}
           placeholder="Your registered mobile"
           disabled
+          inputSize="small"
         />
         <TextInput
           label="Email"
           value={formData.email}
           placeholder="Your registered email"
           disabled
+          inputSize="small"
         />
       </div>
 
@@ -354,11 +443,8 @@ export function MyAccount({ profile }: { profile?: any }) {
           placeholder="Select gender"
           onValueChange={(val) => handleChange("gender", val)}
           disabled={!isEditing}
-        >
-          <SelectItem value="male">Male</SelectItem>
-          <SelectItem value="female">Female</SelectItem>
-          <SelectItem value="other">Other</SelectItem>
-        </SelectField>
+          options={GENDER_OPTIONS}
+        />
 
         <SelectField
           label="State"
@@ -366,31 +452,29 @@ export function MyAccount({ profile }: { profile?: any }) {
           placeholder="Select state"
           onValueChange={(val) => handleChange("state", val)}
           disabled={!isEditing}
-        >
-          <SelectItem value="outside-india">Outside India</SelectItem>
-          <SelectItem value="bihar">Bihar</SelectItem>
-          <SelectItem value="delhi">Delhi</SelectItem>
-          <SelectItem value="maharashtra">Maharashtra</SelectItem>
-        </SelectField>
+          options={STATE_OPTIONS}
+        />
 
         <div className="col-span-2">
           <TextInput
-            label="Address"
-            value={formData.address}
-            placeholder="Enter your address"
-            onChange={(e) => handleChange("address", e.target.value)}
+            label="Pin Code"
+            value={formData.pinCode}
+            placeholder="Enter your pin code"
+            onChange={(e) => handleChange("pinCode", e.target.value)}
             disabled={!isEditing}
+            inputSize="small"
           />
         </div>
       </div>
 
       <div className="mt-3">
         <TextInput
-          label="Pin Code"
-          value={formData.pinCode}
-          placeholder="Enter your pin code"
-          onChange={(e) => handleChange("pinCode", e.target.value)}
+          label="Address"
+          value={formData.address}
+          placeholder="Enter your address"
+          onChange={(e) => handleChange("address", e.target.value)}
           disabled={!isEditing}
+          inputSize="small"
         />
       </div>
 
@@ -407,6 +491,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="e.g. DHC/219/2019"
               onChange={(e) => handleChange("barRegNumber", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
             <TextInput
               label="Bar registration year"
@@ -414,12 +499,13 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="e.g. 2019"
               onChange={(e) => handleChange("barRegYear", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
           </div>
 
           <div className="mt-3">
             <FileUploadButton
-              initialLabel="Upload bar registration ID"
+              initialLabel="Upload Bar Registration ID"
               disabled={!isEditing}
             />
           </div>
@@ -439,6 +525,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="Enter your college name"
               onChange={(e) => handleChange("collegeName", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
             <TextInput
               label="College email"
@@ -446,6 +533,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="Enter your college email"
               onChange={(e) => handleChange("collegeEmail", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
           </div>
 
@@ -456,6 +544,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="e.g. 2027"
               onChange={(e) => handleChange("graduatingYear", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
             <TextInput
               label="College pin code"
@@ -463,6 +552,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="Enter college pin code"
               onChange={(e) => handleChange("collegePinCode", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
           </div>
 
@@ -473,6 +563,7 @@ export function MyAccount({ profile }: { profile?: any }) {
               placeholder="Enter college address"
               onChange={(e) => handleChange("collegeAddress", e.target.value)}
               disabled={!isEditing}
+              inputSize="small"
             />
           </div>
 

@@ -4,6 +4,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "../ui";
+import { Icon } from "@judix/icon";
 
 export type FileType = "chat" | "note" | "archive";
 
@@ -183,9 +184,9 @@ export const FileTreeNode = ({
                             : "text-color-icon-neutral-default"
                 )}>
                     {node.type === "folder" ? (
-                        <IconButton icon={(isOpen ? "folder-open" : "folder-a")} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent p-0" />
+                        <Icon name={(isOpen ? "folder-open" : "folder-a")} className="w-4 h-4" />
                     ) : (
-                        <IconButton icon={getIcon()} variant={'neutral'} size={'medium'} boundary={'none'} className="bg-transparent p-0" />
+                        <Icon name={getIcon()} className="w-4 h-4" />
                     )}
                 </div>
 
@@ -259,7 +260,7 @@ export interface FileTreeProps {
 
 export function FileTree({ data, activeId, activeIds, editingId, onSelect, onToggle, onRename, onCancelEdit, className }: FileTreeProps) {
     return (
-        <div className={cn("flex flex-col w-full h-full overflow-y-auto custom-scrollbar min-w-0 overflow-x-hidden", className)}>
+        <div className={cn("flex flex-col gap-2 w-full h-full overflow-y-auto custom-scrollbar min-w-0 overflow-x-hidden", className)}>
             {data.map((node) => (
                 <FileTreeNode
                     key={node.id}

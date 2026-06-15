@@ -33,6 +33,7 @@ export interface NavBarProps {
     isResultPanelOpen?: boolean;
     isMobile?: boolean;
     isNewChat?: boolean;
+    chatName?: string;
 }
 
 /**
@@ -46,15 +47,19 @@ const NavLogo = () => (
                 alt="Logo"
                 width={92}
                 height={32}
-                className="hidden md:block"
                 priority
             />
+        </div>
+    </Link>
+);
+const MobileLogo = () => (
+    <Link href="/">
+        <div className="flex items-center cursor-pointer">
             <Image
                 src="/mobile-logo.svg"
                 alt="Logo"
-                width={32}
-                height={32}
-                className="block md:hidden"
+                width={53}
+                height={16}
                 priority
             />
         </div>
@@ -70,7 +75,7 @@ const BackToResearchButton = ({ onClick }: { onClick?: () => void }) => (
         size="small"
         prefixIcon="back-square"
         onClick={onClick}
-        className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg"
+        className="border- border-color-text-neutral-emphasis rounded-radius-small bg-transparent hover:bg-color-surface-neutral-subtle_bg"
     >
         Back to research
     </Button>
@@ -122,6 +127,7 @@ export function NavBar({
     isSessionContextChecked = false,
     onSessionContextToggle,
     isNewChat = false,
+    chatName,
     isMobile: isMobileProp,
 }: NavBarProps) {
     const isMobileDevice = useMediaQuery("(max-width: 1024px)");
@@ -169,7 +175,7 @@ export function NavBar({
                 className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
                 aria-label="Toggle Sidebar"
             >
-                <Image src="/mobile-sidebar.svg" alt="Menu" width={39} height={32} />
+                <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
             </button>
         </div>
     );
@@ -196,16 +202,16 @@ export function NavBar({
 
     const renderContextAction = () => (
         <div className="relative">
-            <Label
+            {/* <Label
                 ref={contextLabelRef}
                 colorScheme="neutral"
                 size="medium"
                 onClick={handleContextClick}
                 selected={showContextDropdown}
-                className="cursor-pointer mr-6"
+                className="cursor-pointer lg:mr-6"
             >
                 Context
-            </Label>
+            </Label> */}
 
             {isMobile ? (
                 <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
@@ -247,7 +253,7 @@ export function NavBar({
     return (
         <nav
             className={cn(
-                'flex items-center justify-between px-5 py-[14px] bg-color-surface-neutral-default transition-all duration-300 ease-in-out',
+                'flex items-center justify-between px-4 py-2 md:px-4 md:py-3 h-16 bg-color-surface-neutral-default transition-all duration-300 ease-in-out',
                 className
             )}
             style={{ paddingRight: !isMobile && isResultPanelOpen ? '450px' : '1.25rem' }}
@@ -256,7 +262,7 @@ export function NavBar({
                 <>
                     <div className="flex items-center gap-2">
                         {renderMobileSidebarTrigger()}
-                        <NavLogo />
+                        <MobileLogo />
                     </div>
                     <BackToResearchButton onClick={onBackToResearch} />
                 </>
@@ -288,25 +294,41 @@ export function NavBar({
 
             {variant === 'default' && (
                 <>
-                    {isMobile && isResultPanelOpen ? (
-                        /* Mobile specialized result header */
+                    {isMobile ? (
                         <div className="flex items-center justify-between w-full">
-                            <div className="flex items-center gap-2">
+                            <div className={cn(
+                                "flex items-center overflow-hidden flex-1",
+                                !isNewChat && chatName ? "gap-2" : "gap-4"
+                            )}>
                                 {renderMobileSidebarTrigger()}
-                                <NavLogo />
+                                {!isNewChat && chatName ? (
+                                    <span className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate">
+                                        {chatName}
+                                    </span>
+                                ) : (
+                                    <MobileLogo />
+                                )}
                             </div>
-                            <div className="flex items-center gap-3">
-                                {onBackToResearch && <BackToResearchButton onClick={onBackToResearch} />}
-                                {onMenuClick && (
-                                    <IconButton
-                                        onClick={onMenuClick}
-                                        variant="neutral"
-                                        size="medium"
-                                        corner='sharp'
-                                        className="border-none p-2 bg-transparent hover:bg-color-surface-neutral-hover_default m-px h-fit"
-                                    >
-                                        <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} className="text-color-icon-neutral-secondary" />
-                                    </IconButton>
+
+                            <div className="flex items-center shrink-0 ml-2">
+                                {renderMoreOptions(
+                                    !isNewChat && chatName ? [
+                                        {
+                                            id: 'rename',
+                                            label: 'Rename',
+                                            icon: <Icon name="Edit2" />,
+                                            onClick: () => { setShowChatMenu(false); onRename?.(); },
+                                        },
+                                        {
+                                            id: 'delete',
+                                            label: 'Delete',
+                                            icon: <Icon name="Trash" className="text-red-400" />,
+                                            onClick: () => { setShowChatMenu(false); onDelete?.(); },
+                                            variant: 'danger',
+                                        },
+                                    ] : [
+                                        // Generic options for default state if needed, or just leave empty to have the button
+                                    ]
                                 )}
                             </div>
                         </div>

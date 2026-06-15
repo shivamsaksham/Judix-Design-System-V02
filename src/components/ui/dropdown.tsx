@@ -162,9 +162,11 @@ export const Dropdown = ({
     className
   );
 
+  const hasWidth = className && /\bw-/.test(className);
+
   if (searchbar === "off") {
     return (
-      <div className={cn("w-[216px] ", containerClasses)}>
+      <div className={cn(!hasWidth && "w-[216px]", containerClasses)}>
         <div className="p-2">
           {renderOptions()}
         </div>
@@ -173,7 +175,7 @@ export const Dropdown = ({
   }
   if (searchbar === "integrated") {
     return (
-      <div className="w-72">
+      <div className={cn(!hasWidth && "w-72")}>
         {renderSearchBar()}
         <div className="mt-[3px]" />
         <div className={containerClasses}>
@@ -186,7 +188,7 @@ export const Dropdown = ({
   }
 
   return (
-    <div className={cn("w-72", containerClasses)}>
+    <div className={cn(!hasWidth && "w-72", containerClasses)}>
       {renderSearchBar()}
       <div className="p-2">
         {renderOptions()}
