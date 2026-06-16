@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { PricingCard, PricingCardProps } from "./pricing-card";
 import { Button } from "../ui/button";
 
-const monthlyPlans: PricingCardProps[] = [
+export const monthlyPlans: PricingCardProps[] = [
   {
     tier: "Lite",
     description: "For lawyers just getting started with AI research",
@@ -95,7 +95,7 @@ const monthlyPlans: PricingCardProps[] = [
   },
 ];
 
-const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
+export const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
   ...plan,
   price: typeof plan.price === "number" && plan.price > 0 ? Math.floor(plan.price * 0.8) : plan.price,
 }));
