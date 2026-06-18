@@ -17,6 +17,7 @@ import { LinkDialog } from "./link-dialog";
 import { TextEditor } from "../ui/text-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
+import { showToast } from "../ui/toast";
 import { Label } from "../ui/label";
 import Confirmation from "./confirmation";
 import {
@@ -846,7 +847,7 @@ export function NotesCard({
                                                 setEnlargeState(false);
                                                 setIsExpanded(false);
                                             }} size="extraSmall">Cancel</Button>
-                                            <Button variant="primary" onClick={() => { onSave?.(noteContent); }} size="extraSmall">Save</Button>
+                                            <Button variant="primary" onClick={() => { onSave?.(noteContent); showToast.success("Notes saved successfully", undefined, 1000); }} size="extraSmall">Save</Button>
                                         </div>
                                     </div>
                                 </div>
@@ -979,7 +980,7 @@ export function NotesCard({
                                                 setIsExpanded(false);
                                             }
                                         }} size="extraSmall">Cancel</Button>
-                                        <Button variant="primary" onClick={() => { onSave?.(noteContent); }} size="extraSmall">Save</Button>
+                                        <Button variant="primary" onClick={() => { onSave?.(noteContent); showToast.success("Notes saved successfully", undefined, 1000); }} size="extraSmall">Save</Button>
                                     </div>
                                 </div>
                             </div>

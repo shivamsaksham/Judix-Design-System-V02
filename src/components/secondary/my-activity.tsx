@@ -83,7 +83,7 @@ export function MyActivity({
               onClick={() => setShowLoginHistory(true)}
               className="text-style-textblock-primary-caption-regular text-color-text-feedback-info-default hover:underline cursor-pointer ml-1"
             >
-              See login history
+              See Session history
             </button>
           </p>
         </div>

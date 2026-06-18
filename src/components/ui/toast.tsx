@@ -98,14 +98,14 @@ const CustomToast: React.FC<CustomToastProps> = ({ type, title, message, visible
 };
 
 export const showToast = {
-  alert: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  success: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  notice: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  info: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  alert: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration }),
+  success: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration }),
+  notice: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration }),
+  info: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration }),
   promise: <T extends unknown>(
     promise: Promise<T>,
     messages: {

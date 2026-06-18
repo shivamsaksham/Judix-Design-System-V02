@@ -96,13 +96,13 @@ export const OrderSummary = ({
             </Dialog>
 
             {/* Payment Frequency Section */}
-            <div className="flex gap-4 w-full">
+            <div className="flex flex-col sm:flex-row gap-4 w-full">
                 <PaymentFrequencyCard
                     type="monthly"
                     price={data.monthlyPrice}
                     selected={data.currentFrequency === 'monthly'}
                     onClick={() => handleFrequencySelect('monthly')}
-                    className="flex-1"
+                    className="flex-1 w-full sm:w-auto"
                 />
                 <PaymentFrequencyCard
                     type="yearly"
@@ -110,7 +110,7 @@ export const OrderSummary = ({
                     selected={data.currentFrequency === 'yearly'}
                     discountLabel="Save 20%"
                     onClick={() => handleFrequencySelect('yearly')}
-                    className="flex-1"
+                    className="flex-1 w-full sm:w-auto"
                 />
             </div>
 
