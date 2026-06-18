@@ -108,6 +108,14 @@ export interface PricingTableProps {
 export function PricingTable({ onSelectPlan, backendPlans = [] }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
+  // Helper to format bytes to readable string
+  const formatBytes = (bytes?: number) => {
+    if (bytes === undefined) return undefined;
+    if (bytes === 0) return "0 GB";
+    const gb = bytes / (1024 * 1024 * 1024);
+    return `${gb >= 1 ? gb : gb.toFixed(1)} GB`;
+  };
+
   // Merge backend prices with hardcoded features
   const mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => {
     const backendPlan = backendPlans.find(bp => 
@@ -115,11 +123,29 @@ export function PricingTable({ onSelectPlan, backendPlans = [] }: PricingTablePr
       bp.interval === billingCycle
     );
     
+    let updatedUsage = plan.usage;
+    if (backendPlan) {
+      updatedUsage = plan.usage.map(item => {
+        if (item.label === "AI queries" && backendPlan.queriesPerMonth !== undefined) {
+          return { ...item, value: backendPlan.queriesPerMonth.toString() };
+        }
+        if (item.label === "Number of pages" && backendPlan.pagesPerMonth !== undefined) {
+          return { ...item, value: backendPlan.pagesPerMonth.toString() };
+        }
+        if (item.label === "Storage" && backendPlan.storage !== undefined) {
+          return { ...item, value: formatBytes(backendPlan.storage) };
+        }
+        if (item.label === "Projects" && backendPlan.projects !== undefined) {
+          return { ...item, value: backendPlan.projects.toString() };
+        }
+        return item;
+      });
+    }
+
     return {
       ...plan,
       price: backendPlan ? backendPlan.price : plan.price,
-      // If we want to override usage metrics, we could do it here too:
-      // usage: ...
+      usage: updatedUsage,
     };
   });
 
