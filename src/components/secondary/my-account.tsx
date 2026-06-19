@@ -291,7 +291,7 @@ export function MyAccount({ profile }: { profile?: any }) {
   const [formData, setFormData] = useState<FormData>({
     firstName: profile?.firstName || "",
     lastName: profile?.lastName || "",
-    mobile: profile?.phoneNumber || "",
+    mobile: profile?.phoneNumber || profile?.phone || profile?.mobileNumber || profile?.mobile || "",
     email: profile?.email || "",
     gender: profile?.gender || "",
     state: profile?.state || "",
@@ -315,7 +315,7 @@ export function MyAccount({ profile }: { profile?: any }) {
       const newFormData = {
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
-        mobile: profile.phoneNumber || "",
+        mobile: profile.phoneNumber || profile.phone || profile.mobileNumber || profile.mobile || "",
         email: profile.email || "",
         gender: profile.gender || "",
         state: profile.state || "",

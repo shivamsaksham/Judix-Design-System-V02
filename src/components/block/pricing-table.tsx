@@ -103,9 +103,10 @@ export const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
 export interface PricingTableProps {
   onSelectPlan?: (planName: string, billingCycle: "monthly" | "yearly") => void;
   backendPlans?: any[]; // Array of plans from the backend
+  currentPlan?: string; // Add currentPlan prop
 }
 
-export function PricingTable({ onSelectPlan, backendPlans = [] }: PricingTableProps) {
+export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
   // Helper to format bytes to readable string
@@ -175,9 +176,18 @@ export function PricingTable({ onSelectPlan, backendPlans = [] }: PricingTablePr
 
       {/* Pricing Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-10 gap-y-24 mb-9 pt-20 justify-items-center">
-        {mergedPlans.map((plan) => (
-          <PricingCard key={plan.tier} {...plan} onSelect={() => onSelectPlan?.(plan.tier, billingCycle)} />
-        ))}
+        {mergedPlans.map((plan) => {
+          const isCurrentPlan = currentPlan?.toLowerCase() === plan.tier.toLowerCase();
+          return (
+            <PricingCard 
+              key={plan.tier} 
+              {...plan} 
+              buttonLabel={isCurrentPlan ? "Current Plan" : "Select plan"}
+              buttonDisabled={isCurrentPlan}
+              onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, billingCycle)} 
+            />
+          );
+        })}
       </div>
     </div>
   );

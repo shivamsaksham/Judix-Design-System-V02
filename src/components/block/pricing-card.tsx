@@ -18,6 +18,7 @@ export type PricingCardProps = {
   features: PricingFeature[];
   support: PricingFeature[];
   onSelect?: (tier: string) => void;
+  buttonDisabled?: boolean;
 };
 
 function FeatureRow({ label, value }: PricingFeature) {
@@ -63,7 +64,8 @@ export function PricingCard({
   usage,
   features,
   support,
-  onSelect
+  onSelect,
+  buttonDisabled
 }: PricingCardProps) {
   return (
     <div
@@ -108,6 +110,7 @@ export function PricingCard({
             size="small"
             className="w-full h-12 px-4 py-2 bg-color-bg-contrast lg:text-style-secondary-regular-b1   text-color-text-neutral-onneutral border-none hover:bg-color-bg-contrast/90 hover:border-none hover:text-color-text-neutral-onneutral rounded-radius-small"
             onClick={() => onSelect?.(tier)}
+            disabled={buttonDisabled}
           >
             {buttonLabel}
           </Button>

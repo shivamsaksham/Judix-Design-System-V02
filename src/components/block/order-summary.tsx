@@ -34,6 +34,7 @@ export interface OrderSummaryProps {
     className?: string;
     loading?: boolean;
     backendPlans?: any[];
+    currentPlan?: string;
 }
 
 export const OrderSummary = ({
@@ -45,6 +46,7 @@ export const OrderSummary = ({
     className,
     loading,
     backendPlans = [],
+    currentPlan,
 }: OrderSummaryProps) => {
     const [promoInput, setPromoInput] = useState('');
     const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
@@ -87,6 +89,7 @@ export const OrderSummary = ({
                     <DialogTitle className="sr-only">Change Subscription Plan</DialogTitle>
                     <PricingTable
                         backendPlans={backendPlans}
+                        currentPlan={currentPlan}
                         onSelectPlan={(plan, frequency) => {
                             setIsChangePlanOpen(false);
                             onChangePlan?.(plan, frequency);
