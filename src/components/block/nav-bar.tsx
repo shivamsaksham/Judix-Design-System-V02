@@ -174,7 +174,7 @@ export function NavBar({
                         {renderMobileSidebarTrigger()}
                         <LogoText isMobile={isMobile} />
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                         {!isMobile ? (
                             <UserBadge name={userName} />
                         ) : (
@@ -187,7 +187,7 @@ export function NavBar({
                                 },
                             ])
                         )}
-                    </div>
+                    </div> */}
                 </>
             )}
 
