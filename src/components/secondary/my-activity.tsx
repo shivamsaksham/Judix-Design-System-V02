@@ -89,7 +89,7 @@ export function MyActivity({
         </div>
 
         <div className="flex flex-col">
-          {sessions.map((session) => (
+          {sessions.slice(0, 3).map((session) => (
             <div
               key={session.id}
               className="flex items-center justify-between px-4 py-4 border-b border-color-border-neutral-default first:pt-0 last:border-b-0 last:pb-0"
@@ -127,6 +127,16 @@ export function MyActivity({
               </button>
             </div>
           ))}
+          {sessions.length > 3 && (
+            <div className="pt-4 px-4 flex justify-start">
+              <button
+                onClick={() => setShowLoginHistory(true)}
+                className="p-1 text-style-body-default-emphasis text-color-text-feedback-info-default hover:underline cursor-pointer"
+              >
+                See more
+              </button>
+            </div>
+          )}
         </div>
 
         {/* <Confirmation
