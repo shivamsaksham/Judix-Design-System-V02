@@ -33,6 +33,7 @@ export interface ContentProps {
     isStreaming?: boolean;
     aiThinkingProps?: AiThinkingProps;
     hideActions?: boolean;
+    onExport?: (format: string) => void;
 }
 
 export const Content = ({
@@ -48,6 +49,7 @@ export const Content = ({
     onRefresh,
     onCopy,
     onShare,
+    onExport,
     isLiked,
     isDisliked,
     followUpQueries,
@@ -150,6 +152,7 @@ export const Content = ({
                 onRefresh={onRefresh}
                 onCopy={onCopy}
                 onShare={onShare}
+                onExport={onExport}
                 isLiked={isLiked}
                 isDisliked={isDisliked}
                 contentToCopy={markdown}
