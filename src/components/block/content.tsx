@@ -23,6 +23,7 @@ export interface ContentProps {
     onCopy?: () => void;
     isLiked?: boolean;
     isDisliked?: boolean;
+    onShare?: () => void;
     // Follow-up queries
     followUpQueries?: string[];
     onFollowUpQueryClick?: (query: string) => void;
@@ -31,6 +32,7 @@ export interface ContentProps {
     animate?: boolean;
     isStreaming?: boolean;
     aiThinkingProps?: AiThinkingProps;
+    hideActions?: boolean;
 }
 
 export const Content = ({
@@ -45,6 +47,7 @@ export const Content = ({
     onDislike,
     onRefresh,
     onCopy,
+    onShare,
     isLiked,
     isDisliked,
     followUpQueries,
@@ -54,6 +57,7 @@ export const Content = ({
     animate = false,
     isStreaming = false,
     aiThinkingProps,
+    hideActions = false,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
 
@@ -139,12 +143,13 @@ export const Content = ({
                 </ReactMarkdown>
             </div>}
 
-            {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && <ResponseActions
+            {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && !hideActions && <ResponseActions
                 className='w-fit'
                 onLike={onLike}
                 onDislike={onDislike}
                 onRefresh={onRefresh}
                 onCopy={onCopy}
+                onShare={onShare}
                 isLiked={isLiked}
                 isDisliked={isDisliked}
                 contentToCopy={markdown}

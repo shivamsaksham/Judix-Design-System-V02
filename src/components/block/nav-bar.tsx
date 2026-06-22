@@ -32,6 +32,7 @@ export interface NavBarProps {
     isMobile?: boolean;
     isNewChat?: boolean;
     chatName?: string;
+    hideMobileSidebarTrigger?: boolean;
 }
 
 const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
@@ -95,6 +96,7 @@ export function NavBar({
     isNewChat = false,
     chatName,
     isMobile: isMobileProp,
+    hideMobileSidebarTrigger = false,
 }: NavBarProps) {
     const isMobileDevice = useMediaQuery("(max-width: 1024px)");
     const isMobile = isMobileProp ?? isMobileDevice;
@@ -122,15 +124,17 @@ export function NavBar({
 
     // Sub-renderers for clean structure
     const renderMobileSidebarTrigger = () => (
-        <div className="md:hidden">
-            <button
-                onClick={onMenuClick}
-                className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
-                aria-label="Toggle Sidebar"
-            >
-                <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
-            </button>
-        </div>
+        !hideMobileSidebarTrigger && (
+            <div className="md:hidden">
+                <button
+                    onClick={onMenuClick}
+                    className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
+                    aria-label="Toggle Sidebar"
+                >
+                    <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
+                </button>
+            </div>
+        )
     );
 
     const renderMoreOptions = (items: any[]) => (
