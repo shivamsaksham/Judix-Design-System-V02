@@ -286,6 +286,7 @@ function ShareSearchDialog({
                     <Button
                         type="button"
                         variant="primary"
+                        size={"small"}
                         onClick={handleShare}
                         disabled={!shareLink || isSharing}
                         loading={isSharing}

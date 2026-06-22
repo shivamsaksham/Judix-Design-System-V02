@@ -13,9 +13,21 @@ export interface ChatHistorySectionProps {
     activeChatId: string | null | undefined;
     onMenuClick: (chatId: string, event: React.MouseEvent) => void;
     className?: string;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
 }
 
-export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className }: ChatHistorySectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore }: ChatHistorySectionProps) => {
+
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        if (!onLoadMore || !hasMore || isLoadingMore) return;
+        
+        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+        if (scrollHeight - scrollTop - clientHeight < 50) {
+            onLoadMore();
+        }
+    };
 
     return (
         <div className={`flex flex-col h-full ${className || ''}`}>
@@ -27,6 +39,7 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
             {/* Scrollable Content */}
             <div
                 className="flex-1 overflow-y-auto no-scrollbar p-1"
+                onScroll={handleScroll}
             >
                 {chatHistory.map((chat) => (
                     <HistoryTile
@@ -37,6 +50,14 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
                         isActive={activeChatId === chat.id}
                     />
                 ))}
+                
+                {isLoadingMore && (
+                    <div className="flex flex-col gap-2 mt-2 px-2">
+                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                    </div>
+                )}
             </div>
         </div>
     );

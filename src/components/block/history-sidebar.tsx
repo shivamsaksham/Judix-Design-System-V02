@@ -56,6 +56,9 @@ export interface HistorySidebarProps {
     onToggleSidebar?: () => void;
 
     showCloseButton?: boolean;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -83,6 +86,9 @@ export const HistorySidebar = ({
     onToggleSidebar,
 
     showCloseButton = false,
+    onLoadMore,
+    hasMore,
+    isLoadingMore,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -240,6 +246,9 @@ export const HistorySidebar = ({
                     activeChatId={activeChatId}
                     onMenuClick={handleMenuClick}
                     className="ml-1 mr-3 flex-1 min-h-0"
+                    onLoadMore={onLoadMore}
+                    hasMore={hasMore}
+                    isLoadingMore={isLoadingMore}
                 />
 
                 <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
@@ -485,7 +494,7 @@ export const HistorySidebar = ({
                 open={!!shareChatId}
                 onOpenChange={(open) => !open && setShareChatId(null)}
                 shareLink={`https://judix.in/share/${shareChatId}`}
-                onShare={(recipients, note) => {
+                onShare={async (recipients, note) => {
                     console.log('Sharing', recipients, note);
                     setShareChatId(null);
                 }}
