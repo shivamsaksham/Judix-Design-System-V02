@@ -3,10 +3,23 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
 import { IconButton } from '@/components/ui/icon-button';
 
+const AnimatedEllipsis = () => {
+    const [dots, setDots] = React.useState('');
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setDots(prev => prev.length >= 3 ? '' : prev + '.');
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
+
+    return <span className="inline-block w-4 text-left">{dots}</span>;
+};
+
 export interface FileUploadItemProps extends React.HTMLAttributes<HTMLDivElement> {
     fileName: string;
     fileSize: string;
-    state: 'processing' | 'processed' | 'failed';
+    state: 'pending' | 'processing' | 'processed' | 'failed';
     progress?: number; 
     subtitle?: string; 
     onRemove?: () => void;
@@ -44,7 +57,7 @@ export const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemPro
                 {state === 'processing' && (
                     <div className="h-[2px] w-full bg-color-border-neutral-default my-1 overflow-hidden relative rounded-full">
                         <div 
-                            className="absolute top-0 left-0 h-full bg-color-border-brand-primary transition-all duration-300" 
+                            className="absolute top-0 left-0 h-full bg-color-border-primary-strong transition-all duration-300" 
                             style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
                         />
                     </div>
@@ -52,8 +65,13 @@ export const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemPro
 
                 {/* Status Text Section (Indented to align with text) */}
                 <div className="flex w-full pl-8"> 
+                    {state === 'pending' && (
+                        <span className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary italic">Ready to upload</span>
+                    )}
                     {state === 'processing' && (
-                        <span className="p-1 text-style-label-default-regular text-color-text-brand-primary">Processing</span>
+                        <span className="p-1 text-style-label-default-regular text-color-text-brand-primary flex items-center">
+                            Processing<AnimatedEllipsis />
+                        </span>
                     )}
                     {state === 'processed' && subtitle && (
                         <span className="p-1 text-style-label-default-regular italic text-color-text-primary-default">

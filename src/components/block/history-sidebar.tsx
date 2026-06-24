@@ -56,6 +56,9 @@ export interface HistorySidebarProps {
     onToggleSidebar?: () => void;
 
     showCloseButton?: boolean;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -83,6 +86,9 @@ export const HistorySidebar = ({
     onToggleSidebar,
 
     showCloseButton = false,
+    onLoadMore,
+    hasMore,
+    isLoadingMore,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -128,9 +134,20 @@ export const HistorySidebar = ({
 
     const handleMenuClick = (chatId: string, event: React.MouseEvent) => {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
+        const menuWidth = 216; // width of ChatHistoryMenu is w-[216px]
+        let leftPos = rect.left;
+        
+        if (rect.left + menuWidth > window.innerWidth) {
+            leftPos = rect.right - menuWidth;
+        }
+        
+        if (leftPos < 8) {
+            leftPos = 8;
+        }
+
         setMenuPosition({
             top: rect.bottom,
-            left: rect.left,
+            left: leftPos,
         });
         setOpenMenuChatId(chatId);
     };
@@ -207,14 +224,14 @@ export const HistorySidebar = ({
                         iconClassName='text-icon_button-color-neutral-icon'
                         aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
                     />
-                    <Label
+                    {/* <Label
                         colorScheme="neutral"
                         size="small"
                         onClick={onResetChat}
                         className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
                     >
                         Reset Chat
-                    </Label>
+                    </Label> */}
                 </div>
 
                 <SidebarActionButtons
@@ -229,6 +246,9 @@ export const HistorySidebar = ({
                     activeChatId={activeChatId}
                     onMenuClick={handleMenuClick}
                     className="ml-1 mr-3 flex-1 min-h-0"
+                    onLoadMore={onLoadMore}
+                    hasMore={hasMore}
+                    isLoadingMore={isLoadingMore}
                 />
 
                 <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
@@ -474,7 +494,7 @@ export const HistorySidebar = ({
                 open={!!shareChatId}
                 onOpenChange={(open) => !open && setShareChatId(null)}
                 shareLink={`https://judix.in/share/${shareChatId}`}
-                onShare={(recipients, note) => {
+                onShare={async (recipients, note) => {
                     console.log('Sharing', recipients, note);
                     setShareChatId(null);
                 }}

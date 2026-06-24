@@ -1,14 +1,12 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { useMediaQuery } from '@/hooks/use-mobile-query'; // I'll create this hook if needed, or check if it exists
+import { useMediaQuery } from '@/hooks/use-mobile-query';
 import Image from 'next/image';
-import ContextWindowDropdown, { ContextItem } from './context-window-dropdown';
+import type { ContextItem } from './context-window-dropdown';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { Icon } from 'judix-icon';
-import { Button, IconButton } from '../ui';
-import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
+import { Button, Skeleton } from '../ui';
 import Link from 'next/link';
 
 export interface NavBarProps {
@@ -34,63 +32,32 @@ export interface NavBarProps {
     isMobile?: boolean;
     isNewChat?: boolean;
     chatName?: string;
+    hideMobileSidebarTrigger?: boolean;
 }
 
-/**
- * Shared Logo Component
- */
-const NavLogo = () => (
+const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
     <Link href="/">
-        <div className="flex items-center cursor-pointer">
+        <div className="flex items-center cursor-pointer gap-[6px]">
+            {!isMobile && (
+                <Image
+                    src="/mobile-logo.svg"
+                    alt="Icon"
+                    width={22}
+                    height={22}
+                    style={{ height: 'auto' }}
+                    priority
+                />
+            )}
             <Image
-                src="/logo.svg"
-                alt="Logo"
-                width={92}
-                height={32}
-                priority
-            />
-        </div>
-    </Link>
-);
-const MobileLogo = () => (
-    <Link href="/">
-        <div className="flex items-center cursor-pointer">
-            <Image
-                src="/mobile-logo.svg"
+                src="/judix.svg"
                 alt="Logo"
                 width={53}
                 height={16}
+                style={{ height: 'auto' }}
                 priority
             />
         </div>
     </Link>
-);
-
-/**
- * Shared Back to Research Button
- */
-const BackToResearchButton = ({ onClick }: { onClick?: () => void }) => (
-    <Button
-        variant="neutral"
-        size="small"
-        prefixIcon="back-square"
-        onClick={onClick}
-        className="border- border-color-text-neutral-emphasis rounded-radius-small bg-transparent hover:bg-color-surface-neutral-subtle_bg"
-    >
-        Back to research
-    </Button>
-);
-
-/**
- * Project Info Badge
- */
-const ProjectBadge = ({ name }: { name: string }) => (
-    <div className="flex items-center gap-2 px-2 py-1 bg-color-surface-neutral-subtle_bg rounded-md">
-        <Icon name="Cube" className="w-4 h-4 text-color-icon-primary-default" />
-        <span className="text-style-body-default-medium text-color-text-neutral-default truncate max-w-[150px]">
-            {name}
-        </span>
-    </div>
 );
 
 /**
@@ -129,14 +96,12 @@ export function NavBar({
     isNewChat = false,
     chatName,
     isMobile: isMobileProp,
+    hideMobileSidebarTrigger = false,
 }: NavBarProps) {
     const isMobileDevice = useMediaQuery("(max-width: 1024px)");
     const isMobile = isMobileProp ?? isMobileDevice;
 
-    const [showContextDropdown, setShowContextDropdown] = useState(false);
     const [showChatMenu, setShowChatMenu] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const contextLabelRef = useRef<HTMLDivElement>(null);
     const chatMenuRef = useRef<HTMLDivElement>(null);
     const ellipsisButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -145,39 +110,31 @@ export function NavBar({
             const target = event.target as Element;
             if (target.closest('[role="dialog"]') || target.closest('[data-state="open"]')) return;
 
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-                contextLabelRef.current && !contextLabelRef.current.contains(event.target as Node)) {
-                setShowContextDropdown(false);
-            }
-
             if (chatMenuRef.current && !chatMenuRef.current.contains(event.target as Node) &&
                 ellipsisButtonRef.current && !ellipsisButtonRef.current.contains(event.target as Node)) {
                 setShowChatMenu(false);
             }
         };
 
-        if (showContextDropdown || showChatMenu) {
+        if (showChatMenu) {
             document.addEventListener('mousedown', handleClickOutside);
         }
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [showContextDropdown, showChatMenu]);
-
-    const handleContextClick = () => {
-        setShowContextDropdown(!showContextDropdown);
-        onContextClick?.();
-    };
+    }, [showChatMenu]);
 
     // Sub-renderers for clean structure
     const renderMobileSidebarTrigger = () => (
-        <div className="md:hidden">
-            <button
-                onClick={onMenuClick}
-                className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
-                aria-label="Toggle Sidebar"
-            >
-                <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
-            </button>
-        </div>
+        !hideMobileSidebarTrigger && (
+            <div className="md:hidden">
+                <button
+                    onClick={onMenuClick}
+                    className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
+                    aria-label="Toggle Sidebar"
+                >
+                    <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
+                </button>
+            </div>
+        )
     );
 
     const renderMoreOptions = (items: any[]) => (
@@ -190,7 +147,7 @@ export function NavBar({
                 className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                 iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
             >
-                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" />
+                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" style={{ height: 'auto' }}/>
             </Button>
             {showChatMenu && (
                 <div ref={chatMenuRef} className="absolute top-full right-0 mt-2 z-50">
@@ -200,82 +157,28 @@ export function NavBar({
         </div>
     );
 
-    const renderContextAction = () => (
-        <div className="relative">
-            {/* <Label
-                ref={contextLabelRef}
-                colorScheme="neutral"
-                size="medium"
-                onClick={handleContextClick}
-                selected={showContextDropdown}
-                className="cursor-pointer lg:mr-6"
-            >
-                Context
-            </Label> */}
-
-            {isMobile ? (
-                <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
-                    <SheetContent side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
-                        <div className="p-4 border-b border-color-border-neutral-default shrink-0">
-                            <SheetTitle className="text-lg font-semibold">Context Window</SheetTitle>
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <ContextWindowDropdown
-                                items={contextItems}
-                                defaultAutoContext={isAutoContext}
-                                onItemToggle={onContextItemToggle}
-                                onModeChange={onAutoContextChange}
-                                isSessionContextChecked={isSessionContextChecked}
-                                onSessionContextToggle={onSessionContextToggle}
-                                hideHeader={true}
-                                isMobile={true}
-                            />
-                        </div>
-                    </SheetContent>
-                </Sheet>
-            ) : (
-                showContextDropdown && (
-                    <div ref={dropdownRef} className="absolute top-full right-0 mt-2 z-50">
-                        <ContextWindowDropdown
-                            items={contextItems}
-                            defaultAutoContext={isAutoContext}
-                            onItemToggle={onContextItemToggle}
-                            onModeChange={onAutoContextChange}
-                            isSessionContextChecked={isSessionContextChecked}
-                            onSessionContextToggle={onSessionContextToggle}
-                        />
-                    </div>
-                )
-            )}
-        </div>
-    );
-
     return (
         <nav
             className={cn(
-                'flex items-center justify-between px-4 py-2 md:px-4 md:py-3 h-16 bg-color-surface-neutral-default transition-all duration-300 ease-in-out',
+                'flex items-center justify-between px-4 py-2 lg:py-3 h-[64px] bg-color-surface-neutral-default transition-all duration-300 ease-in-out',
                 className
             )}
             style={{ paddingRight: !isMobile && isResultPanelOpen ? '450px' : '1.25rem' }}
         >
             {variant === 'secondary' && (
-                <>
-                    <div className="flex items-center gap-2">
-                        {renderMobileSidebarTrigger()}
-                        <MobileLogo />
-                    </div>
-                    <BackToResearchButton onClick={onBackToResearch} />
-                </>
+                <div className="flex items-center gap-2">
+                    {renderMobileSidebarTrigger()}
+                    <LogoText isMobile={true} />
+                </div>
             )}
 
             {variant === 'project' && (
                 <>
                     <div className="flex items-center gap-2">
                         {renderMobileSidebarTrigger()}
-                        <NavLogo />
+                        <LogoText isMobile={isMobile} />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <BackToResearchButton onClick={onBackToResearch} />
+                    {/* <div className="flex items-center gap-2">
                         {!isMobile ? (
                             <UserBadge name={userName} />
                         ) : (
@@ -288,7 +191,7 @@ export function NavBar({
                                 },
                             ])
                         )}
-                    </div>
+                    </div> */}
                 </>
             )}
 
@@ -298,79 +201,40 @@ export function NavBar({
                         <div className="flex items-center justify-between w-full">
                             <div className={cn(
                                 "flex items-center overflow-hidden flex-1",
-                                !isNewChat && chatName ? "gap-2" : "gap-4"
+                                projectName !== 'Independent' || (!isNewChat && chatName) ? "gap-2" : "gap-4"
                             )}>
                                 {renderMobileSidebarTrigger()}
-                                {!isNewChat && chatName ? (
-                                    <span className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate">
-                                        {chatName}
-                                    </span>
+                                {projectName !== 'Independent' ? (
+                                    <div className="flex items-center overflow-hidden max-w-[calc(100vw-120px)] sm:max-w-[calc(100vw-160px)] text-style-body-title-regular">
+                                        <span className="py-1 text-color-text-primary-default truncate shrink-0 max-w-[120px]">
+                                            {projectName}
+                                        </span>
+                                        {!isNewChat && (
+                                            <>
+                                                <span className="text-color-text-neutral-tertiary shrink-0">/</span>
+                                                {chatName ? (
+                                                    <span className="py-1 text-style-body-title-regular text-color-text-neutral-default truncate">
+                                                        {chatName}
+                                                    </span>
+                                                ) : (
+                                                    <Skeleton className="h-4 w-24 shrink-0 ml-1" />
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 ) : (
-                                    <MobileLogo />
+                                    !isNewChat && chatName ? (
+                                        <span className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate">
+                                            {chatName}
+                                        </span>
+                                    ) : (
+                                        <LogoText isMobile={true} />
+                                    )
                                 )}
                             </div>
 
                             <div className="flex items-center shrink-0 ml-2">
-                                {renderMoreOptions(
-                                    !isNewChat && chatName ? [
-                                        {
-                                            id: 'rename',
-                                            label: 'Rename',
-                                            icon: <Icon name="Edit2" />,
-                                            onClick: () => { setShowChatMenu(false); onRename?.(); },
-                                        },
-                                        {
-                                            id: 'delete',
-                                            label: 'Delete',
-                                            icon: <Icon name="Trash" className="text-red-400" />,
-                                            onClick: () => { setShowChatMenu(false); onDelete?.(); },
-                                            variant: 'danger',
-                                        },
-                                    ] : [
-                                        // Generic options for default state if needed, or just leave empty to have the button
-                                    ]
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        /* Standard default header */
-                        <div className="flex items-center justify-between w-full my-1">
-                            <div className="flex items-center gap-2">
-                                {renderMobileSidebarTrigger()}
-                                <NavLogo />
-                            </div>
-
-                            {isResultPanelOpen && (
-                                <div className="flex items-center gap-2 ml-4 flex-1">
-                                    <BackToResearchButton onClick={onBackToResearch} />
-                                    {!isMobile && projectName && <ProjectBadge name={projectName} />}
-                                </div>
-                            )}
-
-                            <div className="flex items-center">
-                                {/* Connector/Project Selector */}
-                                <div className="flex items-center mr-[10px]">
-                                    <Image
-                                        src="/add-connector.svg"
-                                        alt="Add"
-                                        className="text-color-icon-primary-default -mr-[3px] cursor-pointer hover:opacity-80 hidden sm:block"
-                                        width={41}
-                                        height={24}
-                                        onClick={onConnectorClick}
-                                    />
-                                    <Label
-                                        colorScheme="primary"
-                                        size="medium"
-                                        onClick={onIndependentClick}
-                                        className="cursor-pointer hover:bg-color-surface-neutral-default relative z-10 bg-color-surface-neutral-default hidden sm:flex"
-                                    >
-                                        {projectName}
-                                    </Label>
-                                </div>
-
-                                {renderContextAction()}
-
-                                {!isNewChat && renderMoreOptions([
+                                {!isNewChat && chatName && renderMoreOptions([
                                     {
                                         id: 'rename',
                                         label: 'Rename',
@@ -381,6 +245,60 @@ export function NavBar({
                                         id: 'delete',
                                         label: 'Delete',
                                         icon: <Icon name="Trash" className="text-red-400" />,
+                                        onClick: () => { setShowChatMenu(false); onDelete?.(); },
+                                        variant: 'danger',
+                                    },
+                                ])}
+                            </div>
+                        </div>
+                    ) : (
+                        /* Standard default header (Desktop) */
+                        <div className="flex items-center justify-between w-full">
+                            <div className={cn(
+                                "flex items-center overflow-hidden flex-1",
+                                projectName !== 'Independent' || (!isNewChat && chatName) ? "gap-2" : "gap-4"
+                            )}>
+                                {projectName !== 'Independent' ? (
+                                    <div className="flex items-center overflow-hidden max-w-[calc(100vw-300px)] text-style-body-title-regular">
+                                        <span className="py-1 text-color-text-primary-default truncate shrink-0 max-w-[200px]">
+                                            {projectName}
+                                        </span>
+                                        {!isNewChat && (
+                                            <>
+                                                <span className="text-color-text-neutral-tertiary shrink-0">/</span>
+                                                {chatName ? (
+                                                    <span className="py-1 text-style-body-title-regular text-color-text-neutral-default truncate">
+                                                        {chatName}
+                                                    </span>
+                                                ) : (
+                                                    <Skeleton className="h-4 w-32 shrink-0 ml-1" />
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    !isNewChat && chatName ? (
+                                        <span className="p-1 text-style-body-title-regular text-color-text-neutral-default truncate">
+                                            {chatName}
+                                        </span>
+                                    ) : (
+                                        <LogoText isMobile={false} />
+                                    )
+                                )}
+                            </div>
+
+                            <div className="flex items-center shrink-0 ml-2">
+                                {!isNewChat && chatName && renderMoreOptions([
+                                    {
+                                        id: 'rename',
+                                        label: 'Rename',
+                                        icon: <Icon name="Edit2" />,
+                                        onClick: () => { setShowChatMenu(false); onRename?.(); },
+                                    },
+                                    {
+                                        id: 'delete',
+                                        label: 'Delete',
+                                        icon: <Icon name="Trash" className="text-color-icon-feedback-error-default" />,
                                         onClick: () => { setShowChatMenu(false); onDelete?.(); },
                                         variant: 'danger',
                                     },

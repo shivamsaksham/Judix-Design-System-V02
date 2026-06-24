@@ -75,6 +75,7 @@ export const UserQuery = ({
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedQuery, setEditedQuery] = useState(query);
+    const [isCopied, setIsCopied] = useState(false);
     const textareaRef = useRef<HTMLDivElement>(null);
 
     const handleCancel = React.useCallback(() => {
@@ -115,7 +116,7 @@ export const UserQuery = ({
                 currentRef.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [isEditing, editedQuery, handleCancel]);
+    }, [isEditing, handleCancel]);
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {
@@ -128,7 +129,9 @@ export const UserQuery = ({
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(query);
-            showToast.info('Text copied to clipboard');
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+            showToast.success('Copied to clipboard');
             onCopy?.();
         } catch (err) {
             console.error('Failed to copy text:', err);
@@ -174,7 +177,7 @@ export const UserQuery = ({
                                     className="border-none p-0 bg-transparent hover:bg-transparent"
                                     aria-label="Copy query"
                                 >
-                                    <Icon name="copy" className="text-color-icon-neutral-default w-5 h-5 relative" />
+                                    <Icon name={isCopied ? "copy-success" : "copy"} className="text-color-icon-neutral-default w-5 h-5 relative" />
                                 </Button>
                                 <Button
                                     onClick={handleEdit}

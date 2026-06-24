@@ -28,7 +28,7 @@ export const PaymentFrequencyCard = ({
         <div
             onClick={onClick}
             className={cn(
-                'relative flex flex-col w-60 p-4 gap-6 rounded-radius-interactiveelement border transition-all duration-200 cursor-pointer',
+                'relative flex flex-col w-full sm:w-60 p-4 gap-6 rounded-radius-interactiveelement border transition-all duration-200 cursor-pointer',
                 selected
                     ? 'border-color-border-primary-strong bg-color-surface-primary-subtle_bg'
                     : 'border-color-border-neutral-default bg-color-surface-neutral-default hover:bg-color-surface-neutral-hover_default',
