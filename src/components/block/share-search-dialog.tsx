@@ -27,7 +27,7 @@ export interface ShareSearchDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     shareLink: string;
-    onShare: (recipients: ShareRecipient[], note: string) => void;
+    onShare: (recipients: ShareRecipient[], note: string) => Promise<boolean | void>;
     onCopyLink: () => void;
     onDownloadPdf: () => void;
     className?: string;
@@ -45,7 +45,8 @@ function ShareSearchDialog({
     const [emailInput, setEmailInput] = React.useState("");
     const [recipients, setRecipients] = React.useState<ShareRecipient[]>([]);
     const [note, setNote] = React.useState("");
-
+    const [showNoteInput, setShowNoteInput] = React.useState(false);
+    const [isSharing, setIsSharing] = React.useState(false);
     const validateAndCreateRecipient = (email: string, currentRecipients: ShareRecipient[]): ShareRecipient | null => {
         const trimmedEmail = email.trim();
         if (!trimmedEmail) return null;
@@ -112,9 +113,17 @@ function ShareSearchDialog({
         }
     };
 
-    const handleShare = () => {
-        onShare(recipients, note);
-        handleReset();
+    const handleShare = async () => {
+        setIsSharing(true);
+        try {
+            const success = await onShare(recipients, note);
+            if (success !== false) {
+                handleReset();
+                onOpenChange(false);
+            }
+        } finally {
+            setIsSharing(false);
+        }
     };
 
     const handleCancel = () => {
@@ -126,6 +135,7 @@ function ShareSearchDialog({
         setEmailInput("");
         setRecipients([]);
         setNote("");
+        setShowNoteInput(false);
     };
 
 
@@ -200,15 +210,34 @@ function ShareSearchDialog({
                             )}
                         </div>
 
-                        <Button
-                            variant="neutral"
-                            size="small"
-                            prefixIcon="document-a"
-                            iconClassName="text-color-icon-neutral-tertiary"
-                            className="w-fit px-3 py-[6px] border-none bg-color-surface-neutral-default text-color-text-neutral-tertiary text-style-label-default-regular -my-1"
-                        >
-                            Add note
-                        </Button>
+                        {!showNoteInput ? (
+                            <Button
+                                variant="neutral"
+                                size="small"
+                                prefixIcon="document-a"
+                                iconClassName="text-color-icon-neutral-tertiary"
+                                className="w-fit px-3 py-[6px] border-none bg-color-surface-neutral-default text-color-text-neutral-tertiary text-style-label-default-regular -my-1"
+                                onClick={() => setShowNoteInput(true)}
+                            >
+                                Add note
+                            </Button>
+                        ) : (
+                            <div className="relative">
+                                <textarea
+                                    value={note}
+                                    onChange={(e) => setNote(e.target.value)}
+                                    onBlur={(e) => {
+                                        if (e.target.value.trim() === "") {
+                                            setShowNoteInput(false);
+                                            setNote("");
+                                        }
+                                    }}
+                                    placeholder="Add a note..."
+                                    className="w-full min-h-[80px] p-3 rounded-lg border border-color-border-neutral-default bg-color-surface-neutral-default text-style-body-default-regular outline-none resize-y"
+                                    autoFocus
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -255,10 +284,12 @@ function ShareSearchDialog({
                         Cancel
                     </Button>
                     <Button
+                        type="button"
                         variant="primary"
-                        size="small"
+                        size={"small"}
                         onClick={handleShare}
-                        disabled={recipients.filter((r) => r.isConfirmed).length === 0}
+                        disabled={!shareLink || isSharing}
+                        loading={isSharing}
                     >
                         Share
                     </Button>

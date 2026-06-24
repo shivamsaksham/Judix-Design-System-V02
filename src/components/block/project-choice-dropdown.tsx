@@ -55,33 +55,36 @@ export function ProjectChoiceDropdown({
     );
 
     return (
-        <div className={cn("w-95", containerClasses)}>
-            <div className="flex items-center justify-between border-b gap-2 border-textinput-color-stroke-default p-2 pr-5">
-                <TextInput
-                    inputSize="medium"
-                    label=""
-                    placeholder={placeholder}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    variant="default"
-                    className="flex-1 w-full border-none bg-transparent shadow-none focus-visible:ring-0"
-                    ref={searchInputRef}
-                    autoFocus={true}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            if (filteredProjects.length > 0) {
-                                onSelect?.(filteredProjects[0]);
-                                setSearchTerm("");
+        <div className={cn("w-[calc(100vw-32px)] sm:w-[380px] max-w-full", containerClasses)}>
+            <div className="flex items-center justify-between border-b gap-1 sm:gap-2 border-textinput-color-stroke-default p-2 pr-2 sm:pr-5">
+                <div className="flex-1 min-w-0 max-w-[160px] sm:max-w-none">
+                    <TextInput
+                        inputSize="medium"
+                        label=""
+                        placeholder={placeholder}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        variant="default"
+                        className="flex-1 w-full min-w-0 border-none bg-transparent shadow-none focus-visible:ring-0"
+                        ref={searchInputRef}
+                        autoFocus={true}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                if (filteredProjects.length > 0) {
+                                    onSelect?.(filteredProjects[0]);
+                                    setSearchTerm("");
+                                }
                             }
-                        }
-                    }}
-                />
+                        }}
+                    />
+                </div>
 
                 <Button
                     variant="neutral"
                     size="extraSmall"
                     prefixIcon="add"
+                    iconClassName="hidden sm:inline-block"
                     onClick={() => {
                         router.push("/projects?new=true");
                         onNewProject?.();

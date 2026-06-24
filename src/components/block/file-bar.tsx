@@ -20,12 +20,14 @@ export interface FileBarProps {
     editDisabled?: boolean;
     onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
-    onCreateNew?: (type: "chat" | "note") => void;
+    onCreateNew?: (type: "project" | "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
     onToggle?: (node: FileTreeNodeType) => void;
     onRename?: (nodeId: string, newName: string) => void;
     onCancelEdit?: () => void;
+    onCreateNewDirect?: () => void;
+    onLongSelect?: (node: FileTreeNodeType) => void;
 }
 
 export function FileBar({
@@ -42,6 +44,8 @@ export function FileBar({
     onToggle,
     onRename,
     onCancelEdit,
+    onCreateNewDirect,
+    onLongSelect,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -62,20 +66,21 @@ export function FileBar({
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
     const handleCreateOption = (val: string) => {
-        if (val === "chat" || val === "note") {
-            onCreateNew?.(val);
+        if (val === "project" || val === "chat" || val === "note") {
+            onCreateNew?.(val as "project" | "chat" | "note");
             setIsDropdownOpen(false);
         }
     };
 
     const createOptions = [
+        { value: "project", title: "Project" },
         { value: "chat", title: "Chat" },
         { value: "note", title: "Note file" },
     ];
 
     return (
         <div className={cn("flex flex-col w-full h-full bg-color-surface-neutral-default", className)}>
-            <div className="flex items-center justify-between py-1 shrink-0">
+            <div className="flex items-center justify-between py-3 shrink-0">
                 <span className="p-1 text-style-body-title-regular text-color-text-neutral-default">
                     My Files
                 </span>
@@ -84,17 +89,19 @@ export function FileBar({
                         ref={refs.setReference}
                         {...getReferenceProps()}
                         onClick={() => {
-                            if (activeId) {
+                            if (onCreateNewDirect) {
+                                onCreateNewDirect();
+                            } else if (activeId) {
                                 setIsDropdownOpen(!isDropdownOpen);
                             }
                         }}
                         colorScheme="neutral"
                         size="medium"
-                        className={cn("cursor-pointer select-none", !activeId && "opacity-50 pointer-events-none")}
+                        className={cn("cursor-pointer select-none", !activeId && !onCreateNewDirect && "opacity-50 pointer-events-none")}
                     >
                         <span className="flex items-center gap-[6px] whitespace-nowrap">
                             Create new
-                            <Icon name="arrow-down-c" className="w-3 h-3 text-color-icon-neutral-secondary shrink-0" />
+                            {!onCreateNewDirect && <Icon name="arrow-down-c" className="w-3 h-3 text-color-icon-neutral-secondary shrink-0" />}
                         </span>
                     </Label>
 
@@ -131,6 +138,7 @@ export function FileBar({
                     activeIds={activeIds}
                     editingId={editingId}
                     onSelect={onSelect}
+                    onLongSelect={onLongSelect}
                     onToggle={onToggle}
                     onRename={onRename}
                     onCancelEdit={onCancelEdit}

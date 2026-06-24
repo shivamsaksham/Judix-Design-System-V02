@@ -151,7 +151,7 @@ export const NewProject = ({
                     placeholder={descriptionPlaceholder}
                     rows={4}
                     className={cn(
-                    "w-full p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none resize-none",
+                        "w-full p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none resize-none",
                         disabled && "opacity-60 cursor-not-allowed"
                     )}
                 />
@@ -192,7 +192,7 @@ export const NewProject = ({
                         disabled={disabled}
                         value={court}
                         onChange={(e) => handleCourtChange(e.target.value)}
-                        />
+                    />
                     <TextInput
                         label="Case type"
                         inputSize='medium'
@@ -200,7 +200,7 @@ export const NewProject = ({
                         disabled={disabled}
                         value={caseType}
                         onChange={(e) => handleCaseTypeChange(e.target.value)}
-                        />
+                    />
                     <TextInput
                         label="Case Number"
                         inputSize='medium'
@@ -219,7 +219,7 @@ export const NewProject = ({
                     size="extraSmall"
                     onClick={onCreate}
                     disabled={disabled}
-                    >
+                >
                     {submitButtonText}
                 </Button>
                 <Button

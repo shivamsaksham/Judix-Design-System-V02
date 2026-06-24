@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { Icon } from "@judix/icon"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -103,6 +104,7 @@ export function Subscription({
   className,
 }: SubscriptionProps) {
   const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
+  const router = useRouter()
   return (
     <div className={cn("w-full pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
       {/* Header */}
@@ -118,8 +120,8 @@ export function Subscription({
             <CardContent className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="p-1 inline-block text-style-body-title-emphasis text-color-text-neutral-default">{planName}</span>
-                <Button variant="neutral" size="extraSmall" onClick={onChangePlan}>
-                  Change plan
+                <Button variant="neutral" size="extraSmall" onClick={() => router.push('/checkout')}>
+                  Upgrade plan
                 </Button>
               </div>
               <div className="flex flex-col">

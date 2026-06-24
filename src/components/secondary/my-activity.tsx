@@ -18,6 +18,7 @@ export interface Session {
   os: string
   location: string
   date: string
+  time?: string
   isCurrent: boolean
 }
 
@@ -82,13 +83,13 @@ export function MyActivity({
               onClick={() => setShowLoginHistory(true)}
               className="text-style-textblock-primary-caption-regular text-color-text-feedback-info-default hover:underline cursor-pointer ml-1"
             >
-              See login history
+              See Session history
             </button>
           </p>
         </div>
 
         <div className="flex flex-col">
-          {sessions.map((session) => (
+          {sessions.slice(0, 3).map((session) => (
             <div
               key={session.id}
               className="flex items-center justify-between px-4 py-4 border-b border-color-border-neutral-default first:pt-0 last:border-b-0 last:pb-0"
@@ -114,7 +115,7 @@ export function MyActivity({
                     )}
                   </div>
                   <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
-                    {session.location} • {session.date}
+                    {session.location} • {session.date}{session.time ? ` at ${session.time}` : ""}
                   </p>
                 </div>
               </div>
@@ -126,9 +127,19 @@ export function MyActivity({
               </button>
             </div>
           ))}
+          {sessions.length > 3 && (
+            <div className="pt-4 px-4 flex justify-start">
+              <button
+                onClick={() => setShowLoginHistory(true)}
+                className="p-1 text-style-body-default-emphasis text-color-text-feedback-info-default hover:underline cursor-pointer"
+              >
+                See more
+              </button>
+            </div>
+          )}
         </div>
 
-        <Confirmation
+        {/* <Confirmation
           open={showLogoutAllConfirm}
           onOpenChange={setShowLogoutAllConfirm}
           mainText="Logout from all devices"
@@ -147,7 +158,7 @@ export function MyActivity({
           >
             Logout of all devices
           </Button>
-        </Confirmation>
+        </Confirmation> */}
 
         <Dialog open={showLoginHistory} onOpenChange={setShowLoginHistory}>
           <DialogContent className="p-0 border-none bg-transparent shadow-none w-auto max-w-fit" showCloseButton={false}>

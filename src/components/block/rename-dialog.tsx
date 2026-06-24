@@ -45,7 +45,7 @@ function RenameDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className={cn("w-120 gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
+                className={cn("w-[480px] gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
                 <DialogHeader>

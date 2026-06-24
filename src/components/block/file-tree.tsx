@@ -32,6 +32,7 @@ interface FileTreeNodeProps {
     activeIds?: string[];
     editingId?: string | null;
     onSelect?: (node: FileTreeNodeType) => void;
+    onLongSelect?: (node: FileTreeNodeType) => void;
     onToggle?: (node: FolderItem) => void;
     onRename?: (nodeId: string, newName: string) => void;
     onCancelEdit?: () => void;
@@ -61,6 +62,7 @@ export const FileTreeNode = ({
     activeIds,
     editingId,
     onSelect,
+    onLongSelect,
     onToggle,
     onRename,
     onCancelEdit,
@@ -129,6 +131,31 @@ export const FileTreeNode = ({
         }
     };
 
+    const longPressTimeout = React.useRef<any>(null);
+    const isLongPress = React.useRef<boolean>(false);
+
+    const startPress = (e: React.MouseEvent | React.TouchEvent) => {
+        isLongPress.current = false;
+        longPressTimeout.current = setTimeout(() => {
+            isLongPress.current = true;
+            if (node.type === "file") {
+                onLongSelect?.(node);
+            }
+        }, 500);
+    };
+
+    const endPress = (e: React.MouseEvent | React.TouchEvent) => {
+        if (longPressTimeout.current) {
+            clearTimeout(longPressTimeout.current);
+        }
+    };
+
+    const movePress = () => {
+        if (longPressTimeout.current) {
+            clearTimeout(longPressTimeout.current);
+        }
+    };
+
     const getIcon = () => {
         if (node.type === "folder") {
             return "folder-a";
@@ -172,7 +199,25 @@ export const FileTreeNode = ({
                         : "text-color-text-neutral-default hover:bg-color-surface-neutral-subtle_bg",
                     "w-full"
                 )}
-                onClick={node.type === "folder" ? handleToggle : handleSelect}
+                onClick={(e) => {
+                    if (isLongPress.current) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        isLongPress.current = false;
+                        return;
+                    }
+                    if (node.type === "folder") {
+                        handleToggle(e);
+                    } else {
+                        handleSelect(e);
+                    }
+                }}
+                onTouchStart={startPress}
+                onTouchEnd={endPress}
+                onTouchMove={movePress}
+                onMouseDown={startPress}
+                onMouseUp={endPress}
+                onMouseMove={movePress}
             >
                 {/* Icon */}
                 <div className={cn(
@@ -199,7 +244,7 @@ export const FileTreeNode = ({
                         onChange={(e) => setEditValue(e.target.value)}
                         onBlur={handleRenameSubmit}
                         onKeyDown={handleKeyDown}
-                        className="truncate text-style-body-default-regular flex-1 min-w-0 bg-color-surface-neutral-default border border-color-border-primary-default rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-color-border-primary-default"
+                        className="truncate text-style-body-default-regular flex-1 min-w-0 bg-transparent rounded px-1 py-0.5 focus:outline-none"
                         onClick={(e) => e.stopPropagation()}
                     />
                 ) : (
@@ -233,6 +278,7 @@ export const FileTreeNode = ({
                                     activeIds={activeIds}
                                     editingId={editingId}
                                     onSelect={onSelect}
+                                    onLongSelect={onLongSelect}
                                     onToggle={onToggle}
                                     onRename={onRename}
                                     onCancelEdit={onCancelEdit}
@@ -252,13 +298,14 @@ export interface FileTreeProps {
     activeIds?: string[];
     editingId?: string | null;
     onSelect?: (node: FileTreeNodeType) => void;
+    onLongSelect?: (node: FileTreeNodeType) => void;
     onToggle?: (node: FolderItem) => void;
     onRename?: (nodeId: string, newName: string) => void;
     onCancelEdit?: () => void;
     className?: string;
 }
 
-export function FileTree({ data, activeId, activeIds, editingId, onSelect, onToggle, onRename, onCancelEdit, className }: FileTreeProps) {
+export function FileTree({ data, activeId, activeIds, editingId, onSelect, onLongSelect, onToggle, onRename, onCancelEdit, className }: FileTreeProps) {
     return (
         <div className={cn("flex flex-col gap-2 w-full h-full overflow-y-auto custom-scrollbar min-w-0 overflow-x-hidden", className)}>
             {data.map((node) => (
@@ -269,6 +316,7 @@ export function FileTree({ data, activeId, activeIds, editingId, onSelect, onTog
                     activeIds={activeIds}
                     editingId={editingId}
                     onSelect={onSelect}
+                    onLongSelect={onLongSelect}
                     onToggle={onToggle}
                     onRename={onRename}
                     onCancelEdit={onCancelEdit}
