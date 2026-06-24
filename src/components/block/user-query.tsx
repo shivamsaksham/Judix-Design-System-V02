@@ -116,7 +116,7 @@ export const UserQuery = ({
                 currentRef.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [isEditing, editedQuery, handleCancel]);
+    }, [isEditing, handleCancel]);
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {

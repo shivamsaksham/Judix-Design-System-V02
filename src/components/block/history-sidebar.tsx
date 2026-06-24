@@ -224,14 +224,14 @@ export const HistorySidebar = ({
                         iconClassName='text-icon_button-color-neutral-icon'
                         aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
                     />
-                    <Label
+                    {/* <Label
                         colorScheme="neutral"
                         size="small"
                         onClick={onResetChat}
                         className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
                     >
                         Reset Chat
-                    </Label>
+                    </Label> */}
                 </div>
 
                 <SidebarActionButtons

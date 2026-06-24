@@ -18,7 +18,6 @@ import { TextEditor } from "../ui/text-editor";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { showToast } from "../ui/toast";
-import { Label } from "../ui/label";
 import Confirmation from "./confirmation";
 import {
     Tooltip,
@@ -26,6 +25,7 @@ import {
     TooltipTrigger,
 } from "../ui/tooltip";
 import { FileTree, FileTreeNodeType, FolderItem } from "./file-tree";
+import { useDebounceCallback } from "../../hooks/use-debounce";
 
 const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
 
@@ -117,6 +117,15 @@ export function NotesCard({
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
+    
+    const debouncedSave = useDebounceCallback((newContent: string) => {
+        onSave?.(newContent);
+    }, 1000);
+
+    const handleContentChange = (newContent: string) => {
+        setNoteContent(newContent);
+        debouncedSave(newContent);
+    };
     const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
     const [expandedFolderIds, setExpandedFolderIds] = React.useState<Set<string>>(() => {
         const initial = new Set<string>();
@@ -835,7 +844,7 @@ export function NotesCard({
                                                 placeholder="Type your notes here"
                                                 onEditorReady={setEditor}
                                                 content={noteContent}
-                                                onChange={setNoteContent}
+                                                onChange={handleContentChange}
                                             />
                                         </div>
 
@@ -964,7 +973,7 @@ export function NotesCard({
                                             placeholder="Type your notes here"
                                             onEditorReady={setEditor}
                                             content={noteContent}
-                                            onChange={setNoteContent}
+                                            onChange={handleContentChange}
                                         />
                                     </div>
 
@@ -1054,7 +1063,7 @@ export function NotesCard({
                                                 placeholder="Type your notes here"
                                                 onEditorReady={setEditor}
                                                 content={noteContent}
-                                                onChange={setNoteContent}
+                                                onChange={handleContentChange}
                                             />
                                         )}
                                     </CardContent>
