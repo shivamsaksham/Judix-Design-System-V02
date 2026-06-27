@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Icon } from "@judix/icon";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type Role = "student" | "professional" | "";
 
@@ -31,6 +32,8 @@ type FormData = {
   graduatingYear: string;
   collegePinCode: string;
   collegeAddress: string;
+  idCardPhotoUrl?: string;
+  registrationIdUrl?: string;
 };
 
 const fetchUserData = (): FormData => ({
@@ -52,6 +55,8 @@ const fetchUserData = (): FormData => ({
   graduatingYear: "",
   collegePinCode: "",
   collegeAddress: "",
+  idCardPhotoUrl: "",
+  registrationIdUrl: "",
 });
 
 function SectionHeader({ title }: { title: string }) {
@@ -130,33 +135,37 @@ function SelectField({
 function FileUploadButton({
   initialLabel,
   disabled,
+  value,
+  onChange,
 }: {
   initialLabel: string;
   disabled?: boolean;
+  value?: string;
+  onChange?: (val: string) => void;
 }) {
-  const [fileName, setFileName] = useState(initialLabel);
-  const [file, setFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState(value ? "Uploaded Document" : initialLabel);
+  const [isViewOpen, setIsViewOpen] = useState(false);
 
   const handleView = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      window.open(fileURL, "_blank");
+    if (value) {
+      setIsViewOpen(true);
     }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setFile(null);
     setFileName(initialLabel);
+    onChange?.("");
   };
 
-  if (file) {
+  if (value) {
     return (
-      <div className="flex items-center justify-between border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 bg-color-surface-neutral-subtle_bg w-fit gap-6">
-        <div className="flex items-center gap-2 text-style-body-default-regular text-color-text-neutral-default">
+      <>
+      <div className="flex items-center justify-between border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 bg-color-surface-neutral-subtle_bg w-full sm:w-fit gap-6">
+        <div className="flex items-center gap-2 text-style-body-default-regular text-color-text-neutral-default min-w-0">
           <Icon
             name="document-a"
             className="w-4 h-4 text-color-icon-neutral-secondary shrink-0"
@@ -172,24 +181,37 @@ function FileUploadButton({
           >
             View
           </Button>
-          <Button
-            type="button"
-            variant="neutral"
-            size="extraSmall"
-            onClick={handleDelete}
-            className="text-color-icon-feedback-error-default! hover:bg-color-surface-feedback-error-disabled!"
-          >
-            Delete
-          </Button>
+          {!disabled && (
+            <Button
+              type="button"
+              variant="neutral"
+              size="extraSmall"
+              onClick={handleDelete}
+              className="text-color-icon-feedback-error-default! hover:bg-color-surface-feedback-error-disabled!"
+            >
+              Delete
+            </Button>
+          )}
         </div>
       </div>
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="max-w-2xl sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Document Preview</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center items-center p-4">
+             <img src={value} alt="Document preview" className="max-h-[70vh] object-contain" />
+          </div>
+        </DialogContent>
+      </Dialog>
+      </>
     );
   }
 
   return (
     <label
       className={cn(
-        "inline-flex items-center gap-2 border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 text-style-body-default-regular w-fit transition-colors",
+        "inline-flex items-center gap-2 border border-color-border-neutral-default rounded-radius-interactiveelement px-4 py-2 text-style-body-default-regular w-full sm:w-fit transition-colors",
         disabled
           ? "opacity-60 cursor-not-allowed bg-color-surface-neutral-hover_default text-color-text-neutral-disabled"
           : "cursor-pointer bg-color-surface-neutral-subtle_bg text-color-text-neutral-default hover:bg-color-surface-neutral-subtle"
@@ -206,8 +228,14 @@ function FileUploadButton({
         disabled={disabled}
         onChange={(e) => {
           if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
-            setFileName(e.target.files[0].name);
+            const file = e.target.files[0];
+            setFileName(file.name);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const base64 = event.target?.result as string;
+              onChange?.(base64);
+            };
+            reader.readAsDataURL(file);
           }
         }}
       />
@@ -283,7 +311,7 @@ const STATE_OPTIONS = [
   { value: "maharashtra", title: "Maharashtra" },
 ];
 
-export function MyAccount({ profile }: { profile?: any }) {
+export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: any) => Promise<void> }) {
   const [isEditing, setIsEditing] = useState(false);
   const [role, setRole] = useState<Role>(profile?.role || "professional");
   const [savedRole, setSavedRole] = useState<Role>(profile?.role || "professional");
@@ -307,6 +335,8 @@ export function MyAccount({ profile }: { profile?: any }) {
     graduatingYear: profile?.graduatingYear || "",
     collegePinCode: profile?.collegePinCode || "",
     collegeAddress: profile?.collegeAddress || "",
+    idCardPhotoUrl: profile?.idCardPhotoUrl || "",
+    registrationIdUrl: profile?.registrationIdUrl || "",
   });
   const [savedData, setSavedData] = useState<FormData>(formData);
 
@@ -331,6 +361,8 @@ export function MyAccount({ profile }: { profile?: any }) {
         graduatingYear: profile.graduatingYear || "",
         collegePinCode: profile.collegePinCode || "",
         collegeAddress: profile.collegeAddress || "",
+        idCardPhotoUrl: profile.idCardPhotoUrl || "",
+        registrationIdUrl: profile.registrationIdUrl || "",
       };
       setFormData(newFormData);
       setSavedData(newFormData);
@@ -349,12 +381,18 @@ export function MyAccount({ profile }: { profile?: any }) {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const dataToSave = { role, ...formData };
+    if (onSave) {
+      try {
+        await onSave(dataToSave);
+      } catch (error) {
+        return; // handle error if needed
+      }
+    }
     setSavedData(formData);
     setSavedRole(role);
     setIsEditing(false);
-    // TODO: call API to persist saved profile
-    console.log("Profile saved:", { role, ...formData });
   };
 
   const handleCancel = () => {
@@ -367,6 +405,10 @@ export function MyAccount({ profile }: { profile?: any }) {
     formData.firstName || formData.lastName
       ? `${formData.firstName} ${formData.lastName}`.trim()
       : "Your Name";
+
+  const memberSince = profile?.createdAt
+    ? new Date(profile.createdAt).toLocaleDateString("en-GB", { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
 
   return (
     <div className="w-full bg-white">
@@ -383,10 +425,11 @@ export function MyAccount({ profile }: { profile?: any }) {
                 : "Advocate"}
           </p>
         </div>
-        <p className="text-xs text-gray-400 mt-1">
-          Member since : 11 April, 2026
-          {/* TODO: replace with actual member since date from user data */}
-        </p>
+        {memberSince && (
+          <p className="text-xs text-gray-400 mt-1">
+            Member since : {memberSince}
+          </p>
+        )}
       </div>
 
       <hr className="my-4 border-gray-200" />
@@ -507,6 +550,8 @@ export function MyAccount({ profile }: { profile?: any }) {
             <FileUploadButton
               initialLabel="Upload Bar Registration ID"
               disabled={!isEditing}
+              value={formData.registrationIdUrl}
+              onChange={(val) => handleChange("registrationIdUrl", val)}
             />
           </div>
         </>
@@ -571,12 +616,14 @@ export function MyAccount({ profile }: { profile?: any }) {
             <FileUploadButton
               initialLabel="Upload student ID card"
               disabled={!isEditing}
+              value={formData.idCardPhotoUrl}
+              onChange={(val) => handleChange("idCardPhotoUrl", val)}
             />
           </div>
         </>
       )}
 
-      <div className="flex justify-end gap-3 mt-8 mb-6">
+      <div className="sticky bottom-0 bg-white border-t border-color-border-neutral-default py-4 mt-8 z-10 flex justify-end gap-3">
         {isEditing ? (
           <>
             <Button variant="neutral" onClick={handleCancel} size="small">
