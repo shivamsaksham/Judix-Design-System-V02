@@ -14,6 +14,7 @@ export type PricingCardProps = {
   price: number | string;
   isPopular?: boolean;
   buttonLabel?: string;
+  billingText?: string;
   usage: PricingFeature[];
   features: PricingFeature[];
   support: PricingFeature[];
@@ -61,6 +62,7 @@ export function PricingCard({
   price,
   isPopular,
   buttonLabel = "Select plan",
+  billingText,
   usage,
   features,
   support,
@@ -100,7 +102,7 @@ export function PricingCard({
             {price !== "Custom" && (
               <div className="flex flex-col gap-2">
                 <span className="px-1 text-style-secondary-regular-b2-trim text-color-text-neutral-default h-[10px] flex items-center">INR</span>
-                <span className="px-1 text-style-secondary-regular-b2-trim  text-color-text-neutral-default h-[10px] flex items-center">per month</span>
+                <span className="px-1 text-style-secondary-regular-b2-trim  text-color-text-neutral-default h-[10px] flex items-center">{billingText || "per month"}</span>
               </div>
             )}
           </div>

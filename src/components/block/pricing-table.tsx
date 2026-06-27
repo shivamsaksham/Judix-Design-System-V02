@@ -182,6 +182,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: P
             <PricingCard 
               key={plan.tier} 
               {...plan} 
+              billingText={billingCycle === "yearly" ? "per year" : "per month"}
               buttonLabel={isCurrentPlan ? "Current Plan" : "Select plan"}
               buttonDisabled={isCurrentPlan}
               onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, billingCycle)} 
