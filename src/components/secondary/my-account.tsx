@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dropdown } from "@/components/ui/dropdown";
 import { Icon } from "@judix/icon";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { showToast } from "@/components/ui/toast";
 
 type Role = "student" | "professional" | "";
 
@@ -313,6 +314,7 @@ const STATE_OPTIONS = [
 
 export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: any) => Promise<void> }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [role, setRole] = useState<Role>(profile?.role || "professional");
   const [savedRole, setSavedRole] = useState<Role>(profile?.role || "professional");
 
@@ -384,15 +386,29 @@ export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: 
   const handleSave = async () => {
     const dataToSave = { role, ...formData };
     if (onSave) {
+      setIsSaving(true);
       try {
-        await onSave(dataToSave);
+        await showToast.promise(
+          onSave(dataToSave),
+          {
+            loading: "Saving your profile...",
+            success: "Profile saved successfully!",
+            error: "Failed to save profile.",
+          }
+        );
+        setSavedData(formData);
+        setSavedRole(role);
+        setIsEditing(false);
       } catch (error) {
-        return; // handle error if needed
+        // error is handled by showToast.promise
+      } finally {
+        setIsSaving(false);
       }
+    } else {
+      setSavedData(formData);
+      setSavedRole(role);
+      setIsEditing(false);
     }
-    setSavedData(formData);
-    setSavedRole(role);
-    setIsEditing(false);
   };
 
   const handleCancel = () => {
@@ -626,10 +642,12 @@ export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: 
       <div className="sticky bottom-0 bg-white border-t border-color-border-neutral-default py-4 mt-8 z-10 flex justify-end gap-3">
         {isEditing ? (
           <>
-            <Button variant="neutral" onClick={handleCancel} size="small">
+            <Button variant="neutral" onClick={handleCancel} size="small" disabled={isSaving}>
               Cancel
             </Button>
-            <Button onClick={handleSave} size="small">Save</Button>
+            <Button onClick={handleSave} size="small" disabled={isSaving}>
+              {isSaving ? "Saving..." : "Save"}
+            </Button>
           </>
         ) : (
           <Button onClick={handleEdit}
