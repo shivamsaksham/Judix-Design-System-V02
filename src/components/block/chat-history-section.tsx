@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { HistoryTile } from './history-tile';
 
 export interface ChatItem {
@@ -16,18 +16,33 @@ export interface ChatHistorySectionProps {
     onLoadMore?: () => void;
     hasMore?: boolean;
     isLoadingMore?: boolean;
+    isLoading?: boolean;
 }
 
-export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore }: ChatHistorySectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading }: ChatHistorySectionProps) => {
+    const observerTarget = useRef<HTMLDivElement>(null);
 
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        if (!onLoadMore || !hasMore || isLoadingMore) return;
-        
-        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-        if (scrollHeight - scrollTop - clientHeight < 50) {
-            onLoadMore();
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasMore && !isLoadingMore && !isLoading && onLoadMore) {
+                    onLoadMore();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
         }
-    };
+
+        return () => {
+            if (observerTarget.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                observer.unobserve(observerTarget.current);
+            }
+        };
+    }, [observerTarget, hasMore, isLoadingMore, isLoading, onLoadMore]);
 
     return (
         <div className={`flex flex-col h-full ${className || ''}`}>
@@ -39,24 +54,35 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
             {/* Scrollable Content */}
             <div
                 className="flex-1 overflow-y-auto no-scrollbar p-1"
-                onScroll={handleScroll}
             >
-                {chatHistory.map((chat) => (
-                    <HistoryTile
-                        key={chat.id}
-                        title={chat.title}
-                        onClick={chat.onClick}
-                        onMenuClick={(e) => onMenuClick(chat.id, e)}
-                        isActive={activeChatId === chat.id}
-                    />
-                ))}
-                
-                {isLoadingMore && (
+                {isLoading && chatHistory.length === 0 ? (
                     <div className="flex flex-col gap-2 mt-2 px-2">
-                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
-                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
-                        <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                        ))}
                     </div>
+                ) : (
+                    <>
+                        {chatHistory.map((chat) => (
+                            <HistoryTile
+                                key={chat.id}
+                                title={chat.title}
+                                onClick={chat.onClick}
+                                onMenuClick={(e) => onMenuClick(chat.id, e)}
+                                isActive={activeChatId === chat.id}
+                            />
+                        ))}
+                        
+                        {isLoadingMore && (
+                            <div className="flex flex-col gap-2 mt-2 px-2">
+                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                            </div>
+                        )}
+                        
+                        <div ref={observerTarget} className="h-2 w-full" />
+                    </>
                 )}
             </div>
         </div>

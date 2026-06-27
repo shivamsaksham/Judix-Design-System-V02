@@ -59,6 +59,7 @@ export interface HistorySidebarProps {
     onLoadMore?: () => void;
     hasMore?: boolean;
     isLoadingMore?: boolean;
+    isLoading?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -89,6 +90,7 @@ export const HistorySidebar = ({
     onLoadMore,
     hasMore,
     isLoadingMore,
+    isLoading,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -249,6 +251,7 @@ export const HistorySidebar = ({
                     onLoadMore={onLoadMore}
                     hasMore={hasMore}
                     isLoadingMore={isLoadingMore}
+                    isLoading={isLoading}
                 />
 
                 <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
