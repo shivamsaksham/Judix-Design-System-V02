@@ -37,7 +37,7 @@ export interface SubscriptionProps {
 
 function UsageCard({ metric, className }: { metric: UsageMetric, className?: string }) {
   const isOverflow = metric.current > metric.total
-  const percentage = Math.min((metric.current / metric.total) * 100, 100)
+  const percentage = (metric.total && metric.total > 0) ? Math.min((metric.current / metric.total) * 100, 100) : 0;
 
   return (
     <Card className={cn("rounded-radius-interactiveelement border-color-border-neutral-default shadow-none", className)}>
