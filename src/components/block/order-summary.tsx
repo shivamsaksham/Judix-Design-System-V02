@@ -23,6 +23,8 @@ export interface OrderSummaryData {
     monthlyPrice: string;
     monthlyCharge?: string;
     yearlyCharge?: string;
+    creditDeduction?: number;
+    action?: 'new' | 'upgrade' | 'downgrade' | 'extension';
 }
 
 export interface OrderSummaryProps {
@@ -61,7 +63,7 @@ export const OrderSummary = ({
         }
     };
 
-    const total = data.subtotal + data.gst;
+    const total = Math.max(0, data.subtotal + data.gst - (data.creditDeduction || 0));
 
     return (
         <div className={cn('flex flex-col gap-6 w-full p-4 bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement', className)}>
@@ -113,7 +115,7 @@ export const OrderSummary = ({
                     selected={data.currentFrequency === 'yearly'}
                     discountLabel="Save 20%"
                     onClick={() => handleFrequencySelect('yearly')}
-                    className="flex-1 w-full sm:w-auto"
+                    className="hidden flex-1 w-full sm:w-auto"
                 />
             </div>
 
@@ -146,14 +148,28 @@ export const OrderSummary = ({
                             <span className="p-1 text-style-body-default-regular text-color-success-default">+{data.promoBonusCredits} Credits</span>
                         </div>
                     )}
+                    {data.creditDeduction !== undefined && data.creditDeduction > 0 && (
+                        <div className="flex justify-between items-center">
+                            <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Unused time credit</span>
+                            <span className="p-1 text-style-body-default-regular text-color-success-default">-₹ {data.creditDeduction}</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="h-px bg-color-border-neutral-default -my-2" />
 
                 <div className="flex justify-between items-center">
                     <span className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Total</span>
-                    <span className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">₹ {total}</span>
+                    <span className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">₹ {data.action === 'downgrade' ? 0 : total}</span>
                 </div>
+                
+                {data.action === 'downgrade' && (
+                    <div className="flex p-3 mt-2 bg-color-surface-neutral-subtle_bg border border-color-border-neutral-default rounded-radius-interactiveelement">
+                        <p className="text-style-body-default-regular text-color-text-neutral-secondary text-sm">
+                            <strong className="text-color-text-neutral-default font-medium">No immediate charge.</strong> Your plan will be downgraded at the end of your current billing cycle on {data.autoRenewDate}.
+                        </p>
+                    </div>
+                )}
             </div>
 
             {/* Promo Section */}
@@ -204,7 +220,7 @@ export const OrderSummary = ({
                 onClick={onCheckout}
                 loading={loading}
             >
-                Complete payment
+                {data.action === 'downgrade' ? 'Confirm Downgrade' : data.action === 'extension' ? 'Extend Plan' : 'Complete payment'}
             </Button>
 
             {/* Secure Checkout Footer */}

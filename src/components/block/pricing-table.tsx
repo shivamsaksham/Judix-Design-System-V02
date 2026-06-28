@@ -117,43 +117,59 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: P
     return `${gb >= 1 ? gb : gb.toFixed(1)} GB`;
   };
 
-  // Merge backend prices with hardcoded features
-  const mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => {
-    const backendPlan = backendPlans.find(bp => 
-      bp.name.toLowerCase() === plan.tier.toLowerCase() && 
-      bp.interval === billingCycle
-    );
-    
-    let updatedUsage = plan.usage;
-    if (backendPlan) {
-      updatedUsage = plan.usage.map(item => {
-        if (item.label === "AI queries" && backendPlan.queriesPerMonth !== undefined) {
-          return { ...item, value: backendPlan.queriesPerMonth.toString() };
-        }
-        if (item.label === "Number of pages" && backendPlan.pagesPerMonth !== undefined) {
-          return { ...item, value: backendPlan.pagesPerMonth.toString() };
-        }
-        if (item.label === "Storage" && backendPlan.storage !== undefined) {
-          return { ...item, value: formatBytes(backendPlan.storage) };
-        }
-        if (item.label === "Projects" && backendPlan.projects !== undefined) {
-          return { ...item, value: backendPlan.projects.toString() };
-        }
-        return item;
+  const formatDays = (days: number) => {
+    if (days === -1) return "Lifetime";
+    return `${days} days`;
+  };
+
+  let mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
+  
+  if (backendPlans && backendPlans.length > 0) {
+    const plansForCycle = backendPlans.filter(p => p.interval === billingCycle);
+    if (plansForCycle.length > 0) {
+      mergedPlans = plansForCycle.map(bp => {
+          const isFree = bp.price === 0;
+          const isPro = bp.name.toLowerCase() === 'pro';
+          return {
+              tier: bp.name,
+              description: isFree 
+                  ? "For lawyers just getting started with AI research" 
+                  : isPro ? "Collaborative research for serious practices." : "Best for individual lawyers and solo practitioners",
+              price: bp.price,
+              isPopular: bp.name.toLowerCase() === 'basic',
+              usage: [
+                  { label: "AI queries", value: bp.queriesPerMonth?.toString() || "0" },
+                  { label: "Number of pages", value: bp.pagesPerMonth?.toString() || "0" },
+                  { label: "Storage", value: formatBytes(bp.storage) || "0 GB" },
+                  { label: "Projects", value: bp.projects === -1 ? "Unlimited" : (bp.projects?.toString() || "0") },
+                  { label: "Multi-court search", value: isPro ? "max. 5 courts" : isFree ? false : "max. 3 courts" },
+              ],
+              features: [
+                  { label: "Supreme Court judgments", value: !!bp.feature?.canSearchSc },
+                  { label: "High Courts judgments", value: !!bp.feature?.canSearchHC },
+                  { label: "Central acts", value: !!bp.feature?.canCentralActs },
+                  { label: "State legislation acts", value: !!bp.feature?.canStateLegislationActs },
+                  { label: "In-line citations", value: !!bp.feature?.canInLineCictaion },
+                  { label: "Judgment summaries", value: !!bp.feature?.canJudgementSummaries },
+                  { label: "Download judgment pdf", value: !!bp.feature?.canDownloadJudgementPdf },
+                  { label: "Full judgment view", value: !!bp.feature?.canFullJudgementView },
+                  { label: "Research history", value: formatDays(bp.feature?.researchHistoryRange || 30) },
+                  { label: "Export usage data", value: isFree ? "Last 60 days" : (bp.feature?.exportUsageDataRange === -1 ? "Lifetime" : `Last ${bp.feature?.exportUsageDataRange || 30} days`) },
+              ],
+              support: [
+                  { label: "Email and Whatsapp support", value: true },
+                  { label: "Priority support", value: !isFree },
+                  { label: "Dedicated account manager", value: isPro },
+              ]
+          };
       });
     }
-
-    return {
-      ...plan,
-      price: backendPlan ? backendPlan.price : plan.price,
-      usage: updatedUsage,
-    };
-  });
+  }
 
   return (
     <div className="w-full max-w-[1264px] lg:max-w-[1280px] xl:max-w-[1312px] mx-auto flex flex-col items-center">
       {/* Toggle */}
-      <div className="flex items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
+      <div className="hidden items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
         <button
           className={`px-4 py-2 text-style-secondary-regular-b1 border transition-colors ${billingCycle === "monthly"
               ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
