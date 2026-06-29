@@ -104,9 +104,10 @@ export interface PricingTableProps {
   onSelectPlan?: (planName: string, billingCycle: "monthly" | "yearly") => void;
   backendPlans?: any[]; // Array of plans from the backend
   currentPlan?: string; // Add currentPlan prop
+  loadingTier?: string | null;
 }
 
-export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: PricingTableProps) {
+export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loadingTier }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
   // Helper to format bytes to readable string
@@ -125,9 +126,14 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: P
   let mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
   
   if (backendPlans && backendPlans.length > 0) {
-    const plansForCycle = backendPlans.filter(p => p.interval === billingCycle);
+    const plansForCycle = backendPlans.filter(p => p.interval === billingCycle || p.price === 0);
     if (plansForCycle.length > 0) {
-      mergedPlans = plansForCycle.map(bp => {
+      // Deduplicate by name to prevent duplicate keys if the backend sends multiple free plans
+      const uniquePlans = plansForCycle.filter((plan, index, self) => 
+        index === self.findIndex((t) => t.name.toLowerCase() === plan.name.toLowerCase())
+      );
+      
+      mergedPlans = uniquePlans.map(bp => {
           const isFree = bp.price === 0;
           const isPro = bp.name.toLowerCase() === 'pro';
           return {
@@ -201,6 +207,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan }: P
               billingText={billingCycle === "yearly" ? "per year" : "per month"}
               buttonLabel={isCurrentPlan ? "Current Plan" : "Select plan"}
               buttonDisabled={isCurrentPlan}
+              isLoading={loadingTier === plan.tier}
               onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, billingCycle)} 
             />
           );

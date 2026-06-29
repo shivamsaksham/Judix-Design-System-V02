@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Icon } from "@judix/icon";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 export type PricingFeature = {
   label: string;
   value: string | boolean;
@@ -20,6 +20,7 @@ export type PricingCardProps = {
   support: PricingFeature[];
   onSelect?: (tier: string) => void;
   buttonDisabled?: boolean;
+  isLoading?: boolean;
 };
 
 function FeatureRow({ label, value }: PricingFeature) {
@@ -67,7 +68,8 @@ export function PricingCard({
   features,
   support,
   onSelect,
-  buttonDisabled
+  buttonDisabled,
+  isLoading,
 }: PricingCardProps) {
   return (
     <div
@@ -110,11 +112,12 @@ export function PricingCard({
           <Button
             variant="neutral"
             size="small"
-            className="w-full h-12 px-4 py-2 bg-color-bg-contrast lg:text-style-secondary-regular-b1   text-color-text-neutral-onneutral border-none hover:bg-color-bg-contrast/90 hover:border-none hover:text-color-text-neutral-onneutral rounded-radius-small"
+            className="w-full h-12 px-4 py-2 bg-color-bg-contrast lg:text-style-secondary-regular-b1 text-color-text-neutral-onneutral border-none hover:bg-color-bg-contrast/90 hover:border-none hover:text-color-text-neutral-onneutral rounded-radius-small flex items-center justify-center gap-2"
             onClick={() => onSelect?.(tier)}
-            disabled={buttonDisabled}
+            disabled={buttonDisabled || isLoading}
           >
-            {buttonLabel}
+            {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isLoading ? "Activating..." : buttonLabel}
           </Button>
         </div>
         <div className="p-5 pt-0 md:px-8 lg:px-5 flex flex-col gap-6">
