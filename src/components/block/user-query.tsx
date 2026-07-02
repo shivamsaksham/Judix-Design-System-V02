@@ -167,7 +167,7 @@ export const UserQuery = ({
                             <div
                                 className={cn(
                                     'absolute bottom-0 right-0 flex items-center gap-4 p-2 transition-opacity duration-200 mr-2',
-                                    isHovered ? 'opacity-100' : 'opacity-0'
+                                    isHovered ? 'opacity-100' : 'opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none'
                                 )}
                             >
                                 <Button
