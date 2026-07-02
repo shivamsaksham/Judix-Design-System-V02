@@ -11,6 +11,7 @@ export interface ChatItem {
 export interface ChatHistorySectionProps {
     chatHistory: ChatItem[];
     activeChatId: string | null | undefined;
+    loadingChatId?: string | null | undefined;
     onMenuClick: (chatId: string, event: React.MouseEvent) => void;
     className?: string;
     onLoadMore?: () => void;
@@ -19,7 +20,7 @@ export interface ChatHistorySectionProps {
     isLoading?: boolean;
 }
 
-export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading }: ChatHistorySectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading }: ChatHistorySectionProps) => {
     const observerTarget = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -70,6 +71,7 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
                                 onClick={chat.onClick}
                                 onMenuClick={(e) => onMenuClick(chat.id, e)}
                                 isActive={activeChatId === chat.id}
+                                isLoading={loadingChatId === chat.id}
                             />
                         ))}
                         

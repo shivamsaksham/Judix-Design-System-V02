@@ -51,6 +51,7 @@ export interface HistorySidebarProps {
     onDelete?: (chatId: string) => void;
     onSettings?: () => void;
     activeChatId?: string;
+    loadingChatId?: string;
     className?: string;
     isExpanded?: boolean;
     onToggleSidebar?: () => void;
@@ -82,6 +83,7 @@ export const HistorySidebar = ({
     onMove,
     onDelete,
     activeChatId,
+    loadingChatId,
     className,
     isExpanded: controlledIsExpanded,
     onToggleSidebar,
@@ -148,10 +150,10 @@ export const HistorySidebar = ({
         }
 
         setMenuPosition({
-            top: rect.bottom,
+            top: rect.bottom + 8,
             left: leftPos,
         });
-        setOpenMenuChatId(chatId);
+        setOpenMenuChatId(openMenuChatId === chatId ? null : chatId);
     };
 
     const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
@@ -246,6 +248,7 @@ export const HistorySidebar = ({
                 <ChatHistorySection
                     chatHistory={chatHistory}
                     activeChatId={activeChatId}
+                    loadingChatId={loadingChatId}
                     onMenuClick={handleMenuClick}
                     className="ml-1 mr-3 flex-1 min-h-0"
                     onLoadMore={onLoadMore}
