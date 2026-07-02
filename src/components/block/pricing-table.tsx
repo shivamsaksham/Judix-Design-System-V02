@@ -169,6 +169,8 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
               ]
           };
       });
+      
+      mergedPlans.sort((a, b) => Number(a.price) - Number(b.price));
     }
   }
 
