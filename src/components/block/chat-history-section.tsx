@@ -59,7 +59,7 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, o
                 {isLoading && chatHistory.length === 0 ? (
                     <div className="flex flex-col gap-2 mt-2 px-2">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                            <div key={i} className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
                         ))}
                     </div>
                 ) : (
@@ -77,9 +77,9 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, o
                         
                         {isLoadingMore && (
                             <div className="flex flex-col gap-2 mt-2 px-2">
-                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
-                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
-                                <div className="h-10 bg-color-neutral-default animate-pulse rounded-md w-full opacity-50" />
+                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
+                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
+                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
                             </div>
                         )}
                         
