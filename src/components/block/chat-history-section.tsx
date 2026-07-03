@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
 import { HistoryTile } from './history-tile';
+import { SkeletonLoading } from '../ui/skeleton-loading';
 
 export interface ChatItem {
     id: string;
@@ -57,9 +58,12 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, o
                 className="flex-1 overflow-y-auto no-scrollbar p-1"
             >
                 {isLoading && chatHistory.length === 0 ? (
-                    <div className="flex flex-col gap-2 mt-2 px-2">
+                    <div className="flex flex-col gap-1 mt-2">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
+                            <div key={i} className="flex items-center justify-between p-2 py-[6px] w-full h-[36px]">
+                                <SkeletonLoading className="h-4 w-3/4 opacity-50" />
+                                <SkeletonLoading variant="circular" className="h-5 w-5 shrink-0 opacity-50" />
+                            </div>
                         ))}
                     </div>
                 ) : (
@@ -76,10 +80,13 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, o
                         ))}
                         
                         {isLoadingMore && (
-                            <div className="flex flex-col gap-2 mt-2 px-2">
-                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
-                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
-                                <div className="h-10 bg-option-color-hover animate-pulse rounded-md w-full opacity-50" />
+                            <div className="flex flex-col gap-1 mt-2">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <div key={`more-${i}`} className="flex items-center justify-between p-2 py-[6px] w-full h-[36px]">
+                                        <SkeletonLoading className="h-4 w-3/4 opacity-50" />
+                                        <SkeletonLoading variant="circular" className="h-5 w-5 shrink-0 opacity-50" />
+                                    </div>
+                                ))}
                             </div>
                         )}
                         
