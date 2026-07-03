@@ -90,8 +90,8 @@ const CustomToast: React.FC<CustomToastProps> = ({ type, title, message, visible
     )}>
       <Icon className={cn(toastIconVariants({ type }))} />
       <div className="flex-1">
-        {title && <p className={cn(toastTextVariants({ type }))}>{title}</p>}
-        <p className={cn(toastTextVariants({ type }), title && "mt-1")}>{message}</p>
+        {title && <p className={cn(toastTextVariants({ type }), "line-clamp-1 break-all")}>{title}</p>}
+        <p className={cn(toastTextVariants({ type }), title && "mt-1", "line-clamp-2 break-all")}>{message}</p>
       </div>
     </div>
   );
@@ -162,7 +162,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
             {getIcon()}
             <div className="flex-1">
               <p className={cn(
-                "text-toast-font-default font-size-body-default",
+                "text-toast-font-default font-size-body-default line-clamp-2 break-all",
                 t.type === 'success' && "text-toast-color-success-text",
                 t.type === 'error' && "text-toast-color-error-text",
                 t.type === 'loading' && "text-toast-color-error-text",

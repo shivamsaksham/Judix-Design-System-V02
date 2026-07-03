@@ -249,7 +249,7 @@ export function NotesCard({
             return nodes.map(n => {
                 if (n.type === 'folder') {
                     let children = n.children ? applyExpansionAndMergeTemp(n.children, targetFolderId) : [];
-                    let isOpen = expandedFolderIds.has(n.id) || !!n.isOpen;
+                    let isOpen = expandedFolderIds.has(n.id);
                     
                     if (editingId === "temp-new-note" && n.id === targetFolderId) {
                         isOpen = true;
@@ -346,20 +346,6 @@ export function NotesCard({
             }
             return next;
         });
-
-        if (isRoot) {
-            setFileTreeData(fileTreeData.map(f => {
-                if (f.id === toggledNode.id && f.type === "folder") {
-                    return { ...f, isOpen: !f.isOpen } as FileTreeNodeType;
-                }
-                if (f.type === "folder") {
-                    return { ...f, isOpen: false } as FileTreeNodeType;
-                }
-                return f;
-            }));
-        } else {
-            setFileTreeData(toggleNodeRecursive(fileTreeData, toggledNode.id));
-        }
     };
 
     const activeNodeType = React.useMemo(() => {
@@ -896,6 +882,7 @@ export function NotesCard({
                                                 variant="neutral"
                                                 boundary="none"
                                                 onClick={() => {
+                                                    setActiveFileId(undefined);
                                                     onFileSelect?.({ id: '', name: '', type: 'folder', children: [] });
                                                 }}
                                             />
