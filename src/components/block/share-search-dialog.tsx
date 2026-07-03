@@ -156,9 +156,9 @@ function ShareSearchDialog({
                     <DialogTitle className="text-style-body-title-regular">Share this search</DialogTitle>
                 </DialogHeader>
 
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-4 min-w-0 w-full overflow-hidden">
+                    <div className="flex flex-col gap-3 min-w-0">
+                        <div className="flex flex-col gap-2 min-w-0">
                             <TextInput
                                 inputSize="small"
                                 label=""
@@ -240,7 +240,7 @@ function ShareSearchDialog({
                         )}
                     </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 min-w-0 w-full overflow-hidden">
                         <TextInput
                             inputSize="small"
                             label=""
