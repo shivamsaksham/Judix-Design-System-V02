@@ -85,7 +85,7 @@ export default function AddToContext({
     return (
         <div
             className={cn(
-                'w-[600px] h-[480px]',
+                'w-full sm:w-[600px] h-[480px] max-h-[85vh] overflow-y-auto',
                 'bg-color-surface-neutral-subtle_bg',
                 'border border-color-border-neutral-default',
                 'rounded-lg',

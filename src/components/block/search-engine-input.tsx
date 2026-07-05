@@ -428,7 +428,9 @@ function SearchEngineInput({
     const BOTTOM_HEIGHT = 48;
 
     const { refs, floatingStyles, context } = useFloating({
-        placement: activeDropdown === "trigger" ? "top-start" : "bottom-start",
+        placement: activeDropdown === "trigger" 
+            ? "top-start" 
+            : (activeDropdown === "project" && typeof window !== 'undefined' && window.innerWidth < 640 ? "top-start" : "bottom-start"),
         whileElementsMounted: autoUpdate,
         middleware: [
             offset({ mainAxis: (activeDropdown === "add" || activeDropdown === "folder" || activeDropdown === "project") ? 4 : 12 }),
@@ -1540,11 +1542,11 @@ function SearchEngineInput({
                     {activeDropdown === "add" ? (
                         <NestedDropdown
                             options={[
-                                {
-                                    title: "Upload Document",
-                                    value: "upload_document",
-                                    leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
-                                },
+                                // {
+                                //     title: "Upload Document",
+                                //     value: "upload_document",
+                                //     leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
+                                // },
                                 {
                                     title: "Add Text",
                                     value: "add_text",
@@ -1675,7 +1677,13 @@ function SearchEngineInput({
                     <div className="w-full flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <IconButton
-                                onClick={() => toggleDropdown("add")}
+                                onClick={() => {
+                                    if (window.innerWidth < 640) {
+                                        setIsContextDialogOpen(true);
+                                    } else {
+                                        toggleDropdown("add");
+                                    }
+                                }}
                                 ref={addBtnRef}
                                 variant="neutral"
                                 icon="add"
@@ -1775,7 +1783,7 @@ function SearchEngineInput({
 
             {/* Add to context dialog */}
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
-                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]" showCloseButton={false}>
+                <DialogContent className="p-0 border-none bg-transparent shadow-none w-full max-w-[calc(100%-2rem)] sm:max-w-[672px]" showCloseButton={false}>
                     <DialogTitle className="sr-only">Add to context</DialogTitle>
                     <AddToContext
                         onSave={(title, content) => {
