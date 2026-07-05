@@ -23,6 +23,7 @@ export interface ResultPanelProps {
     activeTab?: ResearchTab;
     onTabChange?: (tab: ResearchTab) => void;
     selectedCourts?: string[];
+    isLoading?: boolean;
 }
 
 export function ResultPanel({
@@ -38,7 +39,8 @@ export function ResultPanel({
     className,
     activeTab = "judgments",
     onTabChange,
-    selectedCourts = []
+    selectedCourts = [],
+    isLoading = false
 }: ResultPanelProps) {
 
     const [search, setSearch] = React.useState("");
@@ -147,6 +149,16 @@ export function ResultPanel({
 
             <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg">
                 <div className="flex flex-col gap-2 p-2">
+                    {isLoading ? (
+                        Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="bg-white rounded-lg p-4 animate-pulse">
+                                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
+                                <div className="h-3 bg-gray-200 rounded w-1/2 mb-2" />
+                                <div className="h-3 bg-gray-100 rounded w-1/3" />
+                            </div>
+                        ))
+                    ) : (
+                        <>
                     {isJudgments && filteredJudgments.map((judgment, index) => (
                         <JudgementTile
                             key={index}
@@ -171,6 +183,8 @@ export function ResultPanel({
                         <div className="flex items-center justify-center p-8 text-color-text-neutral-tertiary text-style-body-default-regular">
                             Web results coming soon
                         </div>
+                    )}
+                        </>
                     )}
                 </div>
             </ScrollArea>

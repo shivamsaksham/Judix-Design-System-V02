@@ -18,6 +18,7 @@ export type JudgementDetailsProps = {
   }[];
   activeItemId?: string;
   onItemClick?: (sectionId: string, itemId: string) => void;
+  onBack?: () => void;
   children?: React.ReactNode;
   className?: string;
 };
@@ -31,6 +32,7 @@ function JudgementDetails({
   content,
   activeItemId,
   onItemClick,
+  onBack,
   children,
   className,
 }: JudgementDetailsProps) {
@@ -47,6 +49,15 @@ function JudgementDetails({
         <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch pr-4">
           <div className="flex flex-col gap-3 flex-1 w-full">
             <div className="flex p-1 items-center gap-2 self-stretch">
+              {onBack && (
+                <IconButton
+                  icon="arrow-left-a"
+                  variant="neutral"
+                  size="medium"
+                  onClick={onBack}
+                  className="mr-2 shrink-0"
+                />
+              )}
               <h1
                 className="flex-1 line-clamp-2 overflow-hidden text-ellipsis 
               text-color-text-neutral-default text-style-body-title-regular"
@@ -102,7 +113,7 @@ function JudgementDetails({
             </aside>
           )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto pb-20 custom-scrollbar scroll-smooth">
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden pb-20 custom-scrollbar scroll-smooth">
             {children ? (
               children
             ) : content ? (
