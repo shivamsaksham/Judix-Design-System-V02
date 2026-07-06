@@ -30,8 +30,8 @@ export function CitationData({ data, className }: CitationDataProps) {
           <TableRow
             key={index}
             columns={[
-              { content: row.label, minWidth: "min-w-[205px]" },
-              { content: row.value, minWidth: "min-w-[437px]" }
+              { content: row.label, minWidth: "min-w-[120px]" },
+              { content: row.value, minWidth: "min-w-[150px]", className: "whitespace-normal break-words" }
             ]}
             isLast={index === rows.length - 1}
           />

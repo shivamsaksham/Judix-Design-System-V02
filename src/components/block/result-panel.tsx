@@ -132,6 +132,21 @@ export function ResultPanel({
     const isJudgments = currentTab === "judgments";
     const isActs = currentTab === "acts";
 
+    // Auto-scroll selected element into view
+    React.useEffect(() => {
+        const activeId = currentTab === 'judgments' ? activeJudgmentId : activeActId;
+        const prefix = currentTab === 'judgments' ? 'result-judgment-' : 'result-act-';
+        if (activeId) {
+            const timer = setTimeout(() => {
+                const element = document.getElementById(`${prefix}${activeId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 150);
+            return () => clearTimeout(timer);
+        }
+    }, [activeJudgmentId, activeActId, currentTab, filteredJudgments, filteredActs]);
+
     return (
         <div className={cn("flex flex-col h-full bg-white", className)}>
             <ResearchHeader
@@ -163,6 +178,7 @@ export function ResultPanel({
                         <JudgementTile
                             key={index}
                             {...judgment}
+                            id={`result-judgment-${judgment.id}`}
                             isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
                             onClick={() => {
                                 onJudgmentClick?.(judgment);
@@ -173,6 +189,7 @@ export function ResultPanel({
                         <ActResultTile
                             key={index}
                             {...act}
+                            id={`result-act-${act.id}`}
                             isSelected={activeActId ? act.id === activeActId : false}
                             onClick={() => {
                                 onActClick?.(act);

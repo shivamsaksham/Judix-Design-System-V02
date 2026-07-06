@@ -37,7 +37,7 @@ export function CaseMetadataTable({ data, className }: CaseMetadataTableProps) {
             key={index}
             columns={[
               { content: row.label, minWidth: "min-w-42" },
-              { content: row.value, minWidth: "min-w-[802px]" }
+              { content: row.value, minWidth: "min-w-[150px]", className: "whitespace-normal break-words" }
             ]}
             isLast={index === rows.length - 1}
           />

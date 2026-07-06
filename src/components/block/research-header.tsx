@@ -76,14 +76,28 @@ export function ResearchHeader({
         <div className={cn("p-2 flex flex-col bg-color-surface-neutral-subtle_bg gap-2", className)}>
             {/* Title row */}
             <div className="p-1 flex items-center justify-between ">
-                <h2 className="p-1 text-style-body-default-regular text-color-text-neutral-default">
-                    Research results
-                </h2>
+                <div className="flex items-center gap-1">
+                    {onClose && (
+                        <IconButton
+                            icon="arrow-left-a"
+                            onClick={onClose}
+                            variant="neutral"
+                            boundary="none"
+                            corner="rounded"
+                            size="medium"
+                            aria-label="Back"
+                            className="lg:hidden text-color-icon-neutral-tertiary"
+                        />
+                    )}
+                    <h2 className="p-1 text-style-body-default-regular text-color-text-neutral-default">
+                        Research results
+                    </h2>
+                </div>
                 {onClose && (
                     <Icon
                         name="cross"
                         onClick={onClose}
-                        className="cursor-pointer text-color-icon-neutral-tertiary h-5 w-5"
+                        className="cursor-pointer text-color-icon-neutral-tertiary h-5 w-5 hidden lg:block"
                     />
                 )}
             </div>

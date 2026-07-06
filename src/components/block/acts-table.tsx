@@ -23,8 +23,8 @@ export function ActsTable({ data, headers, className }: ActsTableProps) {
       <CardContent>
         <TableRow
           columns={[
-            { content: headers.act, minWidth: "min-w-64" },
-            { content: headers.details, minWidth: "min-w-[386px]" }
+            { content: headers.act, minWidth: "min-w-[120px]" },
+            { content: headers.details, minWidth: "min-w-[150px]" }
           ]}
           isHeader
         />
@@ -32,8 +32,8 @@ export function ActsTable({ data, headers, className }: ActsTableProps) {
           <TableRow
             key={index}
             columns={[
-              { content: item.act, minWidth: "min-w-64" },
-              { content: item.details, minWidth: "min-w-[386px]" }
+              { content: item.act, minWidth: "min-w-[120px]", className: "whitespace-normal break-words" },
+              { content: item.details, minWidth: "min-w-[150px]", className: "whitespace-normal break-words" }
             ]}
             isLast={index === data.length - 1}
           />

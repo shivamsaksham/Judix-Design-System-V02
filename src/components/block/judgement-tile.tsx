@@ -41,12 +41,13 @@ export function JudgementTile({
     onMention,
     onClick,
     isSelected,
+    id,
     className
 }: JudgementTileProps) {
     const [open, setOpen] = React.useState(false);
 
     return (
-        <div className={cn(
+        <div id={id} className={cn(
             "group relative flex flex-col gap-1 p-3 w-full cursor-pointer",
             "rounded-lg",
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
@@ -86,6 +87,11 @@ export function JudgementTile({
                 </span>
             </div>
 
+            {isBookmarked && (
+                <div className={cn("absolute top-3 right-3 flex items-center justify-center w-8 h-8 pointer-events-none transition-opacity duration-200", open ? "opacity-0" : "opacity-100 group-hover:opacity-0")}>
+                    <IconButton size="medium" icon="save-b" variant="neutral" className="border-none bg-transparent shadow-none hover:bg-transparent" iconClassName="fill-color-icon-primary-default text-color-icon-primary-default" />
+                </div>
+            )}
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -98,9 +104,9 @@ export function JudgementTile({
                             isAdded={isAdded}
                             isBookmarked={isBookmarked}
                             isMentioned={isMentioned}
-                            onAdd={() => { onAdd?.(); }}
-                            onBookmark={() => { onBookmark?.(); }}
-                            onMention={() => { onMention?.(); }}
+                            onAdd={() => { onAdd?.(); setOpen(false); }}
+                            onBookmark={() => { onBookmark?.(); setOpen(false); }}
+                            onMention={() => { onMention?.(); setOpen(false); }}
                         />
                     </PopoverContent>
                 </Popover>

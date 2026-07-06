@@ -38,6 +38,7 @@ export function ActResultTile({
     onMention,
     onClick,
     isSelected,
+    id,
     className
 }: ActResultTileProps) {
     const [open, setOpen] = React.useState(false);
@@ -55,7 +56,7 @@ export function ActResultTile({
     }, [description, expanded]);
 
     return (
-        <div className={cn(
+        <div id={id} className={cn(
             "group relative flex flex-col gap-3 p-3 w-full cursor-pointer",
             "rounded-lg",
             "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",

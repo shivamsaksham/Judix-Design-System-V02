@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "../../lib/utils";
 import { ContentTree, ContentTreeSection } from "./content-tree";
 import ScoreBox from "./score-box";
@@ -21,6 +21,9 @@ export type JudgementDetailsProps = {
   onBack?: () => void;
   children?: React.ReactNode;
   className?: string;
+  isBookmarked?: boolean;
+  onBookmark?: () => void;
+  onViewScrCopy?: () => void;
 };
 
 function JudgementDetails({
@@ -35,6 +38,9 @@ function JudgementDetails({
   onBack,
   children,
   className,
+  isBookmarked,
+  onBookmark,
+  onViewScrCopy,
 }: JudgementDetailsProps) {
   return (
     <div
@@ -46,7 +52,7 @@ function JudgementDetails({
       {/* main */}
       <div className="flex flex-col items-start gap-4 flex-1 self-stretch overflow-hidden">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch pr-4">
+        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch px-4 md:px-6 pt-4">
           <div className="flex flex-col gap-3 flex-1 w-full">
             <div className="flex p-1 items-center gap-2 self-stretch">
               {onBack && (
@@ -76,7 +82,14 @@ function JudgementDetails({
                 </Label>
               )}
 
-              <Button variant="neutral" size="medium" className="h-8 px-3 border border-color-border-neutral-default">
+              <Button 
+                variant="neutral" 
+                size="medium" 
+                className={cn("h-8 px-3 border border-color-border-neutral-default", !onViewScrCopy && "opacity-50 cursor-not-allowed")}
+                onClick={onViewScrCopy}
+                disabled={!onViewScrCopy}
+                title={!onViewScrCopy ? "SCR Copy not available for this judgment" : undefined}
+              >
                 View SCR copy
               </Button>
 
@@ -87,7 +100,13 @@ function JudgementDetails({
               <div className="flex items-center gap-1">
                 <IconButton icon="add" variant="neutral" size="medium" />
                 <IconButton icon="at" variant="neutral" size="medium" />
-                <IconButton icon="save-b" variant="neutral" size="medium" />
+                <IconButton
+                  icon="save-b"
+                  variant="neutral"
+                  size="medium"
+                  onClick={onBookmark}
+                  iconClassName={isBookmarked ? "fill-color-icon-primary-default text-color-icon-primary-default" : ""}
+                />
                 <IconButton icon="share-a" variant="neutral" size="medium" />
               </div>
             </div>
@@ -113,7 +132,7 @@ function JudgementDetails({
             </aside>
           )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden pb-20 custom-scrollbar scroll-smooth">
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden px-4 md:px-6 pb-20 custom-scrollbar scroll-smooth">
             {children ? (
               children
             ) : content ? (
