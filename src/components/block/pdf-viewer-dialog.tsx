@@ -28,7 +28,7 @@ export function PdfViewerDialog({
       setLoading(true);
       setError(null);
       // Fetch the PDF using fetch to automatically include cookies
-      fetch(fileUrl, { credentials: "omit" }) // The backend endpoint handles cookies, but if it's API url we might need include
+      fetch(fileUrl, { credentials: "include" }) // Include credentials to pass authentication cookies
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch PDF");
@@ -61,7 +61,7 @@ export function PdfViewerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col overflow-hidden p-0">
+      <DialogContent className="max-w-[95vw] md:max-w-[85vw] lg:max-w-5xl xl:max-w-6xl w-full h-[90vh] flex flex-col overflow-hidden p-0">
         <DialogHeader className="p-4 border-b shrink-0">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
