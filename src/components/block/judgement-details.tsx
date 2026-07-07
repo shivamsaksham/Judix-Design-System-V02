@@ -117,7 +117,7 @@ function JudgementDetails({
           </div>
         </div>
 
-        <hr className="w-full h-[1px] bg-color-border-neutral-default border-none" />
+        <hr className="w-full h-px bg-color-border-neutral-default border-none" />
 
         <div className="flex items-start gap-2 flex-1 self-stretch overflow-hidden">
           {/* Frame 6082 */}
