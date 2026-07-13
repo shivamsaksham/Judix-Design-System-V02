@@ -10,7 +10,7 @@ import { JudgmentSelectionList } from './judgment-selection-list';
 
 //  Types 
 
-export type AiThinkingVariant = 'collapsed' | 'expanded' | 'completed';
+export type AiThinkingVariant = 'collapsed' | 'expanded' | 'completed' | 'stopped' | 'clarification';
 
 export interface ThinkingStep {
     title: string;
@@ -74,6 +74,18 @@ const CompletedCircle = () => (
     </svg>
 );
 
+const ClarificationCircle = () => (
+    <svg
+        className="w-4 h-4 text-color-icon-feedback-warning-default"
+        viewBox="0 0 16 16"
+        fill="none"
+    >
+        <circle cx="8" cy="8" r="6" fill="currentColor" />
+        <rect x="7.25" y="4.5" width="1.5" height="4.5" rx="0.75" fill="white" />
+        <rect x="7.25" y="10" width="1.5" height="1.5" rx="0.75" fill="white" />
+    </svg>
+);
+
 const PendingCircle = () => (
     <div className="flex items-center justify-center w-4 h-4 rounded-full border-[1.5px] border-color-border-neutral-default shrink-0 mb-px" />
 );
@@ -111,7 +123,9 @@ export const AiThinking = ({
     // Support both controlled and uncontrolled expansion
     const isExpanded = isExpandedProp !== undefined ? isExpandedProp : internalExpanded;
 
-    const isCompleted = variant === 'completed';
+    const isStopped = variant === 'stopped';
+    const isClarification = variant === 'clarification';
+    const isCompleted = variant === 'completed' || isStopped || isClarification;
 
     const reachedNudgeCount =
         (showProNudge && steps.every(s => s.completed) ? 1 : 0) +
@@ -133,7 +147,7 @@ export const AiThinking = ({
     const prevVariantRef = React.useRef(variant);
     React.useEffect(() => {
         if (variant !== prevVariantRef.current) {
-            if (variant === 'completed') {
+            if (variant === 'completed' || variant === 'stopped' || variant === 'clarification') {
                 setInternalExpanded(false);
             } else if (variant === 'expanded') {
                 setInternalExpanded(true);
@@ -168,18 +182,23 @@ export const AiThinking = ({
             >
                 {/* Leading icon  spinner or plain circle */}
                 <div className={cn("shrink-0", !isCompleted && "text-color-text-primary-default")}>
-                    {isCompleted ? <CompletedCircle /> : <SpinnerCircle />}
+                    {isClarification ? <ClarificationCircle /> : isCompleted ? <CompletedCircle /> : <SpinnerCircle />}
                 </div>
 
                 {/* Label */}
                 <>
                     {isCompleted ? (
                         <span className='flex flex-row items-center gap-2 text-style-label-default-regular'>
-                            <p className='p-1 text-color-text-primary-default text-style-body-default-regular'>Research complete.</p>
-                            {sourcesCount !== undefined && (
+                            <p className={cn(
+                                'p-1 text-style-body-default-regular',
+                                isClarification ? 'text-color-text-feedback-warning-default' : 'text-color-text-primary-default'
+                            )}>
+                                {isClarification ? 'Clarification needed.' : isStopped ? 'Research stopped.' : 'Research complete.'}
+                            </p>
+                            {!isStopped && !isClarification && sourcesCount !== undefined && (
                                 <p className='p-1 text-color-text-neutral-tertiary italic'>Found {sourcesCount} sources</p>
                             )}
-                            {timeTaken && (
+                            {!isStopped && !isClarification && timeTaken && (
                                 <p className='p-1 text-color-text-neutral-tertiary italic'>Took {timeTaken}</p>
                             )}
                         </span>
@@ -224,7 +243,7 @@ export const AiThinking = ({
                             className="w-4 h-4"
                         />
                     </button>
-                ) : (
+                ) : steps.length > 0 ? (
                     <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); handleToggle(); }}
@@ -233,7 +252,7 @@ export const AiThinking = ({
                         {isExpanded ? 'Hide reasoning steps' : 'Show reasoning steps'}
                         <Icon name={isExpanded ? 'arrow-up-a' : 'arrow-down-c'} className="w-4 h-4 shrink-0" />
                     </button>
-                )}
+                ) : null}
             </div>
 
             {/*  Expanded step list  */}
