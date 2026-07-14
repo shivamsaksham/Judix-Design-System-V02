@@ -132,6 +132,8 @@ export function ResultPanel({
     const isJudgments = currentTab === "judgments";
     const isActs = currentTab === "acts";
 
+    const [highlightedId, setHighlightedId] = React.useState<string | null>(null);
+
     // Auto-scroll selected element into view
     React.useEffect(() => {
         const activeId = currentTab === 'judgments' ? activeJudgmentId : activeActId;
@@ -141,6 +143,8 @@ export function ResultPanel({
                 const element = document.getElementById(`${prefix}${activeId}`);
                 if (element) {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
+                    setHighlightedId(activeId);
+                    setTimeout(() => setHighlightedId(null), 2000);
                 }
             }, 150);
             return () => clearTimeout(timer);
@@ -174,23 +178,35 @@ export function ResultPanel({
                         ))
                     ) : (
                         <>
+                    {isJudgments && filteredJudgments.length === 0 && (
+                        <div className="flex items-center justify-center p-8 text-color-text-neutral-tertiary text-style-body-default-regular">
+                            No judgements found
+                        </div>
+                    )}
                     {isJudgments && filteredJudgments.map((judgment, index) => (
                         <JudgementTile
                             key={index}
                             {...judgment}
                             id={`result-judgment-${judgment.id}`}
                             isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
+                            isHighlighted={highlightedId ? judgment.id === highlightedId : false}
                             onClick={() => {
                                 onJudgmentClick?.(judgment);
                             }}
                         />
                     ))}
+                    {isActs && filteredActs.length === 0 && (
+                        <div className="flex items-center justify-center p-8 text-color-text-neutral-tertiary text-style-body-default-regular">
+                            No acts found
+                        </div>
+                    )}
                     {isActs && filteredActs.map((act, index) => (
                         <ActResultTile
                             key={index}
                             {...act}
                             id={`result-act-${act.id}`}
                             isSelected={activeActId ? act.id === activeActId : false}
+                            isHighlighted={highlightedId ? act.id === highlightedId : false}
                             onClick={() => {
                                 onActClick?.(act);
                             }}

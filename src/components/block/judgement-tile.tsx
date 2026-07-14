@@ -22,6 +22,7 @@ export interface JudgementTileProps {
     onMention?: () => void;
     onClick?: () => void;
     isSelected?: boolean;
+    isHighlighted?: boolean;
     id?: string;
     className?: string;
 }
@@ -41,6 +42,7 @@ export function JudgementTile({
     onMention,
     onClick,
     isSelected,
+    isHighlighted,
     id,
     className
 }: JudgementTileProps) {
@@ -50,9 +52,9 @@ export function JudgementTile({
         <div id={id} className={cn(
             "group relative flex flex-col gap-1 p-3 w-full cursor-pointer",
             "rounded-lg",
-            "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isHighlighted ? "bg-gray-200" : "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
             isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
-            "transition-colors duration-200",
+            "transition-colors duration-1000",
             className
         )}
             onClick={onClick}
@@ -75,7 +77,7 @@ export function JudgementTile({
                 <p className="p-1 text-color-text-neutral-default text-style-textblock-secondary-subtext-regular line-clamp-5">
                     {description}
                 </p>
-                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
             </div>
 
             <div className="flex items-center justify-between mt-2">

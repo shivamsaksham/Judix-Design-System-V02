@@ -168,7 +168,7 @@ export function matchPrediction(
         suggestions.find(
             (s) =>
                 lastWord.length >= (s.minChars ?? 3) &&
-                s.prefixes.some((p) => lastWord.toLowerCase().startsWith(p.toLowerCase()))
+                s.option.toLowerCase().startsWith(lastWord.toLowerCase())
         ) ?? null
     );
 }
@@ -641,6 +641,10 @@ function SearchEngineInput({
         setIsCentered(false);
         setInput("");
         setSectionChip(null);
+        setPredictiveMatch(null);
+        setActiveDropdown(null);
+        setActiveTrigger(null);
+        setActiveWrapperType(null);
         textareaRef.current.innerHTML = "";
 
         if (effectiveSelectedCourts.length === 0) {

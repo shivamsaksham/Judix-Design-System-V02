@@ -21,6 +21,7 @@ export interface ActResultTileProps {
     onMention?: () => void;
     onClick?: () => void;
     isSelected?: boolean;
+    isHighlighted?: boolean;
     id: string;
     className?: string;
 }
@@ -38,6 +39,7 @@ export function ActResultTile({
     onMention,
     onClick,
     isSelected,
+    isHighlighted,
     id,
     className
 }: ActResultTileProps) {
@@ -59,9 +61,9 @@ export function ActResultTile({
         <div id={id} className={cn(
             "group relative flex flex-col gap-3 p-3 w-full cursor-pointer",
             "rounded-lg",
-            "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isHighlighted ? "bg-gray-200" : "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
             isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
-            "transition-colors duration-200",
+            "transition-colors duration-1000",
             className
         )}
             onClick={onClick}
