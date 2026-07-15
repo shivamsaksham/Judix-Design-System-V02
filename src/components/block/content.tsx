@@ -163,6 +163,19 @@ export const Content = ({
             });
         }
 
+        // Case-name titles immediately followed by a citation marker become a second,
+        // separate link reusing that citation's real href (prefixed "title-" so the
+        // `a` renderer can style it as bold+colored text instead of a superscript
+        // badge, while still opening the same judgment/act on click). Must run after
+        // citation-marker conversion above — it matches the already-converted
+        // [N](#cite-...) link so it can read its real href; matching a bare [Title]
+        // bracket here instead would make the citation-marker pass above wrongly try
+        // to resolve it as a citation marker itself.
+        md = md.replace(/(\*{1,2})([^*]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (_match, _delimiter, boldText, citationLinkPart, citeHref) => {
+            const titleHref = citeHref.replace('#cite-', '#cite-title-');
+            return `[${boldText}](${titleHref})${citationLinkPart}`;
+        });
+
         if (!animate) {
             setDisplayText(md);
             return;
@@ -243,6 +256,33 @@ export const Content = ({
                         pre: ({ children }) => <pre className="bg-color-surface-neutral-subtle p-4 rounded-lg mb-6 overflow-x-auto">{children}</pre>,
                         hr: () => <hr className="border-color-border-neutral-default mb-6" />,
                         a: ({ href, children }) => {
+                            if (href?.startsWith('#cite-title-group-')) {
+                                const pairs = href.replace('#cite-title-group-', '').split('|').map(p => {
+                                    const sep = p.indexOf(':');
+                                    return { type: p.slice(0, sep) as 'query' | 'judgement' | 'act', id: p.slice(sep + 1) };
+                                });
+                                return (
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); onSourceClick?.(pairs[0].type, pairs[0].id); }}
+                                        className="font-semibold text-color-text-primary-default hover:underline cursor-pointer text-left"
+                                    >
+                                        {children}
+                                    </button>
+                                );
+                            }
+                            if (href?.startsWith('#cite-title-')) {
+                                const parts = href.replace('#cite-title-', '').split('-');
+                                const type = parts[0] as 'query' | 'judgement' | 'act';
+                                const id = parts.slice(1).join('-');
+                                return (
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); onSourceClick?.(type, id); }}
+                                        className="font-semibold text-color-text-primary-default hover:underline cursor-pointer text-left"
+                                    >
+                                        {children}
+                                    </button>
+                                );
+                            }
                             if (href?.startsWith('#cite-group-')) {
                                 const pairs = href.replace('#cite-group-', '').split('|').map(p => {
                                     const sep = p.indexOf(':');
