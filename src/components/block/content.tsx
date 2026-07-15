@@ -158,19 +158,11 @@ export const Content = ({
                 }
 
                 const nums = resolved.map(r => r.num).join(', ');
-                const pairs = resolved.map(r => `${sourceToType(r.citation.source)}:${r.citation.id}`).join('|');
+                const pairs = resolved.map(r => `${sourceToType(r.citation.source)}-${r.citation.id}`).join(',');
                 return `[${nums}](#cite-group-${pairs})`;
             });
         }
 
-        // Case-name titles immediately followed by a citation marker become a second,
-        // separate link reusing that citation's real href (prefixed "title-" so the
-        // `a` renderer can style it as bold+colored text instead of a superscript
-        // badge, while still opening the same judgment/act on click). Must run after
-        // citation-marker conversion above — it matches the already-converted
-        // [N](#cite-...) link so it can read its real href; matching a bare [Title]
-        // bracket here instead would make the citation-marker pass above wrongly try
-        // to resolve it as a citation marker itself.
         md = md.replace(/(\*{1,2})([^*]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (_match, _delimiter, boldText, citationLinkPart, citeHref) => {
             const titleHref = citeHref.replace('#cite-', '#cite-title-');
             return `[${boldText}](${titleHref})${citationLinkPart}`;
@@ -257,8 +249,8 @@ export const Content = ({
                         hr: () => <hr className="border-color-border-neutral-default mb-6" />,
                         a: ({ href, children }) => {
                             if (href?.startsWith('#cite-title-group-')) {
-                                const pairs = href.replace('#cite-title-group-', '').split('|').map(p => {
-                                    const sep = p.indexOf(':');
+                                const pairs = href.replace('#cite-title-group-', '').split(',').map(p => {
+                                    const sep = p.indexOf('-');
                                     return { type: p.slice(0, sep) as 'query' | 'judgement' | 'act', id: p.slice(sep + 1) };
                                 });
                                 return (
@@ -284,8 +276,8 @@ export const Content = ({
                                 );
                             }
                             if (href?.startsWith('#cite-group-')) {
-                                const pairs = href.replace('#cite-group-', '').split('|').map(p => {
-                                    const sep = p.indexOf(':');
+                                const pairs = href.replace('#cite-group-', '').split(',').map(p => {
+                                    const sep = p.indexOf('-');
                                     return { type: p.slice(0, sep) as 'query' | 'judgement' | 'act', id: p.slice(sep + 1) };
                                 });
                                 const nums = String(children).split(',').map(n => n.trim());
