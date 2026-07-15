@@ -29,8 +29,8 @@ export type JudgementDetailsProps = {
 function JudgementDetails({
   caseTitle,
   status,
-  score = "93.42%",
-  scoreSubtitle = "Similar to issues",
+  score,
+  scoreSubtitle,
   contentSections,
   content,
   activeItemId,
@@ -93,9 +93,11 @@ function JudgementDetails({
                 View SCR copy
               </Button>
 
-              <div className="flex md:hidden">
-                <ScoreBox title="" score={score} subtitle={scoreSubtitle} variant="badge" />
-              </div>
+              {score && (
+                <div className="flex md:hidden">
+                  <ScoreBox title="" score={score} subtitle={scoreSubtitle || ""} variant="badge" />
+                </div>
+              )}
 
               <div className="flex items-center gap-1">
                 <IconButton icon="add" variant="neutral" size="medium" />
@@ -112,9 +114,11 @@ function JudgementDetails({
             </div>
           </div>
 
-          <div className="hidden md:flex">
-            <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
-          </div>
+          {score && (
+            <div className="hidden md:flex">
+              <ScoreBox title="" score={score} subtitle={scoreSubtitle || ""} />
+            </div>
+          )}
         </div>
 
         <hr className="w-full h-px bg-color-border-neutral-default border-none" />
