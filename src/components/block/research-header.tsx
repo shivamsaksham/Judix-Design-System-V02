@@ -109,7 +109,7 @@ export function ResearchHeader({
                         key={tab.value}
                         type="button"
                         onClick={() => onTabChange?.(tab.value)}
-                        className={ `p-3 text-style-body-default-regular transition-colors relative ${cn(
+                        className={ `p-3 text-style-body-default-regular cursor-pointer transition-colors relative ${cn(
                             activeTab === tab.value
                                 ? "text-color-text-primary-default"
                                 : "text-color-text-neutral-default"

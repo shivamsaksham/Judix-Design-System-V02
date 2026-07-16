@@ -52,7 +52,7 @@ function JudgementDetails({
       {/* main */}
       <div className="flex flex-col items-start gap-4 flex-1 self-stretch overflow-hidden">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch px-4 md:px-6 pt-4">
+        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch ">
           <div className="flex flex-col gap-3 flex-1 w-full">
             <div className="flex p-1 items-center gap-2 self-stretch">
               {onBack && (
@@ -76,22 +76,21 @@ function JudgementDetails({
               {status && (
                 <Label
                   size="medium"
-                  className="bg-red-50 text-red-600 border border-red-200 h-8 flex items-center"
+                  className="bg-red-50 text-red-600 border border-red-200 hover:bg-color-bg-default flex items-center"
                 >
                   {status}
                 </Label>
               )}
 
-              <Button 
-                variant="neutral" 
+              <Label 
+                colorScheme="neutral" 
                 size="medium" 
-                className={cn("h-8 px-3 border border-color-border-neutral-default", !onViewScrCopy && "opacity-50 cursor-not-allowed")}
-                onClick={onViewScrCopy}
-                disabled={!onViewScrCopy}
+                className={cn("border border-color-border-neutral-default", onViewScrCopy ? "cursor-pointer" : "opacity-50 cursor-not-allowed")}
+                onClick={onViewScrCopy || undefined}
                 title={!onViewScrCopy ? "SCR Copy not available for this judgment" : undefined}
               >
                 View SCR copy
-              </Button>
+              </Label>
 
               {score && (
                 <div className="flex md:hidden">
@@ -100,7 +99,6 @@ function JudgementDetails({
               )}
 
               <div className="flex items-center gap-1">
-                <IconButton icon="add" variant="neutral" size="medium" />
                 <IconButton icon="at" variant="neutral" size="medium" />
                 <IconButton
                   icon="save-b"

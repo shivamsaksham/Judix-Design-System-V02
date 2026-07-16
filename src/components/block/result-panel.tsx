@@ -19,6 +19,7 @@ export interface ResultPanelProps {
     onActClick?: (act: ActResultTileProps) => void;
     activeJudgmentId?: string | null;
     activeActId?: string | null;
+    highlightedResultId?: string | null;
     className?: string;
     activeTab?: ResearchTab;
     onTabChange?: (tab: ResearchTab) => void;
@@ -36,6 +37,7 @@ export function ResultPanel({
     onActClick,
     activeJudgmentId,
     activeActId,
+    highlightedResultId,
     className,
     activeTab = "judgments",
     onTabChange,
@@ -137,19 +139,24 @@ export function ResultPanel({
     // Auto-scroll selected element into view
     React.useEffect(() => {
         const activeId = currentTab === 'judgments' ? activeJudgmentId : activeActId;
+        const scrollId = highlightedResultId || activeId;
         const prefix = currentTab === 'judgments' ? 'result-judgment-' : 'result-act-';
-        if (activeId) {
+        
+        if (scrollId) {
             const timer = setTimeout(() => {
-                const element = document.getElementById(`${prefix}${activeId}`);
+                const element = document.getElementById(`${prefix}${scrollId}`);
                 if (element) {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
-                    setHighlightedId(activeId);
-                    setTimeout(() => setHighlightedId(null), 2000);
+                    
+                    if (highlightedResultId) {
+                        setHighlightedId(highlightedResultId);
+                        setTimeout(() => setHighlightedId(null), 2000);
+                    }
                 }
             }, 150);
             return () => clearTimeout(timer);
         }
-    }, [activeJudgmentId, activeActId, currentTab, filteredJudgments, filteredActs]);
+    }, [activeJudgmentId, activeActId, highlightedResultId, currentTab, filteredJudgments, filteredActs]);
 
     return (
         <div className={cn("flex flex-col h-full bg-white", className)}>

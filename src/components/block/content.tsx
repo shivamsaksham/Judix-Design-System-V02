@@ -37,6 +37,7 @@ export interface ContentProps {
     onExport?: (format: string) => void;
     onSourceClick?: (type: 'query' | 'judgement' | 'act', id?: string) => void;
     citations?: Array<{ id: string; source: string }>;
+    onDownloadLogs?: () => Promise<void> | void;
 }
 
 
@@ -66,6 +67,7 @@ export const Content = ({
     hideActions = false,
     onSourceClick,
     citations = [],
+    onDownloadLogs,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
 
@@ -328,6 +330,7 @@ export const Content = ({
                 onCopy={onCopy}
                 onShare={onShare}
                 onExport={onExport}
+                onDownloadLogs={onDownloadLogs}
                 isLiked={isLiked}
                 isDisliked={isDisliked}
                 contentToCopy={markdown}

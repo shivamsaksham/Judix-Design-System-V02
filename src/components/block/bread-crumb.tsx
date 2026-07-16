@@ -112,22 +112,29 @@ export default function Breadcrumb({
                     </div>
                 )}
 
-                <div className="flex-1 flex flex-wrap justify-start items-center gap-y-1 order-1 md:order-0 w-full md:w-auto">
-                    {items.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <div
-                                className="p-1 font-body-default-regular text-color-text-neutral-secondary cursor-pointer flex justify-start items-center shrink-0"
-                                onClick={item.onClick}
-                            >
-                                {item.label}
-                            </div>
-                            {index < items.length - 1 && (
-                                <div className="flex justify-center items-center shrink-0">
-                                    <span className="p-1 font-body-default-regular text-color-text-neutral-secondary flex items-center">/</span>
+                <div className="flex-1 flex items-center justify-start min-w-0 order-1 md:order-0 w-full md:w-auto">
+                    {items.map((item, index) => {
+                        const isLast = index === items.length - 1;
+                        return (
+                            <React.Fragment key={item.id}>
+                                <div
+                                    className={cn(
+                                        "p-1 font-body-default-regular cursor-pointer flex justify-start items-center",
+                                        isLast ? "text-color-text-neutral-default truncate min-w-0" : "text-color-text-neutral-secondary shrink-0 whitespace-nowrap"
+                                    )}
+                                    onClick={item.onClick}
+                                    title={item.label}
+                                >
+                                    {isLast ? <span className="truncate">{item.label}</span> : item.label}
                                 </div>
-                            )}
-                        </React.Fragment>
-                    ))}
+                                {!isLast && (
+                                    <div className="flex justify-center items-center shrink-0">
+                                        <span className="p-1 font-body-default-regular text-color-text-neutral-secondary flex items-center">/</span>
+                                    </div>
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
 
                     {effectiveShowDropdown && (
                         <div className="flex justify-end items-center gap-2 ml-auto pl-2 shrink-0">
@@ -170,28 +177,28 @@ export default function Breadcrumb({
 
             {/* Mobile Layout */}
             <div className="flex md:hidden flex-col w-full md:gap-2 pl-4 pr-4 py-3 bg-color-surface-neutral-subtle_bg rounded-lg ">
-                <div className="flex flex-wrap items-center text-style-body-default-regular text-color-text-neutral-secondary">
+                <div className="flex items-center min-w-0 text-style-body-default-regular text-color-text-neutral-secondary">
                     {parentItems.map((item) => (
                         <React.Fragment key={item.id}>
                             <span 
                                 onClick={item.onClick} 
-                                className="p-1 cursor-pointer hover:text-color-text-neutral-default hover:underline"
+                                className="cursor-pointer shrink-0 whitespace-nowrap"
                             >
                                 {item.label}
                             </span>
-                            <span className="p-1 text-color-text-neutral-placeholder">/</span>
+                            <span className="mx-1 shrink-0">/</span>
                         </React.Fragment>
                     ))}
                 </div>
 
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex items-center justify-between w-full mt-2">
                     {activeItem && (
                         <div className="flex-1 min-w-0">
                             {showDropdown ? (
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <button className="flex items-center justify-between text-style-body-default-regular text-color-text-neutral-secondary hover:opacity-85 active:opacity-70 focus:outline-none w-full p-1">
-                                            <span className="truncate max-w-[calc(100vw-120px)]">{activeItem.label}</span>
+                                        <button className="flex items-center justify-between text-style-body-default-regular text-color-text-neutral-default font-medium hover:opacity-85 active:opacity-70 focus:outline-none w-full p-1">
+                                            <span className="truncate max-w-[calc(100vw-120px)]" title={activeItem.label}>{activeItem.label}</span>
                                             <Icon name="arrow-down-c" className="w-4 h-4 shrink-0 text-color-icon-neutral-secondary" />
                                         </button>
                                     </PopoverTrigger>
@@ -217,7 +224,11 @@ export default function Breadcrumb({
                                     </PopoverContent>
                                 </Popover>
                             ) : (
-                                <span className="p-1 text-style-body-default-regular text-color-text-neutral-secondary truncate block">
+                                <span 
+                                    className="p-1 text-style-body-default-regular text-color-text-neutral-default font-medium truncate block cursor-pointer"
+                                    onClick={activeItem.onClick}
+                                    title={activeItem.label}
+                                >
                                     {activeItem.label}
                                 </span>
                             )}
