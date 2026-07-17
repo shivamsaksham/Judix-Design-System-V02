@@ -23,6 +23,7 @@ export type JudgementDetailsProps = {
   className?: string;
   isBookmarked?: boolean;
   onBookmark?: () => void;
+  onMention?: () => void;
   onViewScrCopy?: () => void;
 };
 
@@ -40,12 +41,13 @@ function JudgementDetails({
   className,
   isBookmarked,
   onBookmark,
+  onMention,
   onViewScrCopy,
 }: JudgementDetailsProps) {
   return (
     <div
       className={cn(
-        "flex w-full h-full flex-col items-start gap-2 bg-color-surface-neutral-default overflow-hidden",
+        "flex w-full h-full flex-col items-start gap-2 bg-color-surface-neutral-default overflow-hidden px-4 md:px-6 lg:px-8 py-3 md:py-4",
         className
       )}
     >
@@ -99,7 +101,7 @@ function JudgementDetails({
               )}
 
               <div className="flex items-center gap-1">
-                <IconButton icon="at" variant="neutral" size="medium" />
+                <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />
                 <IconButton
                   icon="save-b"
                   variant="neutral"
@@ -134,7 +136,7 @@ function JudgementDetails({
             </aside>
           )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden px-4 md:px-6 pb-20 custom-scrollbar scroll-smooth">
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden pl-4 md:pl-6 pb-20 custom-scrollbar scroll-smooth">
             {children ? (
               children
             ) : content ? (
