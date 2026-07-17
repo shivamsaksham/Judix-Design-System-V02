@@ -24,6 +24,7 @@ export type JudgementDetailsProps = {
   isBookmarked?: boolean;
   onBookmark?: () => void;
   onMention?: () => void;
+  onShare?: () => void;
   onViewScrCopy?: () => void;
 };
 
@@ -42,6 +43,7 @@ function JudgementDetails({
   isBookmarked,
   onBookmark,
   onMention,
+  onShare,
   onViewScrCopy,
 }: JudgementDetailsProps) {
   return (
@@ -109,7 +111,7 @@ function JudgementDetails({
                   onClick={onBookmark}
                   iconClassName={isBookmarked ? "fill-color-icon-primary-default text-color-icon-primary-default" : ""}
                 />
-                <IconButton icon="share-a" variant="neutral" size="medium" />
+                <IconButton icon="share-a" variant="neutral" size="medium" onClick={onShare} />
               </div>
             </div>
           </div>
