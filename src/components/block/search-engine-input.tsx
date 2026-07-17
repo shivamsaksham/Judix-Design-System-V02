@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState, useCallback, useMemo } from "react";
+import React, { useRef, useState, useCallback, useMemo, useImperativeHandle } from "react";
 import { cn } from "@/lib/utils";
 import { IconButton, Dropdown, DropdownOption, showToast } from "@/components/ui";
 import { Icon } from "@judix/icon";
@@ -58,6 +58,7 @@ export interface StaticDataConfig {
 export interface SearchPayload {
     query: string;
     filters: Record<string, unknown>;
+    mentions?: Array<{ type: string; id: string }>;
 }
 
 export interface TokenStructure {
@@ -215,7 +216,36 @@ interface SearchEngineInputProps {
     onAddText?: (title: string, content: string) => void;
 }
 
-function SearchEngineInput({
+export interface SearchEngineInputHandle {
+    insertMention: (mention: { type: string; id: string; label: string }) => void;
+}
+
+function createMentionBadge({
+    trigger,
+    value,
+    mentionType,
+    label,
+}: {
+    trigger: string;
+    value: string;
+    mentionType?: string;
+    label?: string;
+}): HTMLSpanElement {
+    const badge = document.createElement("span");
+    badge.className = "mention-badge";
+    badge.setAttribute("data-type", trigger);
+    badge.setAttribute("data-value", value);
+    if (trigger === "@" && mentionType) badge.setAttribute("data-mention-type", mentionType);
+    badge.style.color = "var(--color-color-text-primary-default)";
+    badge.contentEditable = "false";
+    badge.textContent =
+        trigger === "@" && label
+            ? `[@${label}]`
+            : value.startsWith(trigger) ? value : `${trigger}${value}`;
+    return badge;
+}
+
+function SearchEngineInputImpl({
     helperText,
     scopes = [],
     courtCategories = [],
@@ -238,7 +268,7 @@ function SearchEngineInput({
     artifacts = [],
     onUpload,
     onAddText,
-}: SearchEngineInputProps) {
+}: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
 
     const [isCentered, setIsCentered] = useState(true);
@@ -428,8 +458,8 @@ function SearchEngineInput({
     const BOTTOM_HEIGHT = 48;
 
     const { refs, floatingStyles, context } = useFloating({
-        placement: activeDropdown === "trigger" 
-            ? "top-start" 
+        placement: activeDropdown === "trigger"
+            ? "top-start"
             : (activeDropdown === "project" && typeof window !== 'undefined' && window.innerWidth < 640 ? "top-start" : "bottom-start"),
         whileElementsMounted: autoUpdate,
         middleware: [
@@ -624,10 +654,18 @@ function SearchEngineInput({
         filters.contextItems = selectedContextItems;
         filters.courts = effectiveSelectedCourts.length === 0 ? ["Supreme Court of India"] : effectiveSelectedCourts;
 
+        const mentions: Array<{ type: string; id: string }> = [];
+        div.querySelectorAll('.mention-badge[data-type="@"]').forEach((el) => {
+            const id = el.getAttribute("data-value");
+            if (!id) return;
+            mentions.push({ type: el.getAttribute("data-mention-type") || "inputContext", id });
+        });
+
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
             displayQuery: displayQuery.replace(/\s+/g, " ").trim(),
             filters,
+            mentions,
         };
     }, [selectedScopes, tokenConfig, selectedContextItems, effectiveSelectedCourts]);
 
@@ -1168,7 +1206,7 @@ function SearchEngineInput({
         });
     };
 
-    const handleOptionSelect = (option: string, isManual: boolean = false) => {
+    const handleOptionSelect = (option: string, isManual: boolean = false, label?: string, mentionType?: string) => {
         if (onOptionClick) {
             const currentPayload = getParsedPayload();
             const handled = onOptionClick(option, currentPayload.query || "");
@@ -1433,13 +1471,7 @@ function SearchEngineInput({
                 }
             }
         } else if (isTriggerOption && activeTrigger) {
-            const badge = document.createElement("span");
-            badge.className = "mention-badge";
-            badge.setAttribute("data-type", activeTrigger);
-            badge.setAttribute("data-value", option);
-            badge.style.color = "var(--color-color-text-primary-default)";
-            badge.contentEditable = "false";
-            badge.textContent = option.startsWith(activeTrigger) ? option : `${activeTrigger}${option}`;
+            const badge = createMentionBadge({ trigger: activeTrigger, value: option, mentionType, label });
 
             insertRange.insertNode(badge);
             const space = document.createTextNode("\u00A0");
@@ -1471,6 +1503,34 @@ function SearchEngineInput({
     };
 
     handleOptionSelectRef.current = handleOptionSelect;
+
+    const insertMention = useCallback(({ type, id, label }: { type: string; id: string; label: string }) => {
+        const div = textareaRef.current;
+        if (!div) return;
+        div.focus();
+
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        range.collapse(false);
+
+        const badge = createMentionBadge({ trigger: "@", value: id, mentionType: type, label });
+        range.insertNode(badge);
+        const space = document.createTextNode(" ");
+        badge.after(space);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(space);
+        newRange.collapse(true);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(newRange);
+
+        setIsCentered(false);
+        setInput(div.innerText);
+        autoResize();
+    }, [autoResize]);
+
+    useImperativeHandle(ref, () => ({ insertMention }), [insertMention]);
 
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
         setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));
@@ -1518,7 +1578,7 @@ function SearchEngineInput({
                                 subtext: typeof o.subtext === 'string' ? o.subtext : undefined,
                             }))}
                             activeIndex={activeIndex}
-                            onChange={handleOptionSelect}
+                            onChange={(option) => handleOptionSelect(option.value, false, option.title)}
                         />
                     ) : (
                         <Dropdown
@@ -1801,8 +1861,8 @@ function SearchEngineInput({
             </Dialog>
 
             {/* Upload document dialog */}
-            <AddDocumentDialog 
-                open={isUploadDialogOpen} 
+            <AddDocumentDialog
+                open={isUploadDialogOpen}
                 onOpenChange={(open) => {
                     setIsUploadDialogOpen(open);
                     if (!open) setUploadFiles([]);
@@ -1983,5 +2043,7 @@ function setCursorOffset(element: HTMLElement, offset: number) {
 
     traverse(element);
 }
+
+const SearchEngineInput = React.forwardRef<SearchEngineInputHandle, SearchEngineInputProps>(SearchEngineInputImpl);
 
 export default React.memo(SearchEngineInput);

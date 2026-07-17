@@ -37,13 +37,27 @@ const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | '
     return <span>{text}</span>;
 }
 
-const renderParsedQuery = (text: string) => {
+// Plain-text counterpart of renderParsedQuery, for places that can only render
+// a string (e.g. Dropdown/Option's `title`, typed as `string` for its own
+// search-filter logic) — unwraps `[@Label]` mentions the same way, without JSX.
+export const parseQueryToPlainText = (text: string): string =>
+    text.replace(/\[(@[^\]]+)\]/g, '$1');
+
+export const renderParsedQuery = (text: string) => {
     const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
 
     return parts.map((part, index) => {
         if (!part) return null;
 
         if (part.startsWith('[') && part.endsWith(']')) {
+            const inner = part.slice(1, -1);
+            // Mentions are bracket-wrapped at the source (e.g. `[@Case Title]`)
+            // so multi-word labels survive this split intact — unwrap those
+            // back to a plain `@Label` mention chip; anything else in brackets
+            // is a static data token (`[Type:-Value]`).
+            if (inner.startsWith('@')) {
+                return <TokenChip key={index} text={inner} type="mention" />;
+            }
             return <TokenChip key={index} text={part} type="token" />;
         }
         if (part.startsWith('@')) {
