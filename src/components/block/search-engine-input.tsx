@@ -8,6 +8,7 @@ import {
     offset,
     flip,
     shift,
+    size,
     useDismiss,
     useInteractions,
     autoUpdate,
@@ -192,6 +193,8 @@ interface SearchEngineInputProps {
     helperText?: string;
     scopes?: string[];
     courtCategories?: CourtCategory[];
+    courtCategoriesLoading?: boolean;
+    maxCourts?: number;
     contextItems?: ContextItem[];
     folderOptions?: DropdownOption[];
     quickAddOptions?: OptionHelper[];
@@ -211,9 +214,9 @@ interface SearchEngineInputProps {
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
-    artifacts?: Array<{ id: string, title: string, type: 'file' | 'text' }>;
+    artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<any>;
-    onAddText?: (title: string, content: string) => void;
+    onAddText?: (title: string, content: string) => void | Promise<void>;
 }
 
 export interface SearchEngineInputHandle {
@@ -249,6 +252,8 @@ function SearchEngineInputImpl({
     helperText,
     scopes = [],
     courtCategories = [],
+    courtCategoriesLoading = false,
+    maxCourts = 3,
     contextItems = [],
     quickAddOptions = [],
     triggers = {},
@@ -458,9 +463,9 @@ function SearchEngineInputImpl({
     const BOTTOM_HEIGHT = 48;
 
     const { refs, floatingStyles, context } = useFloating({
-        placement: activeDropdown === "trigger"
+        placement: (activeDropdown === "trigger" || activeDropdown === "add" || activeDropdown === "project")
             ? "top-start"
-            : (activeDropdown === "project" && typeof window !== 'undefined' && window.innerWidth < 640 ? "top-start" : "bottom-start"),
+            : "bottom-start",
         whileElementsMounted: autoUpdate,
         middleware: [
             offset({ mainAxis: (activeDropdown === "add" || activeDropdown === "folder" || activeDropdown === "project") ? 4 : 12 }),
@@ -471,6 +476,15 @@ function SearchEngineInputImpl({
                         : ["top-start", "top-end"],
             }),
             shift({ padding: 8 }),
+            size({
+                padding: 8,
+                apply({ availableHeight, elements }) {
+                    Object.assign(elements.floating.style, {
+                        maxHeight: `${Math.max(150, availableHeight)}px`,
+                        overflowY: "auto",
+                    });
+                },
+            }),
         ],
         open: activeDropdown !== null,
         onOpenChange: (open: boolean) => {
@@ -489,16 +503,16 @@ function SearchEngineInputImpl({
     const dismiss = useDismiss(context);
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
-    // Update the floating anchor whenever activeDropdown changes.
-    // Using a stable ref per button avoids the race where the conditional
-    // ref callback in JSX has not yet fired when floatingStyles is first computed.
     React.useEffect(() => {
         if (activeDropdown === "folder") refs.setReference(folderBtnRef.current);
         else if (activeDropdown === "settings") refs.setReference(settingsBtnRef.current);
         else if (activeDropdown === "project") refs.setReference(projectBtnRef.current);
         else if (activeDropdown === "add") refs.setReference(addBtnRef.current);
-        else if (activeDropdown === "trigger") refs.setReference(textareaRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        else if (activeDropdown === "trigger") {
+            const rect = savedRangeRef.current?.getBoundingClientRect();
+            const isDegenerate = !rect || (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0);
+            refs.setReference(isDegenerate ? textareaRef.current : { getBoundingClientRect: () => rect! });
+        }
     }, [activeDropdown]);
 
     const TRIGGER_VALUES = useMemo(() => {
@@ -1664,6 +1678,8 @@ function SearchEngineInputImpl({
                             <CourtSelector
                                 categories={courtCategories}
                                 selectedCourts={effectiveSelectedCourts}
+                                maxCourts={maxCourts}
+                                loading={courtCategoriesLoading}
                                 onCourtSelect={(court) =>
                                     handleCourtsChange([...effectiveSelectedCourts, court])
                                 }
@@ -1850,8 +1866,10 @@ function SearchEngineInputImpl({
                 <DialogContent className="p-0 border-none bg-transparent shadow-none w-full max-w-[calc(100%-2rem)] sm:max-w-[672px]" showCloseButton={false}>
                     <DialogTitle className="sr-only">Add to context</DialogTitle>
                     <AddToContext
-                        onSave={(title, content) => {
-                            onAddText?.(title, content);
+                        initialTitle={artifacts.find(a => a.type === 'text')?.title}
+                        initialContent={artifacts.find(a => a.type === 'text')?.content}
+                        onSave={async (title, content) => {
+                            await onAddText?.(title, content);
                             setIsContextDialogOpen(false);
                         }}
                         onCancel={() => setIsContextDialogOpen(false)}

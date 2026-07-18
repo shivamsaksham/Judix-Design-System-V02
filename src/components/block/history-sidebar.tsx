@@ -7,7 +7,6 @@ import { ChatHistorySection } from './chat-history-section';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { UserMenu } from './user-menu';
 import { Label } from '@/components/ui/label';
-import { Button } from '../ui';
 import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import Confirmation from './confirmation';
@@ -79,7 +78,7 @@ export const HistorySidebar = ({
     onHelp,
     onLogout,
     onRename,
-    // onShare,
+    onShare,
     onMove,
     onDelete,
     activeChatId,
@@ -159,7 +158,10 @@ export const HistorySidebar = ({
     const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
         setOpenMenuChatId(null);
         if (action === 'rename' && onRename) onRename(chatId);
-        if (action === 'share') setShareChatId(chatId);
+        if (action === 'share') {
+            if (onShare) onShare(chatId);
+            else setShareChatId(chatId);
+        }
         if (action === 'move' && onMove) onMove(chatId);
         if (action === 'delete') {
             setDeleteConfirmationChatId(chatId);
@@ -499,7 +501,7 @@ export const HistorySidebar = ({
             <ShareSearchDialog
                 open={!!shareChatId}
                 onOpenChange={(open) => !open && setShareChatId(null)}
-                shareLink={`https://judix.in/share/${shareChatId}`}
+                shareLink={typeof window !== 'undefined' ? `${window.location.origin}/share/${shareChatId}` : ''}
                 onShare={async (recipients, note) => {
                     console.log('Sharing', recipients, note);
                     setShareChatId(null);

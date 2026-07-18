@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ContextWindowInfo } from './context-window-info';
 import { Option } from '@/components/ui/option';
 import { Button } from '@/components/ui/button';
+import { IconButton } from '@/components/ui/icon-button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export interface ContextItem {
@@ -13,6 +14,11 @@ export interface ContextItem {
     title: string;
     description?: string;
     checked?: boolean;
+}
+
+export interface ContextArtifact {
+    id: string;
+    title: string;
 }
 
 export interface ContextWindowDropdownProps {
@@ -25,6 +31,9 @@ export interface ContextWindowDropdownProps {
     onSessionContextToggle?: (checked: boolean) => void;
     hideHeader?: boolean;
     isMobile?: boolean;
+    contextArtifacts?: ContextArtifact[];
+    onEditArtifact?: (id: string) => void;
+    onRemoveArtifact?: (id: string) => void;
 }
 
 export default function ContextWindowDropdown({
@@ -37,6 +46,9 @@ export default function ContextWindowDropdown({
     onSessionContextToggle,
     // hideHeader = false,
     isMobile = false,
+    contextArtifacts = [],
+    onEditArtifact,
+    onRemoveArtifact,
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);
     const [showInfo, setShowInfo] = useState(false);
@@ -143,6 +155,33 @@ export default function ContextWindowDropdown({
                         </span>
                     }
                 />
+                {contextArtifacts.map((artifact) => (
+                    <Option
+                        key={artifact.id}
+                        title={artifact.title}
+                        disabled={isAutoContext}
+                        suffixSlot={
+                            <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                <IconButton
+                                    icon="edit-a"
+                                    variant="neutral"
+                                    size="medium"
+                                    boundary="none"
+                                    className="bg-transparent"
+                                    onClick={() => onEditArtifact?.(artifact.id)}
+                                />
+                                <IconButton
+                                    icon="trash"
+                                    variant="neutral"
+                                    size="medium"
+                                    boundary="none"
+                                    className="bg-transparent text-color-icon-feedback-error-default"
+                                    onClick={() => onRemoveArtifact?.(artifact.id)}
+                                />
+                            </span>
+                        }
+                    />
+                ))}
                 {items.map((item) => {
                     const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
                     const isLimitReached = checkedCount >= 10;

@@ -36,8 +36,11 @@ export interface SubscriptionProps {
 }
 
 function UsageCard({ metric, className }: { metric: UsageMetric, className?: string }) {
-  const isOverflow = metric.current > metric.total
-  const percentage = (metric.total && metric.total > 0) ? Math.min((metric.current / metric.total) * 100, 100) : 0;
+  const isUnlimited = metric.total === -1
+  const isOverflow = !isUnlimited && metric.current > metric.total
+  const percentage = isUnlimited
+    ? 0
+    : (metric.total && metric.total > 0) ? Math.min((metric.current / metric.total) * 100, 100) : 0;
 
   return (
     <Card className={cn("rounded-radius-interactiveelement border-color-border-neutral-default shadow-none", className)}>
@@ -72,15 +75,17 @@ function UsageCard({ metric, className }: { metric: UsageMetric, className?: str
               {metric.current}
             </span>
             <span className="text-style-body-default-emphasis text-color-text-neutral-tertiary">
-              / {metric.total} {metric.unit || ""}
+              {isUnlimited ? "/ Unlimited" : `/ ${metric.total} ${metric.unit || ""}`}
             </span>
           </div>
 
-          <Progress
-            value={percentage}
-            className="h-1 bg-color-border-neutral-default"
-            indicatorClassName="bg-color-border-primary-strong"
-          />
+          {!isUnlimited && (
+            <Progress
+              value={percentage}
+              className="h-1 bg-color-border-neutral-default"
+              indicatorClassName="bg-color-border-primary-strong"
+            />
+          )}
         </div>
 
       </CardContent>

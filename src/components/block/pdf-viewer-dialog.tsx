@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { showToast } from "../ui/toast";
 
 interface PdfViewerDialogProps {
   open: boolean;
@@ -29,8 +30,12 @@ export function PdfViewerDialog({
       setError(null);
       // Fetch the PDF using fetch to automatically include cookies
       fetch(fileUrl, { credentials: "include" }) // Include credentials to pass authentication cookies
-        .then((response) => {
+        .then(async (response) => {
           if (!response.ok) {
+            if (response.status === 403) {
+              const data = await response.json().catch(() => null);
+              throw new Error(data?.error || "Downloading judgment PDFs is not available on your current plan.");
+            }
             throw new Error("Failed to fetch PDF");
           }
           return response.blob();
@@ -42,7 +47,9 @@ export function PdfViewerDialog({
         })
         .catch((err) => {
           console.error(err);
-          setError("Failed to load PDF document.");
+          const message = err instanceof Error && err.message ? err.message : "Failed to load PDF document.";
+          setError(message);
+          showToast.alert(message);
           setLoading(false);
         });
     } else {

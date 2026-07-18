@@ -24,7 +24,7 @@ import { Icon } from '@judix/icon';
 export interface AddToContextProps {
     initialTitle?: string;
     initialContent?: string;
-    onSave?: (title: string, content: string) => void;
+    onSave?: (title: string, content: string) => void | Promise<void>;
     onCancel?: () => void;
     onClose?: () => void;
     className?: string;
@@ -44,6 +44,7 @@ export default function AddToContext({
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);
     const [isFocused, setIsFocused] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const characterCount = content.length;
     const isAtLimit = characterCount >= MAX_CHARACTERS;
@@ -74,8 +75,18 @@ export default function AddToContext({
         }
     };
 
-    const handleSave = () => {
-        onSave?.(title, content);
+    const handleSave = async () => {
+        if (isSaving) return;
+        setIsSaving(true);
+        try {
+            await onSave?.(title, content);
+        } catch {
+            // Failure is already surfaced (toast/console) by the onSave handler —
+            // just stop showing the loading state and leave the dialog open so
+            // the user can retry without re-typing.
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleCancel = () => {
@@ -173,6 +184,7 @@ export default function AddToContext({
                     onClick={handleCancel}
                     variant="neutral"
                     size="extraSmall"
+                    disabled={isSaving}
                 >
                     Cancel
                 </Button>
@@ -180,6 +192,7 @@ export default function AddToContext({
                     onClick={handleSave}
                     variant="primary"
                     size="extraSmall"
+                    loading={isSaving}
                     disabled={!title.trim() || !content.trim() || content.length < MIN_CHARACTERS}
                 >
                     Save

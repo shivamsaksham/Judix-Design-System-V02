@@ -267,7 +267,7 @@ function ShareSearchDialog({
                         </span>
                     </div>
 
-                    <Button
+                    {/* <Button
                         type="button"
                         variant="neutral"
                         onClick={onDownloadPdf}
@@ -276,7 +276,7 @@ function ShareSearchDialog({
                         className="w-fit"
                     >
                         Download as PDF
-                    </Button>
+                    </Button> */}
                 </div>
 
                 <DialogFooter>
