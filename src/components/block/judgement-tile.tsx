@@ -75,7 +75,7 @@ export function JudgementTile({
                 <p className="p-1 text-color-text-neutral-default text-style-textblock-secondary-subtext-regular line-clamp-5">
                     {description}
                 </p>
-                <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
             </div>
 
             <div className="flex items-center justify-between mt-2">

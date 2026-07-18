@@ -51,12 +51,12 @@ export const SavedBillingDetails = ({
                 </p>
 
                 {/* Address */}
-                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary break-words">
+                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary wrap-break-word">
                     {address}
                 </p>
 
                 {/* Email */}
-                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary break-words">
+                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary wrap-break-word">
                     {email}
                 </p>
             </div>
