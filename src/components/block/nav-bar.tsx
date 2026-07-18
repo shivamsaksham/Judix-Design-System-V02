@@ -33,6 +33,7 @@ export interface NavBarProps {
     isNewChat?: boolean;
     chatName?: string;
     hideMobileSidebarTrigger?: boolean;
+    hideMoreOptions?: boolean;
 }
 
 const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
@@ -97,6 +98,7 @@ export function NavBar({
     chatName,
     isMobile: isMobileProp,
     hideMobileSidebarTrigger = false,
+    hideMoreOptions = false,
 }: NavBarProps) {
     const isMobileDevice = useMediaQuery("(max-width: 1024px)");
     const isMobile = isMobileProp ?? isMobileDevice;
@@ -234,7 +236,7 @@ export function NavBar({
                             </div>
 
                             <div className="flex items-center shrink-0 ml-2">
-                                {!isNewChat && chatName && renderMoreOptions([
+                                {!hideMoreOptions && !isNewChat && chatName && renderMoreOptions([
                                     {
                                         id: 'rename',
                                         label: 'Rename',
@@ -288,7 +290,7 @@ export function NavBar({
                             </div>
 
                             <div className="flex items-center shrink-0 ml-2">
-                                {!isNewChat && chatName && renderMoreOptions([
+                                {!hideMoreOptions && !isNewChat && chatName && renderMoreOptions([
                                     {
                                         id: 'rename',
                                         label: 'Rename',

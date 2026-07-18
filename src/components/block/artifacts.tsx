@@ -21,7 +21,7 @@ export const Artifacts = ({
 }: ArtifactsProps) => {
 
     return (
-        <div className={cn('inline-block cursor-pointer', className)}>
+        <div className={cn('flex flex-col cursor-pointer', className)}>
             {isResult && (
                 <div className="mb-1">
                     <Label colorScheme="neutral" size="medium" className='bg-label-color-neutral-hover'>
@@ -32,7 +32,7 @@ export const Artifacts = ({
             <div
                 onClick={onClick}
                 className={cn(
-                    'inline-flex rounded-lg border border-color-border-neutral-default',
+                    'flex flex-1 w-full rounded-lg border border-color-border-neutral-default',
                     'bg-color-surface-neutral-default',
                     'px-4 py-2 min-h-[68px]',
                     'transition-all duration-200',
@@ -40,7 +40,7 @@ export const Artifacts = ({
                     isResult && 'mr-2'
                 )}
             >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-4 w-full">
                     {/* Text Content */}
                     <div className="flex-1 p-1">
                         <h3 className="text-style-label-title-emphasis text-color-text-neutral-emphasis mb-1 p-1">

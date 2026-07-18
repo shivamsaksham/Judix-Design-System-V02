@@ -3,7 +3,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ContextActionMenu } from "./context-action-menu";
 import { IconButton } from "../ui";
 
@@ -22,6 +21,7 @@ export interface JudgementTileProps {
     onMention?: () => void;
     onClick?: () => void;
     isSelected?: boolean;
+    isHighlighted?: boolean;
     id?: string;
     className?: string;
 }
@@ -41,18 +41,37 @@ export function JudgementTile({
     onMention,
     onClick,
     isSelected,
+    isHighlighted,
     id,
     className
 }: JudgementTileProps) {
     const [open, setOpen] = React.useState(false);
+    const menuRef = React.useRef<HTMLDivElement>(null);
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current && !menuRef.current.contains(event.target as Node) &&
+                triggerRef.current && !triggerRef.current.contains(event.target as Node)
+            ) {
+                setOpen(false);
+            }
+        };
+        if (open) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [open]);
 
     return (
         <div id={id} className={cn(
             "group relative flex flex-col gap-1 p-3 w-full cursor-pointer",
             "rounded-lg",
-            "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
+            isHighlighted ? "bg-gray-200" : "bg-color-surface-neutral-default hover:bg-color-surface-neutral-subtle_bg",
             isSelected ? "border-2 border-color-border-neutral-strong" : "border border-color-border-neutral-default",
-            "transition-colors duration-200",
+            "transition-colors duration-1000",
+            open && "z-20",
             className
         )}
             onClick={onClick}
@@ -75,7 +94,12 @@ export function JudgementTile({
                 <p className="p-1 text-color-text-neutral-default text-style-textblock-secondary-subtext-regular line-clamp-5">
                     {description}
                 </p>
-                <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
+                <div className={cn(
+                    "absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t to-transparent pointer-events-none transition-colors duration-1000",
+                    isHighlighted 
+                        ? "from-gray-200" 
+                        : "from-color-surface-neutral-default group-hover:from-color-surface-neutral-subtle_bg"
+                )} />
             </div>
 
             <div className="flex items-center justify-between mt-2">
@@ -93,13 +117,16 @@ export function JudgementTile({
                 </div>
             )}
             <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <div onClick={(e) => e.stopPropagation()}>
-                            <IconButton size="medium" icon="add" className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors" variant={'neutral'} />
-                        </div>
-                    </PopoverTrigger>
-                    <PopoverContent align="end" className="p-0 border-none shadow-none bg-transparent w-auto" onClick={(e) => e.stopPropagation()}>
+                <IconButton
+                    ref={triggerRef}
+                    size="medium"
+                    icon="add"
+                    className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors"
+                    variant={'neutral'}
+                    onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
+                />
+                {open && (
+                    <div ref={menuRef} className="absolute right-0 top-full mt-2" onClick={(e) => e.stopPropagation()}>
                         <ContextActionMenu
                             isAdded={isAdded}
                             isBookmarked={isBookmarked}
@@ -108,8 +135,8 @@ export function JudgementTile({
                             onBookmark={() => { onBookmark?.(); setOpen(false); }}
                             onMention={() => { onMention?.(); setOpen(false); }}
                         />
-                    </PopoverContent>
-                </Popover>
+                    </div>
+                )}
             </div>
         </div>
     );

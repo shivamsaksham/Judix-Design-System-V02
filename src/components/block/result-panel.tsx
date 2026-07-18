@@ -19,6 +19,7 @@ export interface ResultPanelProps {
     onActClick?: (act: ActResultTileProps) => void;
     activeJudgmentId?: string | null;
     activeActId?: string | null;
+    highlightedResultId?: string | null;
     className?: string;
     activeTab?: ResearchTab;
     onTabChange?: (tab: ResearchTab) => void;
@@ -36,6 +37,7 @@ export function ResultPanel({
     onActClick,
     activeJudgmentId,
     activeActId,
+    highlightedResultId,
     className,
     activeTab = "judgments",
     onTabChange,
@@ -132,20 +134,29 @@ export function ResultPanel({
     const isJudgments = currentTab === "judgments";
     const isActs = currentTab === "acts";
 
+    const [highlightedId, setHighlightedId] = React.useState<string | null>(null);
+
     // Auto-scroll selected element into view
     React.useEffect(() => {
         const activeId = currentTab === 'judgments' ? activeJudgmentId : activeActId;
+        const scrollId = highlightedResultId || activeId;
         const prefix = currentTab === 'judgments' ? 'result-judgment-' : 'result-act-';
-        if (activeId) {
+        
+        if (scrollId) {
             const timer = setTimeout(() => {
-                const element = document.getElementById(`${prefix}${activeId}`);
+                const element = document.getElementById(`${prefix}${scrollId}`);
                 if (element) {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
+                    
+                    if (highlightedResultId) {
+                        setHighlightedId(highlightedResultId);
+                        setTimeout(() => setHighlightedId(null), 2000);
+                    }
                 }
             }, 150);
             return () => clearTimeout(timer);
         }
-    }, [activeJudgmentId, activeActId, currentTab, filteredJudgments, filteredActs]);
+    }, [activeJudgmentId, activeActId, highlightedResultId, currentTab, filteredJudgments, filteredActs]);
 
     return (
         <div className={cn("flex flex-col h-full bg-white", className)}>
@@ -174,23 +185,35 @@ export function ResultPanel({
                         ))
                     ) : (
                         <>
+                    {isJudgments && filteredJudgments.length === 0 && (
+                        <div className="flex items-center justify-center p-8 text-color-text-neutral-tertiary text-style-body-default-regular">
+                            No judgements found
+                        </div>
+                    )}
                     {isJudgments && filteredJudgments.map((judgment, index) => (
                         <JudgementTile
                             key={index}
                             {...judgment}
                             id={`result-judgment-${judgment.id}`}
                             isSelected={activeJudgmentId ? judgment.id === activeJudgmentId : false}
+                            isHighlighted={highlightedId ? judgment.id === highlightedId : false}
                             onClick={() => {
                                 onJudgmentClick?.(judgment);
                             }}
                         />
                     ))}
+                    {isActs && filteredActs.length === 0 && (
+                        <div className="flex items-center justify-center p-8 text-color-text-neutral-tertiary text-style-body-default-regular">
+                            No acts found
+                        </div>
+                    )}
                     {isActs && filteredActs.map((act, index) => (
                         <ActResultTile
                             key={index}
                             {...act}
                             id={`result-act-${act.id}`}
                             isSelected={activeActId ? act.id === activeActId : false}
+                            isHighlighted={highlightedId ? act.id === highlightedId : false}
                             onClick={() => {
                                 onActClick?.(act);
                             }}

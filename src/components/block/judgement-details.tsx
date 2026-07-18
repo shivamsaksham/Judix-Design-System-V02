@@ -23,14 +23,16 @@ export type JudgementDetailsProps = {
   className?: string;
   isBookmarked?: boolean;
   onBookmark?: () => void;
+  onMention?: () => void;
+  onShare?: () => void;
   onViewScrCopy?: () => void;
 };
 
 function JudgementDetails({
   caseTitle,
   status,
-  score = "93.42%",
-  scoreSubtitle = "Similar to issues",
+  score,
+  scoreSubtitle,
   contentSections,
   content,
   activeItemId,
@@ -40,19 +42,21 @@ function JudgementDetails({
   className,
   isBookmarked,
   onBookmark,
+  onMention,
+  onShare,
   onViewScrCopy,
 }: JudgementDetailsProps) {
   return (
     <div
       className={cn(
-        "flex w-full h-full flex-col items-start gap-2 bg-color-surface-neutral-default overflow-hidden",
+        "flex w-full h-full flex-col items-start gap-2 bg-color-surface-neutral-default overflow-hidden px-4 md:px-6 lg:px-8 py-3 md:py-4",
         className
       )}
     >
       {/* main */}
       <div className="flex flex-col items-start gap-4 flex-1 self-stretch overflow-hidden">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch px-4 md:px-6 pt-4">
+        <div className="flex flex-col md:flex-row items-start gap-x-4 gap-y-4 self-stretch ">
           <div className="flex flex-col gap-3 flex-1 w-full">
             <div className="flex p-1 items-center gap-2 self-stretch">
               {onBack && (
@@ -76,30 +80,30 @@ function JudgementDetails({
               {status && (
                 <Label
                   size="medium"
-                  className="bg-red-50 text-red-600 border border-red-200 h-8 flex items-center"
+                  className="bg-red-50 text-red-600 border border-red-200 hover:bg-color-bg-default flex items-center"
                 >
                   {status}
                 </Label>
               )}
 
-              <Button 
-                variant="neutral" 
+              <Label 
+                colorScheme="neutral" 
                 size="medium" 
-                className={cn("h-8 px-3 border border-color-border-neutral-default", !onViewScrCopy && "opacity-50 cursor-not-allowed")}
-                onClick={onViewScrCopy}
-                disabled={!onViewScrCopy}
+                className={cn("border border-color-border-neutral-default", onViewScrCopy ? "cursor-pointer" : "opacity-50 cursor-not-allowed")}
+                onClick={onViewScrCopy || undefined}
                 title={!onViewScrCopy ? "SCR Copy not available for this judgment" : undefined}
               >
                 View SCR copy
-              </Button>
+              </Label>
 
-              <div className="flex md:hidden">
-                <ScoreBox title="" score={score} subtitle={scoreSubtitle} variant="badge" />
-              </div>
+              {score && (
+                <div className="flex md:hidden">
+                  <ScoreBox title="" score={score} subtitle={scoreSubtitle || ""} variant="badge" />
+                </div>
+              )}
 
               <div className="flex items-center gap-1">
-                <IconButton icon="add" variant="neutral" size="medium" />
-                <IconButton icon="at" variant="neutral" size="medium" />
+                <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />
                 <IconButton
                   icon="save-b"
                   variant="neutral"
@@ -107,14 +111,16 @@ function JudgementDetails({
                   onClick={onBookmark}
                   iconClassName={isBookmarked ? "fill-color-icon-primary-default text-color-icon-primary-default" : ""}
                 />
-                <IconButton icon="share-a" variant="neutral" size="medium" />
+                <IconButton icon="share-a" variant="neutral" size="medium" onClick={onShare} />
               </div>
             </div>
           </div>
 
-          <div className="hidden md:flex">
-            <ScoreBox title="" score={score} subtitle={scoreSubtitle} />
-          </div>
+          {score && (
+            <div className="hidden md:flex">
+              <ScoreBox title="" score={score} subtitle={scoreSubtitle || ""} />
+            </div>
+          )}
         </div>
 
         <hr className="w-full h-px bg-color-border-neutral-default border-none" />
@@ -132,7 +138,7 @@ function JudgementDetails({
             </aside>
           )}
 
-          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden px-4 md:px-6 pb-20 custom-scrollbar scroll-smooth">
+          <main className="flex flex-col items-start gap-4 flex-1 self-stretch bg-color-surface-neutral-default overflow-y-auto overflow-x-hidden pl-4 md:pl-6 pb-20 custom-scrollbar scroll-smooth">
             {children ? (
               children
             ) : content ? (

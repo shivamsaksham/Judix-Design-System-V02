@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Dropdown, DropdownOption } from "@/components/ui/dropdown";
+import { parseQueryToPlainText } from "./user-query";
 
 export interface QueryItem {
     id: string;
@@ -30,7 +31,7 @@ export const QueryTrack = ({ queries, className, onQueryClick }: QueryTrackProps
     // Convert ALL queries to dropdown options (not limited to 10)
     const dropdownOptions: DropdownOption[] = queries.map(query => ({
         value: query.id,
-        title: query.text,
+        title: parseQueryToPlainText(query.text),
         className: cn(
             "whitespace-nowrap overflow-hidden text-ellipsis hover:!bg-color-surface-neutral-default",
             hoveredId === query.id ? "!text-color-text-neutral-default" : "!text-color-text-neutral-tertiary"

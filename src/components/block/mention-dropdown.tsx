@@ -16,7 +16,7 @@ export interface MentionDropdownProps {
     /** Currently keyboard-highlighted index */
     activeIndex?: number | null;
     /** Called when an option is selected */
-    onChange: (value: string) => void;
+    onChange: (option: MentionOption) => void;
     className?: string;
 }
 
@@ -53,7 +53,7 @@ export function MentionDropdown({
                             highlighted={activeIndex === idx}
                             onPointerDown={(e) => {
                                 e.preventDefault();
-                                onChange(option.value);
+                                onChange(option);
                             }}
                         />
                     ))
