@@ -306,6 +306,7 @@ export const AiThinking = ({
                                                 isConfirmed={isCompleted}
                                                 onConfirm={() => onJudgmentConfirm?.(step.judgments![0])}
                                                 onReject={() => onJudgmentReject?.()}
+                                                entityLabel={step.judgments[0].entityType === 'act' ? 'act' : 'judgment'}
                                             />
                                         ) : (
                                             <JudgmentSelectionList
@@ -314,6 +315,7 @@ export const AiThinking = ({
                                                 onConfirm={(data) => onJudgmentConfirm?.(data)}
                                                 onReject={() => onJudgmentReject?.()}
                                                 disableManualSearchFallback
+                                                entityLabel={step.judgments[0]?.entityType === 'act' ? 'acts' : 'judgments'}
                                             />
                                         )}
                                     </div>

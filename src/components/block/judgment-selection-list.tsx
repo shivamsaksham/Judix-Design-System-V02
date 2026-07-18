@@ -21,6 +21,8 @@ export interface JudgmentSelectionListProps {
     defaultShowManualInput?: boolean;
     /** When true, "None of these" just calls onReject instead of revealing the manual-search box. */
     disableManualSearchFallback?: boolean;
+    /** Plural noun used in the "Found N matching {entityLabel}" header — defaults to "judgments". */
+    entityLabel?: string;
 }
 
 export const JudgmentSelectionList = ({
@@ -36,6 +38,7 @@ export const JudgmentSelectionList = ({
     onManualSearch,
     defaultShowManualInput = false,
     disableManualSearchFallback = false,
+    entityLabel = 'judgments',
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
@@ -107,7 +110,7 @@ export const JudgmentSelectionList = ({
             >
                 <div className="flex items-center">
                     <span className="p-1 text-style-label-default-regular text-color-text-neutral-secondary">
-                        Found <span className="text-color-text-feedback-warning-default">{judgments.length} matching judgments</span> - select the one you mean
+                        Found <span className="text-color-text-feedback-warning-default">{judgments.length} matching {entityLabel}</span> - select the one you mean
                     </span>
 
                     {isConfirmed && (
