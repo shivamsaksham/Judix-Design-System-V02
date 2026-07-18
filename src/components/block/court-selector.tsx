@@ -22,6 +22,8 @@ export interface CourtCategory {
 export interface CourtSelectorProps extends React.HTMLAttributes<HTMLDivElement> {
     selectedCourts?: string[]
     categories?: CourtCategory[]
+    maxCourts?: number
+    loading?: boolean
     onCourtSelect?: (court: string) => void
     onCourtDeselect?: (court: string) => void
 }
@@ -30,6 +32,8 @@ export function CourtSelector({
     className,
     selectedCourts = [],
     categories = [],
+    maxCourts = 3,
+    loading = false,
     onCourtSelect,
     onCourtDeselect,
     ...props
@@ -69,7 +73,17 @@ export function CourtSelector({
                     <Separator className="bg-color-border-neutral-default" />
 
                     <div className="max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar">
-                        {categories.map((category, categoryIndex) => (
+                        {loading ? (
+                            <div className="flex items-center justify-center py-8">
+                                <div
+                                    className="w-6 h-6 rounded-full border-[3px] border-color-border-primary-subtle border-t-color-text-primary-default animate-spin shrink-0"
+                                    style={{
+                                        animationDuration: '0.8s',
+                                        animationTimingFunction: 'linear'
+                                    }}
+                                />
+                            </div>
+                        ) : categories.map((category, categoryIndex) => (
                             <div key={category.id}>
                                 <Option
                                     title={category.label}
@@ -84,9 +98,9 @@ export function CourtSelector({
                                         let isDisabled = false
                                         if (!isChecked) {
                                             if (isCourtSupreme) {
-                                                isDisabled = selectedDistrictHighCount >= 3
+                                                isDisabled = selectedDistrictHighCount >= maxCourts
                                             } else {
-                                                const maxAllowed = isSupremeSelected ? 2 : 3
+                                                const maxAllowed = isSupremeSelected ? maxCourts - 1 : maxCourts
                                                 isDisabled = selectedDistrictHighCount >= maxAllowed
                                             }
                                         }
@@ -124,7 +138,7 @@ export function CourtSelector({
                                                         <div className="w-full">{optionEl}</div>
                                                     </TooltipTrigger>
                                                     <TooltipContent side="top" align="center" className="z-9999">
-                                                        three courts can only be selected
+                                                        {maxCourts} court{maxCourts === 1 ? "" : "s"} can only be selected{maxCourts < 5 ? " — upgrade for more" : ""}
                                                     </TooltipContent>
                                                 </Tooltip>
                                             )

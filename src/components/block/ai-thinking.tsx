@@ -33,6 +33,7 @@ export interface AiThinkingProps {
     onProNudgeYesClick?: () => void;
     onProNudgeNoClick?: () => void;
     onJudgmentConfirm?: (data?: any) => void;
+    onJudgmentReject?: () => void;
     onToggle?: (expanded: boolean) => void;
     className?: string;
 }
@@ -115,6 +116,7 @@ export const AiThinking = ({
     onProNudgeYesClick,
     onProNudgeNoClick,
     onJudgmentConfirm,
+    onJudgmentReject,
     onToggle,
     className,
 }: AiThinkingProps) => {
@@ -303,12 +305,15 @@ export const AiThinking = ({
                                                 description={step.judgments[0].description}
                                                 isConfirmed={isCompleted}
                                                 onConfirm={() => onJudgmentConfirm?.(step.judgments![0])}
+                                                onReject={() => onJudgmentReject?.()}
                                             />
                                         ) : (
                                             <JudgmentSelectionList
                                                 judgments={step.judgments}
                                                 isConfirmed={isCompleted}
                                                 onConfirm={(data) => onJudgmentConfirm?.(data)}
+                                                onReject={() => onJudgmentReject?.()}
+                                                disableManualSearchFallback
                                             />
                                         )}
                                     </div>

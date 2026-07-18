@@ -63,7 +63,11 @@ export const OrderSummary = ({
         }
     };
 
-    const total = Math.max(0, data.subtotal + data.gst - (data.creditDeduction || 0));
+    // Paise-to-rupee division upstream can leave IEEE 754 artifacts
+    // (e.g. 967.0900000000001) — round to the nearest paisa before display.
+    const formatRupees = (value: number) => Number(value.toFixed(2));
+
+    const total = formatRupees(Math.max(0, data.subtotal + data.gst - (data.creditDeduction || 0)));
 
     return (
         <div className={cn('flex flex-col gap-6 w-full p-4 bg-color-surface-neutral-subtle_bg rounded-radius-interactiveelement', className)}>
@@ -136,11 +140,11 @@ export const OrderSummary = ({
                 <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Subtotal</span>
-                        <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {data.subtotal}</span>
+                        <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {formatRupees(data.subtotal)}</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">GST</span>
-                        <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {data.gst}</span>
+                        <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {formatRupees(data.gst)}</span>
                     </div>
                     {data.isPromoApplied && (
                         <div className="flex justify-between items-center">
@@ -151,7 +155,7 @@ export const OrderSummary = ({
                     {data.creditDeduction !== undefined && data.creditDeduction > 0 && (
                         <div className="flex justify-between items-center">
                             <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Unused time credit</span>
-                            <span className="p-1 text-style-body-default-regular text-color-success-default">-₹ {data.creditDeduction}</span>
+                            <span className="p-1 text-style-body-default-regular text-color-success-default">-₹ {formatRupees(data.creditDeduction)}</span>
                         </div>
                     )}
                 </div>

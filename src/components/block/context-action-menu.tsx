@@ -31,15 +31,15 @@ export function ContextActionMenu({
     const handleMention = () => onMention?.();
 
     const options = [
-        {
-            title: "Add to context",
-            value: "add",
-            trailingAccessory: isAdded ? (
-                <Label colorScheme="primary" selected={true} size="small" className="w-[61px] h-[24px] px-2">
-                    Added
-                </Label>
-            ) : undefined
-        },
+        // {
+        //     title: "Add to context",
+        //     value: "add",
+        //     trailingAccessory: isAdded ? (
+        //         <Label colorScheme="primary" selected={true} size="small" className="w-[61px] h-[24px] px-2">
+        //             Added
+        //         </Label>
+        //     ) : undefined
+        // },
         {
             title: isBookmarked ? "Bookmarked" : "Bookmark",
             value: "bookmark",

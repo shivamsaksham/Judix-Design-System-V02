@@ -26,6 +26,7 @@ export type JudgementDetailsProps = {
   onMention?: () => void;
   onShare?: () => void;
   onViewScrCopy?: () => void;
+  hideActions?: boolean;
 };
 
 function JudgementDetails({
@@ -45,6 +46,7 @@ function JudgementDetails({
   onMention,
   onShare,
   onViewScrCopy,
+  hideActions,
 }: JudgementDetailsProps) {
   return (
     <div
@@ -86,15 +88,17 @@ function JudgementDetails({
                 </Label>
               )}
 
-              <Label 
-                colorScheme="neutral" 
-                size="medium" 
-                className={cn("border border-color-border-neutral-default", onViewScrCopy ? "cursor-pointer" : "opacity-50 cursor-not-allowed")}
-                onClick={onViewScrCopy || undefined}
-                title={!onViewScrCopy ? "SCR Copy not available for this judgment" : undefined}
-              >
-                View SCR copy
-              </Label>
+              {!hideActions && (
+                <Label
+                  colorScheme="neutral"
+                  size="medium"
+                  className={cn("border border-color-border-neutral-default", onViewScrCopy ? "cursor-pointer" : "opacity-50 cursor-not-allowed")}
+                  onClick={onViewScrCopy || undefined}
+                  title={!onViewScrCopy ? "SCR Copy not available for this judgment" : undefined}
+                >
+                  View SCR copy
+                </Label>
+              )}
 
               {score && (
                 <div className="flex md:hidden">
@@ -102,17 +106,19 @@ function JudgementDetails({
                 </div>
               )}
 
-              <div className="flex items-center gap-1">
-                <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />
-                <IconButton
-                  icon="save-b"
-                  variant="neutral"
-                  size="medium"
-                  onClick={onBookmark}
-                  iconClassName={isBookmarked ? "fill-color-icon-primary-default text-color-icon-primary-default" : ""}
-                />
-                <IconButton icon="share-a" variant="neutral" size="medium" onClick={onShare} />
-              </div>
+              {!hideActions && (
+                <div className="flex items-center gap-1">
+                  <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />
+                  <IconButton
+                    icon="save-b"
+                    variant="neutral"
+                    size="medium"
+                    onClick={onBookmark}
+                    iconClassName={isBookmarked ? "fill-color-icon-primary-default text-color-icon-primary-default" : ""}
+                  />
+                  <IconButton icon="share-a" variant="neutral" size="medium" onClick={onShare} />
+                </div>
+              )}
             </div>
           </div>
 

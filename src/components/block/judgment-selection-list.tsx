@@ -19,6 +19,8 @@ export interface JudgmentSelectionListProps {
     onReject?: () => void;
     onManualSearch?: (query: string) => void;
     defaultShowManualInput?: boolean;
+    /** When true, "None of these" just calls onReject instead of revealing the manual-search box. */
+    disableManualSearchFallback?: boolean;
 }
 
 export const JudgmentSelectionList = ({
@@ -33,6 +35,7 @@ export const JudgmentSelectionList = ({
     onReject,
     onManualSearch,
     defaultShowManualInput = false,
+    disableManualSearchFallback = false,
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
@@ -67,7 +70,9 @@ export const JudgmentSelectionList = ({
     };
 
     const handleReject = () => {
-        setShowManualInput(true);
+        if (!disableManualSearchFallback) {
+            setShowManualInput(true);
+        }
         setInternalExpanded(false);
         onToggleExpand?.(false);
         onReject?.();
