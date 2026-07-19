@@ -9,6 +9,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { AiThinking, type AiThinkingProps } from './ai-thinking';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { SourceLookupCard } from '@/components/block/source-lookup-card';
 
 export interface ContentProps {
     query: string;
@@ -35,8 +37,21 @@ export interface ContentProps {
     aiThinkingProps?: AiThinkingProps;
     hideActions?: boolean;
     onExport?: (format: string) => void;
-    onSourceClick?: (type: 'query' | 'judgement' | 'act', id?: string) => void;
-    citations?: Array<{ id: string; source: string }>;
+    onSourceClick?: (type: 'query' | 'judgement' | 'act', id?: string, openDetails?: boolean) => void;
+    onWhyThisClick?: (title: string) => void;
+    citations?: Array<{ 
+        id: string; 
+        source: string; 
+        title?: string; 
+        description?: string; 
+        relevanceScore?: number; 
+        pgData?: {
+            overallSummary?: string;
+            facts?: string;
+            issue?: string;
+            reasoning?: string;
+        }
+    }>;
     onDownloadLogs?: () => Promise<void> | void;
 }
 
@@ -66,6 +81,7 @@ export const Content = ({
     aiThinkingProps,
     hideActions = false,
     onSourceClick,
+    onWhyThisClick,
     citations = [],
     onDownloadLogs,
 }: ContentProps) => {
@@ -92,25 +108,30 @@ export const Content = ({
         // Adjacent marker runs like [1][2] are grouped into a single [1, 2](#cite-group-...) link
         // so they render as one Wikipedia-style badge instead of two separate footnotes.
         if (citations.length > 0 || md.match(/\[([^\]]+)\]/)) {
-            const seen = new Map<string, { citation: typeof citations[0], num: number }>();
+            const seenMarker = new Map<string, { citation: typeof citations[0], num: number }>();
+            const citationToNum = new Map<string, number>();
             let nextNumber = 1;
             let citationIndex = 0;
 
             const resolveMarker = (rawIdStr: string): { num: number; citation: typeof citations[0] } | null => {
                 // Clean up any stray angle brackets or spaces the AI might have added
-                const idStr = rawIdStr.replace(/[<>]/g, '').trim().split(' ')[0]; // take the first ID if there are multiple
-                const isDigit = /^\d+$/.test(idStr);
+                const fullMarker = rawIdStr.replace(/[<>]/g, '').trim();
+                const firstWord = fullMarker.split(' ')[0];
+                const isDigit = /^\d+$/.test(fullMarker) || /^\d+$/.test(firstWord);
 
-                let citation = citations.find(c => c.id === idStr);
+                let citation = citations.find(c => c.id === fullMarker);
+                if (!citation) {
+                    citation = citations.find(c => c.id === firstWord);
+                }
 
                 // Fallback for older chats where it was just sequential digits
                 if (!citation && isDigit && citations.length > 0) {
-                    citation = seen.has(idStr) ? seen.get(idStr)?.citation : citations[citationIndex++];
+                    citation = seenMarker.has(fullMarker) ? seenMarker.get(fullMarker)?.citation : citations[citationIndex++];
                 }
 
                 if (!citation) {
                     // If it's a known system prefix like topicSummary, contextHint, metadata, etc, just remove it from text
-                    if (idStr.includes('topicSummary') || idStr.includes('contextHint') || idStr.includes('metadata') || idStr.includes('chunk')) {
+                    if (firstWord.includes('topicSummary') || firstWord.includes('contextHint') || firstWord.includes('metadata') || firstWord.includes('chunk')) {
                         return null;
                     }
                     // For unmatched DB IDs, if we have citations, let's aggressively try to match it
@@ -135,11 +156,15 @@ export const Content = ({
                 }
 
                 let displayNum;
-                if (seen.has(idStr)) {
-                    displayNum = seen.get(idStr)!.num;
+                if (seenMarker.has(fullMarker)) {
+                    displayNum = seenMarker.get(fullMarker)!.num;
+                } else if (citationToNum.has(citation.id)) {
+                    displayNum = citationToNum.get(citation.id)!;
+                    seenMarker.set(fullMarker, { citation, num: displayNum });
                 } else {
                     displayNum = nextNumber++;
-                    seen.set(idStr, { citation, num: displayNum });
+                    citationToNum.set(citation.id, displayNum);
+                    seenMarker.set(fullMarker, { citation, num: displayNum });
                 }
 
                 return { num: displayNum, citation };
@@ -232,6 +257,7 @@ export const Content = ({
             )}
 
             {displayText && <div className="text-style-textblock-secondary-bodytext-regular text-color-text-neutral-emphasis">
+                <TooltipProvider delayDuration={200}>
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -285,17 +311,33 @@ export const Content = ({
                                 const nums = String(children).split(',').map(n => n.trim());
                                 return (
                                     <sup className="mx-[2px]">
-                                        [{pairs.map((p, i) => (
-                                            <React.Fragment key={`${p.type}-${p.id}`}>
-                                                {i > 0 && ', '}
-                                                <button
-                                                    onClick={(e) => { e.preventDefault(); onSourceClick?.(p.type, p.id); }}
-                                                    className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
-                                                >
-                                                    {nums[i]}
-                                                </button>
-                                            </React.Fragment>
-                                        ))}]
+                                        [{pairs.map((p, i) => {
+                                            const citation = citations?.find(c => c.id === p.id);
+                                            const contentText = citation?.pgData?.issue || citation?.pgData?.overallSummary || citation?.pgData?.facts || citation?.pgData?.reasoning || citation?.description || 'No description available.';
+                                            return (
+                                                <React.Fragment key={`${p.type}-${p.id}`}>
+                                                    {i > 0 && ', '}
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <button
+                                                                onClick={(e) => { e.preventDefault(); onSourceClick?.(p.type, p.id); }}
+                                                                className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
+                                                            >
+                                                                {nums[i]}
+                                                            </button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent side="top" align="center" className="p-0 border-0 shadow-none bg-transparent" sideOffset={8}>
+                                                            <SourceLookupCard
+                                                                title={citation?.title || 'Source Details'}
+                                                                content={contentText}
+                                                                onViewSourceClick={() => onSourceClick?.(p.type, p.id, true)}
+                                                                onWhyThisClick={() => onWhyThisClick?.(citation?.title || 'this case')}
+                                                            />
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </React.Fragment>
+                                            );
+                                        })}]
                                     </sup>
                                 );
                             }
@@ -303,14 +345,28 @@ export const Content = ({
                                 const parts = href.replace('#cite-', '').split('-');
                                 const type = parts[0] as 'query' | 'judgement' | 'act';
                                 const id = parts.slice(1).join('-');
+                                const citation = citations?.find(c => c.id === id);
+                                const contentText = citation?.pgData?.issue || citation?.pgData?.overallSummary || citation?.pgData?.facts || citation?.pgData?.reasoning || citation?.description || 'No description available.';
                                 return (
                                     <sup className="mx-[2px]">
-                                        <button
-                                            onClick={(e) => { e.preventDefault(); onSourceClick?.(type, id); }}
-                                            className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
-                                        >
-                                            [{children}]
-                                        </button>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    onClick={(e) => { e.preventDefault(); onSourceClick?.(type, id); }}
+                                                    className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
+                                                >
+                                                    [{children}]
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="top" align="center" className="p-0 border-0 shadow-none bg-transparent" sideOffset={8}>
+                                                <SourceLookupCard
+                                                    title={citation?.title || 'Source Details'}
+                                                    content={contentText}
+                                                    onViewSourceClick={() => onSourceClick?.(type, id, true)}
+                                                    onWhyThisClick={() => onWhyThisClick?.(citation?.title || 'this case')}
+                                                />
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </sup>
                                 );
                             }
@@ -320,6 +376,7 @@ export const Content = ({
                 >
                     {displayText}
                 </ReactMarkdown>
+                </TooltipProvider>
             </div>}
 
             {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && !hideActions && <ResponseActions

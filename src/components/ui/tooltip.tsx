@@ -45,7 +45,7 @@ function TooltipContent({
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}
-        className={`${cn(
+        className={cn(
           "z-50 w-fit origin-(--radix-tooltip-content-transform-origin)",
           "rounded-tooltip-border-radius-default p-2",
           "shadow-lg",
@@ -55,8 +55,9 @@ function TooltipContent({
           "data-[side=left]:slide-in-from-right-2",
           "data-[side=right]:slide-in-from-left-2",
           "data-[side=top]:slide-in-from-bottom-2",
+          "bg-color-surface-neutral-hover_strong text-color-text-neutral-onneutral font-family-brandsecondary text-style-label-default-emphasis",
           className
-        )} bg-color-surface-neutral-hover_strong text-color-text-neutral-onneutral font-family-brandsecondary text-style-label-default-emphasis`}
+        )}
         {...props}
       >
         {children}
