@@ -139,7 +139,10 @@ export function ActResultTile({
             </div>
 
 
-            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+            {/* Hover-to-reveal only makes sense with a mouse — on touch
+                devices (below md) the button just stays visible instead of
+                requiring a hover state that doesn't really exist there. */}
+            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100")}>
                 <IconButton
                     ref={triggerRef}
                     size="medium"

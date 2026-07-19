@@ -111,12 +111,17 @@ export function JudgementTile({
                 </span>
             </div>
 
+            {/* These two share one corner and swap on hover (bookmark visible
+                by default, fades to reveal "+" on hover). Below md there's
+                no hover, and the "+" button now stays visible always (see
+                below) — so the bookmark stays hidden there too, instead of
+                the two icons stacking on top of each other. */}
             {isBookmarked && (
-                <div className={cn("absolute top-3 right-3 flex items-center justify-center w-8 h-8 pointer-events-none transition-opacity duration-200", open ? "opacity-0" : "opacity-100 group-hover:opacity-0")}>
+                <div className={cn("absolute top-3 right-3 flex items-center justify-center w-8 h-8 pointer-events-none transition-opacity duration-200", open ? "opacity-0" : "opacity-0 md:opacity-100 md:group-hover:opacity-0")}>
                     <IconButton size="medium" icon="save-b" variant="neutral" className="border-none bg-transparent shadow-none hover:bg-transparent" iconClassName="fill-color-icon-primary-default text-color-icon-primary-default" />
                 </div>
             )}
-            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100")}>
                 <IconButton
                     ref={triggerRef}
                     size="medium"
