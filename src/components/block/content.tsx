@@ -77,23 +77,17 @@ export const Content = ({
         // Strip the LLM-generated "## Sources Used" section at the end
         md = md.replace(/\n*#{1,3}\s*Sources Used[\s\S]*$/i, "").trim();
 
-        console.log("=== DEBUG Content Citations ===");
-        console.log("Original markdown:", markdown);
-        console.log("Processed md before citations:", md);
-        console.log("Citations array:", citations);
-
-        // Sources that should render as clickable citations. Anything else (topicSummary,
-        // contextHint, etc) is internal AI noise and gets silently stripped below.
-        const VALID_SOURCES = new Set(['case', 'judgment', 'judgement', 'act', 'query']);
+        const isActSource = (source: string) => source === 'act' || source === 'acts';
+        const VALID_SOURCES = new Set(['case', 'judgment', 'judgement', 'act', 'acts', 'query']);
         const sourceToType = (source: string): 'query' | 'judgement' | 'act' =>
-            source === 'act' ? 'act' : source === 'query' ? 'query' : 'judgement';
+            isActSource(source) ? 'act' : source === 'query' ? 'query' : 'judgement';
+        const formatLabel = (source: string, num: number): string =>
+            isActSource(source) ? `act-${num}` : `${num}`;
 
-        // Replace [N] or [prefix:db_id] citation markers with Markdown links: [N](#cite-type-id).
-        // Adjacent marker runs like [1][2] are grouped into a single [1, 2](#cite-group-...) link
-        // so they render as one Wikipedia-style badge instead of two separate footnotes.
         if (citations.length > 0 || md.match(/\[([^\]]+)\]/)) {
             const seen = new Map<string, { citation: typeof citations[0], num: number }>();
-            let nextNumber = 1;
+            let nextCaseNumber = 1;
+            let nextActNumber = 1;
             let citationIndex = 0;
 
             const resolveMarker = (rawIdStr: string): { num: number; citation: typeof citations[0] } | null => {
@@ -138,7 +132,7 @@ export const Content = ({
                 if (seen.has(idStr)) {
                     displayNum = seen.get(idStr)!.num;
                 } else {
-                    displayNum = nextNumber++;
+                    displayNum = isActSource(citation.source) ? nextActNumber++ : nextCaseNumber++;
                     seen.set(idStr, { citation, num: displayNum });
                 }
 
@@ -156,19 +150,22 @@ export const Content = ({
 
                 if (resolved.length === 1) {
                     const { num, citation } = resolved[0];
-                    return `[${num}](#cite-${sourceToType(citation.source)}-${citation.id})`;
+                    return `[${formatLabel(citation.source, num)}](#cite-${sourceToType(citation.source)}-${citation.id})`;
                 }
 
-                const nums = resolved.map(r => r.num).join(', ');
+                const nums = resolved.map(r => formatLabel(r.citation.source, r.num)).join(', ');
                 const pairs = resolved.map(r => `${sourceToType(r.citation.source)}-${r.citation.id}`).join(',');
                 return `[${nums}](#cite-group-${pairs})`;
             });
         }
 
-        md = md.replace(/(\*{1,2})([^*]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (_match, _delimiter, boldText, citationLinkPart, citeHref) => {
+        md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (_match, _delimiter, boldText, citationLinkPart, citeHref) => {
             const titleHref = citeHref.replace('#cite-', '#cite-title-');
             return `[${boldText}](${titleHref})${citationLinkPart}`;
         });
+
+        md = md.replace(/\*{1,2}(\s*\[[^\]]+\]\(#cite-[^)]+\))/g, '$1');
+        md = md.replace(/(\[[^\]]+\]\(#cite-[^)]+\))\s*\*{1,2}/g, '$1');
 
         if (!animate) {
             setDisplayText(md);
@@ -258,7 +255,7 @@ export const Content = ({
                                 return (
                                     <button
                                         onClick={(e) => { e.preventDefault(); onSourceClick?.(pairs[0].type, pairs[0].id); }}
-                                        className="font-semibold text-color-text-primary-default hover:underline cursor-pointer text-left"
+                                        className="font-semibold hover:underline cursor-pointer text-left text-color-text-primary-default"
                                     >
                                         {children}
                                     </button>
@@ -271,7 +268,7 @@ export const Content = ({
                                 return (
                                     <button
                                         onClick={(e) => { e.preventDefault(); onSourceClick?.(type, id); }}
-                                        className="font-semibold text-color-text-primary-default hover:underline cursor-pointer text-left"
+                                        className="font-semibold hover:underline cursor-pointer text-left text-color-text-primary-default"
                                     >
                                         {children}
                                     </button>
@@ -290,7 +287,7 @@ export const Content = ({
                                                 {i > 0 && ', '}
                                                 <button
                                                     onClick={(e) => { e.preventDefault(); onSourceClick?.(p.type, p.id); }}
-                                                    className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
+                                                    className="hover:underline font-medium text-xs cursor-pointer text-color-text-primary-default"
                                                 >
                                                     {nums[i]}
                                                 </button>
@@ -307,7 +304,7 @@ export const Content = ({
                                     <sup className="mx-[2px]">
                                         <button
                                             onClick={(e) => { e.preventDefault(); onSourceClick?.(type, id); }}
-                                            className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
+                                            className="hover:underline font-medium text-xs cursor-pointer text-color-text-primary-default"
                                         >
                                             [{children}]
                                         </button>

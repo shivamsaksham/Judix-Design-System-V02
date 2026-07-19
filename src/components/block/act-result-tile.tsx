@@ -23,6 +23,8 @@ export interface ActResultTileProps {
     isHighlighted?: boolean;
     id: string;
     className?: string;
+    /** Central vs state jurisdiction — absent when the act didn't resolve against central-acts. */
+    category?: 'central' | 'state';
 }
 
 export function ActResultTile({

@@ -133,7 +133,12 @@ export function NavBar({
                     className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
                     aria-label="Toggle Sidebar"
                 >
-                    <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
+                    {/* Was 19x13 — visibly smaller/thinner than its sibling
+                        on the right (the "..." menu, rendered at a full
+                        20x20 icon box). Scaled up while keeping the SVG's
+                        native ~22:15 aspect ratio so the hamburger lines
+                        don't stretch/distort. */}
+                    <Image src="/mobile-sidebar.svg" alt="Menu" width={24} height={16} />
                 </button>
             </div>
         )
