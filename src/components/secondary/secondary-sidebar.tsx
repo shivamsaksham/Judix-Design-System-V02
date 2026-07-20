@@ -17,7 +17,7 @@ export interface SidebarItem {
 export interface SecondarySidebarProps {
   activeItem?: string
   onSelect?: (id: string) => void
-  onLogout?: () => void
+  onLogout?: () => void | Promise<void>
   unreadNotificationsCount?: number
   className?: string
 }
@@ -46,6 +46,20 @@ export function SecondarySidebar({
   className,
 }: SecondarySidebarProps) {
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false)
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false)
+
+  const handleConfirmLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      await onLogout?.()
+      setShowLogoutConfirm(false)
+    } catch {
+      // Leave the dialog open on failure so the user can see it didn't
+      // go through and retry, instead of silently closing either way.
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
 
   const renderSection = (section: SidebarItem["section"], title?: string) => {
     const items = SIDEBAR_ITEMS.filter((item) => item.section === section)
@@ -102,10 +116,9 @@ export function SecondarySidebar({
           mainText="Logout"
           subText="Are you sure you want to logout from Judix?"
           confirmText="Logout"
-          onConfirmClick={() => {
-            onLogout?.()
-            setShowLogoutConfirm(false)
-          }}
+          confirmVariant="destructive"
+          confirmLoading={isLoggingOut}
+          onConfirmClick={handleConfirmLogout}
           onCancelClick={() => setShowLogoutConfirm(false)}
         >
           <Option

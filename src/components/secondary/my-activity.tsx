@@ -31,7 +31,7 @@ export interface MyActivityProps {
   lastLogin: string
   sessions: Session[]
   projects: Project[]
-  onLogoutSession?: (id: string) => void
+  onLogoutSession?: (id: string) => void | Promise<void>
   onLogoutAll?: () => void
   onExportActivity?: () => void
   onSelectProject?: (projectId: string) => void
@@ -59,7 +59,24 @@ export function MyActivity({
   const [showExportProjectConfirm, setShowExportProjectConfirm] = React.useState(false)
   const [pendingProjectId, setPendingProjectId] = React.useState<string | null>(null)
   const [showLoginHistory, setShowLoginHistory] = React.useState(false)
-  
+  const [loggingOutId, setLoggingOutId] = React.useState<string | null>(null)
+  const [pendingLogoutSession, setPendingLogoutSession] = React.useState<Session | null>(null)
+
+  const handleConfirmLogoutSession = async () => {
+    if (!pendingLogoutSession) return
+    const id = pendingLogoutSession.id
+    setLoggingOutId(id)
+    try {
+      await onLogoutSession?.(id)
+      setPendingLogoutSession(null)
+    } catch {
+      // Leave the dialog open on failure so the user can see it didn't
+      // go through and retry, instead of it silently closing either way.
+    } finally {
+      setLoggingOutId(null)
+    }
+  }
+
   return (
     <div className={`bg-color-surface-neutral-default ${cn("w-full flex flex-col gap-6 pb-12", className)}`}>
       {/* Login History Section */}
@@ -120,8 +137,9 @@ export function MyActivity({
                 </div>
               </div>
               <button
-                onClick={() => onLogoutSession?.(session.id)}
-                className="p-1 text-style-body-default-emphasis text-color-text-feedback-info-default hover:underline cursor-pointer"
+                onClick={() => setPendingLogoutSession(session)}
+                disabled={loggingOutId !== null}
+                className="p-1 text-style-body-default-emphasis text-color-text-feedback-info-default hover:underline cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:no-underline"
               >
                 Log Out
               </button>
@@ -138,6 +156,18 @@ export function MyActivity({
             </div>
           )}
         </div>
+
+        <Confirmation
+          open={pendingLogoutSession !== null}
+          onOpenChange={(open) => { if (!open) setPendingLogoutSession(null) }}
+          mainText="Log Out"
+          subText={pendingLogoutSession ? `Log out of ${pendingLogoutSession.device} • ${pendingLogoutSession.location}?` : ""}
+          confirmText="Log Out"
+          confirmVariant="destructive"
+          confirmLoading={loggingOutId !== null}
+          onConfirmClick={handleConfirmLogoutSession}
+          onCancelClick={() => setPendingLogoutSession(null)}
+        />
 
         {/* <Confirmation
           open={showLogoutAllConfirm}
