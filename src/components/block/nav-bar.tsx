@@ -127,7 +127,12 @@ export function NavBar({
     // Sub-renderers for clean structure
     const renderMobileSidebarTrigger = () => (
         !hideMobileSidebarTrigger && (
-            <div className="md:hidden">
+            // shrink-0: without it, this is just another shrinkable flex
+            // child inside the header's "flex-1 overflow-hidden" row —
+            // at narrow widths (e.g. 320px) flexbox squeezes the button
+            // itself instead of leaving all the truncation pressure on
+            // the title text, which is the only element meant to shrink.
+            <div className="md:hidden shrink-0">
                 <button
                     onClick={onMenuClick}
                     className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
