@@ -12,9 +12,9 @@ export interface JudgmentData {
   overallSummary: string;
   issue: string;
   facts: string;
-  arguments: string;
   reasoning: string;
   decision: string;
+  principles: string;
   actsTable?: {
     data: ActData[];
     headers: { act: string; details: string };
@@ -52,9 +52,9 @@ export function JudgmentDetailsContent({ data, className }: JudgmentDetailsConte
     { title: "OVERALL SUMMARY", content: data.overallSummary },
     { title: "ISSUE", content: data.issue },
     { title: "FACTS", content: data.facts },
-    { title: "ARGUMENTS", content: data.arguments },
     { title: "REASONING", content: data.reasoning },
     { title: "DECISION", content: data.decision },
+    { title: "PRINCIPLES", content: data.principles },
   ];
 
   return (
@@ -69,16 +69,20 @@ export function JudgmentDetailsContent({ data, className }: JudgmentDetailsConte
 
       {data.caseMetadata && (
         <JudgmentSection title="CASE METADATA">
-          <CaseMetadataTable data={data.caseMetadata} />
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <CaseMetadataTable data={data.caseMetadata} />
+          </div>
         </JudgmentSection>
       )}
 
       {data.actsTable && (
         <JudgmentSection title="ACTS & SECTION">
-          <ActsTable
-            data={data.actsTable.data}
-            headers={data.actsTable.headers}
-          />
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <ActsTable
+              data={data.actsTable.data}
+              headers={data.actsTable.headers}
+            />
+          </div>
         </JudgmentSection>
       )}
 
@@ -100,16 +104,20 @@ export function JudgmentDetailsContent({ data, className }: JudgmentDetailsConte
 
       {data.citationData && (
         <JudgmentSection title="CITATION METADATA">
-          <CitationData data={data.citationData} />
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <CitationData data={data.citationData} />
+          </div>
         </JudgmentSection>
       )}
 
       {data.casesCited && (
         <JudgmentSection title="CASE CITED">
-          <CasesCited
-            data={data.casesCited.data}
-            headers={data.casesCited.headers}
-          />
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <CasesCited
+              data={data.casesCited.data}
+              headers={data.casesCited.headers}
+            />
+          </div>
         </JudgmentSection>
       )}
     </div>

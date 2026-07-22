@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { FileTree, FileTreeNodeType} from "@/components/block/file-tree";
 import { IconButton } from "@/components/ui/icon-button";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Icon } from "@judix/icon";
 import { Dropdown } from "@/components/ui/dropdown";
 import { useFloating, offset, flip, shift, autoUpdate, useDismiss, useInteractions } from "@floating-ui/react";
 import { createPortal } from "react-dom";
@@ -18,12 +20,14 @@ export interface FileBarProps {
     editDisabled?: boolean;
     onSelect?: (node: FileTreeNodeType) => void;
     className?: string;
-    onCreateNew?: (type: "chat" | "note") => void;
+    onCreateNew?: (type: "project" | "chat" | "note") => void;
     onEdit?: () => void;
     onDelete?: () => void;
     onToggle?: (node: FileTreeNodeType) => void;
     onRename?: (nodeId: string, newName: string) => void;
     onCancelEdit?: () => void;
+    onCreateNewDirect?: () => void;
+    onLongSelect?: (node: FileTreeNodeType) => void;
 }
 
 export function FileBar({
@@ -40,6 +44,8 @@ export function FileBar({
     onToggle,
     onRename,
     onCancelEdit,
+    onCreateNewDirect,
+    onLongSelect,
 }: FileBarProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -60,36 +66,44 @@ export function FileBar({
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
     const handleCreateOption = (val: string) => {
-        if (val === "chat" || val === "note") {
-            onCreateNew?.(val);
+        if (val === "project" || val === "chat" || val === "note") {
+            onCreateNew?.(val as "project" | "chat" | "note");
             setIsDropdownOpen(false);
         }
     };
 
     const createOptions = [
+        { value: "project", title: "Project" },
         { value: "chat", title: "Chat" },
         { value: "note", title: "Note file" },
     ];
 
     return (
         <div className={cn("flex flex-col w-full h-full bg-color-surface-neutral-default", className)}>
-            <div className="flex items-center justify-between py-1 shrink-0 border-b -my-[1px] border-color-border-neutral-default">
+            <div className="flex items-center justify-between py-3 shrink-0">
                 <span className="p-1 text-style-body-title-regular text-color-text-neutral-default">
                     My Files
                 </span>
                 <div className="flex items-center gap-1">
-                    <Button
+                    <Label
                         ref={refs.setReference}
                         {...getReferenceProps()}
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        variant="neutral"
-                        size="extraSmall"
-                        suffixIcon="arrow-down-c"
-                        className="h-8"
-                        disabled={!activeId}
+                        onClick={() => {
+                            if (onCreateNewDirect) {
+                                onCreateNewDirect();
+                            } else if (activeId) {
+                                setIsDropdownOpen(!isDropdownOpen);
+                            }
+                        }}
+                        colorScheme="neutral"
+                        size="medium"
+                        className={cn("cursor-pointer select-none", !activeId && !onCreateNewDirect && "opacity-50 pointer-events-none")}
                     >
-                        Create new
-                    </Button>
+                        <span className="flex items-center gap-[6px] whitespace-nowrap">
+                            Create new
+                            {!onCreateNewDirect && <Icon name="arrow-down-c" className="w-3 h-3 text-color-icon-neutral-secondary shrink-0" />}
+                        </span>
+                    </Label>
 
                     <IconButton
                         icon="edit-a"
@@ -109,15 +123,13 @@ export function FileBar({
                     />
                 </div>
             </div>
-            <div className="px-3 pb-3">
                 <TextInput
                     inputSize="small"
                     placeholder="Search in here"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-color-surface-neutral-default mt-2 h-[42px]"
+                    className="bg-color-surface-neutral-default mt-2 h-[42px] mb-3"
                 />
-            </div>
 
             <div className="flex-1 min-h-0">
                 <FileTree
@@ -126,10 +138,10 @@ export function FileBar({
                     activeIds={activeIds}
                     editingId={editingId}
                     onSelect={onSelect}
+                    onLongSelect={onLongSelect}
                     onToggle={onToggle}
                     onRename={onRename}
                     onCancelEdit={onCancelEdit}
-                    className="p-2"
                 />
             </div>
 

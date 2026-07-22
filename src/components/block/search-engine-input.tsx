@@ -1,13 +1,14 @@
 "use client";
-import React, { useRef, useState, useCallback, useMemo } from "react";
+import React, { useRef, useState, useCallback, useMemo, useImperativeHandle } from "react";
 import { cn } from "@/lib/utils";
-import { IconButton, Dropdown, DropdownOption } from "@/components/ui";
+import { IconButton, Dropdown, DropdownOption, showToast } from "@/components/ui";
 import { Icon } from "@judix/icon";
 import {
     useFloating,
     offset,
     flip,
     shift,
+    size,
     useDismiss,
     useInteractions,
     autoUpdate,
@@ -25,6 +26,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
@@ -57,6 +59,7 @@ export interface StaticDataConfig {
 export interface SearchPayload {
     query: string;
     filters: Record<string, unknown>;
+    mentions?: Array<{ type: string; id: string }>;
 }
 
 export interface TokenStructure {
@@ -167,7 +170,7 @@ export function matchPrediction(
         suggestions.find(
             (s) =>
                 lastWord.length >= (s.minChars ?? 3) &&
-                s.prefixes.some((p) => lastWord.toLowerCase().startsWith(p.toLowerCase()))
+                s.option.toLowerCase().startsWith(lastWord.toLowerCase())
         ) ?? null
     );
 }
@@ -190,6 +193,8 @@ interface SearchEngineInputProps {
     helperText?: string;
     scopes?: string[];
     courtCategories?: CourtCategory[];
+    courtCategoriesLoading?: boolean;
+    maxCourts?: number;
     contextItems?: ContextItem[];
     folderOptions?: DropdownOption[];
     quickAddOptions?: OptionHelper[];
@@ -205,16 +210,50 @@ interface SearchEngineInputProps {
     onStop?: () => void;
     isMobile?: boolean;
     projectLabel?: string;
-    onProjectClick?: () => void;
+    onProjectSelect?: (project: ProjectChoiceItem) => void;
     modelName?: string;
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
+    artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
+    onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<any>;
+    onAddText?: (title: string, content: string) => void | Promise<void>;
 }
 
-function SearchEngineInput({
+export interface SearchEngineInputHandle {
+    insertMention: (mention: { type: string; id: string; label: string }) => void;
+}
+
+function createMentionBadge({
+    trigger,
+    value,
+    mentionType,
+    label,
+}: {
+    trigger: string;
+    value: string;
+    mentionType?: string;
+    label?: string;
+}): HTMLSpanElement {
+    const badge = document.createElement("span");
+    badge.className = "mention-badge";
+    badge.setAttribute("data-type", trigger);
+    badge.setAttribute("data-value", value);
+    if (trigger === "@" && mentionType) badge.setAttribute("data-mention-type", mentionType);
+    badge.style.color = "var(--color-color-text-primary-default)";
+    badge.contentEditable = "false";
+    badge.textContent =
+        trigger === "@" && label
+            ? `[@${label}]`
+            : value.startsWith(trigger) ? value : `${trigger}${value}`;
+    return badge;
+}
+
+function SearchEngineInputImpl({
     helperText,
     scopes = [],
     courtCategories = [],
+    courtCategoriesLoading = false,
+    maxCourts = 3,
     contextItems = [],
     quickAddOptions = [],
     triggers = {},
@@ -227,11 +266,14 @@ function SearchEngineInput({
     isLoading = false,
     onStop,
     projectLabel = "Choose project",
-    onProjectClick,
+    onProjectSelect,
     modelName: propModelName = "Judix Default",
     projects = [],
     showProjectSelector = true,
-}: SearchEngineInputProps) {
+    artifacts = [],
+    onUpload,
+    onAddText,
+}: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
 
     const [isCentered, setIsCentered] = useState(true);
@@ -240,21 +282,84 @@ function SearchEngineInput({
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [uploadFiles, setUploadFiles] = useState<{
+        file: File;
+        state: 'pending' | 'processing' | 'processed' | 'failed';
+        progress?: number;
+        subtitle?: string;
+    }[]>([]);
     const [modelName, setModelName] = useState(propModelName);
+
+    const uploadFilesRef = useRef(uploadFiles);
+    React.useEffect(() => {
+        uploadFilesRef.current = uploadFiles;
+    }, [uploadFiles]);
+
+    const handleSingleFileUpload = useCallback(async (index: number) => {
+        const item = uploadFilesRef.current[index];
+        if (!item) return;
+
+        // Set to processing with 0% progress
+        setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processing', progress: 0, subtitle: undefined } : f));
+
+        let currentProgress = 0;
+
+        try {
+            await onUpload?.(item.file, (actualProgress) => {
+                if (actualProgress > currentProgress) {
+                    currentProgress = actualProgress;
+                    setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, progress: actualProgress } : f));
+                }
+            });
+
+            // Hold briefly at 100% before marking as complete
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processed', subtitle: 'Uploaded', progress: 100 } : f));
+        } catch (err) {
+            console.error("Single file upload failed:", err);
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed' } : f));
+        }
+    }, [onUpload]);
+
+    const handleUploadAll = useCallback(async () => {
+        const currentFiles = uploadFilesRef.current;
+        const indicesToUpload = currentFiles
+            .map((f, idx) => ({ f, idx }))
+            .filter(({ f }) => f.state === 'failed' || f.state === 'pending')
+            .map(({ idx }) => idx);
+
+        if (indicesToUpload.length === 0) return;
+
+        await Promise.all(indicesToUpload.map(idx => handleSingleFileUpload(idx)));
+    }, [handleSingleFileUpload]);
+
+
 
     const effectiveSelectedCourts =
         propSelectedCourts !== undefined ? propSelectedCourts : internalSelectedCourts;
 
-    const handleCourtsChange = (newCourts: string[]) => {
+    const handleCourtsChange = useCallback((newCourts: string[]) => {
         if (onCourtsChange) onCourtsChange(newCourts);
         if (propSelectedCourts === undefined) setInternalSelectedCourts(newCourts);
-    };
+    }, [onCourtsChange, propSelectedCourts]);
 
     const [selectedContextItems, setSelectedContextItems] = useState<string[]>([]);
     const [contextMode] = useState<"auto" | "self-managed">("self-managed");
     const [activeDropdown, setActiveDropdown] = useState<
         "add" | "settings" | "folder" | "project" | "trigger" | null
     >(null);
+
+    const prevActiveDropdownRef = useRef<typeof activeDropdown>(null);
+
+    React.useEffect(() => {
+        if (prevActiveDropdownRef.current === "folder" && activeDropdown !== "folder") {
+            if (effectiveSelectedCourts.length === 0) {
+                handleCourtsChange(["Supreme Court of India"]);
+            }
+        }
+        prevActiveDropdownRef.current = activeDropdown;
+    }, [activeDropdown, effectiveSelectedCourts, handleCourtsChange]);
 
     const textareaRef = useRef<HTMLDivElement>(null);
 
@@ -358,10 +463,12 @@ function SearchEngineInput({
     const BOTTOM_HEIGHT = 48;
 
     const { refs, floatingStyles, context } = useFloating({
-        placement: activeDropdown === "trigger" ? "top-start" : "bottom-start",
+        placement: (activeDropdown === "trigger" || activeDropdown === "add" || activeDropdown === "project")
+            ? "top-start"
+            : "bottom-start",
         whileElementsMounted: autoUpdate,
         middleware: [
-            offset({ mainAxis: 12 }),
+            offset({ mainAxis: (activeDropdown === "add" || activeDropdown === "folder" || activeDropdown === "project") ? 4 : 12 }),
             flip({
                 fallbackPlacements:
                     activeDropdown === "trigger"
@@ -369,6 +476,15 @@ function SearchEngineInput({
                         : ["top-start", "top-end"],
             }),
             shift({ padding: 8 }),
+            size({
+                padding: 8,
+                apply({ availableHeight, elements }) {
+                    Object.assign(elements.floating.style, {
+                        maxHeight: `${Math.max(150, availableHeight)}px`,
+                        overflowY: "auto",
+                    });
+                },
+            }),
         ],
         open: activeDropdown !== null,
         onOpenChange: (open: boolean) => {
@@ -387,16 +503,16 @@ function SearchEngineInput({
     const dismiss = useDismiss(context);
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
-    // Update the floating anchor whenever activeDropdown changes.
-    // Using a stable ref per button avoids the race where the conditional
-    // ref callback in JSX has not yet fired when floatingStyles is first computed.
     React.useEffect(() => {
         if (activeDropdown === "folder") refs.setReference(folderBtnRef.current);
         else if (activeDropdown === "settings") refs.setReference(settingsBtnRef.current);
         else if (activeDropdown === "project") refs.setReference(projectBtnRef.current);
         else if (activeDropdown === "add") refs.setReference(addBtnRef.current);
-        else if (activeDropdown === "trigger") refs.setReference(textareaRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        else if (activeDropdown === "trigger") {
+            const rect = savedRangeRef.current?.getBoundingClientRect();
+            const isDegenerate = !rect || (rect.width === 0 && rect.height === 0 && rect.top === 0 && rect.left === 0);
+            refs.setReference(isDegenerate ? textareaRef.current : { getBoundingClientRect: () => rect! });
+        }
     }, [activeDropdown]);
 
     const TRIGGER_VALUES = useMemo(() => {
@@ -550,12 +666,20 @@ function SearchEngineInput({
 
         filters.scopes = selectedScopes;
         filters.contextItems = selectedContextItems;
-        filters.courts = effectiveSelectedCourts;
+        filters.courts = effectiveSelectedCourts.length === 0 ? ["Supreme Court of India"] : effectiveSelectedCourts;
+
+        const mentions: Array<{ type: string; id: string }> = [];
+        div.querySelectorAll('.mention-badge[data-type="@"]').forEach((el) => {
+            const id = el.getAttribute("data-value");
+            if (!id) return;
+            mentions.push({ type: el.getAttribute("data-mention-type") || "inputContext", id });
+        });
 
         return {
             query: queryText.replace(/\s+/g, " ").trim(),
             displayQuery: displayQuery.replace(/\s+/g, " ").trim(),
             filters,
+            mentions,
         };
     }, [selectedScopes, tokenConfig, selectedContextItems, effectiveSelectedCourts]);
 
@@ -569,7 +693,15 @@ function SearchEngineInput({
         setIsCentered(false);
         setInput("");
         setSectionChip(null);
+        setPredictiveMatch(null);
+        setActiveDropdown(null);
+        setActiveTrigger(null);
+        setActiveWrapperType(null);
         textareaRef.current.innerHTML = "";
+
+        if (effectiveSelectedCourts.length === 0) {
+            handleCourtsChange(["Supreme Court of India"]);
+        }
 
         requestAnimationFrame(() => {
             if (textareaRef.current) {
@@ -577,7 +709,7 @@ function SearchEngineInput({
                 textareaRef.current.style.overflowY = "hidden";
             }
         });
-    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit]);
+    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit, effectiveSelectedCourts, handleCourtsChange]);
 
     // Positions the "Enter Section" chip just below the Act wrapper
     const showSectionChip = (wrapperEl: HTMLElement) => {
@@ -834,7 +966,7 @@ function SearchEngineInput({
             e.key === "Enter" &&
             !e.shiftKey &&
             input.trim() !== "" &&
-            input.trim().split(/\s+/).length >= 3
+            (input.trim().split(/\s+/).length >= 3 || input.trim().length >= 20)
         ) {
             e.preventDefault();
             handleSubmit();
@@ -980,13 +1112,13 @@ function SearchEngineInput({
                 if (startOffset === 0) {
                     const prev = startNode.previousSibling;
                     if (isTokenEl(prev)) { e.preventDefault(); prev!.remove(); return; }
-                    if (prev?.nodeType === Node.TEXT_NODE && prev.textContent === "\u00A0") {
+                    if (prev?.nodeType === Node.TEXT_NODE && (prev.textContent === "\u00A0" || prev.textContent === " ")) {
                         const badge = prev.previousSibling;
                         if (isTokenEl(badge)) {
                             e.preventDefault(); prev.remove(); badge!.remove(); return;
                         }
                     }
-                } else if (startOffset === 1 && startNode.textContent?.charAt(0) === "\u00A0") {
+                } else if (startOffset === 1 && (startNode.textContent?.charAt(0) === "\u00A0" || startNode.textContent?.charAt(0) === " ")) {
                     const prev = startNode.previousSibling;
                     if (isTokenEl(prev)) {
                         e.preventDefault();
@@ -999,7 +1131,7 @@ function SearchEngineInput({
             } else if (startNode.nodeType === Node.ELEMENT_NODE && startOffset > 0) {
                 const prevChild = startNode.childNodes[startOffset - 1];
                 if (isTokenEl(prevChild)) { e.preventDefault(); prevChild.remove(); return; }
-                if (prevChild?.nodeType === Node.TEXT_NODE && prevChild.textContent === "\u00A0") {
+                if (prevChild?.nodeType === Node.TEXT_NODE && (prevChild.textContent === "\u00A0" || prevChild.textContent === " ")) {
                     const badge = prevChild.previousSibling;
                     if (isTokenEl(badge)) {
                         e.preventDefault(); prevChild.remove(); badge!.remove(); return;
@@ -1041,7 +1173,37 @@ function SearchEngineInput({
     const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         const text = e.clipboardData.getData("text/plain");
-        document.execCommand("insertText", false, text);
+
+        const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
+        let html = "";
+
+        parts.forEach(part => {
+            if (!part) return;
+
+            if (part.startsWith('[') && part.endsWith(']')) {
+                const match = part.match(/^\[(.*?):-(.*?)\]$/);
+                if (match) {
+                    const typeKey = match[1];
+                    const value = match[2];
+                    html += `<span class="static-data-wrapper" style="color: var(--color-color-text-primary-default); font-weight: 400;" contenteditable="false" data-type="${typeKey}"><span>[${typeKey}: </span><span class="static-value-input" style="outline: none; min-width: 10px; display: inline-block;" contenteditable="true">${value}</span><span>]</span></span>`;
+                    return;
+                }
+            }
+            if (part.startsWith('@')) {
+                html += `<span class="mention-badge" data-type="@" data-value="${part}" style="color: var(--color-color-text-primary-default);" contenteditable="false">${part}</span>`;
+                return;
+            }
+            if (part.startsWith('/')) {
+                html += `<span class="mention-badge" data-type="/" data-value="${part}" style="color: var(--color-color-text-primary-default);" contenteditable="false">${part}</span>`;
+                return;
+            }
+
+            const div = document.createElement("div");
+            div.innerText = part;
+            html += div.innerHTML;
+        });
+
+        document.execCommand("insertHTML", false, html);
     };
 
     const handleImprove = () => {
@@ -1058,7 +1220,7 @@ function SearchEngineInput({
         });
     };
 
-    const handleOptionSelect = (option: string, isManual: boolean = false) => {
+    const handleOptionSelect = (option: string, isManual: boolean = false, label?: string, mentionType?: string) => {
         if (onOptionClick) {
             const currentPayload = getParsedPayload();
             const handled = onOptionClick(option, currentPayload.query || "");
@@ -1323,13 +1485,7 @@ function SearchEngineInput({
                 }
             }
         } else if (isTriggerOption && activeTrigger) {
-            const badge = document.createElement("span");
-            badge.className = "mention-badge";
-            badge.setAttribute("data-type", activeTrigger);
-            badge.setAttribute("data-value", option);
-            badge.style.color = "var(--color-color-text-primary-default)";
-            badge.contentEditable = "false";
-            badge.textContent = option.startsWith(activeTrigger) ? option : `${activeTrigger}${option}`;
+            const badge = createMentionBadge({ trigger: activeTrigger, value: option, mentionType, label });
 
             insertRange.insertNode(badge);
             const space = document.createTextNode("\u00A0");
@@ -1361,6 +1517,34 @@ function SearchEngineInput({
     };
 
     handleOptionSelectRef.current = handleOptionSelect;
+
+    const insertMention = useCallback(({ type, id, label }: { type: string; id: string; label: string }) => {
+        const div = textareaRef.current;
+        if (!div) return;
+        div.focus();
+
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        range.collapse(false);
+
+        const badge = createMentionBadge({ trigger: "@", value: id, mentionType: type, label });
+        range.insertNode(badge);
+        const space = document.createTextNode(" ");
+        badge.after(space);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(space);
+        newRange.collapse(true);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(newRange);
+
+        setIsCentered(false);
+        setInput(div.innerText);
+        autoResize();
+    }, [autoResize]);
+
+    useImperativeHandle(ref, () => ({ insertMention }), [insertMention]);
 
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
         setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));
@@ -1408,7 +1592,7 @@ function SearchEngineInput({
                                 subtext: typeof o.subtext === 'string' ? o.subtext : undefined,
                             }))}
                             activeIndex={activeIndex}
-                            onChange={handleOptionSelect}
+                            onChange={(option) => handleOptionSelect(option.value, false, option.title)}
                         />
                     ) : (
                         <Dropdown
@@ -1436,11 +1620,11 @@ function SearchEngineInput({
                     {activeDropdown === "add" ? (
                         <NestedDropdown
                             options={[
-                                {
-                                    title: "Upload Document",
-                                    value: "upload_document",
-                                    leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
-                                },
+                                // {
+                                //     title: "Upload Document",
+                                //     value: "upload_document",
+                                //     leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
+                                // },
                                 {
                                     title: "Add Text",
                                     value: "add_text",
@@ -1474,16 +1658,18 @@ function SearchEngineInput({
                         <ProjectChoiceDropdown
                             projects={
                                 projects.length > 0
-                                    ? projects
+                                    ? projects.filter((p) => p.name?.toLowerCase() !== "independent")
                                     : [
                                         { id: "1", name: "Default Project", description: "Your main workspace" },
                                         { id: "2", name: "Legal Research 2024", description: "Active cases" },
                                         { id: "3", name: "Appeals Q1", description: "Archived" },
                                     ]
                             }
-                            selectedProjectId={null}
-                            onSelect={() => {
-                                if (onProjectClick) onProjectClick();
+                            selectedProjectId={
+                                projects.find((p) => p.name === projectLabel)?.id || null
+                            }
+                            onSelect={(project) => {
+                                if (onProjectSelect) onProjectSelect(project);
                                 setActiveDropdown(null);
                             }}
                         />
@@ -1492,6 +1678,8 @@ function SearchEngineInput({
                             <CourtSelector
                                 categories={courtCategories}
                                 selectedCourts={effectiveSelectedCourts}
+                                maxCourts={maxCourts}
+                                loading={courtCategoriesLoading}
                                 onCourtSelect={(court) =>
                                     handleCourtsChange([...effectiveSelectedCourts, court])
                                 }
@@ -1523,13 +1711,15 @@ function SearchEngineInput({
                                 setActiveDropdown((prev) => (prev === "project" ? null : "project"))
                             }
                             ref={projectBtnRef}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-primary-default hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-style-body-default-regular text-color-text-neutral-secondary hover:text-color-text-neutral-secondary cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors w-fit"
                         >
                             <Icon
                                 name="folder-a"
                                 className="w-4 h-4 text-color-icon-neutral-secondary shrink-0 -mt-0.5"
                             />
-                            <span className="hidden sm:inline">{projectLabel}</span>
+                            <span className="hidden sm:inline">
+                                {(!projectLabel || projectLabel.toLowerCase() === "choose project") ? "Independent" : projectLabel}
+                            </span>
                         </button>
                     </div>
                 )}
@@ -1543,7 +1733,7 @@ function SearchEngineInput({
                     </div>
                 )}
 
-                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default px-6 py-4 flex flex-col gap-3">
+                <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default p-4 flex flex-col gap-3">
                     {/* Editable text area */}
                     <div
                         contentEditable={true}
@@ -1567,14 +1757,22 @@ function SearchEngineInput({
                     <div className="w-full flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <IconButton
-                                onClick={() => toggleDropdown("add")}
+                                onClick={() => {
+                                    if (window.innerWidth < 640) {
+                                        setIsContextDialogOpen(true);
+                                    } else {
+                                        toggleDropdown("add");
+                                    }
+                                }}
                                 ref={addBtnRef}
                                 variant="neutral"
                                 icon="add"
                                 size="medium"
                                 corner="sharp"
                                 boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
+                                className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
+                                    activeDropdown === "add" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
+                                )}`}
                             >
                                 <Icon name="add" className="w-4 h-4" />
                                 <span className="hidden sm:inline text-style-body-default-regular">Add Sources</span>
@@ -1596,7 +1794,7 @@ function SearchEngineInput({
                                 <span className="hidden sm:inline text-style-body-default-regular">Jurisdiction</span>
                             </IconButton>
 
-                            <IconButton
+                            {/* <IconButton
                                 onClick={() => toggleDropdown("settings")}
                                 ref={settingsBtnRef}
                                 variant="neutral"
@@ -1610,45 +1808,51 @@ function SearchEngineInput({
                             >
                                 <Icon name="filter" className="w-4 h-4" />
                                 <span className="hidden sm:inline text-style-body-default-regular">Filters</span>
-                            </IconButton>
+                            </IconButton> */}
 
-                            <IconButton
-                                onClick={handleImprove}
-                                variant="neutral"
-                                icon="flash-a"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
-                            >
-                                <Icon name="flash-a" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
-                            </IconButton>
+                            {input.trim().split(/\s+/).filter(Boolean).length > 10 && (
+                                <IconButton
+                                    onClick={handleImprove}
+                                    variant="neutral"
+                                    icon="flash-a"
+                                    size="medium"
+                                    corner="sharp"
+                                    boundary="stroked"
+                                    className="w-fit px-2 gap-1.5 sm:border-none"
+                                >
+                                    <Icon name="flash-a" className="w-4 h-4" />
+                                    <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
+                                </IconButton>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
-                            {input.trim().length > 0 && !["/", "@", "["].some(char => input.trim().startsWith(char)) && (
-                                <Button
-                                    size="extraSmall"
-                                    variant="neutral"
-                                    className="hidden md:inline-flex text-color-text-primary-default border-color-surface-primary-default"
-                                >
-                                    Enhance Query
-                                </Button>
-                            )}
-                            <IconButton
-                                onClick={isLoading ? onStop : handleSubmit}
-                                variant={isLoading ? "neutral" : "primary"}
-                                icon={isLoading ? "stop" : "arrow-up-d"}
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="h-[32px] w-[32px] sm:border-none"
-                                disabled={
-                                    !isLoading &&
-                                    (!input.trim() || input.trim().split(/\s+/).length < 3)
-                                }
-                            />
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <div className="inline-block">
+                                            <IconButton
+                                                onClick={isLoading ? onStop : handleSubmit}
+                                                variant={isLoading ? "neutral" : "primary"}
+                                                icon={isLoading ? "stop" : "arrow-up-d"}
+                                                size="medium"
+                                                corner="sharp"
+                                                boundary="stroked"
+                                                className="h-[32px] w-[32px] sm:border-none"
+                                                disabled={
+                                                    !isLoading &&
+                                                    (!input.trim() || (input.trim().split(/\s+/).length < 3 && input.trim().length < 20))
+                                                }
+                                            />
+                                        </div>
+                                    </TooltipTrigger>
+                                    {!isLoading && (!input.trim() || (input.trim().split(/\s+/).length < 3 && input.trim().length < 20)) && (
+                                        <TooltipContent side="top">
+                                            Please enter at least 3 words or 20 characters
+                                        </TooltipContent>
+                                    )}
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                     </div>
                 </div>
@@ -1659,9 +1863,15 @@ function SearchEngineInput({
 
             {/* Add to context dialog */}
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
-                <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[672px]" showCloseButton={false}>
+                <DialogContent className="p-0 border-none bg-transparent shadow-none w-full max-w-[calc(100%-2rem)] sm:max-w-[672px]" showCloseButton={false}>
+                    <DialogTitle className="sr-only">Add to context</DialogTitle>
                     <AddToContext
-                        onSave={() => setIsContextDialogOpen(false)}
+                        initialTitle={artifacts.find(a => a.type === 'text')?.title}
+                        initialContent={artifacts.find(a => a.type === 'text')?.content}
+                        onSave={async (title, content) => {
+                            await onAddText?.(title, content);
+                            setIsContextDialogOpen(false);
+                        }}
                         onCancel={() => setIsContextDialogOpen(false)}
                         onClose={() => setIsContextDialogOpen(false)}
                     />
@@ -1669,11 +1879,51 @@ function SearchEngineInput({
             </Dialog>
 
             {/* Upload document dialog */}
-            <AddDocumentDialog 
-                open={isUploadDialogOpen} 
-                onOpenChange={setIsUploadDialogOpen}
-                onCancelClick={() => setIsUploadDialogOpen(false)}
-                onUploadClick={() => setIsUploadDialogOpen(false)}
+            <AddDocumentDialog
+                open={isUploadDialogOpen}
+                onOpenChange={(open) => {
+                    setIsUploadDialogOpen(open);
+                    if (!open) setUploadFiles([]);
+                }}
+                files={uploadFiles.map((f, i) => ({
+                    fileName: f.file.name,
+                    fileSize: (f.file.size / 1024 / 1024).toFixed(2) + ' MB',
+                    state: f.state,
+                    progress: f.progress,
+                    subtitle: f.subtitle,
+                    onRemove: f.state !== 'processing' ? () => setUploadFiles(prev => prev.filter((_, idx) => idx !== i)) : undefined,
+                    onRetry: f.state === 'failed' ? () => handleSingleFileUpload(i) : undefined
+                }))}
+                onFilesSelected={(selectedFiles) => {
+                    const filtered = selectedFiles.filter(file => {
+                        const isDuplicateInModal = uploadFiles.some(f => f.file.name === file.name);
+                        if (isDuplicateInModal) {
+                            showToast.alert(`"${file.name}" is already in the list to be uploaded.`);
+                            return false;
+                        }
+                        const isDuplicateInArtifacts = artifacts.some(a => a.title === file.name && a.type === 'file');
+                        if (isDuplicateInArtifacts) {
+                            showToast.alert(`"${file.name}" has already been uploaded.`);
+                            return false;
+                        }
+                        return true;
+                    });
+                    if (filtered.length > 0) {
+                        setUploadFiles(prev => [
+                            ...prev,
+                            ...filtered.map(file => ({
+                                file,
+                                state: 'pending' as const,
+                                progress: 0
+                            }))
+                        ]);
+                    }
+                }}
+                onCancelClick={() => {
+                    setUploadFiles([]);
+                    setIsUploadDialogOpen(false);
+                }}
+                onUploadClick={handleUploadAll}
             />
 
             {/* Invisible anchor for predictive suggestion chip positioning */}
@@ -1811,5 +2061,7 @@ function setCursorOffset(element: HTMLElement, offset: number) {
 
     traverse(element);
 }
+
+const SearchEngineInput = React.forwardRef<SearchEngineInputHandle, SearchEngineInputProps>(SearchEngineInputImpl);
 
 export default React.memo(SearchEngineInput);

@@ -10,6 +10,7 @@ export interface HistoryTileProps {
     onMenuClick?: (e: React.MouseEvent) => void;
     className?: string;
     isActive?: boolean;
+    isLoading?: boolean;
 }
 
 export const HistoryTile = ({
@@ -18,6 +19,7 @@ export const HistoryTile = ({
     onMenuClick,
     className,
     isActive = false,
+    isLoading = false,
 }: HistoryTileProps) => {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -42,13 +44,20 @@ export const HistoryTile = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
+            {/* Loading Spinner */}
+            {isLoading && (
+                <div className="shrink-0 pl-1 pr-2 flex items-center justify-center">
+                    <div className="w-3.5 h-3.5 border-2 border-color-icon-neutral-secondary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+
             {/* Title with truncation */}
             <span
                 className={`text-style-label-title-regular ${cn(
                     isActive ? 'text-color-text-neutral-default' : 'text-color-text-neutral-secondary',
                     'overflow-hidden text-ellipsis whitespace-nowrap',
                     'flex-1 min-w-0',
-                    'p-1'
+                    isLoading ? 'py-1 pr-1' : 'p-1'
                 )}`}
             >
                 {title}
@@ -64,7 +73,7 @@ export const HistoryTile = ({
                     isActive
                         ? 'bg-transparent hover:bg-color-surface-neutral-subtle_bg'
                         : 'bg-transparent hover:bg-option-color-hover',
-                    isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    isHovered ? 'opacity-100' : 'opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none'
                 )}
                 aria-label="Menu"
             >

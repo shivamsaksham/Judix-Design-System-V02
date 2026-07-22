@@ -6,13 +6,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ContextWindowInfo } from './context-window-info';
 import { Option } from '@/components/ui/option';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { IconButton } from '@/components/ui/icon-button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export interface ContextItem {
     id: string;
     title: string;
     description?: string;
     checked?: boolean;
+}
+
+export interface ContextArtifact {
+    id: string;
+    title: string;
 }
 
 export interface ContextWindowDropdownProps {
@@ -25,6 +31,9 @@ export interface ContextWindowDropdownProps {
     onSessionContextToggle?: (checked: boolean) => void;
     hideHeader?: boolean;
     isMobile?: boolean;
+    contextArtifacts?: ContextArtifact[];
+    onEditArtifact?: (id: string) => void;
+    onRemoveArtifact?: (id: string) => void;
 }
 
 export default function ContextWindowDropdown({
@@ -37,6 +46,9 @@ export default function ContextWindowDropdown({
     onSessionContextToggle,
     // hideHeader = false,
     isMobile = false,
+    contextArtifacts = [],
+    onEditArtifact,
+    onRemoveArtifact,
 }: ContextWindowDropdownProps) {
     const [isAutoContext, setIsAutoContext] = useState(defaultAutoContext);
     const [showInfo, setShowInfo] = useState(false);
@@ -127,20 +139,49 @@ export default function ContextWindowDropdown({
                     }}
                     disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
                     prefixSlot={
-                        <Checkbox
-                            id="session-context"
-                            checked={isSessionContextChecked}
-                            onCheckedChange={() => {
-                                const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
-                                const isLimitReached = checkedCount >= 10;
-                                if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
-                                    handleSessionContextToggleInternal(!isSessionContextChecked);
-                                }
-                            }}
-                            disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
-                        />
+                        <span onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                                id="session-context"
+                                checked={isSessionContextChecked}
+                                onCheckedChange={() => {
+                                    const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
+                                    const isLimitReached = checkedCount >= 10;
+                                    if (!isAutoContext && (!isLimitReached || isSessionContextChecked)) {
+                                        handleSessionContextToggleInternal(!isSessionContextChecked);
+                                    }
+                                }}
+                                disabled={isAutoContext || (!isSessionContextChecked && (items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0)) >= 10)}
+                            />
+                        </span>
                     }
                 />
+                {contextArtifacts.map((artifact) => (
+                    <Option
+                        key={artifact.id}
+                        title={artifact.title}
+                        disabled={isAutoContext}
+                        suffixSlot={
+                            <span className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                <IconButton
+                                    icon="edit-a"
+                                    variant="neutral"
+                                    size="medium"
+                                    boundary="none"
+                                    className="bg-transparent"
+                                    onClick={() => onEditArtifact?.(artifact.id)}
+                                />
+                                <IconButton
+                                    icon="trash"
+                                    variant="neutral"
+                                    size="medium"
+                                    boundary="none"
+                                    className="bg-transparent text-color-icon-feedback-error-default"
+                                    onClick={() => onRemoveArtifact?.(artifact.id)}
+                                />
+                            </span>
+                        }
+                    />
+                ))}
                 {items.map((item) => {
                     const checkedCount = items.filter(i => i.checked).length + (isSessionContextChecked ? 1 : 0);
                     const isLimitReached = checkedCount >= 10;
@@ -154,12 +195,14 @@ export default function ContextWindowDropdown({
                             onClick={() => !isDisabled && handleItemCheck(item.id, !item.checked)}
                             disabled={isDisabled}
                             prefixSlot={
-                                <Checkbox
-                                    id={item.id}
-                                    checked={item.checked}
-                                    onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
-                                    disabled={isDisabled}
-                                />
+                                <span onClick={(e) => e.stopPropagation()}>
+                                    <Checkbox
+                                        id={item.id}
+                                        checked={item.checked}
+                                        onCheckedChange={(checked) => handleItemCheck(item.id, checked as boolean)}
+                                        disabled={isDisabled}
+                                    />
+                                </span>
                             }
                         />
                     );
@@ -171,6 +214,7 @@ export default function ContextWindowDropdown({
 
             <Dialog open={showInfo} onOpenChange={setShowInfo}>
                 <DialogContent className="max-w-2xl p-0 border-none" showCloseButton={false}>
+                    <DialogTitle className="sr-only">Context Window Information</DialogTitle>
                     <ContextWindowInfo onCloseClick={() => setShowInfo(false)} />
                 </DialogContent>
             </Dialog>

@@ -8,18 +8,19 @@ import { showToast } from '@/components/ui/toast';
 const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | 'command' }) => {
     if (type === 'token') {
         const match = text.match(/^\[(.*?):-(.*?)\]$/);
-        const label = match ? `${match[1]}: ${match[2]}` : text;
+        const label = match ? `[${match[1]}: ${match[2]}]` : text;
 
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-blue-50 text-blue-700 border border-blue-200 mx-0.5 align-baseline">
+            // Have to check if it is correct
+            <span className="text-color-text-primary-default ">
                 {label}
             </span>
         );
     }
 
-    if (type === 'mention') {
+    if (type === 'mention' || type === 'command') {
         return (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-sm bg-orange-50 text-orange-700 border border-orange-200 mx-0.5 align-baseline">
+            <span className="text-color-text-primary-default">
                 {text}
             </span>
         );
@@ -36,13 +37,27 @@ const TokenChip = ({ text, type }: { text: string; type: 'token' | 'mention' | '
     return <span>{text}</span>;
 }
 
-const renderParsedQuery = (text: string) => {
-    const parts = text.split(/(\[[^\]]+\]|@\S+|^\/[\w\s]+)/g);
+// Plain-text counterpart of renderParsedQuery, for places that can only render
+// a string (e.g. Dropdown/Option's `title`, typed as `string` for its own
+// search-filter logic) — unwraps `[@Label]` mentions the same way, without JSX.
+export const parseQueryToPlainText = (text: string): string =>
+    text.replace(/\[(@[^\]]+)\]/g, '$1');
+
+export const renderParsedQuery = (text: string) => {
+    const parts = text.split(/(\[[^\]]+\]|@\S+|\/[\w\s]+)/g);
 
     return parts.map((part, index) => {
         if (!part) return null;
 
         if (part.startsWith('[') && part.endsWith(']')) {
+            const inner = part.slice(1, -1);
+            // Mentions are bracket-wrapped at the source (e.g. `[@Case Title]`)
+            // so multi-word labels survive this split intact — unwrap those
+            // back to a plain `@Label` mention chip; anything else in brackets
+            // is a static data token (`[Type:-Value]`).
+            if (inner.startsWith('@')) {
+                return <TokenChip key={index} text={inner} type="mention" />;
+            }
             return <TokenChip key={index} text={part} type="token" />;
         }
         if (part.startsWith('@')) {
@@ -74,6 +89,7 @@ export const UserQuery = ({
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedQuery, setEditedQuery] = useState(query);
+    const [isCopied, setIsCopied] = useState(false);
     const textareaRef = useRef<HTMLDivElement>(null);
 
     const handleCancel = React.useCallback(() => {
@@ -114,7 +130,7 @@ export const UserQuery = ({
                 currentRef.removeEventListener('keydown', handleKeyDown);
             };
         }
-    }, [isEditing, editedQuery, handleCancel]);
+    }, [isEditing, handleCancel]);
 
     const handleSave = () => {
         if (onEdit && editedQuery.trim()) {
@@ -127,7 +143,9 @@ export const UserQuery = ({
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(query);
-            showToast.info('Text copied to clipboard');
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+            showToast.success('Copied to clipboard');
             onCopy?.();
         } catch (err) {
             console.error('Failed to copy text:', err);
@@ -154,7 +172,7 @@ export const UserQuery = ({
                 <>
                     {/* Default/Hover State */}
                     <div className="relative p-1 pb-5 ">
-                        <p className="p-1 pr-20 break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
+                        <p className="p-1 pr-20 wrap-break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
                             {renderParsedQuery(query)}
                         </p>
 
@@ -163,7 +181,7 @@ export const UserQuery = ({
                             <div
                                 className={cn(
                                     'absolute bottom-0 right-0 flex items-center gap-4 p-2 transition-opacity duration-200 mr-2',
-                                    isHovered ? 'opacity-100' : 'opacity-0'
+                                    isHovered ? 'opacity-100' : 'opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none'
                                 )}
                             >
                                 <Button
@@ -173,7 +191,7 @@ export const UserQuery = ({
                                     className="border-none p-0 bg-transparent hover:bg-transparent"
                                     aria-label="Copy query"
                                 >
-                                    <Icon name="copy" className="text-color-icon-neutral-default w-5 h-5 relative" />
+                                    <Icon name={isCopied ? "copy-success" : "copy"} className="text-color-icon-neutral-default w-5 h-5 relative" />
                                 </Button>
                                 <Button
                                     onClick={handleEdit}
@@ -206,7 +224,7 @@ export const UserQuery = ({
                                     handleSave();
                                 }
                             }}
-                            className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap break-words overflow-wrap-anywhere bg-transparent"
+                            className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap wrap-break-words overflow-wrap-anywhere bg-transparent"
                         />
 
                         {/* Action Buttons - Positioned at bottom right */}

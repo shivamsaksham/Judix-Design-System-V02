@@ -15,6 +15,7 @@ export interface ResponseActionsProps {
     onCopy?: () => void;
     onShare?: () => void;
     onExport?: (format: string) => void;
+    onDownloadLogs?: () => Promise<void> | void;
     className?: string;
     isLiked?: boolean;
     isDisliked?: boolean;
@@ -28,6 +29,7 @@ export const ResponseActions = ({
     onCopy,
     onShare,
     onExport,
+    onDownloadLogs,
     className,
     contentToCopy,
     isLiked: externalIsLiked,
@@ -215,6 +217,27 @@ export const ResponseActions = ({
                 >
                     Share
                 </Button>
+
+                {/* Download Logs Button */}
+                {onDownloadLogs && (
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                onClick={onDownloadLogs}
+                                variant="neutral"
+                                size="extraSmall"
+                                prefixIcon="document-download"
+                                aria-label="Download Logs"
+                                className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
+                            >
+                                Logs
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                            <p>Download query trace logs</p>
+                        </TooltipContent>
+                    </Tooltip>
+                )}
 
                 {/* Export Button */}
                 <Popover open={exportOpen} onOpenChange={setExportOpen}>

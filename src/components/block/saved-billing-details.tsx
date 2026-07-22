@@ -31,7 +31,7 @@ export const SavedBillingDetails = ({
         <div
             onClick={onClick}
             className={cn(
-                'group relative flex flex-col w-[530px] p-4 bg-color-surface-neutral-default rounded-lg border transition-all duration-200',
+                'group relative flex flex-col w-full max-w-[530px] p-4 bg-color-surface-neutral-default rounded-lg border transition-all duration-200',
                 selected
                     ? 'border-color-border-neutral-mid border-2'
                     : 'border-color-border-neutral-default hover:bg-color-surface-neutral-hover_default',
@@ -51,12 +51,12 @@ export const SavedBillingDetails = ({
                 </p>
 
                 {/* Address */}
-                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary">
+                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary wrap-break-words">
                     {address}
                 </p>
 
                 {/* Email */}
-                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary">
+                <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-secondary wrap-break-words">
                     {email}
                 </p>
             </div>

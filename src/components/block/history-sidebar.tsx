@@ -7,7 +7,6 @@ import { ChatHistorySection } from './chat-history-section';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { UserMenu } from './user-menu';
 import { Label } from '@/components/ui/label';
-import { Button } from '../ui';
 import { IconButton } from '../ui/icon-button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import Confirmation from './confirmation';
@@ -40,17 +39,27 @@ export interface HistorySidebarProps {
     onProjects?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
-    onSettings?: () => void;
+    onAccount?: () => void;
+    onSubscriptions?: () => void;
+    onRefer?: () => void;
+    onHelp?: () => void;
+    onLogout?: () => void;
     onRename?: (chatId: string) => void;
     onShare?: (chatId: string) => void;
     onMove?: (chatId: string) => void;
     onDelete?: (chatId: string) => void;
+    onSettings?: () => void;
     activeChatId?: string;
+    loadingChatId?: string;
     className?: string;
     isExpanded?: boolean;
     onToggleSidebar?: () => void;
 
     showCloseButton?: boolean;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
+    isLoading?: boolean;
 }
 
 export const HistorySidebar = ({
@@ -63,16 +72,26 @@ export const HistorySidebar = ({
     onResetChat,
     onUpgrade,
     onSettings,
+    onAccount,
+    onSubscriptions,
+    onRefer,
+    onHelp,
+    onLogout,
     onRename,
-    // onShare,
+    onShare,
     onMove,
     onDelete,
     activeChatId,
+    loadingChatId,
     className,
     isExpanded: controlledIsExpanded,
     onToggleSidebar,
 
     showCloseButton = false,
+    onLoadMore,
+    hasMore,
+    isLoadingMore,
+    isLoading,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -118,17 +137,31 @@ export const HistorySidebar = ({
 
     const handleMenuClick = (chatId: string, event: React.MouseEvent) => {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
+        const menuWidth = 216; // width of ChatHistoryMenu is w-[216px]
+        let leftPos = rect.left;
+        
+        if (rect.left + menuWidth > window.innerWidth) {
+            leftPos = rect.right - menuWidth;
+        }
+        
+        if (leftPos < 8) {
+            leftPos = 8;
+        }
+
         setMenuPosition({
-            top: rect.bottom,
-            left: rect.left,
+            top: rect.bottom + 8,
+            left: leftPos,
         });
-        setOpenMenuChatId(chatId);
+        setOpenMenuChatId(openMenuChatId === chatId ? null : chatId);
     };
 
     const handleMenuAction = (action: 'rename' | 'share' | 'move' | 'delete', chatId: string) => {
         setOpenMenuChatId(null);
         if (action === 'rename' && onRename) onRename(chatId);
-        if (action === 'share') setShareChatId(chatId);
+        if (action === 'share') {
+            if (onShare) onShare(chatId);
+            else setShareChatId(chatId);
+        }
         if (action === 'move' && onMove) onMove(chatId);
         if (action === 'delete') {
             setDeleteConfirmationChatId(chatId);
@@ -175,7 +208,7 @@ export const HistorySidebar = ({
         <div
             className={cn(
                 'flex flex-col h-screen overflow-hidden relative',
-                isExpanded ? 'w-[256px]' : 'w-[56px]',
+                isExpanded ? 'w-full md:w-[256px]' : 'w-[56px]',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
                 className
@@ -197,14 +230,14 @@ export const HistorySidebar = ({
                         iconClassName='text-icon_button-color-neutral-icon'
                         aria-label={showCloseButton ? "Close Sidebar" : "Toggle Sidebar"}
                     />
-                    <Label
+                    {/* <Label
                         colorScheme="neutral"
                         size="small"
                         onClick={onResetChat}
                         className="cursor-pointer whitespace-nowrap sidebar-fade-in-right"
                     >
                         Reset Chat
-                    </Label>
+                    </Label> */}
                 </div>
 
                 <SidebarActionButtons
@@ -217,8 +250,13 @@ export const HistorySidebar = ({
                 <ChatHistorySection
                     chatHistory={chatHistory}
                     activeChatId={activeChatId}
+                    loadingChatId={loadingChatId}
                     onMenuClick={handleMenuClick}
                     className="ml-1 mr-3 flex-1 min-h-0"
+                    onLoadMore={onLoadMore}
+                    hasMore={hasMore}
+                    isLoadingMore={isLoadingMore}
+                    isLoading={isLoading}
                 />
 
                 <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
@@ -226,7 +264,7 @@ export const HistorySidebar = ({
                         <span className=" p-1 
                                         text-style-body-default-regular
                                         text-color-text-neutral-default">Usage</span>
-                        <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" />
+                        {/* <Icon name="info-circle" className="text-color-icon-neutral-tertiary w-4 h-4" /> */}
                     </div>
                     <div className="w-full 
                                     bg-button-color-neutral-disabled-stroke 
@@ -254,12 +292,12 @@ export const HistorySidebar = ({
                         onClick={(e) => {
                             const containerRect = e.currentTarget.getBoundingClientRect();
                             const userNameRect = userNameRef.current?.getBoundingClientRect();
+                            const isMobileOrTablet = window.innerWidth < 1024;
                             // Calculate bottom distance so menu's bottom aligns with userName box's bottom
                             const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
                             setUserMenuPosition({
-                                top: bottomDistance,
-                                //fix left
-                                left: userNameRect ? userNameRect.right + 0 : containerRect.left + 8,
+                                top: isMobileOrTablet ? window.innerHeight - containerRect.top + 8 : bottomDistance,
+                                left: isMobileOrTablet ? containerRect.left : (userNameRect ? userNameRect.right + 0 : containerRect.left + 8),
                             });
                             setIsUserMenuOpen(!isUserMenuOpen);
                         }}
@@ -319,7 +357,8 @@ export const HistorySidebar = ({
 
                             onAccount={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('My Account clicked');
+                                if (onAccount) onAccount();
+                                else console.log('My Account clicked');
                             }}
                             onProjects={() => {
                                 setIsUserMenuOpen(false);
@@ -327,7 +366,8 @@ export const HistorySidebar = ({
                             }}
                             onSubscriptions={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Subscriptions clicked');
+                                if (onSubscriptions) onSubscriptions();
+                                else console.log('Subscriptions clicked');
                             }}
                             onSettings={() => {
                                 setIsUserMenuOpen(false);
@@ -336,15 +376,18 @@ export const HistorySidebar = ({
                             }}
                             onRefer={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Refer and Earn clicked');
+                                if (onRefer) onRefer();
+                                else console.log('Refer and Earn clicked');
                             }}
                             onHelp={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Help & Support clicked');
+                                if (onHelp) onHelp();
+                                else console.log('Help & Support clicked');
                             }}
                             onLogout={() => {
                                 setIsUserMenuOpen(false);
-                                console.log('Logout clicked');
+                                if (onLogout) onLogout();
+                                else console.log('Logout clicked');
                             }}
                         />
                     </div>
@@ -458,8 +501,8 @@ export const HistorySidebar = ({
             <ShareSearchDialog
                 open={!!shareChatId}
                 onOpenChange={(open) => !open && setShareChatId(null)}
-                shareLink={`https://judix.in/share/${shareChatId}`}
-                onShare={(recipients, note) => {
+                shareLink={typeof window !== 'undefined' ? `${window.location.origin}/share/${shareChatId}` : ''}
+                onShare={async (recipients, note) => {
                     console.log('Sharing', recipients, note);
                     setShareChatId(null);
                 }}

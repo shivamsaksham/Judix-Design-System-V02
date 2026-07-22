@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { HistoryTile } from './history-tile';
+import { SkeletonLoading } from '../ui/skeleton-loading';
 
 export interface ChatItem {
     id: string;
@@ -11,11 +12,39 @@ export interface ChatItem {
 export interface ChatHistorySectionProps {
     chatHistory: ChatItem[];
     activeChatId: string | null | undefined;
+    loadingChatId?: string | null | undefined;
     onMenuClick: (chatId: string, event: React.MouseEvent) => void;
     className?: string;
+    onLoadMore?: () => void;
+    hasMore?: boolean;
+    isLoadingMore?: boolean;
+    isLoading?: boolean;
 }
 
-export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className }: ChatHistorySectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, loadingChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading }: ChatHistorySectionProps) => {
+    const observerTarget = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasMore && !isLoadingMore && !isLoading && onLoadMore) {
+                    onLoadMore();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => {
+            if (observerTarget.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                observer.unobserve(observerTarget.current);
+            }
+        };
+    }, [observerTarget, hasMore, isLoadingMore, isLoading, onLoadMore]);
 
     return (
         <div className={`flex flex-col h-full ${className || ''}`}>
@@ -26,17 +55,44 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
 
             {/* Scrollable Content */}
             <div
-                className="flex-1 overflow-y-auto p-1"
+                className="flex-1 overflow-y-auto no-scrollbar p-1"
             >
-                {chatHistory.map((chat) => (
-                    <HistoryTile
-                        key={chat.id}
-                        title={chat.title}
-                        onClick={chat.onClick}
-                        onMenuClick={(e) => onMenuClick(chat.id, e)}
-                        isActive={activeChatId === chat.id}
-                    />
-                ))}
+                {isLoading && chatHistory.length === 0 ? (
+                    <div className="flex flex-col gap-1 mt-2">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="flex items-center justify-between p-2 py-[6px] w-full h-[36px]">
+                                <SkeletonLoading className="h-4 w-3/4 opacity-50" />
+                                <SkeletonLoading variant="circular" className="h-5 w-5 shrink-0 opacity-50" />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <>
+                        {chatHistory.map((chat) => (
+                            <HistoryTile
+                                key={chat.id}
+                                title={chat.title}
+                                onClick={chat.onClick}
+                                onMenuClick={(e) => onMenuClick(chat.id, e)}
+                                isActive={activeChatId === chat.id}
+                                isLoading={loadingChatId === chat.id}
+                            />
+                        ))}
+                        
+                        {isLoadingMore && (
+                            <div className="flex flex-col gap-1 mt-2">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                    <div key={`more-${i}`} className="flex items-center justify-between p-2 py-[6px] w-full h-[36px]">
+                                        <SkeletonLoading className="h-4 w-3/4 opacity-50" />
+                                        <SkeletonLoading variant="circular" className="h-5 w-5 shrink-0 opacity-50" />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        
+                        <div ref={observerTarget} className="h-2 w-full" />
+                    </>
+                )}
             </div>
         </div>
     );

@@ -23,27 +23,26 @@ export function CasesCited({ data, headers, className }: CasesCitedProps) {
   return (
     <Card className={cn("rounded-none border border-color-border-neutral-default bg-color-surface-neutral-default shadow-none p-0 w-full m-2", className)}>
       <CardContent>
-        <TableRow 
+        <TableRow
           columns={[
-            { content: headers.citationNumber, minWidth: "min-w-50" },
-            { content: headers.judicialConsideration, minWidth: "min-w-60" },
-            { content: headers.caseLaw, maxWidth: "max-w-[310px]", className: "pr-6 overflow-hidden" }
+            { content: headers.citationNumber, minWidth: "min-w-[40px]" },
+            { content: headers.judicialConsideration, minWidth: "min-w-[100px]" },
+            { content: headers.caseLaw, minWidth: "min-w-[150px]" }
           ]}
-          isHeader 
+          isHeader
         />
         {data.map((item, index) => (
-          <TableRow 
+          <TableRow
             key={index}
             columns={[
-              { content: item.citationNumber, minWidth: "min-w-50" },
-              { content: item.judicialConsideration, minWidth: "min-w-60" },
-              { 
-                content: <div className="truncate">{item.caseLaw}</div>, 
-                maxWidth: "max-w-[310px]", 
-                className: "pr-6 overflow-hidden" 
+              { content: item.citationNumber, minWidth: "min-w-[40px]" },
+              { content: item.judicialConsideration, minWidth: "min-w-[100px]" },
+              {
+                content: <div className="whitespace-normal break-words">{item.caseLaw}</div>,
+                minWidth: "min-w-[150px]"
               }
             ]}
-            isLast={index === data.length - 1} 
+            isLast={index === data.length - 1}
           />
         ))}
       </CardContent>

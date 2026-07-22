@@ -5,7 +5,6 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Danger, Icon } from '@judix/icon';
-import Image from 'next/image';
 
 const toastVariants = cva(
   "group pointer-events-auto flex w-full max-w-sm items-start gap-4 rounded-toast-border-radius-default border p-4 shadow-lg",
@@ -61,10 +60,6 @@ const toastTextVariants = cva(
   }
 );
 
-const CustomInfoIcon = ({ className }: { className?: string }) => (
-  <Image src="/info-toast.svg" alt="Information" width={20} height={20} className={className} />
-);
-
 const iconMap = {
   loading: Loader2,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +68,8 @@ const iconMap = {
   success: (props: React.SVGProps<SVGSVGElement>) => <Icon name="tick-circle" {...props as any} />,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notice: (props: React.SVGProps<SVGSVGElement>) => <Icon name="danger" {...props as any} />,
-  info: CustomInfoIcon,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  info: (props: React.SVGProps<SVGSVGElement>) => <Icon name="info-circle" {...props as any} />,
 };
 
 interface CustomToastProps extends VariantProps<typeof toastVariants> {
@@ -94,22 +90,22 @@ const CustomToast: React.FC<CustomToastProps> = ({ type, title, message, visible
     )}>
       <Icon className={cn(toastIconVariants({ type }))} />
       <div className="flex-1">
-        {title && <p className={cn(toastTextVariants({ type }))}>{title}</p>}
-        <p className={cn(toastTextVariants({ type }), title && "mt-1")}>{message}</p>
+        {title && <p className={cn(toastTextVariants({ type }), "line-clamp-1 break-all")}>{title}</p>}
+        <p className={cn(toastTextVariants({ type }), title && "mt-1", "line-clamp-2 break-all")}>{message}</p>
       </div>
     </div>
   );
 };
 
 export const showToast = {
-  alert: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  success: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  notice: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
-  info: (message: string, title?: string) =>
-    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration: 4000 }),
+  alert: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="alert" title={title} message={message} visible={t.visible} />, { duration }),
+  success: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="success" title={title} message={message} visible={t.visible} />, { duration }),
+  notice: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration }),
+  info: (message: string, title?: string, duration: number = 4000) =>
+    toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration }),
   promise: <T extends unknown>(
     promise: Promise<T>,
     messages: {
@@ -166,7 +162,7 @@ export const ToastContainer = ({ position = 'top-center' }: { position?: "top-le
             {getIcon()}
             <div className="flex-1">
               <p className={cn(
-                "text-toast-font-default font-size-body-default",
+                "text-toast-font-default font-size-body-default line-clamp-2 break-all",
                 t.type === 'success' && "text-toast-color-success-text",
                 t.type === 'error' && "text-toast-color-error-text",
                 t.type === 'loading' && "text-toast-color-error-text",

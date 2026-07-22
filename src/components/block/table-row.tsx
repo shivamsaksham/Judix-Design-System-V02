@@ -14,14 +14,17 @@ export interface TableRowProps {
   isLast?: boolean;
   isHeader?: boolean;
   className?: string;
+  gridColsClass?: string;
 }
 
-export function TableRow({ columns, isLast, isHeader, className }: TableRowProps) {
-  const gridCols = columns.length === 2
-    ? 'grid-cols-[auto_1fr]'
-    : columns.length === 3
-      ? 'grid-cols-[auto_auto_1fr]'
-      : `grid-cols-${columns.length}`;
+export function TableRow({ columns, isLast, isHeader, className, gridColsClass }: TableRowProps) {
+  const gridCols = gridColsClass
+    ? gridColsClass
+    : columns.length === 2
+      ? 'grid-cols-[168px_1fr] md:grid-cols-[200px_1fr]'
+      : columns.length === 3
+        ? 'grid-cols-[50px_130px_1fr]'
+        : `grid-cols-${columns.length}`;
 
   return (
     <div

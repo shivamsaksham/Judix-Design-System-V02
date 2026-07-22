@@ -96,7 +96,7 @@ export function MobileNavBar({
         <nav
             className={cn(
                 'flex items-center justify-between',
-                'px-5 py-[14px]',
+                'px-4 py-3 ',
                 'bg-color-surface-neutral-default',
                 'transition-all duration-300 ease-in-out',
                 className

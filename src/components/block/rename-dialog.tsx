@@ -16,7 +16,7 @@ export interface RenameDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     currentName?: string;
-    onSave: (newName: string) => void;
+    onSave: (newName: string) => void | Promise<void>;
     className?: string;
     minLength?: number;
 }
@@ -30,22 +30,33 @@ function RenameDialog({
     minLength = 3
 }: RenameDialogProps) {
     const [name, setName] = React.useState(currentName);
+    const [isSaving, setIsSaving] = React.useState(false);
 
     React.useEffect(() => {
         if (open) {
             setName(currentName);
+            setIsSaving(false);
         }
     }, [open, currentName]);
 
-    const handleSave = () => {
-        onSave(name);
-        onOpenChange(false);
+    const handleSave = async () => {
+        if (isSaving) return;
+        setIsSaving(true);
+        try {
+            await onSave(name);
+            onOpenChange(false);
+        } catch {
+            // Failure is already surfaced by the onSave handler — leave the
+            // dialog open with the loading state cleared so the user can retry.
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className={cn("w-120 gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
+                className={cn("w-[480px] gap-6 bg-color-surface-neutral-default border border-color-border-neutral-default", className)}
                 showCloseButton={true}
             >
                 <DialogHeader>
@@ -64,13 +75,14 @@ function RenameDialog({
                 </div>
 
                 <DialogFooter className="flex-row justify-end space-x-2">
-                    <Button variant="neutral" size="small" onClick={() => onOpenChange(false)} className="text-style-body-default-regular">
+                    <Button variant="neutral" size="small" onClick={() => onOpenChange(false)} disabled={isSaving} className="text-style-body-default-regular">
                         Cancel
                     </Button>
                     <Button
                         variant="primary"
                         size="small"
                         onClick={handleSave}
+                        loading={isSaving}
                         disabled={name.trim().length < minLength}
                         className="h-auto"
                     >

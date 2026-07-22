@@ -31,6 +31,7 @@ export interface NewProjectProps {
     onCourtChange?: (val: string) => void;
     onCaseTypeChange?: (val: string) => void;
     onCaseNumberChange?: (val: string) => void;
+    disabled?: boolean;
 }
 
 export const NewProject = ({
@@ -57,6 +58,7 @@ export const NewProject = ({
     onCourtChange,
     onCaseTypeChange,
     onCaseNumberChange,
+    disabled = false,
 
 }: NewProjectProps) => {
     const [title, setTitle] = useState(initialTitle);
@@ -128,20 +130,30 @@ export const NewProject = ({
                 {/* Title Input */}
                 <input
                     type="text"
+                    autoFocus
+                    disabled={disabled}
                     value={title}
                     onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder={titlePlaceholder}
                     autoComplete='off'
-                    className="w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none"
+                    className={cn(
+                        "w-full p-1 text-[36px] font-family-brandprimary font-medium leading-[100%] tracking-[-1px] placeholder:text-color-text-neutral-disabled mb-4 border-none bg-transparent focus:outline-none",
+                        title ? "text-color-text-neutral-default" : "text-color-text-neutral-disabled",
+                        disabled && "opacity-60 cursor-not-allowed"
+                    )}
                 />
 
                 {/* Description Input */}
-                <input
-                    type="text"
+                <textarea
+                    disabled={disabled}
                     value={description}
                     onChange={(e) => handleDescriptionChange(e.target.value)}
                     placeholder={descriptionPlaceholder}
-                    className="w-full p-1 text-style-body-title-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none"
+                    rows={4}
+                    className={cn(
+                        "w-full p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-disabled placeholder:text-color-text-neutral-disabled border-none bg-transparent focus:outline-none resize-none",
+                        disabled && "opacity-60 cursor-not-allowed"
+                    )}
                 />
             </div>
 
@@ -159,6 +171,7 @@ export const NewProject = ({
                 emptyStateText={emptyStateText}
                 initialContextFiles={initialContextFiles}
                 onContextChange={onContextChange}
+                disabled={disabled}
             />
 
             <div className="flex flex-col gap-4 mt-6">
@@ -166,6 +179,7 @@ export const NewProject = ({
                     label="Client name"
                     inputSize='medium'
                     placeholder="Enter your client name here."
+                    disabled={disabled}
                     value={clientName}
                     onChange={(e) => handleClientNameChange(e.target.value)}
                 />
@@ -175,20 +189,23 @@ export const NewProject = ({
                         label="Court"
                         inputSize='medium'
                         placeholder="e.g. Patna High Court"
+                        disabled={disabled}
                         value={court}
                         onChange={(e) => handleCourtChange(e.target.value)}
-                        />
+                    />
                     <TextInput
                         label="Case type"
                         inputSize='medium'
                         placeholder="e.g. Civil Appeal"
+                        disabled={disabled}
                         value={caseType}
                         onChange={(e) => handleCaseTypeChange(e.target.value)}
-                        />
+                    />
                     <TextInput
                         label="Case Number"
                         inputSize='medium'
                         placeholder="e.g. 1234/2024"
+                        disabled={disabled}
                         value={caseNumber}
                         onChange={(e) => handleCaseNumberChange(e.target.value)}
                     />
@@ -199,14 +216,15 @@ export const NewProject = ({
             <div className="flex gap-2 mt-12">
                 <Button
                     variant="primary"
-                    size="small"
+                    size="extraSmall"
                     onClick={onCreate}
+                    disabled={disabled}
                 >
                     {submitButtonText}
                 </Button>
                 <Button
                     variant="neutral"
-                    size="small"
+                    size="extraSmall"
                     onClick={onCancel}
                 >
                     Cancel

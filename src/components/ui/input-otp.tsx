@@ -74,4 +74,22 @@ function InputOTPSeparator({ ...props }: React.ComponentProps<"div">) {
   )
 }
 
-export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
+function InputOTPWrapper({ 
+  maxLength = 6, 
+  ...props 
+}: Omit<React.ComponentProps<typeof InputOTP>, "render" | "maxLength"> & { maxLength?: number }) {
+  return (
+    <InputOTP maxLength={maxLength} {...props}>
+      <InputOTPGroup>
+        {Array.from({ length: maxLength }).map((_, i) => (
+          <InputOTPSlot key={i} index={i} />
+        ))}
+      </InputOTPGroup>
+    </InputOTP>
+  )
+}
+
+import { OtpInput, OtpInputProps } from "./otp-input"
+
+export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator, InputOTPWrapper, OtpInput }
+export type { OtpInputProps }

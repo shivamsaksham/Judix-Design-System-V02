@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Icon } from '@judix/icon';
@@ -13,10 +15,12 @@ export interface JudgmentSelectionListProps {
     selectedIndex?: number | null;
     onToggleExpand?: (expanded: boolean) => void;
     onSelect?: (index: number) => void;
-    onConfirm?: () => void;
+    onConfirm?: (selectedData?: JudgmentNudgeTileProps) => void;
     onReject?: () => void;
     onManualSearch?: (query: string) => void;
     defaultShowManualInput?: boolean;
+    /** When true, "None of these" just calls onReject instead of revealing the manual-search box. */
+    disableManualSearchFallback?: boolean;
 }
 
 export const JudgmentSelectionList = ({
@@ -31,6 +35,7 @@ export const JudgmentSelectionList = ({
     onReject,
     onManualSearch,
     defaultShowManualInput = false,
+    disableManualSearchFallback = false,
 }: JudgmentSelectionListProps) => {
 
     // Internal state handling in case it's uncontrolled
@@ -65,7 +70,9 @@ export const JudgmentSelectionList = ({
     };
 
     const handleReject = () => {
-        setShowManualInput(true);
+        if (!disableManualSearchFallback) {
+            setShowManualInput(true);
+        }
         setInternalExpanded(false);
         onToggleExpand?.(false);
         onReject?.();
@@ -75,7 +82,8 @@ export const JudgmentSelectionList = ({
         setInternalConfirmed(true);
         setInternalExpanded(false);
         onToggleExpand?.(false);
-        onConfirm?.();
+        const selectedData = selectedIndex !== null ? judgments[selectedIndex] : undefined;
+        onConfirm?.(selectedData);
     };
 
     const handleManualSearch = () => {

@@ -91,6 +91,7 @@
   --primitives-font-spacing-400: 0.5px;
   --primitives-font-spacing-500: 0.75px;
   --primitives-font-height-000: 12px;
+  --primitives-font-height-75:14px;
   --primitives-font-height-100: 15px;
   --primitives-font-height-200: 18px;
   --primitives-font-height-300: 21px;
@@ -123,7 +124,7 @@
   --color-color-bg-default: var(--primitives-color-neutral-light-100);
   --color-color-bg-subtle: var(--primitives-color-base-000);
   --color-color-bg-muted: var(--primitives-color-neutral-light-200);
-
+  --color-color-bg-contrast: var(--primitives-color-neutral-contrast-800);
   --color-color-surface-feedback-error-subtle: var(--primitives-color-semantic-red-000);
   --color-color-surface-feedback-warning-subtle: var(--primitives-color-semantic-orange-000);
   --color-color-surface-feedback-info-subtle: var(--primitives-color-semantic-blue-000);
@@ -322,6 +323,8 @@
   --radius-button-border-radius-default: var(--radius-radius-interactiveelement);
   /* Button Border Weight - Un-tokenized : should be used directly as class `button-border-weight-default`  */
   --button-border-weight-default: var(--border-weight-default);
+  --button-border-weight-large: var(--border-weight-large);
+
 
   /* label */
   --color-label-color-neutral-bg: var(--color-color-surface-neutral-default);
@@ -527,6 +530,10 @@
   border-width: var(--button-border-weight-default);
 }
 
+@utility button-border-weight-large {
+  border-width: var(--button-border-weight-large);
+}
+
 @utility label-border-weight-default {
   border-width: var(--label-border-weight-default);
 }
@@ -579,6 +586,14 @@
   border-width: var(--textinput-border-weight-default);
 }
 
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Test Styles Semantics */
 @utility text-style-chat-heading-main {
   font-family: var(--font-family-brandprimary);
@@ -588,6 +603,13 @@
   letter-spacing: var(--font-tracking-body-large);
 }
 
+@utility text-style-body-default-regular-tight {
+  font-family: var(--font-family-brandprimary);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-body-default);
+  letter-spacing: var(--font-tracking-body-default);
+  line-height: var(--primitives-font-height-75);
+}
 @utility text-style-body-default-regular {
   font-family: var(--font-family-brandprimary);
   font-weight: var(--font-weight-regular);
@@ -1162,4 +1184,723 @@
   opacity: 0;
   transform: translateY(6px);
   animation: ai-thinking-stepIn 0.35s ease forwards;
+}
+
+/* ==========================================
+   Imported Typography from v01
+   ========================================== */
+:root {
+  --primitives-font-size-h1: 96px;
+  --primitives-font-size-h2: 68px;
+  --primitives-font-size-h3: 48px;
+  --primitives-font-size-h4: 36px;
+  --primitives-font-size-h4-tight: 36px;
+  --primitives-font-size-h5: 24px;
+  --primitives-font-size-h6: 18px;
+  --primitives-font-size-b1: 16px;
+  --primitives-font-size-b2: 14px;
+
+  --primitives-font-size-tablet-h1: 68px;
+  --primitives-font-size-tablet-h2: 56px;
+  --primitives-font-size-tablet-h3: 42px;
+  --primitives-font-size-tablet-h4: 32px;
+  --primitives-font-size-tablet-h4-tight: 32px;
+  --primitives-font-size-tablet-h5: 24px;
+  --primitives-font-size-tablet-h6: 18px;
+  --primitives-font-size-tablet-b1: 16px;
+  --primitives-font-size-tablet-b2: 14px;
+
+  --primitives-font-size-mobile-h1: 56px;
+  --primitives-font-size-mobile-h2: 42px;
+  --primitives-font-size-mobile-h3: 36px;
+  --primitives-font-size-mobile-h4: 28px;
+  --primitives-font-size-mobile-h4-tight: 28px;
+  --primitives-font-size-mobile-h5: 20px;
+  --primitives-font-size-mobile-h6: 18px;
+  --primitives-font-size-mobile-b1: 16px;
+  --primitives-font-size-mobile-b2: 14px;
+
+  --primitives-font-height-h1: 96px;
+  --primitives-font-height-h2: 84px;
+  --primitives-font-height-h3: 64px;
+  --primitives-font-height-h4: 48px;
+  --primitives-font-height-h4-tight: 36px;
+  --primitives-font-height-h5: 32px;
+  --primitives-font-height-h6: 27px;
+  --primitives-font-height-b1: 24px;
+  --primitives-font-height-b2: 21px;
+  --primitives-font-height-h6-tight: 18px;
+  --primitives-font-height-b1-tight: 16px;
+  --primitives-font-height-b2-tight: 14px;
+
+  --primitives-font-height-tablet-h1: 80px;
+  --primitives-font-height-tablet-h2: 68px;
+  --primitives-font-height-tablet-h3: 56px;
+  --primitives-font-height-tablet-h4: 42px;
+  --primitives-font-height-tablet-h4-tight: 36px;
+  --primitives-font-height-tablet-h5: 32px;
+  --primitives-font-height-tablet-h6: 27px;
+  --primitives-font-height-tablet-b1: 24px;
+  --primitives-font-height-tablet-b2: 21px;
+  --primitives-font-height-tablet-h6-tight: 18px;
+  --primitives-font-height-tablet-b1-tight: 16px;
+  --primitives-font-height-tablet-b2-tight: 14px;
+
+  --primitives-font-height-mobile-h1: 64px;
+  --primitives-font-height-mobile-h2: 52px;
+  --primitives-font-height-mobile-h3: 48px;
+  --primitives-font-height-mobile-h4: 36px;
+  --primitives-font-height-mobile-h4-tight: 36px;
+  --primitives-font-height-mobile-h5: 28px;
+  --primitives-font-height-mobile-h6: 27px;
+  --primitives-font-height-mobile-b1: 24px;
+  --primitives-font-height-mobile-b2: 21px;
+  --primitives-font-height-mobile-h6-tight: 18px;
+  --primitives-font-height-mobile-b1-tight: 16px;
+  --primitives-font-height-mobile-b2-tight: 14px;
+
+  --primitives-font-spacing-h1: -4px;
+  --primitives-font-spacing-h2: -2px;
+  --primitives-font-spacing-h3: -1px;
+  --primitives-font-spacing-h4: -1px;
+  --primitives-font-spacing-h4-tight: -0.5px;
+  --primitives-font-spacing-h5: -1px;
+  --primitives-font-spacing-h6: 0px;
+  --primitives-font-spacing-b1: 0px;
+  --primitives-font-spacing-b1-spread: 16px;
+  --primitives-font-spacing-b2: 0px;
+
+  --primitives-font-spacing-tablet-h1: -2px;
+  --primitives-font-spacing-tablet-h2: -1px;
+  --primitives-font-spacing-tablet-h3: -1px;
+  --primitives-font-spacing-tablet-h4: -1px;
+  --primitives-font-spacing-tablet-h4-tight: -0.5px;
+  --primitives-font-spacing-tablet-h5: -1px;
+  --primitives-font-spacing-tablet-h6: 0px;
+  --primitives-font-spacing-tablet-b1: 0px;
+  --primitives-font-spacing-tablet-b2: 0px;
+
+  --primitives-font-spacing-mobile-h1: -1px;
+  --primitives-font-spacing-mobile-h2: -1px;
+  --primitives-font-spacing-mobile-h3: -1px;
+  --primitives-font-spacing-mobile-h4: -1px;
+  --primitives-font-spacing-mobile-h4-tight: -0.5px;
+  --primitives-font-spacing-mobile-h5: 0px;
+  --primitives-font-spacing-mobile-h6: 0px;
+  --primitives-font-spacing-mobile-b1: 0px;
+  --primitives-font-spacing-mobile-b2: 0px;
+}
+
+/* Base Typography Utilities */
+@utility text-h1 {
+  font-size: var(--responsive-font-size-h1);
+  line-height: var(--responsive-font-height-h1);
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-h2 {
+  font-size: var(--responsive-font-size-h2);
+  line-height: var(--responsive-font-height-h2);
+  letter-spacing: var(--responsive-font-spacing-h2);
+}
+
+@utility text-h3 {
+  font-size: var(--responsive-font-size-h3);
+  line-height: var(--responsive-font-height-h3);
+  letter-spacing: var(--responsive-font-spacing-h3);
+}
+
+@utility text-h4 {
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-h4-tight {
+  font-size: var(--responsive-font-size-h4-tight);
+  line-height: var(--responsive-font-height-h4-tight);
+  letter-spacing: var(--responsive-font-spacing-h4-tight);
+}
+
+@utility text-h5 {
+  font-size: var(--responsive-font-size-h5);
+  line-height: var(--responsive-font-height-h5);
+  letter-spacing: var(--responsive-font-spacing-h5);
+}
+
+@utility text-h6 {
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-b1 {
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-b2 {
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+/* Text Style Utilities */
+@utility text-style-secondary-light-b1 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-style-secondary-light-b2 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+@utility text-style-secondary-light-h6 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-style-secondary-light-h4 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 300;
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-style-secondary-regular-h1 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h1);
+  line-height: var(--responsive-font-height-h1);
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-style-secondary-regular-h2 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h2);
+  line-height: var(--responsive-font-height-h2);
+  letter-spacing: var(--responsive-font-spacing-h2);
+}
+
+@utility text-style-secondary-regular-h3 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h3);
+  line-height: var(--responsive-font-height-h3);
+  letter-spacing: var(--responsive-font-spacing-h3);
+}
+
+@utility text-style-secondary-regular-h3-trim {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h3);
+  line-height: 1;
+  letter-spacing: var(--responsive-font-spacing-h3);
+  margin-top: -0.15em;
+  margin-bottom: -0.15em;
+}
+
+@utility text-style-secondary-regular-h4 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-style-secondary-regular-h5 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h5);
+  line-height: var(--responsive-font-height-h5);
+  letter-spacing: var(--responsive-font-spacing-h5);
+}
+
+@utility text-style-secondary-regular-h6 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-style-secondary-regular-b1 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-style-secondary-regular-b2 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+@utility text-style-secondary-regular-b2-trim {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b2);
+  line-height: 1;
+  letter-spacing: var(--responsive-font-spacing-b2);
+  margin: -0.15em 0;
+}
+
+@utility text-style-secondary-regular-b2-tight {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: -1px;
+}
+
+@utility text-style-secondary-medium-h1 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h1);
+  line-height: var(--responsive-font-height-h1);
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-style-secondary-medium-h2 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h2);
+  line-height: var(--responsive-font-height-h2);
+  letter-spacing: var(--responsive-font-spacing-h2);
+}
+
+@utility text-style-secondary-medium-h3 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h3);
+  line-height: var(--responsive-font-height-h3);
+  letter-spacing: var(--responsive-font-spacing-h3);
+}
+
+@utility text-style-secondary-medium-h4 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-style-secondary-medium-h5 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h5);
+  line-height: var(--responsive-font-height-h5);
+  letter-spacing: var(--responsive-font-spacing-h5);
+}
+
+@utility text-style-secondary-medium-h6 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-style-secondary-medium-b1 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-style-secondary-medium-b1-spread {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--primitives-font-spacing-b1-spread);
+}
+
+@utility text-style-secondary-medium-b2 {
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+@utility text-style-primary-regular-h1 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h1);
+  line-height: var(--responsive-font-height-h1);
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-style-primary-regular-h1-120 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h1);
+  line-height: 120px;
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-style-primary-regular-h2 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h2);
+  line-height: var(--responsive-font-height-h2);
+  letter-spacing: var(--responsive-font-spacing-h2);
+}
+
+@utility text-style-primary-regular-h3 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h3);
+  line-height: var(--responsive-font-height-h3);
+  letter-spacing: var(--responsive-font-spacing-h3);
+}
+
+@utility text-style-primary-regular-h4 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-style-primary-regular-h4-tight {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h4-tight);
+  line-height: var(--responsive-font-height-h4-tight);
+  letter-spacing: var(--responsive-font-spacing-h4-tight);
+}
+
+@utility text-style-primary-regular-h5 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h5);
+  line-height: var(--responsive-font-height-h5);
+  letter-spacing: var(--responsive-font-spacing-h5);
+}
+
+@utility text-style-primary-regular-h6 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-style-primary-regular-b1 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-style-primary-regular-b2 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-regular);
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+@utility text-style-primary-medium-h1 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h1);
+  line-height: var(--responsive-font-height-h1);
+  letter-spacing: var(--responsive-font-spacing-h1);
+}
+
+@utility text-style-primary-medium-h2 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h2);
+  line-height: var(--responsive-font-height-h2);
+  letter-spacing: var(--responsive-font-spacing-h2);
+}
+
+@utility text-style-primary-medium-h3 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h3);
+  line-height: var(--responsive-font-height-h3);
+  letter-spacing: var(--responsive-font-spacing-h3);
+}
+
+@utility text-style-primary-medium-h4 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h4);
+  line-height: var(--responsive-font-height-h4);
+  letter-spacing: var(--responsive-font-spacing-h4);
+}
+
+@utility text-style-primary-medium-h4-tight {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h4-tight);
+  line-height: var(--responsive-font-height-h4-tight);
+  letter-spacing: var(--responsive-font-spacing-h4-tight);
+}
+
+@utility text-style-primary-medium-h5 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h5);
+  line-height: var(--responsive-font-height-h5);
+  letter-spacing: var(--responsive-font-spacing-h5);
+}
+
+@utility text-style-primary-medium-h6 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-h6);
+  line-height: var(--responsive-font-height-h6);
+  letter-spacing: var(--responsive-font-spacing-h6);
+}
+
+@utility text-style-primary-medium-b1 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-b1);
+  line-height: var(--responsive-font-height-b1);
+  letter-spacing: var(--responsive-font-spacing-b1);
+}
+
+@utility text-style-primary-medium-b2 {
+  font-family: var(--font-roboto-serif), serif;
+  font-weight: var(--primitives-font-weight-medium);
+  font-size: var(--responsive-font-size-b2);
+  line-height: var(--responsive-font-height-b2);
+  letter-spacing: var(--responsive-font-spacing-b2);
+}
+
+/* ==========================================================================
+   Responsive Typography Variables
+   These intermediate variables are referenced by @utility text-style-* classes.
+   Override them per breakpoint here — no class nesting needed.
+   ========================================================================== */
+
+/* Desktop defaults (no media query = default) */
+:root {
+  --responsive-font-size-h1: var(--primitives-font-size-h1);
+  --responsive-font-height-h1: var(--primitives-font-height-h1);
+  --responsive-font-spacing-h1: var(--primitives-font-spacing-h1);
+
+  --responsive-font-size-h2: var(--primitives-font-size-h2);
+  --responsive-font-height-h2: var(--primitives-font-height-h2);
+  --responsive-font-spacing-h2: var(--primitives-font-spacing-h2);
+
+  --responsive-font-size-h3: var(--primitives-font-size-h3);
+  --responsive-font-height-h3: var(--primitives-font-height-h3);
+  --responsive-font-spacing-h3: var(--primitives-font-spacing-h3);
+
+  --responsive-font-size-h4: var(--primitives-font-size-h4);
+  --responsive-font-height-h4: var(--primitives-font-height-h4);
+  --responsive-font-spacing-h4: var(--primitives-font-spacing-h4);
+
+  --responsive-font-size-h4-tight: var(--primitives-font-size-h4-tight);
+  --responsive-font-height-h4-tight: var(--primitives-font-height-h4-tight);
+  --responsive-font-spacing-h4-tight: var(--primitives-font-spacing-h4-tight);
+
+  --responsive-font-size-h5: var(--primitives-font-size-h5);
+  --responsive-font-height-h5: var(--primitives-font-height-h5);
+  --responsive-font-spacing-h5: var(--primitives-font-spacing-h5);
+
+  --responsive-font-size-h6: var(--primitives-font-size-h6);
+  --responsive-font-height-h6: var(--primitives-font-height-h6);
+  --responsive-font-spacing-h6: var(--primitives-font-spacing-h6);
+
+  --responsive-font-size-b1: var(--primitives-font-size-b1);
+  --responsive-font-height-b1: var(--primitives-font-height-b1);
+  --responsive-font-spacing-b1: var(--primitives-font-spacing-b1);
+
+  --responsive-font-size-b2: var(--primitives-font-size-b2);
+  --responsive-font-height-b2: var(--primitives-font-height-b2);
+  --responsive-font-spacing-b2: var(--primitives-font-spacing-b2);
+}
+
+/* Tablet overrides (768px – 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  :root {
+    --responsive-font-size-h1: var(--primitives-font-size-tablet-h1);
+    --responsive-font-height-h1: var(--primitives-font-height-tablet-h1);
+    --responsive-font-spacing-h1: var(--primitives-font-spacing-tablet-h1);
+
+    --responsive-font-size-h2: var(--primitives-font-size-tablet-h2);
+    --responsive-font-height-h2: var(--primitives-font-height-tablet-h2);
+    --responsive-font-spacing-h2: var(--primitives-font-spacing-tablet-h2);
+
+    --responsive-font-size-h3: var(--primitives-font-size-tablet-h3);
+    --responsive-font-height-h3: var(--primitives-font-height-tablet-h3);
+    --responsive-font-spacing-h3: var(--primitives-font-spacing-tablet-h3);
+
+    --responsive-font-size-h4: var(--primitives-font-size-tablet-h4);
+    --responsive-font-height-h4: var(--primitives-font-height-tablet-h4);
+    --responsive-font-spacing-h4: var(--primitives-font-spacing-tablet-h4);
+
+    --responsive-font-size-h4-tight: var(--primitives-font-size-tablet-h4-tight);
+    --responsive-font-height-h4-tight: var(--primitives-font-height-tablet-h4-tight);
+    --responsive-font-spacing-h4-tight: var(--primitives-font-spacing-tablet-h4-tight);
+
+    --responsive-font-size-h5: var(--primitives-font-size-tablet-h5);
+    --responsive-font-height-h5: var(--primitives-font-height-tablet-h5);
+    --responsive-font-spacing-h5: var(--primitives-font-spacing-tablet-h5);
+
+    --responsive-font-size-h6: var(--primitives-font-size-tablet-h6);
+    --responsive-font-height-h6: var(--primitives-font-height-tablet-h6);
+    --responsive-font-spacing-h6: var(--primitives-font-spacing-tablet-h6);
+
+    --responsive-font-size-b1: var(--primitives-font-size-tablet-b1);
+    --responsive-font-height-b1: var(--primitives-font-height-tablet-b1);
+    --responsive-font-spacing-b1: var(--primitives-font-spacing-tablet-b1);
+
+    --responsive-font-size-b2: var(--primitives-font-size-tablet-b2);
+    --responsive-font-height-b2: var(--primitives-font-height-tablet-b2);
+    --responsive-font-spacing-b2: var(--primitives-font-spacing-tablet-b2);
+  }
+}
+
+/* Mobile overrides (max-width: 767px) */
+@media (max-width: 767px) {
+  :root {
+    --responsive-font-size-h1: var(--primitives-font-size-mobile-h1);
+    --responsive-font-height-h1: var(--primitives-font-height-mobile-h1);
+    --responsive-font-spacing-h1: var(--primitives-font-spacing-mobile-h1);
+
+    --responsive-font-size-h2: var(--primitives-font-size-mobile-h2);
+    --responsive-font-height-h2: var(--primitives-font-height-mobile-h2);
+    --responsive-font-spacing-h2: var(--primitives-font-spacing-mobile-h2);
+
+    --responsive-font-size-h3: var(--primitives-font-size-mobile-h3);
+    --responsive-font-height-h3: var(--primitives-font-height-mobile-h3);
+    --responsive-font-spacing-h3: var(--primitives-font-spacing-mobile-h3);
+
+    --responsive-font-size-h4: var(--primitives-font-size-mobile-h4);
+    --responsive-font-height-h4: var(--primitives-font-height-mobile-h4);
+    --responsive-font-spacing-h4: var(--primitives-font-spacing-mobile-h4);
+
+    --responsive-font-size-h4-tight: var(--primitives-font-size-mobile-h4-tight);
+    --responsive-font-height-h4-tight: var(--primitives-font-height-mobile-h4-tight);
+    --responsive-font-spacing-h4-tight: var(--primitives-font-spacing-mobile-h4-tight);
+
+    --responsive-font-size-h5: var(--primitives-font-size-mobile-h5);
+    --responsive-font-height-h5: var(--primitives-font-height-mobile-h5);
+    --responsive-font-spacing-h5: var(--primitives-font-spacing-mobile-h5);
+
+    --responsive-font-size-h6: var(--primitives-font-size-mobile-h6);
+    --responsive-font-height-h6: var(--primitives-font-height-mobile-h6);
+    --responsive-font-spacing-h6: var(--primitives-font-spacing-mobile-h6);
+
+    --responsive-font-size-b1: var(--primitives-font-size-mobile-b1);
+    --responsive-font-height-b1: var(--primitives-font-height-mobile-b1);
+    --responsive-font-spacing-b1: var(--primitives-font-spacing-mobile-b1);
+
+    --responsive-font-size-b2: var(--primitives-font-size-mobile-b2);
+    --responsive-font-height-b2: var(--primitives-font-height-mobile-b2);
+    --responsive-font-spacing-b2: var(--primitives-font-spacing-mobile-b2);
+  }
+}
+
+@utility container-typography {
+  container-type: inline-size;
+}
+
+@container (min-width: 768px) and (max-width: 1024px) {
+  .container-typography * {
+    --responsive-font-size-h1: var(--primitives-font-size-tablet-h1);
+    --responsive-font-height-h1: var(--primitives-font-height-tablet-h1);
+    --responsive-font-spacing-h1: var(--primitives-font-spacing-tablet-h1);
+
+    --responsive-font-size-h2: var(--primitives-font-size-tablet-h2);
+    --responsive-font-height-h2: var(--primitives-font-height-tablet-h2);
+    --responsive-font-spacing-h2: var(--primitives-font-spacing-tablet-h2);
+
+    --responsive-font-size-h3: var(--primitives-font-size-tablet-h3);
+    --responsive-font-height-h3: var(--primitives-font-height-tablet-h3);
+    --responsive-font-spacing-h3: var(--primitives-font-spacing-tablet-h3);
+
+    --responsive-font-size-h4: var(--primitives-font-size-tablet-h4);
+    --responsive-font-height-h4: var(--primitives-font-height-tablet-h4);
+    --responsive-font-spacing-h4: var(--primitives-font-spacing-tablet-h4);
+
+    --responsive-font-size-h4-tight: var(--primitives-font-size-tablet-h4-tight);
+    --responsive-font-height-h4-tight: var(--primitives-font-height-tablet-h4-tight);
+    --responsive-font-spacing-h4-tight: var(--primitives-font-spacing-tablet-h4-tight);
+
+    --responsive-font-size-h5: var(--primitives-font-size-tablet-h5);
+    --responsive-font-height-h5: var(--primitives-font-height-tablet-h5);
+    --responsive-font-spacing-h5: var(--primitives-font-spacing-tablet-h5);
+
+    --responsive-font-size-h6: var(--primitives-font-size-tablet-h6);
+    --responsive-font-height-h6: var(--primitives-font-height-tablet-h6);
+    --responsive-font-spacing-h6: var(--primitives-font-spacing-tablet-h6);
+
+    --responsive-font-size-b1: var(--primitives-font-size-tablet-b1);
+    --responsive-font-height-b1: var(--primitives-font-height-tablet-b1);
+    --responsive-font-spacing-b1: var(--primitives-font-spacing-tablet-b1);
+
+    --responsive-font-size-b2: var(--primitives-font-size-tablet-b2);
+    --responsive-font-height-b2: var(--primitives-font-height-tablet-b2);
+    --responsive-font-spacing-b2: var(--primitives-font-spacing-tablet-b2);
+  }
+}
+
+@container (max-width: 767px) {
+  .container-typography * {
+    --responsive-font-size-h1: var(--primitives-font-size-mobile-h1);
+    --responsive-font-height-h1: var(--primitives-font-height-mobile-h1);
+    --responsive-font-spacing-h1: var(--primitives-font-spacing-mobile-h1);
+
+    --responsive-font-size-h2: var(--primitives-font-size-mobile-h2);
+    --responsive-font-height-h2: var(--primitives-font-height-mobile-h2);
+    --responsive-font-spacing-h2: var(--primitives-font-spacing-mobile-h2);
+
+    --responsive-font-size-h3: var(--primitives-font-size-mobile-h3);
+    --responsive-font-height-h3: var(--primitives-font-height-mobile-h3);
+    --responsive-font-spacing-h3: var(--primitives-font-spacing-mobile-h3);
+
+    --responsive-font-size-h4: var(--primitives-font-size-mobile-h4);
+    --responsive-font-height-h4: var(--primitives-font-height-mobile-h4);
+    --responsive-font-spacing-h4: var(--primitives-font-spacing-mobile-h4);
+
+    --responsive-font-size-h4-tight: var(--primitives-font-size-mobile-h4-tight);
+    --responsive-font-height-h4-tight: var(--primitives-font-height-mobile-h4-tight);
+    --responsive-font-spacing-h4-tight: var(--primitives-font-spacing-mobile-h4-tight);
+
+    --responsive-font-size-h5: var(--primitives-font-size-mobile-h5);
+    --responsive-font-height-h5: var(--primitives-font-height-mobile-h5);
+    --responsive-font-spacing-h5: var(--primitives-font-spacing-mobile-h5);
+
+    --responsive-font-size-h6: var(--primitives-font-size-mobile-h6);
+    --responsive-font-height-h6: var(--primitives-font-height-mobile-h6);
+    --responsive-font-spacing-h6: var(--primitives-font-spacing-mobile-h6);
+
+    --responsive-font-size-b1: var(--primitives-font-size-mobile-b1);
+    --responsive-font-height-b1: var(--primitives-font-height-mobile-b1);
+    --responsive-font-spacing-b1: var(--primitives-font-spacing-mobile-b1);
+
+    --responsive-font-size-b2: var(--primitives-font-size-mobile-b2);
+    --responsive-font-height-b2: var(--primitives-font-height-mobile-b2);
+    --responsive-font-spacing-b2: var(--primitives-font-spacing-mobile-b2);
+  }
 }

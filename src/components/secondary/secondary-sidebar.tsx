@@ -18,6 +18,7 @@ export interface SecondarySidebarProps {
   activeItem?: string
   onSelect?: (id: string) => void
   onLogout?: () => void
+  unreadNotificationsCount?: number
   className?: string
 }
 
@@ -41,6 +42,7 @@ export function SecondarySidebar({
   activeItem,
   onSelect,
   onLogout,
+  unreadNotificationsCount = 0,
   className,
 }: SecondarySidebarProps) {
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false)
@@ -68,6 +70,13 @@ export function SecondarySidebar({
                   size={18} 
                   className="text-color-icon-neutral-default"
                 />
+              }
+              suffixSlot={
+                item.id === "notifications" && unreadNotificationsCount > 0 ? (
+                  <div className="bg-button-color-primary-default-bg text-button-color-primary-default-text text-xs font-medium px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-[20px]">
+                    {unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount}
+                  </div>
+                ) : undefined
               }
             />
           ))}
