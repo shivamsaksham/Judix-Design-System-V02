@@ -19,8 +19,9 @@ export interface ChatHistoryItem {
 }
 
 export interface UsageStats {
-    current: number;
-    total: number;
+    // null when there's no active plan to report usage against — renders as "-/-"
+    current: number | null;
+    total: number | null;
     label: string;
 }
 
@@ -274,13 +275,13 @@ export const HistorySidebar = ({
                                     bg-color-text-primary-default
                                     h-2
                                     rounded-full transition-all"
-                            style={{ width: `${(usageStats.current / usageStats.total) * 100}%` }}
+                            style={{ width: usageStats.current === null || usageStats.total === null ? '0%' : `${(usageStats.current / usageStats.total) * 100}%` }}
                         />
                     </div>
                     <div className="flex items-center justify-between min-w-0">
                         <span className="text-color-text-neutral-tertiary p-1 text-style-label-title-regular whitespace-nowrap">{usageStats.label}</span>
                         <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
-                            {usageStats.current}/{usageStats.total}
+                            {usageStats.current === null || usageStats.total === null ? '-/-' : `${usageStats.current}/${usageStats.total}`}
                         </span>
                     </div>
                 </div>
