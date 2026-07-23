@@ -29,7 +29,7 @@ export interface SubscriptionProps {
   onChangePlan?: () => void
   onViewInvoice?: () => void
   invoiceUrl?: string
-  onCancelSubscription?: () => void
+  onCancelSubscription?: () => void | Promise<void>
   whatsappUrl?: string
   supportEmail?: string
   className?: string
@@ -109,7 +109,21 @@ export function Subscription({
   className,
 }: SubscriptionProps) {
   const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
+  const [isCancelling, setIsCancelling] = React.useState(false)
   const router = useRouter()
+
+  const handleConfirmCancel = async () => {
+    setIsCancelling(true)
+    try {
+      await onCancelSubscription?.()
+      setShowCancelConfirm(false)
+    } catch {
+      // Error is already surfaced by the caller (e.g. a toast) — keep the
+      // dialog open so the user can see it and retry.
+    } finally {
+      setIsCancelling(false)
+    }
+  }
   return (
     <div className={cn("w-full pb-33 flex flex-col gap-6 bg-color-surface-neutral-default", className)}>
       {/* Header */}
@@ -205,10 +219,8 @@ export function Subscription({
           subText="Are you sure you want to cancel your subscription? This will move you to the free plan in the next billing cycle."
           confirmVariant="destructive"
           confirmText="Cancel Subscription"
-          onConfirmClick={() => {
-            onCancelSubscription?.()
-            setShowCancelConfirm(false)
-          }}
+          confirmLoading={isCancelling}
+          onConfirmClick={handleConfirmCancel}
           onCancelClick={() => setShowCancelConfirm(false)}
         >
           <Button variant="destructive" size="extraSmall">
