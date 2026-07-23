@@ -15,6 +15,7 @@ export type PricingCardProps = {
   isPopular?: boolean;
   buttonLabel?: string;
   billingText?: string;
+  billingNote?: string;
   usage: PricingFeature[];
   features: PricingFeature[];
   support: PricingFeature[];
@@ -64,6 +65,7 @@ export function PricingCard({
   isPopular,
   buttonLabel = "Select plan",
   billingText,
+  billingNote,
   usage,
   features,
   support,
@@ -108,6 +110,11 @@ export function PricingCard({
               </div>
             )}
           </div>
+          {billingNote && (
+            <p className="p-1 -mt-3 text-style-secondary-regular-b2-trim text-color-text-neutral-tertiary">
+              {billingNote}
+            </p>
+          )}
 
           <Button
             variant="neutral"

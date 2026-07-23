@@ -31,27 +31,32 @@ export interface OrderSummaryProps {
     data: OrderSummaryData;
     onChangePlan?: (planName?: string, frequency?: 'monthly' | 'yearly') => void;
     onApplyPromo?: (code: string) => void;
+    onRemovePromo?: () => void;
     onCheckout?: () => void;
     onFrequencyChange?: (frequency: 'monthly' | 'yearly') => void;
     className?: string;
     loading?: boolean;
     backendPlans?: any[];
     currentPlan?: string;
+    currentPlanInterval?: 'monthly' | 'yearly';
 }
 
 export const OrderSummary = ({
     data,
     onChangePlan,
     onApplyPromo,
+    onRemovePromo,
     onCheckout,
     onFrequencyChange,
     className,
     loading,
     backendPlans = [],
     currentPlan,
+    currentPlanInterval,
 }: OrderSummaryProps) => {
     const [promoInput, setPromoInput] = useState('');
     const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
+    const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === 'yearly' && p.discountPercentage)?.discountPercentage;
 
     const handleFrequencySelect = (freq: 'monthly' | 'yearly') => {
         onFrequencyChange?.(freq);
@@ -61,6 +66,11 @@ export const OrderSummary = ({
         if (promoInput.trim()) {
             onApplyPromo?.(promoInput);
         }
+    };
+
+    const handleRemovePromo = () => {
+        setPromoInput('');
+        onRemovePromo?.();
     };
 
     // Paise-to-rupee division upstream can leave IEEE 754 artifacts
@@ -96,6 +106,7 @@ export const OrderSummary = ({
                     <PricingTable
                         backendPlans={backendPlans}
                         currentPlan={currentPlan}
+                        currentPlanInterval={currentPlanInterval}
                         onSelectPlan={(plan, frequency) => {
                             setIsChangePlanOpen(false);
                             onChangePlan?.(plan, frequency);
@@ -117,9 +128,9 @@ export const OrderSummary = ({
                     type="yearly"
                     price={data.yearlyPrice}
                     selected={data.currentFrequency === 'yearly'}
-                    discountLabel="Save 20%"
+                    discountLabel={yearlyDiscountPercentage ? `Save ${yearlyDiscountPercentage}%` : undefined}
                     onClick={() => handleFrequencySelect('yearly')}
-                    className="hidden flex-1 w-full sm:w-auto"
+                    className="flex-1 w-full sm:w-auto"
                 />
             </div>
 
@@ -192,13 +203,13 @@ export const OrderSummary = ({
                             disabled={data.isPromoApplied}
                         />
                         <Button
-                            variant="neutral"
+                            variant={data.isPromoApplied ? "destructive" : "neutral"}
                             size="small"
-                            onClick={handleApplyPromo}
+                            onClick={data.isPromoApplied ? handleRemovePromo : handleApplyPromo}
                             className='h-[42px]'
-                            disabled={!promoInput.trim() || data.isPromoApplied || loading}
+                            disabled={!data.isPromoApplied && (!promoInput.trim() || loading)}
                         >
-                            {data.isPromoApplied ? 'Applied' : 'Apply'}
+                            {data.isPromoApplied ? 'Remove' : 'Apply'}
                         </Button>
                     </div>
                 </div>
