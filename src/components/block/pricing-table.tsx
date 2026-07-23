@@ -110,6 +110,7 @@ export interface PricingTableProps {
 export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loadingTier }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const hasYearlyPlan = backendPlans.some((p) => p.interval === "yearly");
+  const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === "yearly" && p.discountPercentage)?.discountPercentage;
 
   // Helper to format bytes to readable string
   const formatBytes = (bytes?: number) => {
@@ -198,7 +199,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
               }`}
             onClick={() => setBillingCycle("yearly")}
           >
-            Yearly (save 20%)
+            Yearly{yearlyDiscountPercentage ? ` (save ${yearlyDiscountPercentage}%)` : ""}
           </button>
         </div>
       )}
