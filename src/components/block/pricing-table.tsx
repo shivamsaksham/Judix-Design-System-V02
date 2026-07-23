@@ -109,6 +109,7 @@ export interface PricingTableProps {
 
 export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loadingTier }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const hasYearlyPlan = backendPlans.some((p) => p.interval === "yearly");
 
   // Helper to format bytes to readable string
   const formatBytes = (bytes?: number) => {
@@ -123,10 +124,12 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
     return `${days} days`;
   };
 
-  let mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
-  
+  const effectiveBillingCycle = hasYearlyPlan ? billingCycle : "monthly";
+
+  let mergedPlans = (effectiveBillingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
+
   if (backendPlans && backendPlans.length > 0) {
-    const plansForCycle = backendPlans.filter(p => p.interval === billingCycle || p.price === 0);
+    const plansForCycle = backendPlans.filter(p => p.interval === effectiveBillingCycle || p.price === 0);
     if (plansForCycle.length > 0) {
       // Deduplicate by name to prevent duplicate keys if the backend sends multiple free plans
       const uniquePlans = plansForCycle.filter((plan, index, self) => 
@@ -176,41 +179,43 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
 
   return (
     <div className="w-full max-w-[1264px] lg:max-w-[1280px] xl:max-w-[1312px] mx-auto flex flex-col items-center">
-      {/* Toggle */}
-      <div className="hidden items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
-        <button
-          className={`px-4 py-2 text-style-secondary-regular-b1 border transition-colors ${billingCycle === "monthly"
-              ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
-              : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
-            }`}
-          onClick={() => setBillingCycle("monthly")}
-        >
-          Monthly
-        </button>
-        <button
-          className={`px-4 py-2 text-style-secondary-regular-b1 transition-colors border ${billingCycle === "yearly"
-              ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
-              : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
-            }`}
-          onClick={() => setBillingCycle("yearly")}
-        >
-          Yearly (save 20%)
-        </button>
-      </div>
+      {/* Toggle — only shown when a yearly plan actually exists in the backend data */}
+      {hasYearlyPlan && (
+        <div className="flex items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
+          <button
+            className={`px-4 py-2 text-style-secondary-regular-b1 border transition-colors ${effectiveBillingCycle === "monthly"
+                ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
+                : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
+              }`}
+            onClick={() => setBillingCycle("monthly")}
+          >
+            Monthly
+          </button>
+          <button
+            className={`px-4 py-2 text-style-secondary-regular-b1 transition-colors border ${effectiveBillingCycle === "yearly"
+                ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
+                : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
+              }`}
+            onClick={() => setBillingCycle("yearly")}
+          >
+            Yearly (save 20%)
+          </button>
+        </div>
+      )}
 
       {/* Pricing Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-10 gap-y-24 mb-9 pt-20 justify-items-center">
         {mergedPlans.map((plan) => {
           const isCurrentPlan = currentPlan?.toLowerCase() === plan.tier.toLowerCase();
           return (
-            <PricingCard 
-              key={plan.tier} 
-              {...plan} 
-              billingText={billingCycle === "yearly" ? "per year" : "per month"}
+            <PricingCard
+              key={plan.tier}
+              {...plan}
+              billingText={effectiveBillingCycle === "yearly" ? "per year" : "per month"}
               buttonLabel={isCurrentPlan ? "Current Plan" : "Select plan"}
               buttonDisabled={isCurrentPlan}
               isLoading={loadingTier === plan.tier}
-              onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, billingCycle)} 
+              onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, effectiveBillingCycle)}
             />
           );
         })}
