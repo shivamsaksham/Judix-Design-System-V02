@@ -221,6 +221,8 @@ interface SearchEngineInputProps {
 
 export interface SearchEngineInputHandle {
     insertMention: (mention: { type: string; id: string; label: string }) => void;
+    restoreQuery: (text: string) => void;
+    clearInput: () => void;
 }
 
 function createMentionBadge({
@@ -1544,7 +1546,52 @@ function SearchEngineInputImpl({
         autoResize();
     }, [autoResize]);
 
-    useImperativeHandle(ref, () => ({ insertMention }), [insertMention]);
+    // Puts a failed query's original text back in the box (see pendingRestoreQuery
+    // in search-slice.ts) — same shape as insertMention, but replaces the whole
+    // box's content with plain text rather than inserting a mention badge.
+    const restoreQuery = useCallback((text: string) => {
+        const div = textareaRef.current;
+        if (!div) return;
+
+        div.textContent = text;
+        setIsCentered(false);
+        setInput(text);
+        autoResize();
+
+        div.focus();
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+    }, [autoResize]);
+
+    // Wipes the box back to empty, same steps handleSubmit already uses to
+    // clear after a successful send — needed on New Chat (etc.) since this
+    // component is uncontrolled and won't reset just because Redux state does.
+    const clearInput = useCallback(() => {
+        const div = textareaRef.current;
+        if (!div) return;
+
+        setIsCentered(true);
+        setInput("");
+        setSectionChip(null);
+        setPredictiveMatch(null);
+        setActiveDropdown(null);
+        setActiveTrigger(null);
+        setActiveWrapperType(null);
+        div.innerHTML = "";
+
+        requestAnimationFrame(() => {
+            if (textareaRef.current) {
+                textareaRef.current.style.height = `${BOTTOM_HEIGHT}px`;
+                textareaRef.current.style.overflowY = "hidden";
+            }
+        });
+    }, [BOTTOM_HEIGHT]);
+
+    useImperativeHandle(ref, () => ({ insertMention, restoreQuery, clearInput }), [insertMention, restoreQuery, clearInput]);
 
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
         setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));

@@ -21,6 +21,9 @@ export interface OrderSummaryData {
     autoRenewDate: string;
     yearlyPrice: string;
     monthlyPrice: string;
+    // Free has no billing cycle — there's no yearly variant to toggle to, so
+    // the frequency picker collapses to just the (single, $0) Monthly card.
+    isFreePlan?: boolean;
     monthlyCharge?: string;
     yearlyCharge?: string;
     creditDeduction?: number;
@@ -124,14 +127,16 @@ export const OrderSummary = ({
                     onClick={() => handleFrequencySelect('monthly')}
                     className="flex-1 w-full sm:w-auto"
                 />
-                <PaymentFrequencyCard
-                    type="yearly"
-                    price={data.yearlyPrice}
-                    selected={data.currentFrequency === 'yearly'}
-                    discountLabel={yearlyDiscountPercentage ? `Save ${yearlyDiscountPercentage}%` : undefined}
-                    onClick={() => handleFrequencySelect('yearly')}
-                    className="flex-1 w-full sm:w-auto"
-                />
+                {!data.isFreePlan && (
+                    <PaymentFrequencyCard
+                        type="yearly"
+                        price={data.yearlyPrice}
+                        selected={data.currentFrequency === 'yearly'}
+                        discountLabel={yearlyDiscountPercentage ? `Save ${yearlyDiscountPercentage}%` : undefined}
+                        onClick={() => handleFrequencySelect('yearly')}
+                        className="flex-1 w-full sm:w-auto"
+                    />
+                )}
             </div>
 
             {/* Auto-renew Notice */}

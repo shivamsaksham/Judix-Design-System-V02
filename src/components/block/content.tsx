@@ -87,10 +87,6 @@ export const Content = ({
     onDownloadLogs,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
-    // Hover isn't a real interaction on touch devices — the tooltip either
-    // needs a second tap to dismiss or ends up stuck open covering the
-    // panel behind it, so citation badges skip the tooltip wrapper below
-    // md and just act as plain click targets there.
     const isTouchDevice = useMediaQuery("(max-width: 768px)");
 
     const renderCitationBadge = (
@@ -161,29 +157,11 @@ export const Content = ({
                 }
 
                 if (!citation) {
-                    // If it's a known system prefix like topicSummary, contextHint, metadata, etc, just remove it from text
-                    if (firstWord.includes('topicSummary') || firstWord.includes('contextHint') || firstWord.includes('metadata') || firstWord.includes('chunk')) {
-                        return null;
-                    }
-                    // For unmatched DB IDs, if we have citations, let's aggressively try to match it
-                    // just in case it's a chunk ID and not a document ID
-                    if (!isDigit && citations.length > 0) {
-                        // We failed to find the exact ID, just consume the next available citation
-                        // ONLY if it's a valid type
-                        const nextValidCitation = citations.slice(citationIndex).find(c => VALID_SOURCES.has(c.source));
-                        if (nextValidCitation) {
-                            citation = nextValidCitation;
-                            citationIndex = citations.indexOf(nextValidCitation) + 1;
-                        } else {
-                            return null; // No valid citations left
-                        }
-                    } else {
-                        return null; // Unmatched and no citations left, hide the ugly marker
-                    }
+                    return null;
                 }
 
                 if (!VALID_SOURCES.has(citation.source)) {
-                    return null; // Hide internal system citations silently
+                    return null;
                 }
 
                 let displayNum;
