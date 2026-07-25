@@ -45,7 +45,7 @@ const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
                     alt="Icon"
                     width={22}
                     height={22}
-                    style={{ height: 'auto' }}
+                    style={{ width: 'auto', height: 'auto' }}
                     priority
                 />
             )}
@@ -54,7 +54,7 @@ const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
                 alt="Logo"
                 width={53}
                 height={16}
-                style={{ height: 'auto' }}
+                style={{ width: 'auto', height: 'auto' }}
                 priority
             />
         </div>
@@ -127,13 +127,23 @@ export function NavBar({
     // Sub-renderers for clean structure
     const renderMobileSidebarTrigger = () => (
         !hideMobileSidebarTrigger && (
-            <div className="md:hidden">
+            // shrink-0: without it, this is just another shrinkable flex
+            // child inside the header's "flex-1 overflow-hidden" row —
+            // at narrow widths (e.g. 320px) flexbox squeezes the button
+            // itself instead of leaving all the truncation pressure on
+            // the title text, which is the only element meant to shrink.
+            <div className="md:hidden shrink-0">
                 <button
                     onClick={onMenuClick}
                     className="border-none bg-transparent hover:bg-color-surface-neutral-subtle_bg p-2 rounded-lg flex items-center justify-center transition-colors"
                     aria-label="Toggle Sidebar"
                 >
-                    <Image src="/mobile-sidebar.svg" alt="Menu" width={19} height={13} />
+                    {/* Was 19x13 — visibly smaller/thinner than its sibling
+                        on the right (the "..." menu, rendered at a full
+                        20x20 icon box). Scaled up while keeping the SVG's
+                        native ~22:15 aspect ratio so the hamburger lines
+                        don't stretch/distort. */}
+                    <Image src="/mobile-sidebar.svg" alt="Menu" width={24} height={16} />
                 </button>
             </div>
         )
@@ -149,7 +159,7 @@ export function NavBar({
                 className='border-none p-2 bg-color-surface-neutral-default m-px gap-1 h-fit'
                 iconClassName="w-5 h-5 p-[2px] relative text-color-icon-neutral-secondary"
             >
-                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" style={{ height: 'auto' }}/>
+                <Image src="/ellipsis.svg" alt="Menu" width={20} height={20} aria-label="More options" style={{ width: 'auto', height: 'auto' }}/>
             </Button>
             {showChatMenu && (
                 <div ref={chatMenuRef} className="absolute top-full right-0 mt-2 z-50">

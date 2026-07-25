@@ -18,12 +18,16 @@ export interface ThinkingStep {
     duration?: string;
     completed?: boolean;
     judgments?: JudgmentNudgeTileProps[];
+    /** Client-side epoch ms when this step started — drives the live-ticking timer while incomplete. */
+    startedAt?: number;
 }
 
 export interface AiThinkingProps {
     variant?: AiThinkingVariant;
     label?: string;
     badge?: string;
+    /** When set, renders "{current} of {totalSteps} steps" in the badge slot instead of the raw badge string. */
+    totalSteps?: number;
     description?: string;
     steps?: ThinkingStep[];
     sourcesCount?: number;
@@ -101,12 +105,36 @@ const StepCircle = ({ completed, ongoing }: { completed?: boolean; ongoing?: boo
     </div>
 );
 
+// Ticks once a second while a step is in progress, computed from the
+// client-side timestamp the step started at (backend only reports duration
+// once a phase finishes, so there's nothing to tick from until then).
+const LiveDuration = ({ startedAt }: { startedAt?: number }) => {
+    const [elapsedSeconds, setElapsedSeconds] = useState(() =>
+        startedAt ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000)) : 0
+    );
+
+    React.useEffect(() => {
+        if (!startedAt) return;
+        const tick = () => setElapsedSeconds(Math.max(0, Math.floor((Date.now() - startedAt) / 1000)));
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+    }, [startedAt]);
+
+    return (
+        <span className="p-1 shrink-0 text-style-label-default-regular text-color-text-neutral-tertiary tabular-nums mt-px">
+            {elapsedSeconds}s
+        </span>
+    );
+};
+
 // Main component
 
 export const AiThinking = ({
     variant = 'collapsed',
     label = 'Judix is thinking...',
     badge,
+    totalSteps,
     description,
     steps = [],
     sourcesCount,
@@ -128,6 +156,16 @@ export const AiThinking = ({
     const isStopped = variant === 'stopped';
     const isClarification = variant === 'clarification';
     const isCompleted = variant === 'completed' || isStopped || isClarification;
+
+    const firstIncompleteIndex = steps.findIndex(s => !s.completed);
+    const hasOngoingStep = !isCompleted && firstIncompleteIndex !== -1;
+    const stepCountBadge = totalSteps
+        ? `${Math.min(steps.filter(s => s.completed).length + (hasOngoingStep ? 1 : 0), totalSteps)} of ${totalSteps} steps`
+        : badge;
+    // What the collapsed header's trailing text should read — the step
+    // currently running, or the most recent one if nothing's in flight yet.
+    const currentStepLabel = (hasOngoingStep ? steps[firstIncompleteIndex]?.title : steps[steps.length - 1]?.title);
+    const collapsedStepText = description || currentStepLabel;
 
     const reachedNudgeCount =
         (showProNudge && steps.every(s => s.completed) ? 1 : 0) +
@@ -198,10 +236,10 @@ export const AiThinking = ({
                                 {isClarification ? 'Clarification needed.' : isStopped ? 'Research stopped.' : 'Research complete.'}
                             </p>
                             {!isStopped && !isClarification && sourcesCount !== undefined && (
-                                <p className='p-1 text-color-text-neutral-tertiary italic'>Found {sourcesCount} sources</p>
+                                <p className='hidden md:block p-1 text-color-text-neutral-tertiary italic'>Found {sourcesCount} sources</p>
                             )}
                             {!isStopped && !isClarification && timeTaken && (
-                                <p className='p-1 text-color-text-neutral-tertiary italic'>Took {timeTaken}</p>
+                                <p className='hidden md:block p-1 text-color-text-neutral-tertiary italic'>Took {timeTaken}</p>
                             )}
                         </span>
                     ) : (
@@ -212,22 +250,34 @@ export const AiThinking = ({
                 </>
 
                 {/* Badge / Label  shown when not completed */}
-                {!isCompleted && badge && (
+                {!isCompleted && stepCountBadge && (
                     <Label colorScheme="primary" size="small" className="shrink-0">
-                        {badge}
+                        {stepCountBadge}
                     </Label>
                 )}
 
-                {/* Description  only in collapsed state */}
-                {!isCompleted && !isExpanded && description && (
-                    <span className="p-1 flex-1 min-w-0 mr-[36px] truncate text-style-label-default-regular text-color-text-neutral-secondary">
-                        {description}
+                {/* Description  only in collapsed state  falls back to the
+                    currently-running step's title when no explicit description
+                    was passed. Hidden below the md breakpoint (<768px) — the
+                    header row is too cramped there once the step badge and
+                    expand control are already in place. */}
+                {!isCompleted && !isExpanded && collapsedStepText && (
+                    <span className="hidden md:block p-1 flex-1 min-w-0 mr-[36px] truncate text-style-label-default-regular text-color-text-neutral-secondary">
+                        {collapsedStepText}
                     </span>
                 )}
 
                 {/* Spacer */}
-                {(!description || isExpanded || isCompleted) && (
+                {(!collapsedStepText || isExpanded || isCompleted) && (
                     <div className="flex-1" />
+                )}
+                {/* Below md, the description span above is hidden but still
+                    "present" (collapsedStepText is truthy), so the spacer
+                    above stays suppressed too — this fills that same
+                    flex-1 role only below md, keeping the expand control
+                    pinned to the right edge instead of hugging the badge. */}
+                {!isCompleted && !isExpanded && collapsedStepText && (
+                    <div className="flex-1 md:hidden" />
                 )}
 
                 {/* Expand / collapse toggle */}
@@ -251,7 +301,13 @@ export const AiThinking = ({
                         onClick={(e) => { e.stopPropagation(); handleToggle(); }}
                         className="py-[2px] flex items-center gap-1 text-style-label-default-regular text-color-text-neutral-tertiary hover:text-color-text-neutral-default transition-colors cursor-pointer shrink-0 whitespace-nowrap"
                     >
-                        {isExpanded ? 'Hide reasoning steps' : 'Show reasoning steps'}
+                        {/* Full label from md up; below md there's rarely
+                            enough width left next to "Research complete."
+                            for the full phrase, so it shortens instead of
+                            overflowing past the container's overflow-hidden
+                            and getting visually clipped mid-word. */}
+                        <span className="hidden md:inline">{isExpanded ? 'Hide reasoning steps' : 'Show reasoning steps'}</span>
+                        <span className="md:hidden">{isExpanded ? 'Hide' : 'Show'}</span>
                         <Icon name={isExpanded ? 'arrow-up-a' : 'arrow-down-c'} className="w-4 h-4 shrink-0" />
                     </button>
                 ) : null}
@@ -287,11 +343,13 @@ export const AiThinking = ({
                                         )}
                                     </div>
 
-                                    {step.duration && (
+                                    {isOngoing ? (
+                                        <LiveDuration startedAt={step.startedAt} />
+                                    ) : step.duration ? (
                                         <span className="p-1 shrink-0 text-style-label-default-regular text-color-text-neutral-tertiary tabular-nums mt-px">
                                             {step.duration}
                                         </span>
-                                    )}
+                                    ) : null}
                                 </div>
                                 {step.judgments && step.judgments.length > 0 && (
                                     <div className="flex flex-col gap-2 pl-[32px] mb-4 mt-2 ai-thinking-step" style={{ animationDelay: `${index * 0.15 + 0.05}s` }}>
@@ -306,6 +364,7 @@ export const AiThinking = ({
                                                 isConfirmed={isCompleted}
                                                 onConfirm={() => onJudgmentConfirm?.(step.judgments![0])}
                                                 onReject={() => onJudgmentReject?.()}
+                                                entityLabel={step.judgments[0].entityType === 'act' ? 'act' : 'judgment'}
                                             />
                                         ) : (
                                             <JudgmentSelectionList
@@ -314,6 +373,7 @@ export const AiThinking = ({
                                                 onConfirm={(data) => onJudgmentConfirm?.(data)}
                                                 onReject={() => onJudgmentReject?.()}
                                                 disableManualSearchFallback
+                                                entityLabel={step.judgments[0]?.entityType === 'act' ? 'acts' : 'judgments'}
                                             />
                                         )}
                                     </div>

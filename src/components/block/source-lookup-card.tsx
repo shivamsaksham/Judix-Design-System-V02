@@ -40,24 +40,23 @@ export const SourceLookupCard = React.forwardRef<HTMLDivElement, SourceLookupCar
                 {/* Content */}
                 <div className="relative flex flex-col pt-2 pb-4 px-4 flex-1 min-h-0 overflow-hidden">
                     <div className="relative">
-                        <div className="p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-default">
+                        <div className="p-1 text-style-textblock-secondary-subtext-regular text-color-text-neutral-default line-clamp-5">
                             {content}
                         </div>
-                        {/* Fade out overlay exactly from line 4 to 7 (4 lines * 1.625em line-height) */}
-                        <div className="absolute bottom-0 left-0 right-0 h-[6.5em] bg-gradient-to-t from-color-surface-neutral-default via-color-surface-neutral-default/80 to-transparent pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-color-surface-neutral-default to-transparent pointer-events-none" />
                     </div>
 
                     {/* Footer */}
                     <div className="flex items-center justify-between relative z-10 w-full">
                         <button
                             onClick={onWhyThisClick}
-                            className="p-1 h-5 flex items-center text-style-label-default-regular text-color-text-primary-default hover:text-color-text-primary-hover transition-colors"
+                            className="p-1 h-5 flex items-center text-style-label-default-regular text-color-text-primary-default hover:text-color-text-primary-hover transition-colors cursor-pointer"
                         >
                             Why this ?
                         </button>
                         <button
                             onClick={onViewSourceClick}
-                            className="h-5 flex items-center gap-1 text-style-label-default-regular text-color-text-primary-default hover:text-color-text-primary-hover transition-colors"
+                            className="h-5 flex items-center gap-1 text-style-label-default-regular text-color-text-primary-default hover:text-color-text-primary-hover transition-colors cursor-pointer"
                         >
                             <div className='p-1'>View full source</div>
                             <div className="flex items-center">

@@ -27,6 +27,8 @@ export type JudgementDetailsProps = {
   onShare?: () => void;
   onViewScrCopy?: () => void;
   hideActions?: boolean;
+  /** Hides just the "View SCR copy" label — for content types (e.g. acts) that don't have one, unlike hideActions which also hides mention/bookmark/share. */
+  hideScrCopy?: boolean;
 };
 
 function JudgementDetails({
@@ -47,6 +49,7 @@ function JudgementDetails({
   onShare,
   onViewScrCopy,
   hideActions,
+  hideScrCopy,
 }: JudgementDetailsProps) {
   return (
     <div
@@ -88,7 +91,7 @@ function JudgementDetails({
                 </Label>
               )}
 
-              {!hideActions && (
+              {!hideActions && !hideScrCopy && (
                 <Label
                   colorScheme="neutral"
                   size="medium"
@@ -131,7 +134,7 @@ function JudgementDetails({
 
         <hr className="w-full h-px bg-color-border-neutral-default border-none" />
 
-        <div className="flex items-start gap-2 flex-1 self-stretch overflow-hidden">
+        <div className="flex items-stretch gap-2 flex-1 self-stretch overflow-hidden">
           {/* Frame 6082 */}
           {contentSections && (
             <aside className="hidden md:block w-[240px] shrink-0 overflow-y-auto border-r border-color-border-neutral-default custom-scrollbar">

@@ -6,7 +6,7 @@ export interface JudgmentNudgeTileProps {
     className?: string;
     index?: string | number;
     title: string;
-    citation?: string; 
+    citation?: string;
     court: string;
     year: string;
     bench?: string;
@@ -15,6 +15,8 @@ export interface JudgmentNudgeTileProps {
     selectionState?: 'default' | 'selected' | 'unselected';
     isSelected?: boolean;
     onClick?: () => void;
+    /** Which kind of entity this tile represents — defaults to 'case' for existing callers. */
+    entityType?: 'case' | 'act';
 }
 
 export const JudgmentNudgeTile = ({

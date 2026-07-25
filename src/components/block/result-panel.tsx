@@ -89,14 +89,18 @@ export function ResultPanel({
     }, [judgments, debouncedSearch, selectedCourt, currentTab, selectedCourts]);
 
     const filteredActs = React.useMemo(() => {
-        if (!debouncedSearch) return acts;
+        const categoryFiltered = selectedActCategory === "state-acts"
+            ? acts.filter(a => a.category === "state")
+            : acts.filter(a => a.category !== "state");
+
+        if (!debouncedSearch) return categoryFiltered;
         const lowercaseSearch = debouncedSearch.toLowerCase();
-        return acts.filter(a =>
+        return categoryFiltered.filter(a =>
             a.title.toLowerCase().includes(lowercaseSearch) ||
             (a.description && a.description.toLowerCase().includes(lowercaseSearch)) ||
             (a.section && a.section.toLowerCase().includes(lowercaseSearch))
         );
-    }, [acts, debouncedSearch]);
+    }, [acts, debouncedSearch, selectedActCategory]);
 
     // Build dropdown options based on active tab
     const dropdownOptions: DropdownOption[] = React.useMemo(() => {
@@ -215,6 +219,9 @@ export function ResultPanel({
                             isSelected={activeActId ? act.id === activeActId : false}
                             isHighlighted={highlightedId ? act.id === highlightedId : false}
                             onClick={() => {
+                                onActClick?.(act);
+                            }}
+                            onViewDetails={() => {
                                 onActClick?.(act);
                             }}
                         />

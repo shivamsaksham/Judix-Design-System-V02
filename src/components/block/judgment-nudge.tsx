@@ -20,6 +20,8 @@ export interface JudgmentNudgeProps {
     year?: string;
     bench?: string;
     description: string;
+    /** Singular noun used in the header/button text — defaults to "judgment". */
+    entityLabel?: string;
 }
 
 export const JudgmentNudge = ({
@@ -35,6 +37,7 @@ export const JudgmentNudge = ({
     year,
     bench,
     description,
+    entityLabel = 'judgment',
 }: JudgmentNudgeProps) => {
     const [internalExpanded, setInternalExpanded] = useState(!isConfirmedProp);
     const [internalConfirmed, setInternalConfirmed] = useState(isConfirmedProp);
@@ -75,7 +78,7 @@ export const JudgmentNudge = ({
             >
                 <div className="flex items-center">
                     <span className="p-1 text-style-label-default-regular text-color-text-neutral-secondary">
-                        Judgment identified
+                        {entityLabel.charAt(0).toUpperCase() + entityLabel.slice(1)} identified
                     </span>
                     <span className="p-1 text-style-label-default-regular text-color-text-neutral-secondary">-</span>
                     <span
@@ -130,7 +133,7 @@ export const JudgmentNudge = ({
                     {!isConfirmed && (
                         <div className="flex items-center gap-2 mt-2">
                             <Button size="extraSmall" variant="primary" onClick={handleConfirm}>
-                                Yes, this is the judgment
+                                Yes, this is the {entityLabel}
                             </Button>
                             <Button size="extraSmall" variant="neutral" onClick={onReject}>
                                 Not this

@@ -131,7 +131,7 @@ export const ResponseActions = ({
         <TooltipProvider>
             <div
                 className={cn(
-                    'flex items-center gap-1 p-2',
+                    'flex flex-wrap items-center gap-1 p-2',
                     'bg-color-surface-neutral-default',
                     className
                 )}
@@ -215,7 +215,7 @@ export const ResponseActions = ({
                     aria-label="Share"
                     className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
                 >
-                    Share
+                    <span className="hidden md:inline">Share</span>
                 </Button>
 
                 {/* Download Logs Button */}
@@ -230,7 +230,7 @@ export const ResponseActions = ({
                                 aria-label="Download Logs"
                                 className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
                             >
-                                Logs
+                                <span className="hidden md:inline">Logs</span>
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom">
@@ -249,7 +249,7 @@ export const ResponseActions = ({
                             aria-label="Export"
                             className='border-none bg-color-surface-neutral-default text-style-body-default-regular'
                         >
-                            Export
+                            <span className="hidden md:inline">Export</span>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="p-0 w-auto border-none shadow-none bg-transparent" align="end" sideOffset={8}>

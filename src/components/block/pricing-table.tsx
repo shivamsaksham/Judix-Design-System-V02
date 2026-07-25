@@ -104,11 +104,22 @@ export interface PricingTableProps {
   onSelectPlan?: (planName: string, billingCycle: "monthly" | "yearly") => void;
   backendPlans?: any[]; // Array of plans from the backend
   currentPlan?: string; // Add currentPlan prop
+  currentPlanInterval?: "monthly" | "yearly"; // Billing cycle of the active subscription
   loadingTier?: string | null;
 }
 
-export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loadingTier }: PricingTableProps) {
+export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, currentPlanInterval, loadingTier }: PricingTableProps) {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const hasYearlyPlan = backendPlans.some((p) => p.interval === "yearly");
+  const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === "yearly" && p.discountPercentage)?.discountPercentage;
+
+  // "Most popular" = the single plan (tier + interval precise, so Basic Monthly and
+  // Basic Yearly are never conflated) with the most subscriptions ever, regardless of
+  // subscription status. Falls back to Basic on Monthly only when nobody has ever subscribed.
+  const totalSubscribers = backendPlans.reduce((sum, p) => sum + (p.subscriberCount || 0), 0);
+  const popularPlan = totalSubscribers > 0
+    ? backendPlans.reduce((max: any, p: any) => (p.subscriberCount || 0) > (max?.subscriberCount || 0) ? p : max, null)
+    : null;
 
   // Helper to format bytes to readable string
   const formatBytes = (bytes?: number) => {
@@ -123,10 +134,12 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
     return `${days} days`;
   };
 
-  let mergedPlans = (billingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
-  
+  const effectiveBillingCycle = hasYearlyPlan ? billingCycle : "monthly";
+
+  let mergedPlans = (effectiveBillingCycle === "monthly" ? monthlyPlans : yearlyPlans).map(plan => ({...plan}));
+
   if (backendPlans && backendPlans.length > 0) {
-    const plansForCycle = backendPlans.filter(p => p.interval === billingCycle || p.price === 0);
+    const plansForCycle = backendPlans.filter(p => p.interval === effectiveBillingCycle);
     if (plansForCycle.length > 0) {
       // Deduplicate by name to prevent duplicate keys if the backend sends multiple free plans
       const uniquePlans = plansForCycle.filter((plan, index, self) => 
@@ -136,13 +149,21 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
       mergedPlans = uniquePlans.map(bp => {
           const isFree = bp.price === 0;
           const isPro = bp.name.toLowerCase() === 'pro';
+          // The card headline is always a monthly figure — for yearly plans that's the
+          // effective per-month rate (annual total / 12); the actual amount billed today
+          // shows up as a caption here and as the real total on the checkout page.
+          const isYearly = effectiveBillingCycle === "yearly";
+          const displayPrice = isYearly && !isFree ? Math.round(bp.price / 12) : bp.price;
           return {
               tier: bp.name,
-              description: isFree 
-                  ? "For lawyers just getting started with AI research" 
+              description: isFree
+                  ? "For lawyers just getting started with AI research"
                   : isPro ? "Collaborative research for serious practices." : "Best for individual lawyers and solo practitioners",
-              price: bp.price,
-              isPopular: bp.name.toLowerCase() === 'basic',
+              price: displayPrice,
+              billingNote: isYearly && !isFree ? `Billed INR ${bp.price.toLocaleString('en-IN')} yearly` : undefined,
+              isPopular: popularPlan
+                  ? String(bp._id) === String(popularPlan._id) && bp.interval === popularPlan.interval
+                  : (effectiveBillingCycle === "monthly" && bp.name.toLowerCase() === 'basic'),
               usage: [
                   { label: "AI queries", value: bp.queriesPerMonth?.toString() || "0" },
                   { label: "Number of pages", value: bp.pagesPerMonth?.toString() || "0" },
@@ -176,41 +197,48 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, loa
 
   return (
     <div className="w-full max-w-[1264px] lg:max-w-[1280px] xl:max-w-[1312px] mx-auto flex flex-col items-center">
-      {/* Toggle */}
-      <div className="hidden items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
-        <button
-          className={`px-4 py-2 text-style-secondary-regular-b1 border transition-colors ${billingCycle === "monthly"
-              ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
-              : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
-            }`}
-          onClick={() => setBillingCycle("monthly")}
-        >
-          Monthly
-        </button>
-        <button
-          className={`px-4 py-2 text-style-secondary-regular-b1 transition-colors border ${billingCycle === "yearly"
-              ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
-              : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
-            }`}
-          onClick={() => setBillingCycle("yearly")}
-        >
-          Yearly (save 20%)
-        </button>
-      </div>
+      {/* Toggle — only shown when a yearly plan actually exists in the backend data */}
+      {hasYearlyPlan && (
+        <div className="flex items-center lg:mb-8 mb-6 mt-4 gap-2 overflow-hidden">
+          <button
+            className={`px-4 py-2 text-style-secondary-regular-b1 border transition-colors ${effectiveBillingCycle === "monthly"
+                ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
+                : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
+              }`}
+            onClick={() => setBillingCycle("monthly")}
+          >
+            Monthly
+          </button>
+          <button
+            className={`px-4 py-2 text-style-secondary-regular-b1 transition-colors border ${effectiveBillingCycle === "yearly"
+                ? "bg-color-surface-neutral-default text-color-text-neutral-default border-color-border-neutral-strong button-border-weight-large"
+                : "bg-color-surface-neutral-default text-color-text-neutral-secondary hover:text-color-text-neutral-default border-color-border-neutral-default button-border-weight-default"
+              }`}
+            onClick={() => setBillingCycle("yearly")}
+          >
+            Yearly{yearlyDiscountPercentage ? ` (save ${yearlyDiscountPercentage}%)` : ""}
+          </button>
+        </div>
+      )}
 
-      {/* Pricing Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-10 gap-y-24 mb-9 pt-20 justify-items-center">
+      {/* Pricing Cards Grid — column count tracks how many plans are actually being shown */}
+      <div className={`grid grid-cols-1 ${mergedPlans.length >= 3 ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2"} gap-6 lg:gap-8 xl:gap-10 gap-y-24 mb-9 pt-20 justify-items-center`}>
         {mergedPlans.map((plan) => {
-          const isCurrentPlan = currentPlan?.toLowerCase() === plan.tier.toLowerCase();
+          const isSameTier = currentPlan?.toLowerCase() === plan.tier.toLowerCase();
+          const isFreeTier = Number(plan.price) === 0;
+          const isCurrentPlan = isSameTier && (isFreeTier || !currentPlanInterval || currentPlanInterval === effectiveBillingCycle);
+          // Extending the Free plan isn't a real operation (no billing cycle to renew) and
+          // the backend rejects it outright, so only paid current plans get the Extend action.
+          const isExtendable = isCurrentPlan && !isFreeTier;
           return (
-            <PricingCard 
-              key={plan.tier} 
-              {...plan} 
-              billingText={billingCycle === "yearly" ? "per year" : "per month"}
-              buttonLabel={isCurrentPlan ? "Current Plan" : "Select plan"}
-              buttonDisabled={isCurrentPlan}
+            <PricingCard
+              key={plan.tier}
+              {...plan}
+              billingText="per month"
+              buttonLabel={isExtendable ? "Extend" : isCurrentPlan ? "Current Plan" : "Select plan"}
+              buttonDisabled={isCurrentPlan && !isExtendable}
               isLoading={loadingTier === plan.tier}
-              onSelect={() => !isCurrentPlan && onSelectPlan?.(plan.tier, billingCycle)} 
+              onSelect={() => (isExtendable || !isCurrentPlan) && onSelectPlan?.(plan.tier, effectiveBillingCycle)}
             />
           );
         })}
