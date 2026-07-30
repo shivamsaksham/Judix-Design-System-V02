@@ -143,6 +143,7 @@ export const JudgmentSelectionList = ({
                                 <div key={idx} className={cn("border-b border-color-border-neutral-default last:border-b-0")}>
                                     <JudgmentNudgeTile
                                         {...judgment}
+                                        index={idx + 1}
                                         selectionState={tileState}
                                         onClick={() => handleSelect(idx)}
                                         className="border-0 rounded-none bg-transparent"
