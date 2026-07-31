@@ -1556,7 +1556,7 @@ function SearchEngineInputImpl({
         if (!div) return;
 
         div.textContent = text;
-        setIsCentered(false);
+        setIsCentered(true);
         setInput(text);
         autoResize();
 
