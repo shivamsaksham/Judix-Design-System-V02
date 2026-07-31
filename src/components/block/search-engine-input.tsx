@@ -206,6 +206,7 @@ interface SearchEngineInputProps {
     onOptionClick?: (value: string, currentContent?: string) => boolean | void;
     selectedCourts?: string[];
     onCourtsChange?: (courts: string[]) => void;
+    onCourtsDropdownOpen?: () => void;
     isLoading?: boolean;
     onStop?: () => void;
     isMobile?: boolean;
@@ -265,6 +266,7 @@ function SearchEngineInputImpl({
     onOptionClick,
     selectedCourts: propSelectedCourts,
     onCourtsChange,
+    onCourtsDropdownOpen,
     isLoading = false,
     onStop,
     projectLabel = "Choose project",
@@ -1594,7 +1596,11 @@ function SearchEngineInputImpl({
     useImperativeHandle(ref, () => ({ insertMention, restoreQuery, clearInput }), [insertMention, restoreQuery, clearInput]);
 
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
-        setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));
+        const next = activeDropdown === dropdown ? null : dropdown;
+        setActiveDropdown(next);
+        if (next === "folder" && onCourtsDropdownOpen) {
+            onCourtsDropdownOpen();
+        }
     };
 
     const renderTriggerDropdown = () => {

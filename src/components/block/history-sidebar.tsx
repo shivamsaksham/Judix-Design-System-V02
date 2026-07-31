@@ -103,6 +103,8 @@ export const HistorySidebar = ({
     const [shareChatId, setShareChatId] = useState<string | null>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
     const userNameRef = useRef<HTMLDivElement>(null);
+    const userProfileRef = useRef<HTMLDivElement>(null);
+    const collapsedProfileRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
 
     const isExpanded = controlledIsExpanded !== undefined ? controlledIsExpanded : internalIsExpanded;
@@ -122,7 +124,12 @@ export const HistorySidebar = ({
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 setOpenMenuChatId(null);
             }
-            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+            if (
+                userMenuRef.current && 
+                !userMenuRef.current.contains(event.target as Node) &&
+                !userProfileRef.current?.contains(event.target as Node) &&
+                !collapsedProfileRef.current?.contains(event.target as Node)
+            ) {
                 setIsUserMenuOpen(false);
             }
         };
@@ -289,6 +296,7 @@ export const HistorySidebar = ({
                 {/* User Profile Section */}
                 <div className="py-3 px-2 border-t border-dropdown-color-stroke sidebar-fade-in-um-3">
                     <div
+                        ref={userProfileRef}
                         className="flex items-center justify-between cursor-pointer rounded-lg transition-colors"
                         onClick={(e) => {
                             const containerRect = e.currentTarget.getBoundingClientRect();
@@ -298,7 +306,7 @@ export const HistorySidebar = ({
                             const bottomDistance = userNameRect ? window.innerHeight - userNameRect.bottom : window.innerHeight - containerRect.bottom;
                             setUserMenuPosition({
                                 top: isMobileOrTablet ? window.innerHeight - containerRect.top + 8 : bottomDistance,
-                                left: isMobileOrTablet ? containerRect.left : (userNameRect ? userNameRect.right + 0 : containerRect.left + 8),
+                                left: isMobileOrTablet ? containerRect.left : (userNameRect ? userNameRect.right - 12 : containerRect.left),
                             });
                             setIsUserMenuOpen(!isUserMenuOpen);
                         }}
@@ -345,54 +353,7 @@ export const HistorySidebar = ({
                     </div>
                 )}
 
-                {isUserMenuOpen && (
-                    <div
-                        ref={userMenuRef}
-                        className="fixed z-50"
-                        style={{
-                            bottom: `${userMenuPosition.top}px`,
-                            left: `${userMenuPosition.left}px`,
-                        }}
-                    >
-                        <UserMenu
 
-                            onAccount={() => {
-                                setIsUserMenuOpen(false);
-                                if (onAccount) onAccount();
-                                else console.log('My Account clicked');
-                            }}
-                            onProjects={() => {
-                                setIsUserMenuOpen(false);
-                                onProjects?.();
-                            }}
-                            onSubscriptions={() => {
-                                setIsUserMenuOpen(false);
-                                if (onSubscriptions) onSubscriptions();
-                                else console.log('Subscriptions clicked');
-                            }}
-                            onSettings={() => {
-                                setIsUserMenuOpen(false);
-                                if (onSettings) onSettings();
-                                else console.log('Settings clicked');
-                            }}
-                            onRefer={() => {
-                                setIsUserMenuOpen(false);
-                                if (onRefer) onRefer();
-                                else console.log('Refer and Earn clicked');
-                            }}
-                            onHelp={() => {
-                                setIsUserMenuOpen(false);
-                                if (onHelp) onHelp();
-                                else console.log('Help & Support clicked');
-                            }}
-                            onLogout={() => {
-                                setIsUserMenuOpen(false);
-                                if (onLogout) onLogout();
-                                else console.log('Logout clicked');
-                            }}
-                        />
-                    </div>
-                )}
             </div>
 
             <div className={cn("flex flex-col h-full w-full items-center transition-opacity duration-300", !isExpanded ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0")}>
@@ -475,21 +436,81 @@ export const HistorySidebar = ({
 
                 <div className="flex-1"></div>
 
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <IconButton
-                            className="mx-1 my-3 bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
-                            aria-label="Profile"
-                            variant="neutral"
-                            size="large"
-                            icon="profile"
-                        />
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                        Profile
-                    </TooltipContent>
-                </Tooltip>
+                <div ref={collapsedProfileRef}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <IconButton
+                                onClick={(e) => {
+                                    const containerRect = e.currentTarget.getBoundingClientRect();
+                                    const isMobileOrTablet = window.innerWidth < 1024;
+                                    const bottomDistance = window.innerHeight - containerRect.bottom;
+                                    setUserMenuPosition({
+                                        top: isMobileOrTablet ? window.innerHeight - containerRect.top + 8 : bottomDistance,
+                                        left: isMobileOrTablet ? containerRect.left : containerRect.left + 4,
+                                    });
+                                    setIsUserMenuOpen(!isUserMenuOpen);
+                                }}
+                                className="mx-1 my-3 bg-color-neutral-default hover:bg-option-color-hover transition-colors border-none"
+                                aria-label="Profile"
+                                variant="neutral"
+                                size="large"
+                                icon="profile"
+                            />
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            Profile
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
             </div>
+
+            {isUserMenuOpen && (
+                <div
+                    ref={userMenuRef}
+                    className="fixed z-50"
+                    style={{
+                        bottom: `${userMenuPosition.top}px`,
+                        left: `${userMenuPosition.left}px`,
+                    }}
+                >
+                    <UserMenu
+                        onAccount={() => {
+                            setIsUserMenuOpen(false);
+                            if (onAccount) onAccount();
+                            else console.log('My Account clicked');
+                        }}
+                        onProjects={() => {
+                            setIsUserMenuOpen(false);
+                            onProjects?.();
+                        }}
+                        onSubscriptions={() => {
+                            setIsUserMenuOpen(false);
+                            if (onSubscriptions) onSubscriptions();
+                            else console.log('Subscriptions clicked');
+                        }}
+                        onSettings={() => {
+                            setIsUserMenuOpen(false);
+                            if (onSettings) onSettings();
+                            else console.log('Settings clicked');
+                        }}
+                        onRefer={() => {
+                            setIsUserMenuOpen(false);
+                            if (onRefer) onRefer();
+                            else console.log('Refer and Earn clicked');
+                        }}
+                        onHelp={() => {
+                            setIsUserMenuOpen(false);
+                            if (onHelp) onHelp();
+                            else console.log('Help & Support clicked');
+                        }}
+                        onLogout={() => {
+                            setIsUserMenuOpen(false);
+                            if (onLogout) onLogout();
+                            else console.log('Logout clicked');
+                        }}
+                    />
+                </div>
+            )}
             <Confirmation
                 open={!!deleteConfirmationChatId}
                 onOpenChange={(open) => !open && setDeleteConfirmationChatId(null)}
