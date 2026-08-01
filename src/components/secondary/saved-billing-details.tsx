@@ -88,7 +88,7 @@ export const SavedBillingDetails = ({
                         confirmVariant="destructive"
                         confirmText="Delete"
                         onConfirmClick={() => {
-                            onDelete({ stopPropagation: () => {} } as any);
+                            onDelete({ stopPropagation: () => {} } as React.MouseEvent);
                             setShowDeleteConfirm(false);
                         }}
                         onCancelClick={() => setShowDeleteConfirm(false)}

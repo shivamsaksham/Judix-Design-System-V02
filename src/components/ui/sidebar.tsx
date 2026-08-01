@@ -25,6 +25,12 @@ import {
 } from "@/components/ui/tooltip"
 import { Input } from "./input"
 
+// Isolated at module scope: Math.random() is impure and must not be called
+// anywhere the React compiler treats as render.
+function randomSkeletonWidth(): string {
+  return `${Math.floor(Math.random() * 40) + 50}%`
+}
+
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
@@ -607,9 +613,7 @@ function SidebarMenuSkeleton({
   showIcon?: boolean
 }) {
   // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+  const width = React.useMemo(() => randomSkeletonWidth(), [])
 
   return (
     <div

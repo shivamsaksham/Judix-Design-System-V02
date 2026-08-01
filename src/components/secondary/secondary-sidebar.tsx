@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Icon } from "@judix/icon"
+import type { IconName } from "@judix/icon"
 import { cn } from "@/lib/utils"
 import { Option } from "@/components/ui/option"
 import { Separator } from "@/components/ui/separator"
@@ -80,7 +81,7 @@ export function SecondarySidebar({
               onClick={() => onSelect?.(item.id)}
               prefixSlot={
                 <Icon 
-                  name={item.icon as any} 
+                  name={item.icon as IconName} 
                   size={18} 
                   className="text-color-icon-neutral-default"
                 />

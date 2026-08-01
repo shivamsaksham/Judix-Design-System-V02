@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
+import type { BackendPlan } from './pricing-table';
 import { Button } from '../ui/button';
 import { TextInput } from '../ui/text-input';
 import { Icon } from '@judix/icon';
@@ -39,7 +40,7 @@ export interface OrderSummaryProps {
     onFrequencyChange?: (frequency: 'monthly' | 'yearly') => void;
     className?: string;
     loading?: boolean;
-    backendPlans?: any[];
+    backendPlans?: BackendPlan[];
     currentPlan?: string;
     currentPlanInterval?: 'monthly' | 'yearly';
 }

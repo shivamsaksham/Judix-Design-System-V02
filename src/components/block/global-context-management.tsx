@@ -22,6 +22,12 @@ export interface GlobalContextManagementProps {
     disabled?: boolean;
 }
 
+// Isolated at module scope: Date.now()/Math.random() are impure and must not
+// be called from anywhere the React compiler treats as render.
+function createContextId(): string {
+    return `context-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
+
 export const GlobalContextManagement = ({
     emptyStateText = 'Click to add project-wide global context information like case facts, client discussions etc.',
     initialContextFiles = [],
@@ -76,7 +82,7 @@ export const GlobalContextManagement = ({
             updatedFiles = [
                 ...contextFiles,
                 {
-                    id: `context-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    id: createContextId(),
                     title: title,
                     content: content,
                     lineCount: content.split('\n').length,

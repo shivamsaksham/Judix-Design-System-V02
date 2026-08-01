@@ -28,6 +28,12 @@ import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
+// Isolated at module scope: reading the clock is impure and must not happen
+// anywhere the React compiler treats as render.
+function nowMs(): number {
+    return Date.now();
+}
+
 export interface OptionHelper extends DropdownOption {
     options?: DropdownOption[];
     Searchbar?: "off" | "attached" | "integrated";
@@ -216,7 +222,7 @@ interface SearchEngineInputProps {
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
     artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
-    onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<any>;
+    onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
 }
 
@@ -393,6 +399,9 @@ function SearchEngineInputImpl({
 
     const searchInputRef = useRef<HTMLInputElement>(null);
     const suggestionAnchorRef = useRef<HTMLSpanElement | null>(null);
+    // Caret coordinates for the predictive chip. Held in state rather than on
+    // the anchor node's style, so render never reads from the DOM.
+    const [suggestionPos, setSuggestionPos] = useState<{ left: number; top: number } | null>(null);
     const handleOptionSelectRef = useRef<((option: string) => void) | null>(null);
     const savedRangeRef = useRef<Range | null>(null);
 
@@ -886,10 +895,10 @@ function SearchEngineInputImpl({
                     const r2 = sel2.getRangeAt(0).cloneRange();
                     r2.collapse(true);
                     const rect = r2.getBoundingClientRect();
-                    if (suggestionAnchorRef.current) {
-                        suggestionAnchorRef.current.style.left = `${rect.left + window.scrollX}px`;
-                        suggestionAnchorRef.current.style.top = `${rect.top + window.scrollY}px`;
-                    }
+                    setSuggestionPos({
+                        left: rect.left + window.scrollX,
+                        top: rect.top + window.scrollY,
+                    });
                 }
             } else {
                 setPredictiveMatch(null);
@@ -937,7 +946,7 @@ function SearchEngineInputImpl({
             const options = activeDropdown === "trigger" ? filteredTriggerOptions : quickAddOptions;
 
             if (options.length > 0) {
-                const now = Date.now();
+                const now = nowMs();
                 const isArrowKey = e.key === "ArrowDown" || e.key === "ArrowUp";
 
                 if (isArrowKey && e.repeat && now - lastKeyTime.current < KEY_THROTTLE_MS) {
@@ -1024,7 +1033,7 @@ function SearchEngineInputImpl({
 
                     // Arrow navigation in open trigger dropdown
                     if (activeDropdown === "trigger" && filteredTriggerOptions.length > 0) {
-                        const now = Date.now();
+                        const now = nowMs();
                         const isArrowKey = e.key === "ArrowDown" || e.key === "ArrowUp";
                         if (isArrowKey && e.repeat && now - lastKeyTime.current < KEY_THROTTLE_MS) {
                             e.preventDefault();
@@ -1520,7 +1529,9 @@ function SearchEngineInputImpl({
         if (div) setInput(div.innerText);
     };
 
-    handleOptionSelectRef.current = handleOptionSelect;
+    React.useEffect(() => {
+        handleOptionSelectRef.current = handleOptionSelect;
+    });
 
     const insertMention = useCallback(({ type, id, label }: { type: string; id: string; label: string }) => {
         const div = textareaRef.current;
@@ -1992,12 +2003,8 @@ function SearchEngineInputImpl({
                     <div
                         style={{
                             position: "fixed",
-                            left: suggestionAnchorRef.current
-                                ? parseFloat(suggestionAnchorRef.current.style.left) - window.scrollX
-                                : 0,
-                            top: suggestionAnchorRef.current
-                                ? parseFloat(suggestionAnchorRef.current.style.top) - window.scrollY + 10
-                                : 0,
+                            left: suggestionPos ? suggestionPos.left - window.scrollX : 0,
+                            top: suggestionPos ? suggestionPos.top - window.scrollY + 10 : 0,
                             zIndex: 9999,
                         }}
                         className="animate-dropdown-enter"

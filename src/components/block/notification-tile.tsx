@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Icon } from '@judix/icon';
+import type { IconName } from '@judix/icon';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +55,7 @@ export const NotificationTile = ({
             {/* Notification Icon */}
             <div className="shrink-0 p-1">
                 <Icon
-                    name={iconName as any}
+                    name={iconName as IconName}
                     className="text-color-icon-neutral-default"
                     size={20}
                 />

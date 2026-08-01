@@ -106,12 +106,12 @@ export const showToast = {
     toast.custom((t) => <CustomToast toastId={t.id} type="notice" title={title} message={message} visible={t.visible} />, { duration }),
   info: (message: string, title?: string, duration: number = 4000) =>
     toast.custom((t) => <CustomToast toastId={t.id} type="info" title={title} message={message} visible={t.visible} />, { duration }),
-  promise: <T extends unknown>(
+  promise: <T,>(
     promise: Promise<T>,
     messages: {
       loading: React.ReactElement | string;
       success: string | ((data: T) => string);
-      error: string | ((err: any) => string);
+      error: string | ((err: unknown) => string);
     }
   ) => toast.promise(promise, messages),
 };

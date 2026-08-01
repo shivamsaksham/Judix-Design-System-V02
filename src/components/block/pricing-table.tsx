@@ -4,6 +4,39 @@ import React, { useState } from "react";
 import { PricingCard, PricingCardProps } from "./pricing-card";
 import { Button } from "../ui/button";
 
+/** Feature flags carried on a backend plan. */
+export interface BackendPlanFeature {
+    canSearchSc?: boolean;
+    canSearchHC?: boolean;
+    canCentralActs?: boolean;
+    canStateLegislationActs?: boolean;
+    canInLineCictaion?: boolean;
+    canJudgementSummaries?: boolean;
+    canDownloadJudgementPdf?: boolean;
+    canFullJudgementView?: boolean;
+    researchHistoryRange?: number;
+    exportUsageDataRange?: number;
+    maxCourts?: number;
+}
+
+/** Subset of the backend plan record this component reads. */
+export interface BackendPlan {
+    _id?: string;
+    name: string;
+    price: number;
+    interval?: 'monthly' | 'yearly';
+    subscriberCount?: number;
+    discountPercentage?: number;
+    credits?: number;
+    creditsPerCycle?: number;
+    storage?: number;
+    projects?: number;
+    queriesPerMonth?: number;
+    pagesPerMonth?: number;
+    feature?: BackendPlanFeature;
+    isActive?: boolean;
+}
+
 export const monthlyPlans: PricingCardProps[] = [
   {
     tier: "Lite",
@@ -102,7 +135,7 @@ export const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
 
 export interface PricingTableProps {
   onSelectPlan?: (planName: string, billingCycle: "monthly" | "yearly") => void;
-  backendPlans?: any[]; // Array of plans from the backend
+  backendPlans?: BackendPlan[]; // Array of plans from the backend
   currentPlan?: string; // Add currentPlan prop
   currentPlanInterval?: "monthly" | "yearly"; // Billing cycle of the active subscription
   loadingTier?: string | null;
@@ -118,7 +151,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
   // subscription status. Falls back to Basic on Monthly only when nobody has ever subscribed.
   const totalSubscribers = backendPlans.reduce((sum, p) => sum + (p.subscriberCount || 0), 0);
   const popularPlan = totalSubscribers > 0
-    ? backendPlans.reduce((max: any, p: any) => (p.subscriberCount || 0) > (max?.subscriberCount || 0) ? p : max, null)
+    ? backendPlans.reduce<BackendPlan | null>((max, p) => (p.subscriberCount || 0) > (max?.subscriberCount || 0) ? p : max, null)
     : null;
 
   // Helper to format bytes to readable string

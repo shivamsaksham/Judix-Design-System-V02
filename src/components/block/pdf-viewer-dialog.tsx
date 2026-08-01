@@ -21,48 +21,46 @@ export function PdfViewerDialog({
   title = "SCR Copy",
 }: PdfViewerDialogProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const loading = open && !!fileUrl && !blobUrl && !error;
+
   useEffect(() => {
-    if (open && fileUrl) {
-      setLoading(true);
-      setError(null);
-      // Fetch the PDF using fetch to automatically include cookies
-      fetch(fileUrl, { credentials: "include" }) // Include credentials to pass authentication cookies
-        .then(async (response) => {
-          if (!response.ok) {
-            if (response.status === 403) {
-              const data = await response.json().catch(() => null);
-              throw new Error(data?.error || "Downloading judgment PDFs is not available on your current plan.");
-            }
-            throw new Error("Failed to fetch PDF");
+    if (!open || !fileUrl) return;
+
+    let cancelled = false;
+    let objectUrl: string | null = null;
+
+    // Fetch the PDF using fetch to automatically include cookies
+    fetch(fileUrl, { credentials: "include" }) // Include credentials to pass authentication cookies
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 403) {
+            const data = await response.json().catch(() => null);
+            throw new Error(data?.error || "Downloading judgment PDFs is not available on your current plan.");
           }
-          return response.blob();
-        })
-        .then((blob) => {
-          const url = URL.createObjectURL(blob);
-          setBlobUrl(url);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          const message = err instanceof Error && err.message ? err.message : "Failed to load PDF document.";
-          setError(message);
-          showToast.alert(message);
-          setLoading(false);
-        });
-    } else {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-        setBlobUrl(null);
-      }
-    }
+          throw new Error("Failed to fetch PDF");
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        setBlobUrl(objectUrl);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error(err);
+        const message = err instanceof Error && err.message ? err.message : "Failed to load PDF document.";
+        setError(message);
+        showToast.alert(message);
+      });
 
     return () => {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
+      cancelled = true;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      setBlobUrl(null);
+      setError(null);
     };
   }, [open, fileUrl]);
 

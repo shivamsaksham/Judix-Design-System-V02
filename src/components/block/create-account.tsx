@@ -23,8 +23,8 @@ export function CreateAccount({ countryCode = "+91" }: CreateAccountProps) {
     const validateName = (name: string) => /^[A-Za-z\s]+$/.test(name);
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    const handleChange = (field: string, value: any) => {
-        let newErrors = { ...errors };
+    const handleChange = (field: string, value: string) => {
+        const newErrors = { ...errors };
 
         if (field === "firstName" || field === "lastName") {
             // Allow only alphabets and spaces

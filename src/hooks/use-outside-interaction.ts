@@ -20,11 +20,17 @@ export function useOutsideInteraction(
   active: boolean
 ): void {
   const refsRef = React.useRef(refs);
-  refsRef.current = refs;
   const onOutsideRef = React.useRef(onOutside);
-  onOutsideRef.current = onOutside;
   const activeRef = React.useRef(active);
-  activeRef.current = active;
+
+  // Refreshed in an effect rather than during render — writing to a ref while
+  // rendering is not safe under concurrent rendering. The listener below only
+  // reads these from a user pointer event, which is always after commit.
+  React.useEffect(() => {
+    refsRef.current = refs;
+    onOutsideRef.current = onOutside;
+    activeRef.current = active;
+  });
 
   React.useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {

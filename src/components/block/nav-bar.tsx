@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { useMediaQuery } from '@/hooks/use-mobile-query';
 import Image from 'next/image';
 import type { ContextItem } from './context-window-dropdown';
-import { ChatHistoryMenu } from './chat-history-menu';
+import { ChatHistoryMenu, type ChatHistoryMenuItem } from './chat-history-menu';
 import { Icon } from 'judix-icon';
 import { Button, Skeleton } from '../ui';
 import Link from 'next/link';
@@ -149,7 +149,7 @@ export function NavBar({
         )
     );
 
-    const renderMoreOptions = (items: any[]) => (
+    const renderMoreOptions = (items: ChatHistoryMenuItem[]) => (
         <div className="relative">
             <Button
                 ref={ellipsisButtonRef}

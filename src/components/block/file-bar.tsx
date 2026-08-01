@@ -61,6 +61,9 @@ export function FileBar({
             shift({ padding: 8 }),
         ],
     });
+    // destructured here: reading these off `refs` inside JSX counts as a
+    // ref access during render
+    const { setReference, setFloating } = refs;
 
     const dismiss = useDismiss(context);
     const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
@@ -86,7 +89,7 @@ export function FileBar({
                 </span>
                 <div className="flex items-center gap-1">
                     <Label
-                        ref={refs.setReference}
+                        ref={setReference}
                         {...getReferenceProps()}
                         onClick={() => {
                             if (onCreateNewDirect) {
@@ -147,7 +150,7 @@ export function FileBar({
 
             {isDropdownOpen && createPortal(
                 <div
-                    ref={refs.setFloating}
+                    ref={setFloating}
                     style={floatingStyles}
                     {...getFloatingProps()}
                     className="z-50"

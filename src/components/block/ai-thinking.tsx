@@ -36,7 +36,7 @@ export interface AiThinkingProps {
     showProNudge?: boolean;
     onProNudgeYesClick?: () => void;
     onProNudgeNoClick?: () => void;
-    onJudgmentConfirm?: (data?: any) => void;
+    onJudgmentConfirm?: (data?: JudgmentNudgeTileProps) => void;
     onJudgmentReject?: () => void;
     onToggle?: (expanded: boolean) => void;
     className?: string;
