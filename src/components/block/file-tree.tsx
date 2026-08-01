@@ -131,7 +131,7 @@ export const FileTreeNode = ({
         }
     };
 
-    const longPressTimeout = React.useRef<any>(null);
+    const longPressTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     const isLongPress = React.useRef<boolean>(false);
 
     const startPress = (e: React.MouseEvent | React.TouchEvent) => {

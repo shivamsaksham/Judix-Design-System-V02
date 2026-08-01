@@ -13,10 +13,18 @@ import {
 } from "@/components/ui/popover"
 import { Dropdown } from "@/components/ui/dropdown"
 
+/** Payload emitted by the contact form. All fields optional — the submit
+  * button currently sends an empty object. */
+export interface ContactFormData {
+    topic?: string;
+    subTopic?: string;
+    description?: string;
+}
+
 export interface ContactUsProps {
   userName: string
   userId: string
-  onSubmit?: (data: any) => void
+  onSubmit?: (data: ContactFormData) => void
   className?: string
 }
 
@@ -62,7 +70,7 @@ export function ContactUs({
     // Handle files if needed
   }
 
-  const getSelectedTitle = (options: any[], value: string | null, placeholder: string) => {
+  const getSelectedTitle = (options: Array<{ value: string; title: string }>, value: string | null, placeholder: string) => {
     const option = options.find(o => o.value === value)
     return option ? option.title : placeholder
   }

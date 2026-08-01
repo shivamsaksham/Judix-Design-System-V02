@@ -56,6 +56,9 @@ export const ModelDropdown = ({ modelName, onChange, options = DEFAULT_MODELS }:
         open: isOpen,
         onOpenChange: setIsOpen,
     });
+    // destructured here: reading these off `refs` inside JSX counts as a
+    // ref access during render
+    const { setReference, setFloating } = refs;
 
     const activeModel = options.find((o) => o.title === modelName) || options[0];
 
@@ -85,7 +88,7 @@ export const ModelDropdown = ({ modelName, onChange, options = DEFAULT_MODELS }:
     return (
         <>
             <button
-                ref={refs.setReference}
+                ref={setReference}
                 onClick={() => setIsOpen((prev) => !prev)}
                 className={`text-style-body-default-regular ${cn(
                     "inline-flex items-center p-2 transition-colors rounded",
@@ -101,7 +104,7 @@ export const ModelDropdown = ({ modelName, onChange, options = DEFAULT_MODELS }:
 
             {isOpen && (
                 <div
-                    ref={refs.setFloating}
+                    ref={setFloating}
                     style={floatingStyles}
                     className="z-50 min-w-[315px] bg-dropdown-color-bg rounded-dropdown-border-radius-default border border-dropdown-color-stroke dropdown-border-weight-default"
                 >

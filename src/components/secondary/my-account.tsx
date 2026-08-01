@@ -312,11 +312,48 @@ const STATE_OPTIONS = [
   { value: "maharashtra", title: "Maharashtra" },
 ];
 
-export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: any) => Promise<void> }) {
+/** Fields MyAccount reads off the user record. Several are historical aliases
+  * for the same value, so all are optional. */
+export interface AccountProfile {
+  role?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  phone?: string;
+  mobileNumber?: string;
+  mobile?: string;
+  email?: string;
+  gender?: string;
+  state?: string;
+  address?: string | { street?: string; city?: string; state?: string; zipCode?: string };
+  addressString?: string;
+  pinCode?: string;
+  barRegNumber?: string;
+  barRegYear?: string;
+  practiceForm?: string;
+  currentCourt?: string;
+  practiceArea?: string;
+  collegeName?: string;
+  collegeEmail?: string;
+  graduatingYear?: string;
+  collegePinCode?: string;
+  collegeAddress?: string;
+  idCardPhotoUrl?: string;
+  registrationIdUrl?: string;
+  createdAt?: string | Date;
+}
+
+export type AccountFormValues = FormData & { role: Role };
+
+function toRole(value: string | undefined): Role {
+  return value === "student" || value === "professional" ? value : "professional";
+}
+
+export function MyAccount({ profile, onSave }: { profile?: AccountProfile | null, onSave?: (data: AccountFormValues) => Promise<void> }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [role, setRole] = useState<Role>(profile?.role || "professional");
-  const [savedRole, setSavedRole] = useState<Role>(profile?.role || "professional");
+  const [role, setRole] = useState<Role>(toRole(profile?.role));
+  const [savedRole, setSavedRole] = useState<Role>(toRole(profile?.role));
 
   const [formData, setFormData] = useState<FormData>({
     firstName: profile?.firstName || "",
@@ -325,7 +362,7 @@ export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: 
     email: profile?.email || "",
     gender: profile?.gender || "",
     state: profile?.state || "",
-    address: profile?.address || "",
+    address: (typeof profile?.address === "string" ? profile.address : profile?.addressString) || "",
     pinCode: profile?.pinCode || "",
     barRegNumber: profile?.barRegNumber || "",
     barRegYear: profile?.barRegYear || "",
@@ -351,7 +388,7 @@ export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: 
         email: profile.email || "",
         gender: profile.gender || "",
         state: profile.state || "",
-        address: profile.address || "",
+        address: (typeof profile.address === "string" ? profile.address : profile.addressString) || "",
         pinCode: profile.pinCode || "",
         barRegNumber: profile.barRegNumber || "",
         barRegYear: profile.barRegYear || "",
@@ -368,8 +405,8 @@ export function MyAccount({ profile, onSave }: { profile?: any, onSave?: (data: 
       };
       setFormData(newFormData);
       setSavedData(newFormData);
-      setRole(profile.role || "professional");
-      setSavedRole(profile.role || "professional");
+      setRole(toRole(profile.role));
+      setSavedRole(toRole(profile.role));
     }
   }, [profile]);
 

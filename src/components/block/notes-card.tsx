@@ -370,25 +370,21 @@ export function NotesCard({
 
     const activeFileNode = React.useMemo(() => {
         if (!activeFileId) return null;
-        let foundNode: FileTreeNodeType | null = null;
-        const findNode = (nodes: FileTreeNodeType[]) => {
+        const findNode = (nodes: FileTreeNodeType[]): FileTreeNodeType | null => {
             for (const node of nodes) {
-                if (node.id === activeFileId) {
-                    foundNode = node;
-                    return;
-                }
+                if (node.id === activeFileId) return node;
                 if (node.type === 'folder' && node.children) {
-                    findNode(node.children);
+                    const found = findNode(node.children);
+                    if (found) return found;
                 }
             }
+            return null;
         };
-        findNode(fileTreeData);
-        return foundNode;
+        return findNode(fileTreeData);
     }, [activeFileId, fileTreeData]);
 
     const isNoteActive = React.useMemo(() => {
-        const node = activeFileNode as any;
-        return node?.type === 'file' && node?.fileType === 'note';
+        return activeFileNode?.type === 'file' && activeFileNode?.fileType === 'note';
     }, [activeFileNode]);
 
     const handleExpandToggle = () => {

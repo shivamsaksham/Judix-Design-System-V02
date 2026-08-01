@@ -6,6 +6,7 @@ import { IconButton, Popover, PopoverContent, PopoverTrigger } from '@/component
 import { Label } from '@/components/ui/label';
 import { ChatHistoryMenu } from './chat-history-menu';
 import { Icon } from '@judix/icon';
+import type { IconName } from '@judix/icon';
 
 export interface BreadcrumbItem {
     id: string;
@@ -156,7 +157,7 @@ export default function Breadcrumb({
                                             label: opt.title || '',
                                             icon: opt.iconName ? (
                                                 <Icon 
-                                                    name={opt.iconName as any} 
+                                                    name={opt.iconName as IconName} 
                                                     className={opt.iconName === 'folder-a' ? 'text-color-icon-neutral-default' : ''} 
                                                 />
                                             ) : undefined,
@@ -209,7 +210,7 @@ export default function Breadcrumb({
                                                 label: opt.title || '',
                                                 icon: opt.iconName ? (
                                                     <Icon 
-                                                        name={opt.iconName as any} 
+                                                        name={opt.iconName as IconName} 
                                                         className={opt.iconName === 'folder-a' ? 'text-color-icon-neutral-default' : ''} 
                                                     />
                                                 ) : undefined,
