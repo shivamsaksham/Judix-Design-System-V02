@@ -16,9 +16,11 @@ export interface RichTextEditorProps {
     className?: string;
     placeholder?: string;
     onEditorReady?: (editor: Editor) => void;
+    /** When true, img elements inside the editor are hidden (useful for compact/minimised views) */
+    hideImages?: boolean;
 }
 
-export function TextEditor({ content = "", onChange, className, placeholder, onEditorReady }: RichTextEditorProps) {
+export function TextEditor({ content = "", onChange, className, placeholder, onEditorReady, hideImages = false }: RichTextEditorProps) {
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [
@@ -35,7 +37,10 @@ export function TextEditor({ content = "", onChange, className, placeholder, onE
                 autolink: true,
                 defaultProtocol: 'https',
             }),
-            Image,
+            Image.configure({
+                allowBase64: true,
+                HTMLAttributes: {},
+            }),
         ],
         content: content,
         editorProps: {
@@ -58,7 +63,7 @@ export function TextEditor({ content = "", onChange, className, placeholder, onE
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
             if (editor.getText() === "" && content === "") return;
-            editor.commands.setContent(content);
+            editor.commands.setContent(content, { emitUpdate: false });
         }
     }, [content, editor]);
 
@@ -102,7 +107,9 @@ export function TextEditor({ content = "", onChange, className, placeholder, onE
                 "[&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mb-2",
                 "[&_h4]:text-xl [&_h4]:font-bold [&_h4]:mb-2",
                 "[&_h5]:text-lg [&_h5]:font-bold [&_h5]:mb-1",
-                "[&_img]:max-w-full [&_img]:rounded-md [&_img]:my-2"
+                hideImages
+                    ? "[&_img]:hidden"
+                    : "[&_img]:max-w-full [&_img]:rounded-md [&_img]:my-2"
             )}
         />
     );

@@ -29,6 +29,16 @@ import { useDebounceCallback } from "../../hooks/use-debounce";
 
 const DEFAULT_FILE_TREE: FileTreeNodeType[] = [];
 
+export const DEFAULT_MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+export const DEFAULT_MAX_IMAGES_PER_NOTE = 3;
+export const DEFAULT_ALLOWED_IMAGE_TYPES = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+] as const;
+
+
 
 
 function toggleNodeRecursive(nodes: FileTreeNodeType[], targetId: string): FileTreeNodeType[] {
@@ -61,7 +71,7 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     onAddFile?: (projectId: string, noteName: string) => void;
     onEditFile?: () => void;
     onDeleteFile?: () => void;
-    onImageUpload?: (file: File, editor: Editor | null) => void;
+    onImageUpload?: (file: File, editor: Editor | null, noteId?: string | null) => void;
     fileTree?: FileTreeNodeType[];
     onFileSelect?: (node: FileTreeNodeType) => void;
     activeFileId?: string | null;
@@ -69,6 +79,9 @@ export interface NotesCardProps extends React.HTMLAttributes<HTMLDivElement> {
     variant?: 'floating' | 'embedded' | 'drawer';
     showSidebar?: boolean;
     onFolderToggle?: (node: FileTreeNodeType) => void;
+    maxImageSizeBytes?: number;
+    maxImagesPerNote?: number;
+    allowedImageTypes?: readonly string[];
 }
 
 export function NotesCard({
@@ -98,6 +111,9 @@ export function NotesCard({
     variant = 'floating',
     showSidebar = true,
     onFolderToggle,
+    maxImageSizeBytes = DEFAULT_MAX_IMAGE_SIZE_BYTES,
+    maxImagesPerNote = DEFAULT_MAX_IMAGES_PER_NOTE,
+    allowedImageTypes = DEFAULT_ALLOWED_IMAGE_TYPES,
 }: NotesCardProps) {
     const isEmbedded = variant === 'embedded';
     const isDrawer = variant === 'drawer';
@@ -116,17 +132,65 @@ export function NotesCard({
 
     const [activeFileId, setActiveFileId] = React.useState<string | undefined>(propActiveFileId || undefined);
     const [editor, setEditor] = React.useState<Editor | null>(null);
+    const [floatingEditor, setFloatingEditor] = React.useState<Editor | null>(null);
+    const [modalEditor, setModalEditor] = React.useState<Editor | null>(null);
     const [noteContent, setNoteContent] = React.useState(propContent || "");
     
+    const isSavedRef = React.useRef(false);
+    const triggerSave = React.useCallback((contentToSave: string) => {
+        isSavedRef.current = true;
+        onSave?.(contentToSave);
+    }, [onSave]);
+
     const debouncedSave = useDebounceCallback((newContent: string) => {
-        onSave?.(newContent);
-    }, 1000);
+        triggerSave(newContent);
+    }, 1500);
+
+    const onSaveRef = React.useRef(onSave);
+    React.useEffect(() => {
+        onSaveRef.current = onSave;
+    }, [onSave]);
+
+    const noteContentRef = React.useRef(noteContent);
+    React.useEffect(() => {
+        noteContentRef.current = noteContent;
+    }, [noteContent]);
+
+    React.useEffect(() => {
+        return () => {
+            if (!isSavedRef.current && noteContentRef.current) {
+                const rawText = noteContentRef.current
+                    .replace(/<(p|div|h[1-6]|li|br)[^>]*>/gi, '\n')
+                    .replace(/<[^>]+>/g, '')
+                    .trim();
+                if (rawText) {
+                    onSaveRef.current?.(noteContentRef.current);
+                }
+            }
+        };
+    }, []);
+
+    const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
+
+    const isExistingNoteFile = React.useCallback((fileId: string | null | undefined): boolean => {
+        if (!fileId || fileId === "temp-new-note") return false;
+        const checkNodes = (nodes: FileTreeNodeType[]): boolean => {
+            for (const node of nodes) {
+                if (node.id === fileId && node.type !== 'folder') return true;
+                if (node.type === 'folder' && node.children && checkNodes(node.children)) return true;
+            }
+            return false;
+        };
+        return checkNodes(fileTreeData) || checkNodes(fileTree);
+    }, [fileTreeData, fileTree]);
 
     const handleContentChange = (newContent: string) => {
+        isSavedRef.current = false;
         setNoteContent(newContent);
-        debouncedSave(newContent);
+        if (isExistingNoteFile(activeFileId)) {
+            debouncedSave(newContent);
+        }
     };
-    const [fileTreeData, setFileTreeData] = React.useState<FileTreeNodeType[]>(fileTree);
     const [expandedFolderIds, setExpandedFolderIds] = React.useState<Set<string>>(() => {
         const initial = new Set<string>();
         const findOpen = (nodes: FileTreeNodeType[]) => {
@@ -167,16 +231,18 @@ export function NotesCard({
     // Controlled prop syncs are not needed since we derive isEnlargeOpen on the fly.
 
     const getProjectFolderOfActiveFile = React.useCallback((fileId: string | null | undefined): string | null => {
-        if (!fileId) return null;
-        for (const root of fileTreeData) {
-            if (root.id === fileId) {
-                return root.id;
-            }
-            if (root.type === "folder" && root.children && root.children.some((child: FileTreeNodeType) => child.id === fileId)) {
-                return root.id;
+        if (fileId) {
+            for (const root of fileTreeData) {
+                if (root.id === fileId) {
+                    return root.id;
+                }
+                if (root.type === "folder" && root.children && root.children.some((child: FileTreeNodeType) => child.id === fileId)) {
+                    return root.id;
+                }
             }
         }
-        return null;
+        const openFolder = fileTreeData.find(root => root.type === "folder" && root.isOpen);
+        return openFolder ? openFolder.id : (fileTreeData.length > 0 ? fileTreeData[0].id : null);
     }, [fileTreeData]);
 
     const handleAddNoteClick = () => {
@@ -311,11 +377,16 @@ export function NotesCard({
         }
     }, [propActiveFileId]);
 
+    const lastLoadedFileIdRef = React.useRef<string | null | undefined>(undefined);
+
     React.useEffect(() => {
-        if (propContent !== undefined) {
-            setNoteContent(propContent);
-            if (editor && editor.getHTML() !== propContent) {
-                editor.commands.setContent(propContent);
+        if (propActiveFileId !== lastLoadedFileIdRef.current) {
+            lastLoadedFileIdRef.current = propActiveFileId;
+            if (propContent !== undefined) {
+                setNoteContent(propContent);
+                if (editor && editor.getHTML() !== propContent) {
+                    editor.commands.setContent(propContent, { emitUpdate: false });
+                }
             }
         }
     }, [propContent, editor, propActiveFileId]);
@@ -475,11 +546,56 @@ export function NotesCard({
     };
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const floatingFileInputRef = React.useRef<HTMLInputElement>(null);
+
+    // Returns the currently active editor: prefer modal editor when enlarged is open, otherwise floating
+    const getActiveEditor = React.useCallback((): Editor | null => {
+        if (isEnlargeOpen && modalEditor) return modalEditor;
+        if (floatingEditor) return floatingEditor;
+        return editor;
+    }, [isEnlargeOpen, modalEditor, floatingEditor, editor]);
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file && onImageUpload && editor) {
-            onImageUpload(file, editor);
+        const activeEditor = getActiveEditor();
+        if (file && activeEditor) {
+            // Validate image type
+            if (!allowedImageTypes.includes(file.type)) {
+                showToast.alert("Unsupported file type. Allowed: JPEG, PNG, GIF, WebP");
+                if (event.target) event.target.value = '';
+                return;
+            }
+
+            // Validate image size
+            if (file.size > maxImageSizeBytes) {
+                const maxMb = Math.round(maxImageSizeBytes / (1024 * 1024));
+                showToast.alert(`Image too large. Maximum size is ${maxMb} MB.`);
+                if (event.target) event.target.value = '';
+                return;
+            }
+
+            // Validate image count
+            const currentHtml = activeEditor.getHTML();
+            const imgCount = (currentHtml.match(/<img /g) || []).length;
+            if (imgCount >= maxImagesPerNote) {
+                showToast.alert(`Maximum ${maxImagesPerNote} images per note allowed.`);
+                if (event.target) event.target.value = '';
+                return;
+            }
+
+            if (onImageUpload) {
+                onImageUpload(file, activeEditor, propActiveFileId || null);
+            } else {
+                // Fallback: embed as base64 data URL directly
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const result = e.target?.result as string;
+                    if (result) {
+                        activeEditor.chain().focus().setImage({ src: result, alt: file.name, title: file.name }).run();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
         }
         if (event.target) {
             event.target.value = '';
@@ -489,6 +605,39 @@ export function NotesCard({
     const handleShare = () => {
         onShare?.(editor, title);
     };
+
+    // Extract image info (src + name) from HTML content for compact preview chips
+    const extractImagesFromHtml = React.useCallback((html: string): Array<{ src: string; name: string }> => {
+        if (typeof window === 'undefined') return [];
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const imgs = Array.from(doc.querySelectorAll('img'));
+            return imgs.map((img, i) => ({
+                src: img.src || img.getAttribute('src') || '',
+                name: img.title || img.alt || `Image ${i + 1}`,
+            }));
+        } catch {
+            return [];
+        }
+    }, []);
+
+    const compactImages = React.useMemo(() => extractImagesFromHtml(noteContent), [noteContent, extractImagesFromHtml]);
+
+    const ImageChip = ({ name, src }: { name: string; src: string }) => (
+        <div
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-color-surface-neutral-subtle_bg border border-color-border-neutral-default text-color-text-neutral-default max-w-[160px] cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
+            title={src ? 'Click to preview' : name}
+            onClick={() => {
+                if (src) {
+                    window.open(src, '_blank');
+                }
+            }}
+        >
+            <Icon name="image" className="w-3 h-3 shrink-0 text-color-text-neutral-secondary" />
+            <span className="text-xs truncate">{name}</span>
+        </div>
+    );
 
     const enlargedToolbar = (
         <div className={cn(
@@ -651,6 +800,7 @@ export function NotesCard({
                     <TooltipContent>Insert Link</TooltipContent>
                 </Tooltip>
 
+                {/* Image upload feature commented out per user request
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <IconButton
@@ -658,7 +808,13 @@ export function NotesCard({
                             size="medium"
                             variant="neutral"
                             boundary="none"
-                            onClick={() => fileInputRef.current?.click()}
+                            onClick={() => {
+                                if (isEnlargeOpen) {
+                                    fileInputRef.current?.click();
+                                } else {
+                                    floatingFileInputRef.current?.click();
+                                }
+                            }}
                         />
                     </TooltipTrigger>
                     <TooltipContent>Upload Image</TooltipContent>
@@ -670,6 +826,14 @@ export function NotesCard({
                     accept="image/*"
                     onChange={handleImageUpload}
                 />
+                <input
+                    type="file"
+                    ref={floatingFileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                />
+                */}
             </div>
 
             <Separator orientation="vertical" className="h-6! bg-color-border-neutral-default" />
@@ -786,7 +950,7 @@ export function NotesCard({
                                                 <div className="flex items-center justify-between">
                                                     <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                     <div className="flex items-center gap-0.5">
-                                                        <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={!activeFileId || editingId === "temp-new-note"} />
+                                                        <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={editingId === "temp-new-note"} />
                                                         <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={activeNodeType !== 'file'} />
                                                         <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={() => setIsDeleteDialogOpen(true)} disabled={activeNodeType !== 'file'} />
                                                     </div>
@@ -824,7 +988,7 @@ export function NotesCard({
                                             <TextEditor
                                                 className="w-full h-full text-color-text-neutral-default"
                                                 placeholder="Type your notes here"
-                                                onEditorReady={setEditor}
+                                                onEditorReady={(ed) => { setEditor(ed); setModalEditor(ed); }}
                                                 content={noteContent}
                                                 onChange={handleContentChange}
                                             />
@@ -838,7 +1002,12 @@ export function NotesCard({
                                                 setEnlargeState(false);
                                                 setIsExpanded(false);
                                             }} size="extraSmall">Cancel</Button>
-                                            <Button variant="primary" onClick={() => { onSave?.(noteContent); showToast.success("Notes saved successfully", undefined, 1000); }} size="extraSmall">Save</Button>
+                                            <Button variant="primary" onClick={() => {
+                                                triggerSave(noteContent);
+                                                if (isExistingNoteFile(activeFileId)) {
+                                                    showToast.success("Notes saved successfully", undefined, 1000);
+                                                }
+                                            }} size="extraSmall">Save</Button>
                                         </div>
                                     </div>
                                 </div>
@@ -912,7 +1081,7 @@ export function NotesCard({
                                             <div className="flex items-center justify-between">
                                                 <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
                                                 <div className="flex items-center gap-0.5">
-                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={!activeFileId || editingId === "temp-new-note"} />
+                                                    <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={editingId === "temp-new-note"} />
                                                     <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={activeNodeType !== 'file'} />
                                                     <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={() => setIsDeleteDialogOpen(true)} disabled={activeNodeType !== 'file'} />
                                                 </div>
@@ -954,7 +1123,7 @@ export function NotesCard({
                                         <TextEditor
                                             className="w-full h-full text-color-text-neutral-default"
                                             placeholder="Type your notes here"
-                                            onEditorReady={setEditor}
+                                            onEditorReady={(ed) => { setEditor(ed); setFloatingEditor(ed); }}
                                             content={noteContent}
                                             onChange={handleContentChange}
                                         />
@@ -972,7 +1141,12 @@ export function NotesCard({
                                                 setIsExpanded(false);
                                             }
                                         }} size="extraSmall">Cancel</Button>
-                                        <Button variant="primary" onClick={() => { onSave?.(noteContent); showToast.success("Notes saved successfully", undefined, 1000); }} size="extraSmall">Save</Button>
+                                        <Button variant="primary" onClick={() => {
+                                            triggerSave(noteContent);
+                                            if (isExistingNoteFile(activeFileId)) {
+                                                showToast.success("Notes saved successfully", undefined, 1000);
+                                            }
+                                        }} size="extraSmall">Save</Button>
                                     </div>
                                 </div>
                             </div>
@@ -1044,10 +1218,19 @@ export function NotesCard({
                                             <TextEditor
                                                 className="w-full h-full"
                                                 placeholder="Type your notes here"
-                                                onEditorReady={setEditor}
+                                                onEditorReady={(ed) => { setEditor(ed); setFloatingEditor(ed); }}
                                                 content={noteContent}
                                                 onChange={handleContentChange}
+                                                hideImages={!isExpanded}
                                             />
+                                        )}
+                                        {/* Show image chips in minimised state so full images are not visible */}
+                                        {!isExpanded && !children && compactImages.length > 0 && (
+                                            <div className="flex flex-wrap gap-1.5 px-4 py-2">
+                                                {compactImages.map((img, i) => (
+                                                    <ImageChip key={i} name={img.name} src={img.src} />
+                                                ))}
+                                            </div>
                                         )}
                                     </CardContent>
                                 </div>
