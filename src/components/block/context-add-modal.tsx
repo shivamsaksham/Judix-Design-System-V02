@@ -106,8 +106,8 @@ export default function AddToContext({
         >
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
-                <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label">
-                    Add to context
+                <h2 className="p-1 textinput-font-label text-color-textinput-color-text-label truncate">
+                    {title.trim() || 'Add to context'}
                 </h2>
                 <button onClick={onClose} className="cursor-pointer text-color-textinput-color-text-label hover:opacity-80 transition-opacity">
                     <Icon name="cross" className="w-4 h-4" />
