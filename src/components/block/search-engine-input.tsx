@@ -27,6 +27,7 @@ import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { useMediaQuery } from "@/hooks/use-mobile-query";
 
 // Isolated at module scope: reading the clock is impure and must not happen
 // anywhere the React compiler treats as render.
@@ -285,6 +286,7 @@ function SearchEngineInputImpl({
     onAddText,
 }: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
+    const isTouchDevice = useMediaQuery("(max-width: 768px)");
 
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
@@ -1571,6 +1573,12 @@ function SearchEngineInputImpl({
         setInput(text);
         autoResize();
 
+        // On mobile, focusing here pops the on-screen keyboard right as the
+        // error toast appears, covering/upstaging it before the user can read
+        // why the query failed. Restoring the text is enough; only grab focus
+        // (and place the caret) where there's no virtual keyboard to fight.
+        if (isTouchDevice) return;
+
         div.focus();
         const range = document.createRange();
         range.selectNodeContents(div);
@@ -1578,7 +1586,7 @@ function SearchEngineInputImpl({
         const sel = window.getSelection();
         sel?.removeAllRanges();
         sel?.addRange(range);
-    }, [autoResize]);
+    }, [autoResize, isTouchDevice]);
 
     // Wipes the box back to empty, same steps handleSubmit already uses to
     // clear after a successful send — needed on New Chat (etc.) since this
