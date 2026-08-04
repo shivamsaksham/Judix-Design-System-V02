@@ -27,6 +27,7 @@ import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { useMediaQuery } from "@/hooks/use-mobile-query";
 
 // Isolated at module scope: reading the clock is impure and must not happen
 // anywhere the React compiler treats as render.
@@ -222,6 +223,7 @@ interface SearchEngineInputProps {
     projects?: ProjectChoiceItem[];
     showProjectSelector?: boolean;
     artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
+    onRemoveArtifact?: (id: string) => void;
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
 }
@@ -281,10 +283,12 @@ function SearchEngineInputImpl({
     projects = [],
     showProjectSelector = true,
     artifacts = [],
+    onRemoveArtifact,
     onUpload,
     onAddText,
 }: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
+    const isTouchDevice = useMediaQuery("(max-width: 768px)");
 
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
@@ -1571,6 +1575,12 @@ function SearchEngineInputImpl({
         setInput(text);
         autoResize();
 
+        // On mobile, focusing here pops the on-screen keyboard right as the
+        // error toast appears, covering/upstaging it before the user can read
+        // why the query failed. Restoring the text is enough; only grab focus
+        // (and place the caret) where there's no virtual keyboard to fight.
+        if (isTouchDevice) return;
+
         div.focus();
         const range = document.createRange();
         range.selectNodeContents(div);
@@ -1578,7 +1588,7 @@ function SearchEngineInputImpl({
         const sel = window.getSelection();
         sel?.removeAllRanges();
         sel?.addRange(range);
-    }, [autoResize]);
+    }, [autoResize, isTouchDevice]);
 
     // Wipes the box back to empty, same steps handleSubmit already uses to
     // clear after a successful send — needed on New Chat (etc.) since this
@@ -1798,6 +1808,48 @@ function SearchEngineInputImpl({
                 )}
 
                 <div className="relative w-full z-10 border border-color-border-neutral-default rounded-2xl bg-color-surface-neutral-default p-4 flex flex-col gap-3">
+                    {/* Added sources — one removable chip per artifact (uploaded file or added text) */}
+                    {artifacts.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                            {artifacts.map((artifact) => {
+                                // Only text artifacts have an editor to reopen — a session
+                                // holds at most one, and this modal is that one surface
+                                // (see saveTextContext in research-service.ts). File chips
+                                // have no equivalent view here, so they're display-only.
+                                const isEditable = artifact.type === "text";
+                                return (
+                                    <span
+                                        key={artifact.id}
+                                        onClick={isEditable ? () => setIsContextDialogOpen(true) : undefined}
+                                        className={cn(
+                                            "inline-flex items-center gap-1.5 max-w-[220px] px-2.5 py-1 rounded-md text-style-body-sm-medium bg-color-surface-neutral-subtle_bg border border-color-border-neutral-default text-color-text-primary-default",
+                                            isEditable && "cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
+                                        )}
+                                    >
+                                        <Icon
+                                            name={artifact.type === "file" ? "document-text-a" : "textalign-left"}
+                                            className="w-3.5 h-3.5 shrink-0 text-color-icon-neutral-secondary"
+                                        />
+                                        <span className="truncate">{artifact.title}</span>
+                                        {onRemoveArtifact && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onRemoveArtifact(artifact.id);
+                                                }}
+                                                className="shrink-0 text-color-icon-neutral-tertiary hover:text-color-icon-neutral-default transition-colors"
+                                                aria-label={`Remove ${artifact.title}`}
+                                            >
+                                                <Icon name="cross" className="w-3 h-3" />
+                                            </button>
+                                        )}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    )}
+
                     {/* Editable text area */}
                     <div
                         contentEditable={true}
@@ -1822,7 +1874,7 @@ function SearchEngineInputImpl({
                         <div className="flex items-center gap-2">
                             <IconButton
                                 onClick={() => {
-                                    if (window.innerWidth < 640) {
+                                    if (isTouchDevice) {
                                         setIsContextDialogOpen(true);
                                     } else {
                                         toggleDropdown("add");
