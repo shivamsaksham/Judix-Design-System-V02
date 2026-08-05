@@ -231,7 +231,8 @@ export const Content = ({
     }, [markdown, query, animate, citations]);
 
     return (
-        <div className={cn('flex flex-col w-full mx-auto gap-4', className)}>
+        <div className={cn('flex flex-col w-full mx-auto gap-0', className)}>
+            <div className="flex flex-col gap-4">
             {/* User Query Section */}
             {!hideQuery && (
                 <UserQuery
@@ -273,20 +274,20 @@ export const Content = ({
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
-                        p: ({ children }) => <p className="mb-6">{children}</p>,
-                        ul: ({ children }) => <ul className="list-disc ml-6 mb-6">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal ml-6 mb-6 space-y-6">{children}</ol>,
+                        p: ({ children }) => <p className="mb-3">{children}</p>,
+                        ul: ({ children }) => <ul className="list-disc ml-6 mb-3">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal ml-6 mb-3 space-y-6">{children}</ol>,
                         li: ({ children }) => <li>{children}</li>,
-                        h1: ({ children }) => <h1 className="text-style-heading-h1 text-color-text-neutral-default mb-6">{children}</h1>,
-                        h2: ({ children }) => <h2 className="text-style-heading-h2 text-color-text-neutral-default mb-6">{children}</h2>,
-                        h3: ({ children }) => <h3 className="text-style-heading-h3 text-color-text-neutral-default mb-6">{children}</h3>,
-                        h4: ({ children }) => <h4 className="text-style-heading-h4 text-color-text-neutral-default mb-6">{children}</h4>,
-                        blockquote: ({ children }) => <blockquote className="border-l-4 border-color-border-neutral-default pl-4 mb-6 italic">{children}</blockquote>,
+                        h1: ({ children }) => <h1 className="text-style-heading-h1 text-color-text-neutral-default mb-3">{children}</h1>,
+                        h2: ({ children }) => <h2 className="text-style-heading-h2 text-color-text-neutral-default mb-3">{children}</h2>,
+                        h3: ({ children }) => <h3 className="text-style-heading-h3 text-color-text-neutral-default mb-3">{children}</h3>,
+                        h4: ({ children }) => <h4 className="text-style-heading-h4 text-color-text-neutral-default mb-3">{children}</h4>,
+                        blockquote: ({ children }) => <blockquote className="border-l-4 border-color-border-neutral-default pl-4 mb-3 italic">{children}</blockquote>,
                         strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                         em: ({ children }) => <em className="italic">{children}</em>,
                         code: ({ children }) => <code className="bg-color-surface-neutral-subtle px-1 py-0.5 rounded">{children}</code>,
-                        pre: ({ children }) => <pre className="bg-color-surface-neutral-subtle p-4 rounded-lg mb-6 overflow-x-auto">{children}</pre>,
-                        hr: () => <hr className="border-color-border-neutral-default mb-6" />,
+                        pre: ({ children }) => <pre className="bg-color-surface-neutral-subtle p-4 rounded-lg mb-3 overflow-x-auto">{children}</pre>,
+                        hr: () => <hr className="border-color-border-neutral-default mb-3" />,
                         a: ({ href, children }) => {
                             if (href?.startsWith('#cite-title-group-')) {
                                 const pairs = href.replace('#cite-title-group-', '').split(',').map(p => {
@@ -366,6 +367,7 @@ export const Content = ({
                 </ReactMarkdown>
                 </TooltipProvider>
             </div>}
+            </div>
 
             {displayText && (!isStreaming || (followUpQueries && followUpQueries.length > 0)) && !hideActions && <ResponseActions
                 className='w-fit'
@@ -383,7 +385,7 @@ export const Content = ({
 
             {/* Follow-up Queries */}
             {followUpQueries && followUpQueries.length > 0 && (
-                <div>
+                <div className="pt-2">
                     <div className="flex flex-wrap">
                         {followUpQueries.map((query, index) => (
                             <FollowUpQuery

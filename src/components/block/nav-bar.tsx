@@ -38,25 +38,26 @@ export interface NavBarProps {
 
 const LogoText = ({ isMobile = false }: { isMobile?: boolean }) => (
     <Link href="/">
-        <div className="flex items-center cursor-pointer gap-[6px]">
-            {!isMobile && (
+        <div className="flex items-center cursor-pointer">
+            {!isMobile ? (
                 <Image
-                    src="/mobile-logo.svg"
-                    alt="Icon"
-                    width={22}
-                    height={22}
+                    src="/logo.svg"
+                    alt="Logo"
+                    width={81}
+                    height={26}
+                    style={{ width: '81px', height: '26px' }}
+                    priority
+                />
+            ) : (
+                <Image
+                    src="/judix.svg"
+                    alt="Logo"
+                    width={53}
+                    height={16}
                     style={{ width: 'auto', height: 'auto' }}
                     priority
                 />
             )}
-            <Image
-                src="/judix.svg"
-                alt="Logo"
-                width={53}
-                height={16}
-                style={{ width: 'auto', height: 'auto' }}
-                priority
-            />
         </div>
     </Link>
 );
@@ -180,7 +181,7 @@ export function NavBar({
             {variant === 'secondary' && (
                 <div className="flex items-center gap-2">
                     {renderMobileSidebarTrigger()}
-                    <LogoText isMobile={true} />
+                    <LogoText isMobile={isMobile} />
                 </div>
             )}
 
