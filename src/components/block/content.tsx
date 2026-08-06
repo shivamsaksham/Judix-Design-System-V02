@@ -199,7 +199,12 @@ export const Content = ({
             });
         }
 
-        md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (_match, _delimiter, boldText, citationLinkPart, citeHref) => {
+        md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (match, _delimiter, boldText, citationLinkPart, citeHref) => {
+            // Only case-name-style headings become clickable titles — a bolded
+            // direct quote immediately followed by a marker matches the same
+            // shape and must stay plain text, not turn into a "source" button.
+            const startsWithQuote = /^["'“‘]/.test(boldText.trim());
+            if (startsWithQuote) return match;
             const titleHref = citeHref.replace('#cite-', '#cite-title-');
             return `[${boldText}](${titleHref})${citationLinkPart}`;
         });

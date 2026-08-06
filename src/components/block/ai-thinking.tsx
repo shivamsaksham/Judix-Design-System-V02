@@ -105,6 +105,23 @@ const StepCircle = ({ completed, ongoing }: { completed?: boolean; ongoing?: boo
     </div>
 );
 
+// Formats a duration in seconds as "Ns" under a minute, "Nm Ns" under an
+// hour, and "Nh Nm" beyond that — dropping the trailing unit when it's zero
+// (e.g. "2m" not "2m 0s").
+const formatDuration = (totalSeconds: number): string => {
+    if (totalSeconds < 60) return `${totalSeconds}s`;
+
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    if (totalMinutes < 60) {
+        const seconds = totalSeconds % 60;
+        return seconds > 0 ? `${totalMinutes}m ${seconds}s` : `${totalMinutes}m`;
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+};
+
 // Ticks once a second while a step is in progress, computed from the
 // client-side timestamp the step started at (backend only reports duration
 // once a phase finishes, so there's nothing to tick from until then).
@@ -123,7 +140,7 @@ const LiveDuration = ({ startedAt }: { startedAt?: number }) => {
 
     return (
         <span className="p-1 shrink-0 text-style-label-default-regular text-color-text-neutral-tertiary tabular-nums mt-px">
-            {elapsedSeconds}s
+            {formatDuration(elapsedSeconds)}
         </span>
     );
 };

@@ -9,7 +9,9 @@ import { useOutsideInteraction } from "@/hooks/use-outside-interaction";
 
 export interface JudgementTileProps {
     title: string;
-    matchPercentage: string;
+    /** Absent when the citation has no real ranked score — render no badge
+     *  rather than a misleading percentage. */
+    matchPercentage?: string;
     citationCount: number;
     description: string;
     year: string;
@@ -95,9 +97,11 @@ export function JudgementTile({
                     <Label colorScheme="neutral" className="h-6 px-2 rounded-md bg-white border border-color-border-neutral-default text-color-label-color-neutral-text">
                         {year}
                     </Label>
-                    <Label colorScheme="primary" className="h-6 px-2 rounded-lg">
-                        {matchPercentage}
-                    </Label>
+                    {matchPercentage && (
+                        <Label colorScheme="primary" className="h-6 px-2 rounded-lg">
+                            {matchPercentage}
+                        </Label>
+                    )}
                 </div>
             </div>
 
