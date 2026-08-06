@@ -131,7 +131,7 @@ export const ResponseActions = ({
         <TooltipProvider>
             <div
                 className={cn(
-                    'flex flex-wrap items-center gap-1 p-2',
+                    'flex flex-wrap items-center gap-1 ',
                     'bg-color-surface-neutral-default',
                     className
                 )}
