@@ -199,18 +199,24 @@ export const Content = ({
             });
         }
 
-        md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (match, _delimiter, boldText, citationLinkPart, citeHref) => {
-            // Only case-name-style headings become clickable titles — a bolded
-            // direct quote immediately followed by a marker matches the same
-            // shape and must stay plain text, not turn into a "source" button.
-            const startsWithQuote = /^["'“‘]/.test(boldText.trim());
-            if (startsWithQuote) return match;
-            const titleHref = citeHref.replace('#cite-', '#cite-title-');
-            return `[${boldText}](${titleHref})${citationLinkPart}`;
-        });
+        // These only ever rewrite text the block above produced. While an answer
+        // is still streaming there are no citation links yet (markers are held
+        // back server-side), and this effect re-runs on every incoming slice —
+        // so skip three full-string passes per slice when there's nothing to match.
+        if (md.includes('#cite-')) {
+            md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (match, _delimiter, boldText, citationLinkPart, citeHref) => {
+                // Only case-name-style headings become clickable titles — a bolded
+                // direct quote immediately followed by a marker matches the same
+                // shape and must stay plain text, not turn into a "source" button.
+                const startsWithQuote = /^["'“‘]/.test(boldText.trim());
+                if (startsWithQuote) return match;
+                const titleHref = citeHref.replace('#cite-', '#cite-title-');
+                return `[${boldText}](${titleHref})${citationLinkPart}`;
+            });
 
-        md = md.replace(/\*{1,2}(\s*\[[^\]]+\]\(#cite-[^)]+\))/g, '$1');
-        md = md.replace(/(\[[^\]]+\]\(#cite-[^)]+\))\s*\*{1,2}/g, '$1');
+            md = md.replace(/\*{1,2}(\s*\[[^\]]+\]\(#cite-[^)]+\))/g, '$1');
+            md = md.replace(/(\[[^\]]+\]\(#cite-[^)]+\))\s*\*{1,2}/g, '$1');
+        }
 
         if (!animate) {
             setDisplayText(md);
