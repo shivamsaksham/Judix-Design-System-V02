@@ -172,7 +172,7 @@ export const UserQuery = ({
                 <>
                     {/* Default/Hover State */}
                     <div className="relative p-1 pb-5 ">
-                        <p className="p-1 pr-20 wrap-break-words text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
+                        <p className="p-1 pr-20 break-words whitespace-pre-wrap text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default">
                             {renderParsedQuery(query)}
                         </p>
 
@@ -224,7 +224,7 @@ export const UserQuery = ({
                                     handleSave();
                                 }
                             }}
-                            className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap wrap-break-words overflow-wrap-anywhere bg-transparent"
+                            className="w-full max-w-full text-style-textblock-secondary-largetext-emphasis text-color-text-neutral-default p-1 pr-20 outline-none whitespace-pre-wrap break-words bg-transparent"
                         />
 
                         {/* Action Buttons - Positioned at bottom right */}
