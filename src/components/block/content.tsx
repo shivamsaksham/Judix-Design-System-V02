@@ -17,6 +17,8 @@ export interface ContentProps {
     query: string;
     caseLawsCount: number;
     actsCount: number;
+    /** Cited sections across all acts. When higher than actsCount the tile shows both. */
+    sectionsCount?: number;
     markdown: string;
     onCaseLawsClick?: () => void;
     onActsClick?: () => void;
@@ -61,6 +63,7 @@ export const Content = ({
     query,
     caseLawsCount,
     actsCount,
+    sectionsCount,
     markdown,
     onCaseLawsClick,
     onActsClick,
@@ -273,7 +276,11 @@ export const Content = ({
                         />
                         <Artifacts
                             title='Acts and Sections'
-                            subtitle={`${actsCount} Acts identified`}
+                            subtitle={
+                                sectionsCount && sectionsCount > actsCount
+                                    ? `${actsCount} ${actsCount === 1 ? 'Act' : 'Acts'} · ${sectionsCount} Sections`
+                                    : `${actsCount} ${actsCount === 1 ? 'Act' : 'Acts'} identified`
+                            }
                             onClick={onActsClick}
                         />
                     </div>
