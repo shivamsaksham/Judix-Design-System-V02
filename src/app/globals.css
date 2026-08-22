@@ -1904,3 +1904,19 @@
     --responsive-font-spacing-b2: var(--primitives-font-spacing-mobile-b2);
   }
 }
+
+/* Toploader-style linear progress bar animation */
+@keyframes toploader {
+  0% {
+    width: 0%;
+    margin-left: 0%;
+  }
+  50% {
+    width: 70%;
+    margin-left: 15%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
+}
