@@ -26,16 +26,14 @@ export interface ActResultTileProps {
     className?: string;
     /** Central vs state jurisdiction — absent when the act didn't resolve against central-acts. */
     category?: 'central' | 'state';
+    /** Cited sections of this act. Not rendered on the tile; used for panel search. */
     sections?: Array<{ id: string; title: string; sectionNumber?: string }>;
-    onSectionClick?: (sectionId: string) => void;
 }
 
 export function ActResultTile({
     title,
     section,
     description,
-    sections,
-    onSectionClick,
     isAdded,
     isBookmarked,
     isMentioned,
@@ -54,7 +52,6 @@ export function ActResultTile({
     const triggerRef = React.useRef<HTMLButtonElement>(null);
     const [expanded, setExpanded] = React.useState(false);
     const [showReadMore, setShowReadMore] = React.useState(false);
-    const [sectionsOpen, setSectionsOpen] = React.useState(false);
     const descriptionRef = React.useRef<HTMLParagraphElement>(null);
 
     React.useLayoutEffect(() => {
@@ -121,42 +118,6 @@ export function ActResultTile({
                     {description}
                 </p>
             </div>
-
-            {sections && sections.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <Label
-                        colorScheme="neutral"
-                        size="small"
-                        className="cursor-pointer w-fit"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setSectionsOpen(!sectionsOpen);
-                        }}
-                    >
-                        <span className="flex items-center gap-[6px]">
-                            {sections.length} {sections.length === 1 ? "Section" : "Sections"}
-                            <Icon name="arrow-down-c" className={cn("h-[13px] w-[13px] transition-transform duration-200 bg-transparent text-label-color-neutral-text", sectionsOpen && "rotate-180")} />
-                        </span>
-                    </Label>
-                    {sectionsOpen && (
-                        <div className="flex flex-col gap-1 pl-2 border-l border-color-border-neutral-default">
-                            {sections.map((item) => (
-                                <button
-                                    key={item.id}
-                                    type="button"
-                                    className="text-left text-style-body-small-regular text-color-text-neutral-secondary hover:text-color-text-neutral-primary py-1"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onSectionClick?.(item.id);
-                                    }}
-                                >
-                                    {item.sectionNumber ? `Section ${item.sectionNumber}` : item.title}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
 
             {/* Read more */}
             <div className="flex items-center gap-2">

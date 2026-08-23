@@ -228,9 +228,6 @@ export function ResultPanel({
                             onViewDetails={() => {
                                 onActClick?.(act);
                             }}
-                            onSectionClick={(sectionId) => {
-                                onActClick?.({ ...act, id: sectionId });
-                            }}
                         />
                     ))}
                     {currentTab === "web" && (
