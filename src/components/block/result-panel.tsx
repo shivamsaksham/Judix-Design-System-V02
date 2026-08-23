@@ -98,7 +98,11 @@ export function ResultPanel({
         return categoryFiltered.filter(a =>
             a.title.toLowerCase().includes(lowercaseSearch) ||
             (a.description && a.description.toLowerCase().includes(lowercaseSearch)) ||
-            (a.section && a.section.toLowerCase().includes(lowercaseSearch))
+            (a.section && a.section.toLowerCase().includes(lowercaseSearch)) ||
+            (a.sections || []).some(s =>
+                (s.sectionNumber || "").toLowerCase().includes(lowercaseSearch) ||
+                s.title.toLowerCase().includes(lowercaseSearch)
+            )
         );
     }, [acts, debouncedSearch, selectedActCategory]);
 

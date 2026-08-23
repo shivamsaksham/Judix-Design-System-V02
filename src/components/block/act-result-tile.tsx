@@ -26,6 +26,8 @@ export interface ActResultTileProps {
     className?: string;
     /** Central vs state jurisdiction — absent when the act didn't resolve against central-acts. */
     category?: 'central' | 'state';
+    /** Cited sections of this act. Not rendered on the tile; used for panel search. */
+    sections?: Array<{ id: string; title: string; sectionNumber?: string }>;
 }
 
 export function ActResultTile({
