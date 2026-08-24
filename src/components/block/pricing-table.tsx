@@ -44,16 +44,16 @@ export const monthlyPlans: PricingCardProps[] = [
     price: 0,
     usage: [
       { label: "AI queries", value: "50" },
-      { label: "Number of pages", value: "100" },
-      { label: "Storage", value: "1 GB" },
+      // { label: "Number of pages", value: "100" },
+      // { label: "Storage", value: "1 GB" },
       { label: "Projects", value: "3" },
-      { label: "Multi-court search", value: false },
+      // { label: "Multi-court search", value: false },
     ],
     features: [
       { label: "Supreme Court judgments", value: true },
-      { label: "High Courts judgments", value: false },
+      // { label: "High Courts judgments", value: false },
       { label: "Central acts", value: true },
-      { label: "State legislation acts", value: false },
+      // { label: "State legislation acts", value: false },
       { label: "In-line citations", value: true },
       { label: "Judgment summaries", value: true },
       { label: "Download judgment pdf", value: false },
@@ -74,16 +74,16 @@ export const monthlyPlans: PricingCardProps[] = [
     isPopular: true,
     usage: [
       { label: "AI queries", value: "500" },
-      { label: "Number of pages", value: "1000" },
-      { label: "Storage", value: "100 GB" },
+      // { label: "Number of pages", value: "1000" },
+      // { label: "Storage", value: "100 GB" },
       { label: "Projects", value: "100" },
-      { label: "Multi-court search", value: "max. 3 courts" },
+      // { label: "Multi-court search", value: "max. 3 courts" },
     ],
     features: [
       { label: "Supreme Court judgments", value: true },
-      { label: "High Courts judgments", value: true },
+      // { label: "High Courts judgments", value: true },
       { label: "Central acts", value: true },
-      { label: "State legislation acts", value: true },
+      // { label: "State legislation acts", value: true },
       { label: "In-line citations", value: true },
       { label: "Judgment summaries", value: true },
       { label: "Download judgment pdf", value: true },
@@ -103,16 +103,16 @@ export const monthlyPlans: PricingCardProps[] = [
     price: 3299,
     usage: [
       { label: "AI queries", value: "1500" },
-      { label: "Number of pages", value: "5000" },
-      { label: "Storage", value: "250 GB" },
+      // { label: "Number of pages", value: "5000" },
+      // { label: "Storage", value: "250 GB" },
       { label: "Projects", value: "Unlimited" },
-      { label: "Multi-court search", value: "max. 5 courts" },
+      // { label: "Multi-court search", value: "max. 5 courts" },
     ],
     features: [
       { label: "Supreme Court judgments", value: true },
-      { label: "High Courts judgments", value: true },
+      // { label: "High Courts judgments", value: true },
       { label: "Central acts", value: true },
-      { label: "State legislation acts", value: true },
+      // { label: "State legislation acts", value: true },
       { label: "In-line citations", value: true },
       { label: "Judgment summaries", value: true },
       { label: "Download judgment pdf", value: true },
@@ -162,12 +162,12 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
     : null;
 
   // Helper to format bytes to readable string
-  const formatBytes = (bytes?: number) => {
-    if (bytes === undefined) return undefined;
-    if (bytes === 0) return "0 GB";
-    const gb = bytes / (1024 * 1024 * 1024);
-    return `${gb >= 1 ? gb : gb.toFixed(1)} GB`;
-  };
+  // const formatBytes = (bytes?: number) => {
+  //   if (bytes === undefined) return undefined;
+  //   if (bytes === 0) return "0 GB";
+  //   const gb = bytes / (1024 * 1024 * 1024);
+  //   return `${gb >= 1 ? gb : gb.toFixed(1)} GB`;
+  // };
 
   const formatDays = (days: number) => {
     if (days === -1) return "Lifetime";
@@ -206,16 +206,16 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
                   : (effectiveBillingCycle === "monthly" && bp.name.toLowerCase() === 'basic'),
               usage: [
                   { label: "AI queries", value: bp.queriesPerMonth?.toString() || "0" },
-                  { label: "Number of pages", value: bp.pagesPerMonth?.toString() || "0" },
-                  { label: "Storage", value: formatBytes(bp.storage) || "0 GB" },
+                  // { label: "Number of pages", value: bp.pagesPerMonth?.toString() || "0" },
+                  // { label: "Storage", value: formatBytes(bp.storage) || "0 GB" },
                   { label: "Projects", value: bp.projects === -1 ? "Unlimited" : (bp.projects?.toString() || "0") },
-                  { label: "Multi-court search", value: isPro ? "max. 5 courts" : isFree ? false : "max. 3 courts" },
+                  // { label: "Multi-court search", value: isPro ? "max. 5 courts" : isFree ? false : "max. 3 courts" },
               ],
               features: [
                   { label: "Supreme Court judgments", value: !!bp.feature?.canSearchSc },
-                  { label: "High Courts judgments", value: !!bp.feature?.canSearchHC },
+                  // { label: "High Courts judgments", value: !!bp.feature?.canSearchHC },
                   { label: "Central acts", value: !!bp.feature?.canCentralActs },
-                  { label: "State legislation acts", value: !!bp.feature?.canStateLegislationActs },
+                  // { label: "State legislation acts", value: !!bp.feature?.canStateLegislationActs },
                   { label: "In-line citations", value: !!bp.feature?.canInLineCictaion },
                   { label: "Judgment summaries", value: !!bp.feature?.canJudgementSummaries },
                   { label: "Download judgment pdf", value: !!bp.feature?.canDownloadJudgementPdf },

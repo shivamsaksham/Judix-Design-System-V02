@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { Button } from "../ui/button";
 import { showToast } from "../ui/toast";
 
 interface PdfViewerDialogProps {
@@ -12,6 +13,23 @@ interface PdfViewerDialogProps {
   onOpenChange: (open: boolean) => void;
   fileUrl: string | null;
   title?: string;
+}
+
+const MOBILE_QUERY = "(max-width: 768px)";
+
+function useIsMobileViewport() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mql = window.matchMedia(MOBILE_QUERY);
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
 }
 
 export function PdfViewerDialog({
@@ -22,22 +40,25 @@ export function PdfViewerDialog({
 }: PdfViewerDialogProps) {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const isMobile = useIsMobileViewport();
 
-  const loading = open && !!fileUrl && !blobUrl && !error;
+  const loading = open && !!fileUrl && !isMobile && !blobUrl && !error;
 
   useEffect(() => {
-    if (!open || !fileUrl) return;
+    if (!open || !fileUrl || isMobile) return;
 
     let cancelled = false;
     let objectUrl: string | null = null;
 
-    // Fetch the PDF using fetch to automatically include cookies
-    fetch(fileUrl, { credentials: "include" }) // Include credentials to pass authentication cookies
+    fetch(fileUrl, { credentials: "include" })
       .then(async (response) => {
         if (!response.ok) {
           if (response.status === 403) {
             const data = await response.json().catch(() => null);
             throw new Error(data?.error || "Downloading judgment PDFs is not available on your current plan.");
+          }
+          if (response.status === 401) {
+            throw new Error("Please sign in again to view this document.");
           }
           throw new Error("Failed to fetch PDF");
         }
@@ -62,36 +83,55 @@ export function PdfViewerDialog({
       setBlobUrl(null);
       setError(null);
     };
-  }, [open, fileUrl]);
+  }, [open, fileUrl, isMobile]);
+
+  const openInNewTab = () => {
+    if (!fileUrl) return;
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] md:max-w-[85vw] lg:max-w-5xl xl:max-w-6xl w-full h-[90vh] flex flex-col overflow-hidden p-0">
         <DialogHeader className="p-4 border-b shrink-0">
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="pr-8 text-left">{title}</DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 overflow-auto bg-gray-100 flex justify-center p-4">
-          {loading && (
-            <div className="flex items-center justify-center h-full w-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          {isMobile ? (
+            <div className="flex flex-col items-center justify-center h-full w-full gap-4 px-6 text-center">
+              <p className="text-style-body-default-regular text-color-text-neutral-secondary">
+                Open the judgment copy in your device&apos;s PDF viewer.
+              </p>
+              <Button variant="primary" onClick={openInNewTab} disabled={!fileUrl}>
+                Open PDF
+              </Button>
             </div>
-          )}
+          ) : (
+            <>
+              {loading && (
+                <div className="flex items-center justify-center h-full w-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+                </div>
+              )}
 
-          {error && (
-            <div className="flex items-center justify-center h-full w-full text-red-500">
-              {error}
-            </div>
-          )}
+              {error && (
+                <div className="flex flex-col items-center justify-center h-full w-full gap-4 px-6 text-center">
+                  <p className="text-color-text-feedback-negative-default">{error}</p>
+                </div>
+              )}
 
-          {!loading && !error && blobUrl && (
-            <div className="w-full h-full">
-              <iframe
-                src={blobUrl}
-                className="w-full h-full border-none rounded-md shadow-sm bg-white"
-                title="PDF Viewer"
-              />
-            </div>
+              {!loading && !error && blobUrl && (
+                <div className="w-full h-full">
+                  <iframe
+                    src={blobUrl}
+                    className="w-full h-full border-none rounded-md shadow-sm bg-white"
+                    title="PDF Viewer"
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </DialogContent>

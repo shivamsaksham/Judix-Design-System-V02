@@ -56,6 +56,13 @@ export function CourtSelector({
         (court) => !isSupremeCourt(court)
     ).length
 
+    // Only the Supreme Court is searchable today. Every other category
+    // (High Courts, tribunals, etc.) is rendered as a single disabled
+    // "Coming soon" row instead of listing individual courts that can't
+    // actually be selected.
+    const isComingSoonCategory = (category: CourtCategory) =>
+        !category.courts.some(isSupremeCourt)
+
     return (
         <TooltipProvider>
             <div
@@ -91,18 +98,21 @@ export function CourtSelector({
                                     className="pt-2 pb-1"
                                 />
                                 <div className="flex flex-col">
-                                    {category.courts.map((court) => {
-                                        const isChecked = selectedCourts.includes(court)
+                                    {isComingSoonCategory(category) ? (
+                                        <Option
+                                            title="Coming soon"
+                                            className="opacity-50 cursor-not-allowed"
+                                        />
+                                    ) : category.courts.map((court) => {
                                         const isCourtSupreme = isSupremeCourt(court)
+                                        const isChecked = isCourtSupreme ? true : selectedCourts.includes(court)
 
-                                        let isDisabled = false
-                                        if (!isChecked) {
-                                            if (isCourtSupreme) {
-                                                isDisabled = selectedDistrictHighCount >= maxCourts
-                                            } else {
-                                                const maxAllowed = isSupremeSelected ? maxCourts - 1 : maxCourts
-                                                isDisabled = selectedDistrictHighCount >= maxAllowed
-                                            }
+                                        // The Supreme Court is mandatory: always checked, never
+                                        // selectable/deselectable by the user.
+                                        let isDisabled = isCourtSupreme
+                                        if (!isCourtSupreme && !isChecked) {
+                                            const maxAllowed = isSupremeSelected ? maxCourts - 1 : maxCourts
+                                            isDisabled = selectedDistrictHighCount >= maxAllowed
                                         }
 
                                         const optionEl = (
@@ -130,6 +140,19 @@ export function CourtSelector({
                                                 }
                                             />
                                         )
+
+                                        if (isCourtSupreme) {
+                                            return (
+                                                <Tooltip key={court}>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="w-full">{optionEl}</div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="top" align="center" className="z-9999">
+                                                        Supreme Court is always included
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            )
+                                        }
 
                                         if (isDisabled) {
                                             return (
