@@ -90,6 +90,7 @@ export function FileBar({
                 <div className="flex items-center gap-1">
                     <Label
                         ref={setReference}
+                        data-tour="projects-new"
                         {...getReferenceProps()}
                         onClick={() => {
                             if (onCreateNewDirect) {

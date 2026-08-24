@@ -253,18 +253,20 @@ export const HistorySidebar = ({
                     className="sidebar-fade-in-up-1"
                 />
 
-                <ChatHistorySection
-                    chatHistory={chatHistory}
-                    activeChatId={activeChatId}
-                    onMenuClick={handleMenuClick}
-                    className="ml-1 mr-3 flex-1 min-h-0"
-                    onLoadMore={onLoadMore}
-                    hasMore={hasMore}
-                    isLoadingMore={isLoadingMore}
-                    isLoading={isLoading}
-                />
+                <div data-tour="sidebar-chats" className="flex flex-col flex-1 min-h-0">
+                    <ChatHistorySection
+                        chatHistory={chatHistory}
+                        activeChatId={activeChatId}
+                        onMenuClick={handleMenuClick}
+                        className="ml-1 mr-3 flex-1 min-h-0"
+                        onLoadMore={onLoadMore}
+                        hasMore={hasMore}
+                        isLoadingMore={isLoadingMore}
+                        isLoading={isLoading}
+                    />
+                </div>
 
-                <div className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
+                <div data-tour="sidebar-usage" className="px-2 py-3 border-t border-dropdown-color-stroke sidebar-fade-in-up-2">
                     <div className="flex items-center gap-2 mb-3 ">
                         <span className=" p-1 
                                         text-style-body-default-regular

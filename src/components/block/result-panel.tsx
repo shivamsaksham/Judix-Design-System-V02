@@ -167,7 +167,7 @@ export function ResultPanel({
     }, [activeJudgmentId, activeActId, highlightedResultId, currentTab, filteredJudgments, filteredActs]);
 
     return (
-        <div className={cn("flex flex-col h-full bg-white", className)}>
+        <div data-tour="research-panel" className={cn("flex flex-col h-full bg-white", className)}>
             <ResearchHeader
                 activeTab={currentTab}
                 onTabChange={handleTabChange}

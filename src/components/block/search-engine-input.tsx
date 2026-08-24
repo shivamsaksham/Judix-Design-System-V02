@@ -1776,7 +1776,7 @@ function SearchEngineInputImpl({
                 isCentered ? "h-fit justify-center" : "h-full justify-end"
             )}
         >
-            <div className="relative w-full flex flex-col items-center min-h-fit">
+            <div data-tour="search-input" className="relative w-full flex flex-col items-center min-h-fit">
                 {/* Project selector */}
                 {showProjectSelector && (
                     <div className="w-full flex justify-start mb-2 pl-4">
@@ -1881,6 +1881,7 @@ function SearchEngineInputImpl({
                                     }
                                 }}
                                 ref={addBtnRef}
+                                data-tour="search-add-sources"
                                 variant="neutral"
                                 icon="add"
                                 size="medium"
@@ -1897,6 +1898,7 @@ function SearchEngineInputImpl({
                             <IconButton
                                 onClick={() => toggleDropdown("folder")}
                                 ref={folderBtnRef}
+                                data-tour="search-jurisdiction"
                                 variant="neutral"
                                 icon="courthouse"
                                 size="medium"
