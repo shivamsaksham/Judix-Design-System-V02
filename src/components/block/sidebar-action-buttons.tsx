@@ -15,6 +15,7 @@ export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, style }: 
         <div className="p-1 mr-3 ml-1 mb-2" style={style}>
             <div
                 onClick={onNewChat}
+                data-tour="sidebar-new-chat"
                 className="w-full h-fit p-1 rounded-lg gap-0 flex items-center
                            hover:bg-option-color-hover transition-colors cursor-pointer
                            bg-color-surface-neutral-default whitespace-nowrap"
@@ -30,6 +31,7 @@ export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, style }: 
             </div>
             <div
                 onClick={onNotes}
+                data-tour="sidebar-notes"
                 className="w-full h-fit p-1 rounded-lg gap-0 flex items-center
                            hover:bg-option-color-hover transition-colors cursor-pointer
                            bg-color-surface-neutral-default"
@@ -45,6 +47,7 @@ export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, style }: 
             </div>
             <div
                 onClick={onProjects}
+                data-tour="sidebar-projects"
                 className="w-full h-fit p-1 rounded-lg gap-0 flex items-center
                            hover:bg-option-color-hover transition-colors cursor-pointer
                            bg-color-surface-neutral-default"

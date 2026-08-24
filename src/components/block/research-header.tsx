@@ -54,6 +54,7 @@ export function ResearchHeader({
 
     const DropdownTriggerButton = (
         <Button
+            data-tour="research-panel-filter"
             variant="neutral"
             size="extraSmall"
             className={cn(
@@ -103,7 +104,7 @@ export function ResearchHeader({
             </div>
 
             {/* Tab bar */}
-            <div className="flex border-box border-b border-color-border-neutral-default">
+            <div data-tour="research-panel-tabs" className="flex border-box border-b border-color-border-neutral-default">
                 {TABS.map((tab) => (
                     <button
                         key={tab.value}
