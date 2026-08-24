@@ -93,7 +93,7 @@ export function PdfViewerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] md:max-w-[85vw] lg:max-w-5xl xl:max-w-6xl w-full h-[90vh] flex flex-col overflow-hidden p-0">
+      <DialogContent aria-describedby={undefined} className="max-w-[95vw] md:max-w-[85vw] lg:max-w-5xl xl:max-w-6xl w-full h-[90vh] flex flex-col overflow-hidden p-0">
         <DialogHeader className="p-4 border-b shrink-0">
           <DialogTitle className="pr-8 text-left">{title}</DialogTitle>
         </DialogHeader>

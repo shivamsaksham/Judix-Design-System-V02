@@ -143,7 +143,7 @@ export function MobileNavBar({
 
                     {/* Context Dropdown as Bottom Sheet */}
                     <Sheet open={showContextDropdown} onOpenChange={setShowContextDropdown}>
-                        <SheetContent side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
+                        <SheetContent aria-describedby={undefined} side="bottom" className="h-[80vh] bg-color-surface-neutral-default border-color-border-neutral-default p-0 flex flex-col">
                             <div className="p-4 border-b border-color-border-neutral-default shrink-0">
                                 <SheetTitle className="text-lg font-semibold">Context Window</SheetTitle>
                             </div>
