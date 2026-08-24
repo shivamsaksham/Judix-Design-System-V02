@@ -640,7 +640,7 @@ export function NotesCard({
     );
 
     const enlargedToolbar = (
-        <div className={cn(
+        <div data-tour="notes-toolbar" className={cn(
             "flex items-center h-auto min-h-[34px] shrink-0 flex-wrap mb-1",
             isFullView
                 ? "w-full justify-start gap-2"
@@ -943,13 +943,13 @@ export function NotesCard({
                                 <div className={cn("flex flex-1 min-h-0", "gap-4")}>
                                     {showSidebar && (
                                         <>
-                                            <div className={cn(
+                                            <div data-tour="notes-files" className={cn(
                                                 "w-[240px] flex-col shrink-0",
                                                 "hidden md:flex"
                                             )}>
                                                 <div className="flex items-center justify-between">
                                                     <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">My Files</span>
-                                                    <div className="flex items-center gap-0.5">
+                                                    <div data-tour="notes-file-actions" className="flex items-center gap-0.5">
                                                         <IconButton icon="add" size="medium" variant="neutral" boundary="none" onClick={handleAddNoteClick} disabled={editingId === "temp-new-note"} />
                                                         <IconButton icon="edit-a" size="medium" variant="neutral" boundary="none" onClick={onEditFile} disabled={activeNodeType !== 'file'} />
                                                         <IconButton icon="trash" size="medium" variant="neutral" boundary="none" onClick={() => setIsDeleteDialogOpen(true)} disabled={activeNodeType !== 'file'} />
@@ -981,7 +981,7 @@ export function NotesCard({
                                     <div className={cn("flex-1 flex flex-col min-h-0 min-w-0")}>
                                         {enlargedToolbar}
 
-                                        <div className={cn(
+                                        <div data-tour="notes-editor" className={cn(
                                             "flex-1 bg-white relative overflow-hidden",
                                             "w-full max-w-[720px] border border-color-border-neutral-default"
                                         )}>
@@ -1072,7 +1072,7 @@ export function NotesCard({
                             <div className={cn("flex flex-1 min-h-0", isFullView ? "gap-2" : "gap-4")}>
                                 {showSidebar && (
                                     <>
-                                        <div className={cn(
+                                        <div data-tour="notes-files" className={cn(
                                             "w-[240px] flex-col shrink-0",
                                             isDrawer
                                                 ? (isNoteActive ? "hidden" : "flex w-full px-4 pb-4")
@@ -1116,7 +1116,7 @@ export function NotesCard({
                                 )}>
                                     {enlargedToolbar}
 
-                                    <div className={cn(
+                                    <div data-tour="notes-editor" className={cn(
                                         "flex-1 bg-white relative overflow-hidden",
                                         isFullView ? "w-full border border-color-border-neutral-default" : "w-full max-w-[720px] border border-color-border-neutral-default"
                                     )}>

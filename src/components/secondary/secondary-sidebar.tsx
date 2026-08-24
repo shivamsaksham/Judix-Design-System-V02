@@ -66,7 +66,7 @@ export function SecondarySidebar({
     const items = SIDEBAR_ITEMS.filter((item) => item.section === section)
     
     return (
-      <div className="flex flex-col gap-1">
+      <div data-tour={`settings-section-${section}`} className="flex flex-col gap-1">
         {title && (
           <h3 className="p-1 text-style-label-default-regular text-color-text-neutral-placeholder">
             {title}
@@ -101,7 +101,7 @@ export function SecondarySidebar({
   }
 
   return (
-    <div className={cn(
+    <div data-tour="settings-nav" className={cn(
       "w-60 p-4 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-radius-interactiveelement flex flex-col gap-6 relative z-10 pointer-events-auto",
       className
     )}>

@@ -24,7 +24,10 @@ export function TextEditor({ content = "", onChange, className, placeholder, onE
     const editor = useEditor({
         immediatelyRender: false,
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                link: false,
+                underline: false,
+            }),
             Placeholder.configure({
                 placeholder: placeholder || "Type something...",
             }),

@@ -267,7 +267,7 @@ function RoleSelector({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 mt-1">
+    <div data-tour="settings-role" className="grid grid-cols-2 gap-3 mt-1">
       {options.map((opt) => {
         const active = value === opt.value;
         return (
@@ -688,6 +688,7 @@ export function MyAccount({ profile, onSave }: { profile?: AccountProfile | null
           </>
         ) : (
           <Button onClick={handleEdit}
+            data-tour="settings-edit-profile"
             prefixIcon="edit-a"
             size="small"
           >
