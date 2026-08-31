@@ -90,6 +90,7 @@ export const Content = ({
     onDownloadLogs,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
+    const [cleanMarkdown, setCleanMarkdown] = React.useState(markdown);
     const isTouchDevice = useMediaQuery("(max-width: 768px)");
 
     const renderCitationBadge = (
@@ -220,6 +221,13 @@ export const Content = ({
             md = md.replace(/\*{1,2}(\s*\[[^\]]+\]\(#cite-[^)]+\))/g, '$1');
             md = md.replace(/(\[[^\]]+\]\(#cite-[^)]+\))\s*\*{1,2}/g, '$1');
         }
+
+        let cleanMd = md;
+        if (cleanMd.includes('#cite-')) {
+            cleanMd = cleanMd.replace(/\[([^\]]+)\]\(#cite-title-[^)]+\)/g, '**$1**');
+            cleanMd = cleanMd.replace(/\[([^\]]+)\]\(#cite-[^)]+\)/g, '[$1]');
+        }
+        setCleanMarkdown(cleanMd);
 
         if (!animate) {
             setDisplayText(md);
@@ -398,7 +406,7 @@ export const Content = ({
                 onDownloadLogs={onDownloadLogs}
                 isLiked={isLiked}
                 isDisliked={isDisliked}
-                contentToCopy={markdown}
+                contentToCopy={cleanMarkdown}
             />}
 
             {/* Follow-up Queries */}
