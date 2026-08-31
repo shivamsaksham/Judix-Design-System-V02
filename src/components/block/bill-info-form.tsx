@@ -229,7 +229,7 @@ export const BillInfoForm = ({
             </div>
 
             {/* Need GST Checkbox */}
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
                 <Checkbox
                     id="needGst"
                     size='medium'
@@ -238,10 +238,10 @@ export const BillInfoForm = ({
                     onCheckedChange={(checked) => handleChange('needGst', checked === true)}
                 />
                 <p className='p-1 text-style-body-default-regular text-color-text-neutral-secondary'>Need GST Bill?</p>
-            </div>
+            </div> */}
 
             {/* GST Number Section */}
-            {formData.needGst && (
+            {/* {formData.needGst && (
                 <div className="flex flex-col gap-4 animate-in fade-in duration-300">
                     <TextInput
                         placeholder="GST number"
@@ -264,10 +264,10 @@ export const BillInfoForm = ({
                         }   
                     />
                 </div>
-            )}
+            )} */}
 
             {/* Company Details (Visible only when GST is verified) */}
-            {formData.needGst && isVerified && (
+            {/* {formData.needGst && isVerified && (
                 <div className="flex flex-col animate-in fade-in duration-300 mt-2">
                     <h4 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">
                         {companyDetails.name}
@@ -279,7 +279,7 @@ export const BillInfoForm = ({
                         {companyDetails.gst}
                     </p>
                 </div>
-            )}
+            )} */}
 
             {/* Actions */}
             <div className="flex items-center py-2 gap-2">
