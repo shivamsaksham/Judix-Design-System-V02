@@ -25,7 +25,7 @@ export interface BackendPlan {
     name: string;
     price: number;
     interval?: 'monthly' | 'yearly';
-    subscriberCount?: number;
+    isPopular?: boolean;
     discountPercentage?: number;
     credits?: number;
     creditsPerCycle?: number;
@@ -146,20 +146,13 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
   const hasYearlyPlan = backendPlans.some((p) => p.interval === "yearly");
   const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === "yearly" && p.discountPercentage)?.discountPercentage;
 
-  // "Most popular" = the single paid plan (tier + interval precise, so Basic Monthly
-  // and Basic Yearly are never conflated) with the most subscriptions ever, regardless
-  // of subscription status.
+  // "Most popular" is decided by the backend, which excludes Free from the running and
+  // falls back to Basic when no paid plan has a live subscriber. Subscriber counts are
+  // never sent to the client, so the flag is the only signal available here.
   //
-  // Free is excluded from the running deliberately: it's the tier every account starts
-  // on, so it will almost always hold the largest subscriber count and would win the
-  // badge permanently — which says nothing about what people choose, and advertises the
-  // plan we least want to steer people toward. When no paid plan has ever been taken,
-  // the badge falls back to Basic on Monthly rather than sitting on Free.
-  const paidPlans = backendPlans.filter((p) => p.price > 0);
-  const totalPaidSubscribers = paidPlans.reduce((sum, p) => sum + (p.subscriberCount || 0), 0);
-  const popularPlan = totalPaidSubscribers > 0
-    ? paidPlans.reduce<BackendPlan | null>((max, p) => (p.subscriberCount || 0) > (max?.subscriberCount || 0) ? p : max, null)
-    : null;
+  // The backend tags every interval of the winning tier, so the badge stays put when the
+  // billing cycle is toggled instead of disappearing on Yearly.
+  const hasPopularFromBackend = backendPlans.some((p) => p.isPopular);
 
   // Helper to format bytes to readable string
   // const formatBytes = (bytes?: number) => {
@@ -201,8 +194,8 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
                   : isPro ? "Collaborative research for serious practices." : "Best for individual lawyers and solo practitioners",
               price: displayPrice,
               billingNote: isYearly && !isFree ? `Billed INR ${bp.price.toLocaleString('en-IN')} yearly` : undefined,
-              isPopular: popularPlan
-                  ? String(bp._id) === String(popularPlan._id) && bp.interval === popularPlan.interval
+              isPopular: hasPopularFromBackend
+                  ? !!bp.isPopular
                   : (effectiveBillingCycle === "monthly" && bp.name.toLowerCase() === 'basic'),
               usage: [
                   { label: "AI queries", value: bp.queriesPerMonth?.toString() || "0" },
