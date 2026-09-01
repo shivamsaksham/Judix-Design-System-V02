@@ -1223,19 +1223,19 @@ function SearchEngineInputImpl({
         document.execCommand("insertHTML", false, html);
     };
 
-    const handleImprove = () => {
-        if (!input.trim() || !textareaRef.current) return;
-        const enhancedQuery = input.trim();
-        textareaRef.current.innerHTML = "";
-        textareaRef.current.innerText = enhancedQuery;
-        setInput(enhancedQuery);
-        requestAnimationFrame(() => {
-            if (textareaRef.current) {
-                setCursorOffset(textareaRef.current, enhancedQuery.length);
-                autoResize();
-            }
-        });
-    };
+    // const handleImprove = () => {
+    //     if (!input.trim() || !textareaRef.current) return;
+    //     const enhancedQuery = input.trim();
+    //     textareaRef.current.innerHTML = "";
+    //     textareaRef.current.innerText = enhancedQuery;
+    //     setInput(enhancedQuery);
+    //     requestAnimationFrame(() => {
+    //         if (textareaRef.current) {
+    //             setCursorOffset(textareaRef.current, enhancedQuery.length);
+    //             autoResize();
+    //         }
+    //     });
+    // };
 
     const handleOptionSelect = (option: string, isManual: boolean = false, label?: string, mentionType?: string) => {
         if (onOptionClick) {
@@ -1928,7 +1928,7 @@ function SearchEngineInputImpl({
                                 <span className="hidden sm:inline text-style-body-default-regular">Filters</span>
                             </IconButton> */}
 
-                            {input.trim().split(/\s+/).filter(Boolean).length > 10 && (
+                            {/* {input.trim().split(/\s+/).filter(Boolean).length > 10 && (
                                 <IconButton
                                     onClick={handleImprove}
                                     variant="neutral"
@@ -1941,7 +1941,7 @@ function SearchEngineInputImpl({
                                     <Icon name="flash-a" className="w-4 h-4" />
                                     <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
                                 </IconButton>
-                            )}
+                            )} */}
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
