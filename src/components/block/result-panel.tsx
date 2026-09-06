@@ -181,8 +181,8 @@ export function ResultPanel({
                 className="shrink-0"
             />
 
-            <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg">
-                <div className="flex flex-col gap-2 p-2">
+            <ScrollArea className="flex-1 min-h-0 bg-color-surface-neutral-subtle_bg [&_[data-radix-scroll-area-viewport]>div]:!block">
+                <div className="flex w-full min-w-0 flex-col gap-2 p-2">
                     {isLoading ? (
                         Array.from({ length: 6 }).map((_, i) => (
                             <div key={i} className="bg-white rounded-lg p-4 animate-pulse">

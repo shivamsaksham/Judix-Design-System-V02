@@ -90,7 +90,7 @@ export function JudgementTile({
             onClick={handleTileClick}
         >
             <div className="flex flex-col gap-[6px]">
-                <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-2 whitespace-normal pr-8">
+                <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-2 whitespace-normal break-words pr-8">
                     {title}
                 </h3>
                 <div className="flex flex-wrap justify-between gap-1">
@@ -106,7 +106,7 @@ export function JudgementTile({
             </div>
 
             <div className="relative">
-                <p className="p-1 text-color-text-neutral-default text-style-textblock-secondary-subtext-regular line-clamp-5">
+                <p className="p-1 text-color-text-neutral-default text-style-textblock-secondary-subtext-regular line-clamp-5 min-w-0 break-words">
                     {description}
                 </p>
                 <div className={cn(

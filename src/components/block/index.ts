@@ -42,3 +42,5 @@ export * from "./notification-tile"
 export * from "./pricing-card"
 export * from "./pricing-table"
 export * from "./share-search-dialog"
+export * from "./judgment-pdf-viewer"
+

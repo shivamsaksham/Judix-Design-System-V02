@@ -8,6 +8,14 @@ import { IconButton } from "../ui";
 import { Icon } from "@judix/icon";
 import { useOutsideInteraction } from "@/hooks/use-outside-interaction";
 
+const toPlainText = (value: string): string =>
+    (value || "")
+        .replace(/\[([^\]]+)\]\((?:https?:\/\/[^)]+)\)/g, "$1")
+        .replace(/\(\s*https?:\/\/[^)]+\)/g, "")
+        .replace(/https?:\/\/\S+/g, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+
 export interface ActResultTileProps {
     title: string;
     section: string;
@@ -53,6 +61,7 @@ export function ActResultTile({
     const [expanded, setExpanded] = React.useState(false);
     const [showReadMore, setShowReadMore] = React.useState(false);
     const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+    const readableDescription = React.useMemo(() => toPlainText(description), [description]);
 
     React.useLayoutEffect(() => {
         if (descriptionRef.current) {
@@ -61,7 +70,7 @@ export function ActResultTile({
                 setShowReadMore(true);
             }
         }
-    }, [description, expanded]);
+    }, [readableDescription, expanded]);
 
     // Stamped on every open->closed transition of this tile's own menu
     // (item selection, outside interaction, or the trigger button) — used
@@ -100,10 +109,10 @@ export function ActResultTile({
         )}
             onClick={handleTileClick}
         >
-            <div className="flex flex-col gap-1">
+            <div className="flex min-w-0 flex-col gap-1">
                 {/* Title and section */}
-                <div className="flex flex-col gap-[6px] pr-8">
-                    <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-1">
+                <div className="flex min-w-0 flex-col gap-[6px] pr-8">
+                    <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-2 break-words">
                         {title}
                     </h3>
                     <span className="p-1 text-color-text-neutral-tertiary text-style-label-default-regular">
@@ -114,8 +123,8 @@ export function ActResultTile({
                 {/* Description */}
                 <p
                     ref={descriptionRef}
-                    className={`p-1 text-style-textblock-secondary-subtext-regular text-color-color-text-neutral-default ${!expanded && "line-clamp-3"}`}>
-                    {description}
+                    className={`p-1 min-w-0 break-words text-style-textblock-secondary-subtext-regular text-color-color-text-neutral-default ${!expanded && "line-clamp-3"}`}>
+                    {readableDescription}
                 </p>
             </div>
 

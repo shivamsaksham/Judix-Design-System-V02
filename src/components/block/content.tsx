@@ -13,6 +13,14 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 import { SourceLookupCard } from '@/components/block/source-lookup-card';
 import { useMediaQuery } from '@/hooks/use-mobile-query';
 
+export interface ContentCitedPassage {
+    chunkId: string;
+    pageNum: number;
+    method: string;
+    confidence: number;
+    pages: Array<{ page: number; rects: [number, number, number, number][] }>;
+}
+
 export interface ContentProps {
     query: string;
     caseLawsCount: number;
@@ -42,12 +50,16 @@ export interface ContentProps {
     onExport?: (format: string) => void;
     onSourceClick?: (type: 'query' | 'judgement' | 'act', id?: string, openDetails?: boolean) => void;
     onWhyThisClick?: (title: string) => void;
+    /** Renders a [chunk-n] badge per located passage alongside each case badge. */
+    showChunkMarkers?: boolean;
+    onChunkClick?: (documentId: string, passage: ContentCitedPassage) => void;
     citations?: Array<{ 
         id: string; 
         source: string; 
         title?: string; 
         description?: string; 
         relevanceScore?: number; 
+        passages?: ContentCitedPassage[];
         pgData?: {
             overallSummary?: string;
             facts?: string;
@@ -87,6 +99,8 @@ export const Content = ({
     onSourceClick,
     onWhyThisClick,
     citations = [],
+    showChunkMarkers = false,
+    onChunkClick,
     onDownloadLogs,
 }: ContentProps) => {
     const [displayText, setDisplayText] = React.useState(animate ? "" : markdown);
@@ -183,6 +197,15 @@ export const Content = ({
                 return { num: displayNum, citation };
             };
 
+            const chunkLinks = (citation: typeof citations[0], caseNum: number): string => {
+                if (!showChunkMarkers || isActSource(citation.source)) return '';
+                const passages = citation.passages || [];
+                if (passages.length === 0) return '';
+                return passages
+                    .map((passage, index) => `[${caseNum}.${index + 1}](#cite-chunk-${citation.id}__${passage.chunkId}__${passage.pageNum})`)
+                    .join('');
+            };
+
             // Matches one marker, or a run of markers separated only by whitespace, e.g. "[1][2]" or "[1] [2]"
             md = md.replace(/\[[^\]]+\](?:\s*\[[^\]]+\])*/g, (run) => {
                 const rawIds = run.match(/\[([^\]]+)\]/g) || [];
@@ -194,12 +217,12 @@ export const Content = ({
 
                 if (resolved.length === 1) {
                     const { num, citation } = resolved[0];
-                    return `[${formatLabel(citation.source, num)}](#cite-${sourceToType(citation.source)}-${citation.id})`;
+                    return `[${formatLabel(citation.source, num)}](#cite-${sourceToType(citation.source)}-${citation.id})` + chunkLinks(citation, num);
                 }
 
                 const nums = resolved.map(r => formatLabel(r.citation.source, r.num)).join(', ');
                 const pairs = resolved.map(r => `${sourceToType(r.citation.source)}-${r.citation.id}`).join(',');
-                return `[${nums}](#cite-group-${pairs})`;
+                return `[${nums}](#cite-group-${pairs})` + resolved.map(r => chunkLinks(r.citation, r.num)).join('');
             });
         }
 
@@ -250,7 +273,7 @@ export const Content = ({
         }, 5); // Fast typing speed
 
         return () => clearInterval(intervalId);
-    }, [markdown, query, animate, citations]);
+    }, [markdown, query, animate, citations, showChunkMarkers]);
 
     return (
         <div className={cn('flex flex-col w-full mx-auto gap-0', className)}>
@@ -365,6 +388,26 @@ export const Content = ({
                                                 </React.Fragment>
                                             );
                                         })}]
+                                    </sup>
+                                );
+                            }
+                            if (href?.startsWith('#cite-chunk-')) {
+                                const [documentId, chunkId, page] = href.replace('#cite-chunk-', '').split('__');
+                                const passage = citations
+                                    ?.find(c => c.id === documentId)
+                                    ?.passages?.find(p => p.chunkId === chunkId);
+                                return (
+                                    <sup className="mx-[2px]">
+                                        <button
+                                            title={`Passage on page ${page} — open in the judgment`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (passage) onChunkClick?.(documentId, passage);
+                                            }}
+                                            className="text-color-text-primary-default hover:underline font-medium text-xs cursor-pointer"
+                                        >
+                                            [{children}]
+                                        </button>
                                     </sup>
                                 );
                             }
