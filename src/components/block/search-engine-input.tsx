@@ -22,7 +22,7 @@ import { ContextItem } from "./context-window";
 import { CourtSelector, CourtCategory } from "./court-selector";
 import { ProjectChoiceDropdown, ProjectChoiceItem } from "./project-choice-dropdown";
 import { MentionDropdown } from "./mention-dropdown";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
@@ -224,6 +224,7 @@ interface SearchEngineInputProps {
     showProjectSelector?: boolean;
     artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
     onRemoveArtifact?: (id: string) => void;
+    onOpenArtifact?: (artifact: { id: string; title: string; type: 'file' | 'text' }) => void;
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
 }
@@ -284,6 +285,7 @@ function SearchEngineInputImpl({
     showProjectSelector = true,
     artifacts = [],
     onRemoveArtifact,
+    onOpenArtifact,
     onUpload,
     onAddText,
 }: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
@@ -332,7 +334,8 @@ function SearchEngineInputImpl({
             setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processed', subtitle: 'Uploaded', progress: 100 } : f));
         } catch (err) {
             console.error("Single file upload failed:", err);
-            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed' } : f));
+            const reason = err instanceof Error && err.message ? err.message : undefined;
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed', subtitle: reason } : f));
         }
     }, [onUpload]);
 
@@ -1694,11 +1697,11 @@ function SearchEngineInputImpl({
                     {activeDropdown === "add" ? (
                         <NestedDropdown
                             options={[
-                                // {
-                                //     title: "Upload Document",
-                                //     value: "upload_document",
-                                //     leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
-                                // },
+                                {
+                                    title: "Upload Document",
+                                    value: "upload_document",
+                                    leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
+                                },
                                 {
                                     title: "Add Text",
                                     value: "add_text",
@@ -1812,18 +1815,29 @@ function SearchEngineInputImpl({
                     {artifacts.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5">
                             {artifacts.map((artifact) => {
-                                // Only text artifacts have an editor to reopen — a session
-                                // holds at most one, and this modal is that one surface
-                                // (see saveTextContext in research-service.ts). File chips
-                                // have no equivalent view here, so they're display-only.
                                 const isEditable = artifact.type === "text";
+                                const isOpenable = artifact.type === "file" && Boolean(onOpenArtifact);
+                                const handleChipClick = isEditable
+                                    ? () => setIsContextDialogOpen(true)
+                                    : isOpenable
+                                        ? () => onOpenArtifact?.(artifact)
+                                        : undefined;
                                 return (
                                     <span
                                         key={artifact.id}
-                                        onClick={isEditable ? () => setIsContextDialogOpen(true) : undefined}
+                                        onClick={handleChipClick}
+                                        onKeyDown={handleChipClick ? (e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                handleChipClick();
+                                            }
+                                        } : undefined}
+                                        role={handleChipClick ? "button" : undefined}
+                                        tabIndex={handleChipClick ? 0 : undefined}
+                                        title={isOpenable ? `Open ${artifact.title}` : undefined}
                                         className={cn(
                                             "inline-flex items-center gap-1.5 max-w-[220px] px-2.5 py-1 rounded-md text-style-body-sm-medium bg-color-surface-neutral-subtle_bg border border-color-border-neutral-default text-color-text-primary-default",
-                                            isEditable && "cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
+                                            handleChipClick && "cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
                                         )}
                                     >
                                         <Icon
@@ -1983,6 +1997,9 @@ function SearchEngineInputImpl({
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
                 <DialogContent className="p-0 border-none bg-transparent shadow-none w-full max-w-[calc(100%-2rem)] sm:max-w-[672px]" showCloseButton={false}>
                     <DialogTitle className="sr-only">Add to context</DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Paste or type text to add it to your research context.
+                    </DialogDescription>
                     <AddToContext
                         initialTitle={artifacts.find(a => a.type === 'text')?.title}
                         initialContent={artifacts.find(a => a.type === 'text')?.content}

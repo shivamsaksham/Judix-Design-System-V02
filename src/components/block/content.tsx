@@ -21,6 +21,8 @@ export interface ContentCitedPassage {
     pages: Array<{ page: number; rects: [number, number, number, number][] }>;
 }
 
+export type ContentSourceType = 'query' | 'judgement' | 'act' | 'document';
+
 export interface ContentProps {
     query: string;
     caseLawsCount: number;
@@ -48,7 +50,7 @@ export interface ContentProps {
     aiThinkingProps?: AiThinkingProps;
     hideActions?: boolean;
     onExport?: (format: string) => void;
-    onSourceClick?: (type: 'query' | 'judgement' | 'act', id?: string, openDetails?: boolean) => void;
+    onSourceClick?: (type: ContentSourceType, id?: string, openDetails?: boolean) => void;
     onWhyThisClick?: (title: string) => void;
     /** Renders a [chunk-n] badge per located passage alongside each case badge. */
     showChunkMarkers?: boolean;
@@ -145,17 +147,19 @@ export const Content = ({
         md = md.replace(/\n*#{1,3}\s*Sources Used[\s\S]*$/i, "").trim();
 
         const isActSource = (source: string) => source === 'act' || source === 'acts';
-        const VALID_SOURCES = new Set(['case', 'judgment', 'judgement', 'act', 'acts', 'query']);
-        const sourceToType = (source: string): 'query' | 'judgement' | 'act' =>
-            isActSource(source) ? 'act' : source === 'query' ? 'query' : 'judgement';
+        const isDocumentSource = (source: string) => source === 'inputContext' || source === 'projectContext';
+        const VALID_SOURCES = new Set(['case', 'judgment', 'judgement', 'act', 'acts', 'query', 'inputContext', 'projectContext']);
+        const sourceToType = (source: string): ContentSourceType =>
+            isActSource(source) ? 'act' : isDocumentSource(source) ? 'document' : source === 'query' ? 'query' : 'judgement';
         const formatLabel = (source: string, num: number): string =>
-            isActSource(source) ? `act-${num}` : `${num}`;
+            isActSource(source) ? `act-${num}` : isDocumentSource(source) ? `doc-${num}` : `${num}`;
 
         if (citations.length > 0 || md.match(/\[([^\]]+)\]/)) {
             const seenMarker = new Map<string, { citation: typeof citations[0], num: number }>();
             const citationToNum = new Map<string, number>();
             let nextCaseNumber = 1;
             let nextActNumber = 1;
+            let nextDocumentNumber = 1;
             let citationIndex = 0;
 
             const resolveMarker = (rawIdStr: string): { num: number; citation: typeof citations[0] } | null => {
@@ -189,7 +193,9 @@ export const Content = ({
                     displayNum = citationToNum.get(citation.id)!;
                     seenMarker.set(fullMarker, { citation, num: displayNum });
                 } else {
-                    displayNum = isActSource(citation.source) ? nextActNumber++ : nextCaseNumber++;
+                    displayNum = isActSource(citation.source)
+                        ? nextActNumber++
+                        : isDocumentSource(citation.source) ? nextDocumentNumber++ : nextCaseNumber++;
                     citationToNum.set(citation.id, displayNum);
                     seenMarker.set(fullMarker, { citation, num: displayNum });
                 }
@@ -197,12 +203,15 @@ export const Content = ({
                 return { num: displayNum, citation };
             };
 
+            const badgedCitations = new Set<string>();
             const chunkLinks = (citation: typeof citations[0], caseNum: number): string => {
-                if (!showChunkMarkers || isActSource(citation.source)) return '';
+                if (!showChunkMarkers || isActSource(citation.source) || citation.source === 'projectContext') return '';
+                if (badgedCitations.has(citation.id)) return '';
                 const passages = citation.passages || [];
                 if (passages.length === 0) return '';
+                badgedCitations.add(citation.id);
                 return passages
-                    .map((passage, index) => `[${caseNum}.${index + 1}](#cite-chunk-${citation.id}__${passage.chunkId}__${passage.pageNum})`)
+                    .map((passage, index) => `[${formatLabel(citation.source, caseNum)}.${index + 1}](#cite-chunk-${citation.id}__${passage.chunkId}__${passage.pageNum})`)
                     .join('');
             };
 
@@ -230,8 +239,10 @@ export const Content = ({
         // is still streaming there are no citation links yet (markers are held
         // back server-side), and this effect re-runs on every incoming slice —
         // so skip three full-string passes per slice when there's nothing to match.
+        const copySource = md;
+
         if (md.includes('#cite-')) {
-            md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1(\s*\[[^\]]+\]\((#cite-[^)]+)\))/g, (match, _delimiter, boldText, citationLinkPart, citeHref) => {
+            md = md.replace(/(\*{1,2})([^*\[\]\n]+)\1([ \t]*\[[^\]]+\]\((#cite-[^)]+)\))/g, (match, _delimiter, boldText, citationLinkPart, citeHref) => {
                 // Only case-name-style headings become clickable titles — a bolded
                 // direct quote immediately followed by a marker matches the same
                 // shape and must stay plain text, not turn into a "source" button.
@@ -241,13 +252,12 @@ export const Content = ({
                 return `[${boldText}](${titleHref})${citationLinkPart}`;
             });
 
-            md = md.replace(/\*{1,2}(\s*\[[^\]]+\]\(#cite-[^)]+\))/g, '$1');
-            md = md.replace(/(\[[^\]]+\]\(#cite-[^)]+\))\s*\*{1,2}/g, '$1');
+            md = md.replace(/(\*{1,2})((?:[ \t]*\[[^\]]+\]\(#cite-[^)]+\))+[ \t]*)\1/g, '$2');
         }
 
-        let cleanMd = md;
+        let cleanMd = copySource;
         if (cleanMd.includes('#cite-')) {
-            cleanMd = cleanMd.replace(/\[([^\]]+)\]\(#cite-title-[^)]+\)/g, '**$1**');
+            cleanMd = cleanMd.replace(/\[[^\]]+\]\(#cite-chunk-[^)]+\)/g, '');
             cleanMd = cleanMd.replace(/\[([^\]]+)\]\(#cite-[^)]+\)/g, '[$1]');
         }
         setCleanMarkdown(cleanMd);
@@ -341,7 +351,7 @@ export const Content = ({
                             if (href?.startsWith('#cite-title-group-')) {
                                 const pairs = href.replace('#cite-title-group-', '').split(',').map(p => {
                                     const sep = p.indexOf('-');
-                                    return { type: p.slice(0, sep) as 'query' | 'judgement' | 'act', id: p.slice(sep + 1) };
+                                    return { type: p.slice(0, sep) as ContentSourceType, id: p.slice(sep + 1) };
                                 });
                                 return (
                                     <button
@@ -354,7 +364,7 @@ export const Content = ({
                             }
                             if (href?.startsWith('#cite-title-')) {
                                 const parts = href.replace('#cite-title-', '').split('-');
-                                const type = parts[0] as 'query' | 'judgement' | 'act';
+                                const type = parts[0] as ContentSourceType;
                                 const id = parts.slice(1).join('-');
                                 return (
                                     <button
@@ -368,7 +378,7 @@ export const Content = ({
                             if (href?.startsWith('#cite-group-')) {
                                 const pairs = href.replace('#cite-group-', '').split(',').map(p => {
                                     const sep = p.indexOf('-');
-                                    return { type: p.slice(0, sep) as 'query' | 'judgement' | 'act', id: p.slice(sep + 1) };
+                                    return { type: p.slice(0, sep) as ContentSourceType, id: p.slice(sep + 1) };
                                 });
                                 const nums = String(children).split(',').map(n => n.trim());
                                 return (
@@ -399,7 +409,7 @@ export const Content = ({
                                 return (
                                     <sup className="mx-[2px]">
                                         <button
-                                            title={`Passage on page ${page} — open in the judgment`}
+                                            title={`Passage on page ${page} — open in the ${citations?.find(c => c.id === documentId)?.source === 'inputContext' ? 'document' : 'judgment'}`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 if (passage) onChunkClick?.(documentId, passage);
@@ -413,7 +423,7 @@ export const Content = ({
                             }
                             if (href?.startsWith('#cite-')) {
                                 const parts = href.replace('#cite-', '').split('-');
-                                const type = parts[0] as 'query' | 'judgement' | 'act';
+                                const type = parts[0] as ContentSourceType;
                                 const id = parts.slice(1).join('-');
                                 const citation = citations?.find(c => c.id === id);
                                 return (
