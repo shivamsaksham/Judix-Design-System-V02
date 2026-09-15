@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight, Download, Loader2, Minus, Plus, Maximize2, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 const RENDER_WINDOW = 2;
 const ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3];
@@ -572,7 +573,7 @@ export const JudgmentPdfViewer = ({
                         </div>
                     ) : !doc ? (
                         <div className="flex h-40 items-center justify-center gap-2 text-sm text-color-text-neutral-subtle">
-                            <Loader2 className="h-4 w-4 animate-spin" /> Loading document…
+                            <Spinner size="small" label="Loading document" /> Loading document…
                         </div>
                     ) : (
                         <div className="flex min-w-fit flex-col items-center gap-3">

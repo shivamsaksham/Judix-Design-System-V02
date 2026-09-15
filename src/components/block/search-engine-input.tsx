@@ -227,6 +227,7 @@ interface SearchEngineInputProps {
     onOpenArtifact?: (artifact: { id: string; title: string; type: 'file' | 'text' }) => void;
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
+    onOpenLibrary?: () => void;
 }
 
 export interface SearchEngineInputHandle {
@@ -288,6 +289,7 @@ function SearchEngineInputImpl({
     onOpenArtifact,
     onUpload,
     onAddText,
+    onOpenLibrary,
 }: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
     const isTouchDevice = useMediaQuery("(max-width: 768px)");
@@ -298,6 +300,7 @@ function SearchEngineInputImpl({
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [isUploadMenuExpanded, setIsUploadMenuExpanded] = useState(false);
     const [uploadFiles, setUploadFiles] = useState<{
         file: File;
         state: 'pending' | 'processing' | 'processed' | 'failed';
@@ -1619,9 +1622,71 @@ function SearchEngineInputImpl({
 
     useImperativeHandle(ref, () => ({ insertMention, restoreQuery, clearInput }), [insertMention, restoreQuery, clearInput]);
 
+    const runAddSourceAction = (action: () => void) => {
+        setActiveDropdown(null);
+        setIsUploadMenuExpanded(false);
+        action();
+    };
+
+    const addSourceItemProps = (onActivate: () => void) => ({
+        role: "menuitem",
+        tabIndex: 0,
+        onClick: onActivate,
+        onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onActivate();
+            }
+        },
+    });
+
+    const renderAddSourcesMenu = () => (
+        <div role="menu" className="py-2 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg min-w-[220px]">
+            <div className="px-2">
+                <Option
+                    title="Upload Document"
+                    prefixSlot={<Icon name="document-text-a" className="w-4 h-4" />}
+                    suffixSlot={onOpenLibrary ? <Icon name={isUploadMenuExpanded ? "arrow-up-a" : "arrow-down-c"} className="w-4 h-4" /> : undefined}
+                    aria-expanded={onOpenLibrary ? isUploadMenuExpanded : undefined}
+                    className="cursor-pointer"
+                    {...addSourceItemProps(() => {
+                        if (onOpenLibrary) {
+                            setIsUploadMenuExpanded((expanded) => !expanded);
+                        } else {
+                            runAddSourceAction(() => setIsUploadDialogOpen(true));
+                        }
+                    })}
+                />
+                {onOpenLibrary && isUploadMenuExpanded && (
+                    <div className="ml-4 border-l border-color-border-neutral-default pl-2">
+                        <Option
+                            title="From device"
+                            prefixSlot={<Icon name="document-upload" className="w-4 h-4" />}
+                            className="cursor-pointer"
+                            {...addSourceItemProps(() => runAddSourceAction(() => setIsUploadDialogOpen(true)))}
+                        />
+                        <Option
+                            title="From library"
+                            prefixSlot={<Icon name="archive-book" className="w-4 h-4" />}
+                            className="cursor-pointer"
+                            {...addSourceItemProps(() => runAddSourceAction(() => onOpenLibrary?.()))}
+                        />
+                    </div>
+                )}
+                <Option
+                    title="Add Text"
+                    prefixSlot={<Icon name="textalign-left" className="w-4 h-4" />}
+                    className="cursor-pointer"
+                    {...addSourceItemProps(() => runAddSourceAction(() => setIsContextDialogOpen(true)))}
+                />
+            </div>
+        </div>
+    );
+
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
         const next = activeDropdown === dropdown ? null : dropdown;
         setActiveDropdown(next);
+        setIsUploadMenuExpanded(false);
         if (next === "folder" && onCourtsDropdownOpen) {
             onCourtsDropdownOpen();
         }
@@ -1695,30 +1760,7 @@ function SearchEngineInputImpl({
             <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} className="z-9999">
                 <div className="animate-dropdown-enter">
                     {activeDropdown === "add" ? (
-                        <NestedDropdown
-                            options={[
-                                {
-                                    title: "Upload Document",
-                                    value: "upload_document",
-                                    leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
-                                },
-                                {
-                                    title: "Add Text",
-                                    value: "add_text",
-                                    leadingIcon: <Icon name="textalign-left" className="w-4 h-4" />
-                                },
-                            ]}
-                            value={null}
-                            onChange={(val) => {
-                                if (val === "upload_document") {
-                                    setIsUploadDialogOpen(true);
-                                } else if (val === "add_text") {
-                                    setIsContextDialogOpen(true);
-                                }
-                                setActiveDropdown(null);
-                            }}
-                            activeIndex={activeIndex}
-                        />
+                        renderAddSourcesMenu()
                     ) : activeDropdown === "settings" ? (
                         <SearchScopeSelector
                             availableScopes={scopes}

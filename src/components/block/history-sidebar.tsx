@@ -38,6 +38,7 @@ export interface HistorySidebarProps {
     onNewChat?: () => void;
     onNotes?: () => void;
     onProjects?: () => void;
+    onLibrary?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
     onAccount?: () => void;
@@ -69,6 +70,7 @@ export const HistorySidebar = ({
     onNewChat,
     onNotes,
     onProjects,
+    onLibrary,
     onResetChat,
     onUpgrade,
     onSettings,
@@ -250,6 +252,7 @@ export const HistorySidebar = ({
                     onNewChat={onNewChat}
                     onNotes={onNotes}
                     onProjects={onProjects}
+                    onLibrary={onLibrary}
                     className="sidebar-fade-in-up-1"
                 />
 
@@ -417,6 +420,24 @@ export const HistorySidebar = ({
                         <TooltipTrigger asChild>
                             <div className='p-1'>
                                 <IconButton
+                                    onClick={onLibrary}
+                                    icon="archive-book"
+                                    variant="neutral"
+                                    size="medium"
+                                    className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                    iconClassName='text-icon_button-color-neutral-icon'
+                                    aria-label="Library"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            Library
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className='p-1'>
+                                <IconButton
                                     onClick={onProjects}
                                     icon="folder-a"
                                     variant="neutral"
@@ -481,6 +502,10 @@ export const HistorySidebar = ({
                         onProjects={() => {
                             setIsUserMenuOpen(false);
                             onProjects?.();
+                        }}
+                        onLibrary={() => {
+                            setIsUserMenuOpen(false);
+                            onLibrary?.();
                         }}
                         onSubscriptions={() => {
                             setIsUserMenuOpen(false);
