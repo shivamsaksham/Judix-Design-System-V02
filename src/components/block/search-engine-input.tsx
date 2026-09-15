@@ -1887,13 +1887,7 @@ function SearchEngineInputImpl({
                     <div className="w-full flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <IconButton
-                                onClick={() => {
-                                    if (isTouchDevice) {
-                                        setIsContextDialogOpen(true);
-                                    } else {
-                                        toggleDropdown("add");
-                                    }
-                                }}
+                                onClick={() => toggleDropdown("add")}
                                 ref={addBtnRef}
                                 data-tour="search-add-sources"
                                 variant="neutral"
