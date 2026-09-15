@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { PricingCard, PricingCardProps } from "./pricing-card";
+import { PricingCard, PricingCardProps, PricingFeature } from "./pricing-card";
 import { Button } from "../ui/button";
+import { formatBytes } from "@/lib/format-bytes";
 
 /** Feature flags carried on a backend plan. */
 export interface BackendPlanFeature {
@@ -37,18 +38,39 @@ export interface BackendPlan {
     isActive?: boolean;
 }
 
+export type PlanQuota = Pick<BackendPlan, "queriesPerMonth" | "pagesPerMonth" | "storage" | "projects">;
+
+const UNLIMITED = "Unlimited";
+
+const formatCount = (value: number) => (value === -1 ? UNLIMITED : value.toLocaleString("en-IN"));
+
+export function buildPlanUsage(plan: PlanQuota, billingCycle: "monthly" | "yearly"): PricingFeature[] {
+  const cycleMultiplier = billingCycle === "yearly" ? 12 : 1;
+  const perCycle = (value = 0) => (value === -1 ? UNLIMITED : formatCount(value * cycleMultiplier));
+  const storage = plan.storage ?? 0;
+
+  return [
+    { label: "AI queries", value: perCycle(plan.queriesPerMonth) },
+    { label: "Document pages", value: perCycle(plan.pagesPerMonth) },
+    { label: "Storage", value: storage === -1 ? UNLIMITED : storage > 0 ? formatBytes(storage) : false },
+    { label: "Projects", value: formatCount(plan.projects ?? 0) },
+  ];
+}
+
+const GIGABYTE = 1024 ** 3;
+
+const fallbackQuotas: Record<string, PlanQuota> = {
+  Lite: { queriesPerMonth: 50, pagesPerMonth: 100, storage: GIGABYTE, projects: 3 },
+  Basic: { queriesPerMonth: 500, pagesPerMonth: 1000, storage: 100 * GIGABYTE, projects: 100 },
+  Pro: { queriesPerMonth: 1500, pagesPerMonth: 5000, storage: 250 * GIGABYTE, projects: -1 },
+};
+
 export const monthlyPlans: PricingCardProps[] = [
   {
     tier: "Lite",
     description: "For lawyers just getting started with AI research",
     price: 0,
-    usage: [
-      { label: "AI queries", value: "50" },
-      // { label: "Number of pages", value: "100" },
-      // { label: "Storage", value: "1 GB" },
-      { label: "Projects", value: "3" },
-      // { label: "Multi-court search", value: false },
-    ],
+    usage: buildPlanUsage(fallbackQuotas.Lite, "monthly"),
     features: [
       { label: "Supreme Court judgments", value: true },
       // { label: "High Courts judgments", value: false },
@@ -72,13 +94,7 @@ export const monthlyPlans: PricingCardProps[] = [
     description: "Best for individual lawyers and solo practitioners",
     price: 1499,
     isPopular: true,
-    usage: [
-      { label: "AI queries", value: "500" },
-      // { label: "Number of pages", value: "1000" },
-      // { label: "Storage", value: "100 GB" },
-      { label: "Projects", value: "100" },
-      // { label: "Multi-court search", value: "max. 3 courts" },
-    ],
+    usage: buildPlanUsage(fallbackQuotas.Basic, "monthly"),
     features: [
       { label: "Supreme Court judgments", value: true },
       // { label: "High Courts judgments", value: true },
@@ -101,13 +117,7 @@ export const monthlyPlans: PricingCardProps[] = [
     tier: "Pro",
     description: "Collaborative research for serious practices.",
     price: 3299,
-    usage: [
-      { label: "AI queries", value: "1500" },
-      // { label: "Number of pages", value: "5000" },
-      // { label: "Storage", value: "250 GB" },
-      { label: "Projects", value: "Unlimited" },
-      // { label: "Multi-court search", value: "max. 5 courts" },
-    ],
+    usage: buildPlanUsage(fallbackQuotas.Pro, "monthly"),
     features: [
       { label: "Supreme Court judgments", value: true },
       // { label: "High Courts judgments", value: true },
@@ -131,6 +141,7 @@ export const monthlyPlans: PricingCardProps[] = [
 export const yearlyPlans: PricingCardProps[] = monthlyPlans.map(plan => ({
   ...plan,
   price: typeof plan.price === "number" && plan.price > 0 ? Math.floor(plan.price * 0.8) : plan.price,
+  usage: fallbackQuotas[plan.tier] ? buildPlanUsage(fallbackQuotas[plan.tier], "yearly") : plan.usage,
 }));
 
 export interface PricingTableProps {
@@ -154,14 +165,6 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
   // billing cycle is toggled instead of disappearing on Yearly.
   const hasPopularFromBackend = backendPlans.some((p) => p.isPopular);
 
-  // Helper to format bytes to readable string
-  // const formatBytes = (bytes?: number) => {
-  //   if (bytes === undefined) return undefined;
-  //   if (bytes === 0) return "0 GB";
-  //   const gb = bytes / (1024 * 1024 * 1024);
-  //   return `${gb >= 1 ? gb : gb.toFixed(1)} GB`;
-  // };
-
   const formatDays = (days: number) => {
     if (days === -1) return "Lifetime";
     return `${days} days`;
@@ -175,10 +178,10 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
     const plansForCycle = backendPlans.filter(p => p.interval === effectiveBillingCycle);
     if (plansForCycle.length > 0) {
       // Deduplicate by name to prevent duplicate keys if the backend sends multiple free plans
-      const uniquePlans = plansForCycle.filter((plan, index, self) => 
+      const uniquePlans = plansForCycle.filter((plan, index, self) =>
         index === self.findIndex((t) => t.name.toLowerCase() === plan.name.toLowerCase())
       );
-      
+
       mergedPlans = uniquePlans.map(bp => {
           const isFree = bp.price === 0;
           const isPro = bp.name.toLowerCase() === 'pro';
@@ -197,13 +200,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
               isPopular: hasPopularFromBackend
                   ? !!bp.isPopular
                   : (effectiveBillingCycle === "monthly" && bp.name.toLowerCase() === 'basic'),
-              usage: [
-                  { label: "AI queries", value: bp.queriesPerMonth?.toString() || "0" },
-                  // { label: "Number of pages", value: bp.pagesPerMonth?.toString() || "0" },
-                  // { label: "Storage", value: formatBytes(bp.storage) || "0 GB" },
-                  { label: "Projects", value: bp.projects === -1 ? "Unlimited" : (bp.projects?.toString() || "0") },
-                  // { label: "Multi-court search", value: isPro ? "max. 5 courts" : isFree ? false : "max. 3 courts" },
-              ],
+              usage: buildPlanUsage(bp, bp.interval ?? effectiveBillingCycle),
               features: [
                   { label: "Supreme Court judgments", value: !!bp.feature?.canSearchSc },
                   // { label: "High Courts judgments", value: !!bp.feature?.canSearchHC },
@@ -223,7 +220,7 @@ export function PricingTable({ onSelectPlan, backendPlans = [], currentPlan, cur
               ]
           };
       });
-      
+
       mergedPlans.sort((a, b) => Number(a.price) - Number(b.price));
     }
   }
