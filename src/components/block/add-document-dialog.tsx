@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@judix/icon';
 import { FileUploadItem, type FileUploadItemProps } from '@/components/block/file-upload-item';
@@ -84,6 +84,9 @@ export const AddDocumentDialog: React.FC<AddDocumentDialogProps> = ({
                     <DialogTitle className="text-style-body-default-regular text-color-text-primary-default">
                         Add document
                     </DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Select or drop PDF, DOC or DOCX files to add them to your context.
+                    </DialogDescription>
                 </DialogHeader>
 
                 <div className="flex flex-col w-full min-h-[290px]">

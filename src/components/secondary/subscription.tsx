@@ -15,6 +15,8 @@ export interface UsageMetric {
   current: number
   total: number
   unit?: string
+  currentLabel?: string
+  totalLabel?: string
   icon: React.ElementType
   tooltipText?: string
 }
@@ -72,10 +74,10 @@ function UsageCard({ metric, className }: { metric: UsageMetric, className?: str
               "",
               isOverflow ? "text-color-text-feedback-error-default" : "text-color-text-neutral-default"
             )}`}>
-              {metric.current}
+              {metric.currentLabel ?? metric.current}
             </span>
             <span className="text-style-body-default-emphasis text-color-text-neutral-tertiary">
-              {isUnlimited ? "/ Unlimited" : `/ ${metric.total} ${metric.unit || ""}`}
+              {isUnlimited ? "/ Unlimited" : `/ ${metric.totalLabel ?? `${metric.total} ${metric.unit || ""}`}`}
             </span>
           </div>
 

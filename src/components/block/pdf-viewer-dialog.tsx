@@ -60,6 +60,9 @@ export function PdfViewerDialog({
           if (response.status === 401) {
             throw new Error("Please sign in again to view this document.");
           }
+          if (response.status === 404) {
+            throw new Error("The original PDF for this document isn't available.");
+          }
           throw new Error("Failed to fetch PDF");
         }
         return response.blob();
@@ -102,7 +105,7 @@ export function PdfViewerDialog({
           {isMobile ? (
             <div className="flex flex-col items-center justify-center h-full w-full gap-4 px-6 text-center">
               <p className="text-style-body-default-regular text-color-text-neutral-secondary">
-                Open the judgment copy in your device&apos;s PDF viewer.
+                Open this document in your device&apos;s PDF viewer.
               </p>
               <Button variant="primary" onClick={openInNewTab} disabled={!fileUrl}>
                 Open PDF

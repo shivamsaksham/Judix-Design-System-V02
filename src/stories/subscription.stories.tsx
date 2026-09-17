@@ -51,9 +51,10 @@ export const Default: Story = {
       },
       {
         label: 'Storage',
-        current: 32,
-        total: 100,
-        unit: 'GB',
+        current: 420433,
+        total: 268435456000,
+        currentLabel: '411 KB',
+        totalLabel: '250 GB',
         icon: HardDrive,
         tooltipText: 'Total cloud storage capacity for files and generated assets.',
       },

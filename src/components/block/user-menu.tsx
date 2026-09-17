@@ -22,6 +22,7 @@ export interface UserMenuProps {
 
     onAccount?: () => void;
     onProjects?: () => void;
+    onLibrary?: () => void;
     onSubscriptions?: () => void;
     onSettings?: () => void;
     onRefer?: () => void;
@@ -29,7 +30,7 @@ export interface UserMenuProps {
     onLogout?: () => void;
 }
 
-const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' | 'onSubscriptions' | 'onSettings' | 'onRefer' | 'onHelp' | 'onLogout'>): UserMenuItem[] => [
+const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' | 'onLibrary' | 'onSubscriptions' | 'onSettings' | 'onRefer' | 'onHelp' | 'onLogout'>): UserMenuItem[] => [
 
     {
         id: 'account',
@@ -42,6 +43,12 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' |
         label: 'Projects',
         icon: <Icon name="folder-a" className="w-[18px] h-[18px]" />,
         onClick: props.onProjects,
+    },
+    {
+        id: 'library',
+        label: 'Library',
+        icon: <Icon name="archive-book" className="w-[18px] h-[18px]" />,
+        onClick: props.onLibrary,
     },
     {
         id: 'subscriptions',
@@ -78,8 +85,8 @@ const getDefaultItems = (props: Pick<UserMenuProps, 'onAccount' | 'onProjects' |
     },
 ];
 
-export const UserMenu = ({ items: customItems, className, onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout }: UserMenuProps) => {
-    const items = customItems || getDefaultItems({ onAccount, onProjects, onSubscriptions, onSettings, onRefer, onHelp, onLogout });
+export const UserMenu = ({ items: customItems, className, onAccount, onProjects, onLibrary, onSubscriptions, onSettings, onRefer, onHelp, onLogout }: UserMenuProps) => {
+    const items = customItems || getDefaultItems({ onAccount, onProjects, onLibrary, onSubscriptions, onSettings, onRefer, onHelp, onLogout });
     return (
         <div
             className={cn(

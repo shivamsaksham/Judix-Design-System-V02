@@ -79,10 +79,18 @@ export const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemPro
                         </span>
                     )}
                     {state === 'failed' && (
-                        <div className="flex items-center gap-3">
-                            <span className="p-1 text-style-label-default-regular text-color-text-feedback-error-default">Failed</span>
+                        <div className="flex items-center gap-3 w-full min-w-0">
+                            <span className="p-1 text-style-label-default-regular text-color-text-feedback-error-default shrink-0">Failed</span>
+                            {subtitle && (
+                                <span
+                                    className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary truncate"
+                                    title={subtitle}
+                                >
+                                    {subtitle}
+                                </span>
+                            )}
                             <div 
-                                className="p-1 flex items-center gap-2 cursor-pointer text-style-label-default-regular text-color-text-neutral-tertiary"
+                                className="p-1 flex items-center gap-2 cursor-pointer text-style-label-default-regular text-color-text-neutral-tertiary shrink-0"
                                 onClick={onRetry}
                             >
                                 <span>Retry</span>

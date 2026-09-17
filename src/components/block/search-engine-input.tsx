@@ -22,7 +22,7 @@ import { ContextItem } from "./context-window";
 import { CourtSelector, CourtCategory } from "./court-selector";
 import { ProjectChoiceDropdown, ProjectChoiceItem } from "./project-choice-dropdown";
 import { MentionDropdown } from "./mention-dropdown";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
@@ -224,8 +224,10 @@ interface SearchEngineInputProps {
     showProjectSelector?: boolean;
     artifacts?: Array<{ id: string, title: string, type: 'file' | 'text', content?: string }>;
     onRemoveArtifact?: (id: string) => void;
+    onOpenArtifact?: (artifact: { id: string; title: string; type: 'file' | 'text' }) => void;
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
+    onOpenLibrary?: () => void;
 }
 
 export interface SearchEngineInputHandle {
@@ -284,8 +286,10 @@ function SearchEngineInputImpl({
     showProjectSelector = true,
     artifacts = [],
     onRemoveArtifact,
+    onOpenArtifact,
     onUpload,
     onAddText,
+    onOpenLibrary,
 }: SearchEngineInputProps, ref: React.Ref<SearchEngineInputHandle>) {
     const TRIGGER_CONFIG = triggers;
     const isTouchDevice = useMediaQuery("(max-width: 768px)");
@@ -296,6 +300,7 @@ function SearchEngineInputImpl({
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [isUploadMenuExpanded, setIsUploadMenuExpanded] = useState(false);
     const [uploadFiles, setUploadFiles] = useState<{
         file: File;
         state: 'pending' | 'processing' | 'processed' | 'failed';
@@ -332,7 +337,8 @@ function SearchEngineInputImpl({
             setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'processed', subtitle: 'Uploaded', progress: 100 } : f));
         } catch (err) {
             console.error("Single file upload failed:", err);
-            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed' } : f));
+            const reason = err instanceof Error && err.message ? err.message : undefined;
+            setUploadFiles(prev => prev.map((f, idx) => idx === index ? { ...f, state: 'failed', subtitle: reason } : f));
         }
     }, [onUpload]);
 
@@ -1616,9 +1622,71 @@ function SearchEngineInputImpl({
 
     useImperativeHandle(ref, () => ({ insertMention, restoreQuery, clearInput }), [insertMention, restoreQuery, clearInput]);
 
+    const runAddSourceAction = (action: () => void) => {
+        setActiveDropdown(null);
+        setIsUploadMenuExpanded(false);
+        action();
+    };
+
+    const addSourceItemProps = (onActivate: () => void) => ({
+        role: "menuitem",
+        tabIndex: 0,
+        onClick: onActivate,
+        onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onActivate();
+            }
+        },
+    });
+
+    const renderAddSourcesMenu = () => (
+        <div role="menu" className="py-2 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg min-w-[220px]">
+            <div className="px-2">
+                <Option
+                    title="Upload Document"
+                    prefixSlot={<Icon name="document-text-a" className="w-4 h-4" />}
+                    suffixSlot={onOpenLibrary ? <Icon name={isUploadMenuExpanded ? "arrow-up-a" : "arrow-down-c"} className="w-4 h-4" /> : undefined}
+                    aria-expanded={onOpenLibrary ? isUploadMenuExpanded : undefined}
+                    className="cursor-pointer"
+                    {...addSourceItemProps(() => {
+                        if (onOpenLibrary) {
+                            setIsUploadMenuExpanded((expanded) => !expanded);
+                        } else {
+                            runAddSourceAction(() => setIsUploadDialogOpen(true));
+                        }
+                    })}
+                />
+                {onOpenLibrary && isUploadMenuExpanded && (
+                    <div className="ml-4 border-l border-color-border-neutral-default pl-2">
+                        <Option
+                            title="From device"
+                            prefixSlot={<Icon name="document-upload" className="w-4 h-4" />}
+                            className="cursor-pointer"
+                            {...addSourceItemProps(() => runAddSourceAction(() => setIsUploadDialogOpen(true)))}
+                        />
+                        <Option
+                            title="From library"
+                            prefixSlot={<Icon name="archive-book" className="w-4 h-4" />}
+                            className="cursor-pointer"
+                            {...addSourceItemProps(() => runAddSourceAction(() => onOpenLibrary?.()))}
+                        />
+                    </div>
+                )}
+                <Option
+                    title="Add Text"
+                    prefixSlot={<Icon name="textalign-left" className="w-4 h-4" />}
+                    className="cursor-pointer"
+                    {...addSourceItemProps(() => runAddSourceAction(() => setIsContextDialogOpen(true)))}
+                />
+            </div>
+        </div>
+    );
+
     const toggleDropdown = (dropdown: "add" | "settings" | "folder") => {
         const next = activeDropdown === dropdown ? null : dropdown;
         setActiveDropdown(next);
+        setIsUploadMenuExpanded(false);
         if (next === "folder" && onCourtsDropdownOpen) {
             onCourtsDropdownOpen();
         }
@@ -1692,30 +1760,7 @@ function SearchEngineInputImpl({
             <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} className="z-9999">
                 <div className="animate-dropdown-enter">
                     {activeDropdown === "add" ? (
-                        <NestedDropdown
-                            options={[
-                                // {
-                                //     title: "Upload Document",
-                                //     value: "upload_document",
-                                //     leadingIcon: <Icon name="document-text-a" className="w-4 h-4" />
-                                // },
-                                {
-                                    title: "Add Text",
-                                    value: "add_text",
-                                    leadingIcon: <Icon name="textalign-left" className="w-4 h-4" />
-                                },
-                            ]}
-                            value={null}
-                            onChange={(val) => {
-                                if (val === "upload_document") {
-                                    setIsUploadDialogOpen(true);
-                                } else if (val === "add_text") {
-                                    setIsContextDialogOpen(true);
-                                }
-                                setActiveDropdown(null);
-                            }}
-                            activeIndex={activeIndex}
-                        />
+                        renderAddSourcesMenu()
                     ) : activeDropdown === "settings" ? (
                         <SearchScopeSelector
                             availableScopes={scopes}
@@ -1812,18 +1857,29 @@ function SearchEngineInputImpl({
                     {artifacts.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5">
                             {artifacts.map((artifact) => {
-                                // Only text artifacts have an editor to reopen — a session
-                                // holds at most one, and this modal is that one surface
-                                // (see saveTextContext in research-service.ts). File chips
-                                // have no equivalent view here, so they're display-only.
                                 const isEditable = artifact.type === "text";
+                                const isOpenable = artifact.type === "file" && Boolean(onOpenArtifact);
+                                const handleChipClick = isEditable
+                                    ? () => setIsContextDialogOpen(true)
+                                    : isOpenable
+                                        ? () => onOpenArtifact?.(artifact)
+                                        : undefined;
                                 return (
                                     <span
                                         key={artifact.id}
-                                        onClick={isEditable ? () => setIsContextDialogOpen(true) : undefined}
+                                        onClick={handleChipClick}
+                                        onKeyDown={handleChipClick ? (e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                handleChipClick();
+                                            }
+                                        } : undefined}
+                                        role={handleChipClick ? "button" : undefined}
+                                        tabIndex={handleChipClick ? 0 : undefined}
+                                        title={isOpenable ? `Open ${artifact.title}` : undefined}
                                         className={cn(
                                             "inline-flex items-center gap-1.5 max-w-[220px] px-2.5 py-1 rounded-md text-style-body-sm-medium bg-color-surface-neutral-subtle_bg border border-color-border-neutral-default text-color-text-primary-default",
-                                            isEditable && "cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
+                                            handleChipClick && "cursor-pointer hover:bg-color-surface-neutral-hover_default transition-colors"
                                         )}
                                     >
                                         <Icon
@@ -1873,13 +1929,7 @@ function SearchEngineInputImpl({
                     <div className="w-full flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <IconButton
-                                onClick={() => {
-                                    if (isTouchDevice) {
-                                        setIsContextDialogOpen(true);
-                                    } else {
-                                        toggleDropdown("add");
-                                    }
-                                }}
+                                onClick={() => toggleDropdown("add")}
                                 ref={addBtnRef}
                                 data-tour="search-add-sources"
                                 variant="neutral"
@@ -1983,6 +2033,9 @@ function SearchEngineInputImpl({
             <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
                 <DialogContent className="p-0 border-none bg-transparent shadow-none w-full max-w-[calc(100%-2rem)] sm:max-w-[672px]" showCloseButton={false}>
                     <DialogTitle className="sr-only">Add to context</DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Paste or type text to add it to your research context.
+                    </DialogDescription>
                     <AddToContext
                         initialTitle={artifacts.find(a => a.type === 'text')?.title}
                         initialContent={artifacts.find(a => a.type === 'text')?.content}
