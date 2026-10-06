@@ -23,6 +23,7 @@ export interface UsageStats {
     current: number | null;
     total: number | null;
     label: string;
+    bonus?: number;
 }
 
 export interface UserProfile {
@@ -293,6 +294,14 @@ export const HistorySidebar = ({
                             {usageStats.current === null || usageStats.total === null ? '-/-' : `${usageStats.current}/${usageStats.total}`}
                         </span>
                     </div>
+                    {usageStats.bonus ? (
+                        <div className="flex items-center gap-1 min-w-0">
+                            <Icon name="gift" size={12} className="shrink-0 text-color-icon-primary-default" />
+                            <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
+                                +{usageStats.bonus.toLocaleString('en-IN')} bonus queries
+                            </span>
+                        </div>
+                    ) : null}
                 </div>
 
                 {/* User Profile Section */}
