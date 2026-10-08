@@ -17,7 +17,7 @@ const numberBadgeVariants = cva(
       },
       size: {
         md: "h-[19px] w-[19px] number_badge-font-large",
-        s: "h-[18px] w-[17px] number_badge-font-medium",
+        s: "h-4.5 w-[17px] number_badge-font-medium",
         xs: "h-[17px] w-[17px] number_badge-font-small",
       },
     },
@@ -31,7 +31,7 @@ const numberBadgeVariants = cva(
 
 export interface NumberBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof numberBadgeVariants> {}
+  VariantProps<typeof numberBadgeVariants> { }
 
 const NumberBadge = React.forwardRef<HTMLDivElement, NumberBadgeProps>(
   ({ className, variant, size, shape, ...props }, ref) => {

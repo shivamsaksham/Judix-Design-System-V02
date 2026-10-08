@@ -89,7 +89,7 @@ export function JudgementTile({
         )}
             onClick={handleTileClick}
         >
-            <div className="flex flex-col gap-[6px]">
+            <div className="flex flex-col gap-1.5">
                 <h3 className="p-1 text-color-text-neutral-default text-style-body-default-regular line-clamp-2 whitespace-normal break-words pr-8">
                     {title}
                 </h3>
@@ -141,7 +141,7 @@ export function JudgementTile({
                     ref={triggerRef}
                     size="medium"
                     icon="add"
-                    className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors"
+                    className="flex items-center justify-center w-8 h-8 bg-color-surface-neutral-default border border-color-border-neutral-default rounded-lg hover:bg-color-surface-neutral-subtle_bg shadow-sm transition-colors -mt-1"
                     variant={'neutral'}
                     onClick={(e) => { e.stopPropagation(); setOpen((o) => { if (o) lastMenuCloseAtRef.current = Date.now(); return !o; }); }}
                 />

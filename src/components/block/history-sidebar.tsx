@@ -39,6 +39,7 @@ export interface HistorySidebarProps {
     onNotes?: () => void;
     onProjects?: () => void;
     onLibrary?: () => void;
+    onOldChat?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
     onAccount?: () => void;
@@ -71,6 +72,7 @@ export const HistorySidebar = ({
     onNotes,
     onProjects,
     onLibrary,
+    onOldChat,
     onResetChat,
     onUpgrade,
     onSettings,
@@ -125,7 +127,7 @@ export const HistorySidebar = ({
                 setOpenMenuChatId(null);
             }
             if (
-                userMenuRef.current && 
+                userMenuRef.current &&
                 !userMenuRef.current.contains(event.target as Node) &&
                 !userProfileRef.current?.contains(event.target as Node) &&
                 !collapsedProfileRef.current?.contains(event.target as Node)
@@ -147,11 +149,11 @@ export const HistorySidebar = ({
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         const menuWidth = 216; // width of ChatHistoryMenu is w-[216px]
         let leftPos = rect.left;
-        
+
         if (rect.left + menuWidth > window.innerWidth) {
             leftPos = rect.right - menuWidth;
         }
-        
+
         if (leftPos < 8) {
             leftPos = 8;
         }
@@ -187,26 +189,26 @@ export const HistorySidebar = ({
         {
             id: 'rename',
             label: 'Rename',
-            icon: <Icon name="edit-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="edit-a" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('rename', openMenuChatId!),
         },
         {
             id: 'share',
             label: 'Share',
-            icon: <Icon name="export-d" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="export-d" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('share', openMenuChatId!),
         },
         {
             id: 'move',
             label: 'Move to project',
-            icon: <Icon name="folder-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="folder-a" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('move', openMenuChatId!),
             dividerAfter: true,
         },
         {
             id: 'delete',
             label: 'Delete',
-            icon: <Icon name="trash" className='w-[18px] h-[18px]' />,
+            icon: <Icon name="trash" className='w-4.5 h-4.5' />,
             onClick: () => handleMenuAction('delete', openMenuChatId!),
             variant: 'danger' as const,
         },
@@ -216,7 +218,7 @@ export const HistorySidebar = ({
         <div
             className={cn(
                 'flex flex-col h-screen overflow-hidden relative',
-                isExpanded ? 'w-full md:w-[256px]' : 'w-[56px]',
+                isExpanded ? 'w-full md:w-[256px]' : 'w-14',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
                 className
@@ -253,6 +255,7 @@ export const HistorySidebar = ({
                     onNotes={onNotes}
                     onProjects={onProjects}
                     onLibrary={onLibrary}
+                    onOldChat={onOldChat}
                     className="sidebar-fade-in-up-1"
                 />
 
