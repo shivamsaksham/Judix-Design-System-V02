@@ -100,20 +100,20 @@ export const ResponseActions = ({
     };
 
     const exportOptions: DropdownOption[] = [
-        { 
-            value: 'pdf', 
+        {
+            value: 'pdf',
             title: 'Export to .pdf',
-            leadingIcon: <Icon name="document-download" className="h-[18px] w-[18px]" />
+            leadingIcon: <Icon name="document-download" className="h-4.5 w-4.5" />
         },
-        { 
-            value: 'docx', 
+        {
+            value: 'docx',
             title: 'Export to .docx',
-            leadingIcon: <Icon name="document-text-b" className="h-[18px] w-[18px]" />
+            leadingIcon: <Icon name="document-text-b" className="h-4.5 w-4.5" />
         },
-        { 
-            value: 'markdown', 
+        {
+            value: 'markdown',
             title: 'Download markdown',
-            leadingIcon: <Icon name="document-code-b" className="h-[18px] w-[18px]" />
+            leadingIcon: <Icon name="document-code-b" className="h-4.5 w-4.5" />
         },
     ];
 
@@ -157,32 +157,32 @@ export const ResponseActions = ({
                 <Tooltip>
                     <TooltipTrigger asChild >
 
-                <IconButton
-                    onClick={handleLike}
-                    variant={isLiked ? "primary" : "neutral"}
-                    size="medium"
-                    corner="sharp"
-                    icon="like-a"
-                    aria-label="Like"
-                    />
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                    <p>Like</p>
-                </TooltipContent>
+                        <IconButton
+                            onClick={handleLike}
+                            variant={isLiked ? "primary" : "neutral"}
+                            size="medium"
+                            corner="sharp"
+                            icon="like-a"
+                            aria-label="Like"
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                        <p>Like</p>
+                    </TooltipContent>
                 </Tooltip>
 
                 {/* Refresh Button */}
                 <Tooltip>
                     <TooltipTrigger asChild >
 
-                <IconButton
-                    onClick={handleRefresh}
-                    variant="neutral"
-                    size="medium"
-                    corner="sharp"
-                    icon="refresh-a"
-                    aria-label="Refresh"
-                />
+                        <IconButton
+                            onClick={handleRefresh}
+                            variant="neutral"
+                            size="medium"
+                            corner="sharp"
+                            icon="refresh-a"
+                            aria-label="Refresh"
+                        />
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
                         <p>Refresh</p>
@@ -192,14 +192,14 @@ export const ResponseActions = ({
                 {/* Copy Button */}
                 <Tooltip>
                     <TooltipTrigger asChild >
-                <IconButton
-                    onClick={handleCopy}
-                    variant={isCopied ? "primary" : "neutral"}
-                    size="medium"
-                    corner="sharp"
-                    icon={isCopied ? "copy-success" : "copy"}
-                    aria-label="Copy"
-                />
+                        <IconButton
+                            onClick={handleCopy}
+                            variant={isCopied ? "primary" : "neutral"}
+                            size="medium"
+                            corner="sharp"
+                            icon={isCopied ? "copy-success" : "copy"}
+                            aria-label="Copy"
+                        />
                     </TooltipTrigger>
                     <TooltipContent side="bottom">
                         <p>Copy</p>

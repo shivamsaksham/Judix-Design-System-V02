@@ -46,4 +46,7 @@ export * from "./judgment-pdf-viewer"
 export * from "./storage-usage"
 export * from "./library-document-tile"
 export * from "./library-picker-dialog"
+export * from "./suggested-questions"
+export { default as SearchBar } from "./search-bar"
 
+export * from './searchbar-results';

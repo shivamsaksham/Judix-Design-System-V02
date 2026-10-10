@@ -109,7 +109,7 @@ export function ProjectChoiceDropdown({
                                 prefixSlot={
                                     <Icon
                                         name="document-text-a"
-                                        className="w-[18px] h-[18px] shrink-0 text-color-icon-neutral-default"
+                                        className="w-4.5 h-4.5 shrink-0 text-color-icon-neutral-default"
                                     />
                                 }
                                 selected={selectedProjectId === project.id}
