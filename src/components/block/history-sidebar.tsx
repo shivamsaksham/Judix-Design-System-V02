@@ -40,7 +40,7 @@ export interface HistorySidebarProps {
     onNotes?: () => void;
     onProjects?: () => void;
     onLibrary?: () => void;
-    onOldChat?: () => void;
+    onUnlimitedChat?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
     onAccount?: () => void;
@@ -63,6 +63,14 @@ export interface HistorySidebarProps {
     hasMore?: boolean;
     isLoadingMore?: boolean;
     isLoading?: boolean;
+    historyKinds?: HistoryKindOption[];
+    activeHistoryKind?: string;
+    onHistoryKindChange?: (kindId: string) => void;
+}
+
+export interface HistoryKindOption {
+    id: string;
+    label: string;
 }
 
 export const HistorySidebar = ({
@@ -73,7 +81,7 @@ export const HistorySidebar = ({
     onNotes,
     onProjects,
     onLibrary,
-    onOldChat,
+    onUnlimitedChat,
     onResetChat,
     onUpgrade,
     onSettings,
@@ -96,6 +104,9 @@ export const HistorySidebar = ({
     hasMore,
     isLoadingMore,
     isLoading,
+    historyKinds,
+    activeHistoryKind,
+    onHistoryKindChange,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -256,11 +267,32 @@ export const HistorySidebar = ({
                     onNotes={onNotes}
                     onProjects={onProjects}
                     onLibrary={onLibrary}
-                    onOldChat={onOldChat}
+                    onUnlimitedChat={onUnlimitedChat}
                     className="sidebar-fade-in-up-1"
                 />
 
                 <div data-tour="sidebar-chats" className="flex flex-col flex-1 min-h-0">
+                    {historyKinds && historyKinds.length > 1 && (
+                        <div role="tablist" aria-label="History type" className="flex ml-1 mr-3 mb-1 border-b border-color-border-neutral-default sidebar-fade-in-up-1">
+                            {historyKinds.map(kind => (
+                                <button
+                                    key={kind.id}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={kind.id === activeHistoryKind}
+                                    onClick={() => onHistoryKindChange?.(kind.id)}
+                                    className={cn(
+                                        "flex-1 px-2 py-2 text-style-label-default-regular border-b-2 -mb-px transition-colors focus:outline-none whitespace-nowrap",
+                                        kind.id === activeHistoryKind
+                                            ? "border-color-border-primary-strong text-color-text-neutral-default"
+                                            : "border-transparent text-color-text-neutral-tertiary hover:text-color-text-neutral-default"
+                                    )}
+                                >
+                                    {kind.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                     <ChatHistorySection
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
