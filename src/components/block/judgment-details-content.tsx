@@ -31,6 +31,8 @@ export interface JudgmentData {
 export interface JudgmentDetailsContentProps {
   data: JudgmentData;
   className?: string;
+  /** Skip summary sections with no text instead of rendering an empty heading. */
+  hideEmptySections?: boolean;
 }
 
 
@@ -47,7 +49,7 @@ const JudgmentSection = ({ title, children, id }: { title: string; children: Rea
   </div>
 );
 
-export function JudgmentDetailsContent({ data, className }: JudgmentDetailsContentProps) {
+export function JudgmentDetailsContent({ data, className, hideEmptySections }: JudgmentDetailsContentProps) {
   const textSections = [
     { title: "OVERALL SUMMARY", content: data.overallSummary },
     { title: "ISSUE", content: data.issue },
@@ -59,7 +61,7 @@ export function JudgmentDetailsContent({ data, className }: JudgmentDetailsConte
 
   return (
     <div className={cn("flex flex-col w-full", className)}>
-      {textSections.map((section) => (
+      {textSections.filter((section) => !hideEmptySections || section.content?.trim()).map((section) => (
         <JudgmentSection key={section.title} title={section.title}>
           <div className="text-style-textblock-secondary-bodytext-regular text-color-text-neutral-default">
             <ReactMarkdown>{section.content}</ReactMarkdown>

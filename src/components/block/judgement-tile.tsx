@@ -12,7 +12,10 @@ export interface JudgementTileProps {
     /** Absent when the citation has no real ranked score — render no badge
      *  rather than a misleading percentage. */
     matchPercentage?: string;
-    citationCount: number;
+    /** Colour of the match badge (e.g. by relevancy). Defaults to primary. */
+    matchColorScheme?: "primary" | "neutral";
+    /** `null` when the count is unknown — the "Cited N times" label is hidden. */
+    citationCount: number | null;
     description: string;
     year: string;
     court: string;
@@ -25,6 +28,8 @@ export interface JudgementTileProps {
     onClick?: () => void;
     isSelected?: boolean;
     isHighlighted?: boolean;
+    /** Hides the add/bookmark/mention menu (for result lists without those actions). */
+    hideActions?: boolean;
     id?: string;
     className?: string;
 }
@@ -32,6 +37,7 @@ export interface JudgementTileProps {
 export function JudgementTile({
     title,
     matchPercentage,
+    matchColorScheme = "primary",
     citationCount,
     description,
     year,
@@ -45,6 +51,7 @@ export function JudgementTile({
     onClick,
     isSelected,
     isHighlighted,
+    hideActions,
     id,
     className
 }: JudgementTileProps) {
@@ -98,7 +105,7 @@ export function JudgementTile({
                         {year}
                     </Label>
                     {matchPercentage && (
-                        <Label colorScheme="primary" className="h-6 px-2 rounded-lg">
+                        <Label colorScheme={matchColorScheme} className="h-6 px-2 rounded-lg">
                             {matchPercentage}
                         </Label>
                     )}
@@ -118,9 +125,11 @@ export function JudgementTile({
             </div>
 
             <div className="flex items-center justify-between mt-2">
-                <span className="p-1 text-color-text-neutral-secondary text-style-label-default-regular">
-                    Cited {citationCount} {citationCount === 1 ? 'time' : 'times'}
-                </span>
+                {citationCount !== null ? (
+                    <span className="p-1 text-color-text-neutral-secondary text-style-label-default-regular">
+                        Cited {citationCount} {citationCount === 1 ? 'time' : 'times'}
+                    </span>
+                ) : <span />}
                 <span className="p-1 text-color-text-neutral-secondary text-style-label-default-regular">
                     {court}
                 </span>
@@ -131,12 +140,12 @@ export function JudgementTile({
                 no hover, and the "+" button now stays visible always (see
                 below) — so the bookmark stays hidden there too, instead of
                 the two icons stacking on top of each other. */}
-            {isBookmarked && (
+            {!hideActions && isBookmarked && (
                 <div className={cn("absolute top-3 right-3 flex items-center justify-center w-8 h-8 pointer-events-none transition-opacity duration-200", open ? "opacity-0" : "opacity-0 md:opacity-100 md:group-hover:opacity-0")}>
                     <IconButton size="medium" icon="save-b" variant="neutral" className="border-none bg-transparent shadow-none hover:bg-transparent" iconClassName="fill-color-icon-primary-default text-color-icon-primary-default" />
                 </div>
             )}
-            <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100")}>
+            {!hideActions && <div className={cn("absolute top-3 right-3 transition-opacity duration-200", open ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100")}>
                 <IconButton
                     ref={triggerRef}
                     size="medium"
@@ -157,7 +166,7 @@ export function JudgementTile({
                         />
                     </div>
                 )}
-            </div>
+            </div>}
         </div>
     );
 }
