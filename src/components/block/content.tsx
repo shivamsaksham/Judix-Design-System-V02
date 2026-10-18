@@ -464,7 +464,7 @@ export const Content = ({
 
             {/* Follow-up Queries */}
             {followUpQueries && followUpQueries.length > 0 && (
-                <div className="pt-2">
+                <div className="pt-2 animate-in fade-in slide-in-from-bottom-1 duration-300">
                     <div className="flex flex-wrap">
                         {followUpQueries.map((query, index) => (
                             <FollowUpQuery
