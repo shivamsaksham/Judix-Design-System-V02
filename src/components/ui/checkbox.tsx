@@ -22,7 +22,7 @@ export const checkboxVariants = cva(
       },
       size: {
         large: "w-5 h-5",
-        medium: "w-[18px] h-[18px]",
+        medium: "w-4.5 h-4.5",
         small: "w-4 h-4",
         extraSmall: "w-[14px] h-[14px]",
       },

@@ -23,6 +23,7 @@ export interface UsageStats {
     current: number | null;
     total: number | null;
     label: string;
+    bonus?: number;
 }
 
 export interface UserProfile {
@@ -39,6 +40,7 @@ export interface HistorySidebarProps {
     onNotes?: () => void;
     onProjects?: () => void;
     onLibrary?: () => void;
+    onUnlimitedChat?: () => void;
     onResetChat?: () => void;
     onUpgrade?: () => void;
     onAccount?: () => void;
@@ -61,6 +63,14 @@ export interface HistorySidebarProps {
     hasMore?: boolean;
     isLoadingMore?: boolean;
     isLoading?: boolean;
+    historyKinds?: HistoryKindOption[];
+    activeHistoryKind?: string;
+    onHistoryKindChange?: (kindId: string) => void;
+}
+
+export interface HistoryKindOption {
+    id: string;
+    label: string;
 }
 
 export const HistorySidebar = ({
@@ -71,6 +81,7 @@ export const HistorySidebar = ({
     onNotes,
     onProjects,
     onLibrary,
+    onUnlimitedChat,
     onResetChat,
     onUpgrade,
     onSettings,
@@ -93,6 +104,9 @@ export const HistorySidebar = ({
     hasMore,
     isLoadingMore,
     isLoading,
+    historyKinds,
+    activeHistoryKind,
+    onHistoryKindChange,
 }: HistorySidebarProps) => {
     const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -125,7 +139,7 @@ export const HistorySidebar = ({
                 setOpenMenuChatId(null);
             }
             if (
-                userMenuRef.current && 
+                userMenuRef.current &&
                 !userMenuRef.current.contains(event.target as Node) &&
                 !userProfileRef.current?.contains(event.target as Node) &&
                 !collapsedProfileRef.current?.contains(event.target as Node)
@@ -147,11 +161,11 @@ export const HistorySidebar = ({
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         const menuWidth = 216; // width of ChatHistoryMenu is w-[216px]
         let leftPos = rect.left;
-        
+
         if (rect.left + menuWidth > window.innerWidth) {
             leftPos = rect.right - menuWidth;
         }
-        
+
         if (leftPos < 8) {
             leftPos = 8;
         }
@@ -187,26 +201,26 @@ export const HistorySidebar = ({
         {
             id: 'rename',
             label: 'Rename',
-            icon: <Icon name="edit-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="edit-a" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('rename', openMenuChatId!),
         },
         {
             id: 'share',
             label: 'Share',
-            icon: <Icon name="export-d" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="export-d" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('share', openMenuChatId!),
         },
         {
             id: 'move',
             label: 'Move to project',
-            icon: <Icon name="folder-a" className='w-[18px] h-[18px] text-option-color-icon' />,
+            icon: <Icon name="folder-a" className='w-4.5 h-4.5 text-option-color-icon' />,
             onClick: () => handleMenuAction('move', openMenuChatId!),
             dividerAfter: true,
         },
         {
             id: 'delete',
             label: 'Delete',
-            icon: <Icon name="trash" className='w-[18px] h-[18px]' />,
+            icon: <Icon name="trash" className='w-4.5 h-4.5' />,
             onClick: () => handleMenuAction('delete', openMenuChatId!),
             variant: 'danger' as const,
         },
@@ -216,7 +230,7 @@ export const HistorySidebar = ({
         <div
             className={cn(
                 'flex flex-col h-screen overflow-hidden relative',
-                isExpanded ? 'w-full md:w-[256px]' : 'w-[56px]',
+                isExpanded ? 'w-full md:w-[256px]' : 'w-14',
                 'bg-dropdown-color-bg border-r border-dropdown-color-stroke',
                 !isExpanded,
                 className
@@ -253,10 +267,32 @@ export const HistorySidebar = ({
                     onNotes={onNotes}
                     onProjects={onProjects}
                     onLibrary={onLibrary}
+                    onUnlimitedChat={onUnlimitedChat}
                     className="sidebar-fade-in-up-1"
                 />
 
                 <div data-tour="sidebar-chats" className="flex flex-col flex-1 min-h-0">
+                    {historyKinds && historyKinds.length > 1 && (
+                        <div role="tablist" aria-label="History type" className="flex ml-1 mr-3 mb-1 border-b border-color-border-neutral-default sidebar-fade-in-up-1">
+                            {historyKinds.map(kind => (
+                                <button
+                                    key={kind.id}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={kind.id === activeHistoryKind}
+                                    onClick={() => onHistoryKindChange?.(kind.id)}
+                                    className={cn(
+                                        "flex-1 px-2 py-2 text-style-label-default-regular border-b-2 -mb-px transition-colors focus:outline-none whitespace-nowrap",
+                                        kind.id === activeHistoryKind
+                                            ? "border-color-border-primary-strong text-color-text-neutral-default"
+                                            : "border-transparent text-color-text-neutral-tertiary hover:text-color-text-neutral-default"
+                                    )}
+                                >
+                                    {kind.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                     <ChatHistorySection
                         chatHistory={chatHistory}
                         activeChatId={activeChatId}
@@ -293,6 +329,14 @@ export const HistorySidebar = ({
                             {usageStats.current === null || usageStats.total === null ? '-/-' : `${usageStats.current}/${usageStats.total}`}
                         </span>
                     </div>
+                    {usageStats.bonus ? (
+                        <div className="flex items-center gap-1 min-w-0">
+                            <Icon name="gift" size={12} className="shrink-0 text-color-icon-primary-default" />
+                            <span className="text-color-text-neutral-tertiary text-style-label-title-regular p-1 whitespace-nowrap">
+                                +{usageStats.bonus.toLocaleString('en-IN')} bonus queries
+                            </span>
+                        </div>
+                    ) : null}
                 </div>
 
                 {/* User Profile Section */}
