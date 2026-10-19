@@ -29,6 +29,8 @@ export type JudgementDetailsProps = {
   hideActions?: boolean;
   /** Hides just the "View SCR copy" label — for content types (e.g. acts) that don't have one, unlike hideActions which also hides mention/bookmark/share. */
   hideScrCopy?: boolean;
+  /** Hides just the @mention button — for screens without an AI chat to mention into. */
+  hideMention?: boolean;
 };
 
 function JudgementDetails({
@@ -50,6 +52,7 @@ function JudgementDetails({
   onViewScrCopy,
   hideActions,
   hideScrCopy,
+  hideMention,
 }: JudgementDetailsProps) {
   return (
     <div
@@ -111,7 +114,7 @@ function JudgementDetails({
 
               {!hideActions && (
                 <div className="flex items-center gap-1">
-                  <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />
+                  {!hideMention && <IconButton icon="at" variant="neutral" size="medium" onClick={onMention} />}
                   <IconButton
                     icon="save-b"
                     variant="neutral"

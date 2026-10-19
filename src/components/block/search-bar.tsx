@@ -27,6 +27,7 @@ import AddToContext from "./context-add-modal";
 import { AddDocumentDialog } from "./add-document-dialog";
 import { Option } from "@/components/ui/option";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
 import { useMediaQuery } from "@/hooks/use-mobile-query";
 
 // Isolated at module scope: reading the clock is impure and must not happen
@@ -68,6 +69,10 @@ export interface SearchPayload {
     filters: Record<string, unknown>;
     mentions?: Array<{ type: string; id: string }>;
 }
+
+export type SearchBarAction = "searchIn" | "jurisdiction" | "filter" | "improve";
+
+export const DEFAULT_ACTION_ORDER: SearchBarAction[] = ["searchIn", "jurisdiction", "filter", "improve"];
 
 export interface TokenStructure {
     trigger: string;
@@ -228,11 +233,15 @@ interface SearchBarProps {
     onUpload?: (file: File, onProgress?: (progress: number) => void) => Promise<unknown>;
     onAddText?: (title: string, content: string) => void | Promise<void>;
     onOpenLibrary?: () => void;
+    onImprove?: (payload: SearchPayload & { displayQuery: string }) => Promise<string | null | undefined>;
+    keepQueryOnSubmit?: boolean;
+    actionOrder?: SearchBarAction[];
 }
 
 export interface SearchBarHandle {
     insertMention: (mention: { type: string; id: string; label: string }) => void;
     restoreQuery: (text: string) => void;
+    setQuery: (text: string) => void;
     clearInput: () => void;
 }
 
@@ -291,12 +300,16 @@ function SearchBarImpl({
     onUpload,
     onAddText,
     onOpenLibrary,
+    onImprove,
+    keepQueryOnSubmit = false,
+    actionOrder = DEFAULT_ACTION_ORDER,
 }: SearchBarProps, ref: React.Ref<SearchBarHandle>) {
     const TRIGGER_CONFIG = triggers;
     const isTouchDevice = useMediaQuery("(max-width: 768px)");
 
     const [isCentered, setIsCentered] = useState(true);
     const [input, setInput] = useState("");
+    const [isImproving, setIsImproving] = useState(false);
     const [selectedScopes, setSelectedScopes] = useState<string[]>(["Overall search"]);
     const [internalSelectedCourts, setInternalSelectedCourts] = useState<string[]>([]);
     const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
@@ -587,6 +600,16 @@ function SearchBarImpl({
         textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
     }, [isCentered]);
 
+    const fitHeight = useCallback(() => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        textarea.style.height = "auto";
+        const LINE_HEIGHT = 24;
+        const maxHeight = MAX_LINES * LINE_HEIGHT;
+        textarea.style.height = `${Math.min(Math.max(textarea.scrollHeight, BOTTOM_HEIGHT), maxHeight)}px`;
+        textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+    }, [MAX_LINES, BOTTOM_HEIGHT]);
+
     const getParsedPayload = useCallback(() => {
         const div = textareaRef.current;
         if (!div) return { query: "", filters: {} };
@@ -715,17 +738,23 @@ function SearchBarImpl({
         if (onSubmit) onSubmit(payload);
 
         setIsCentered(false);
-        setInput("");
         setSectionChip(null);
         setPredictiveMatch(null);
         setActiveDropdown(null);
         setActiveTrigger(null);
         setActiveWrapperType(null);
-        textareaRef.current.innerHTML = "";
 
         if (effectiveSelectedCourts.length === 0) {
             handleCourtsChange(["Supreme Court of India"]);
         }
+
+        if (keepQueryOnSubmit) {
+            requestAnimationFrame(fitHeight);
+            return;
+        }
+
+        setInput("");
+        textareaRef.current.innerHTML = "";
 
         requestAnimationFrame(() => {
             if (textareaRef.current) {
@@ -733,7 +762,7 @@ function SearchBarImpl({
                 textareaRef.current.style.overflowY = "hidden";
             }
         });
-    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit, effectiveSelectedCourts, handleCourtsChange]);
+    }, [getParsedPayload, BOTTOM_HEIGHT, onSubmit, effectiveSelectedCourts, handleCourtsChange, keepQueryOnSubmit, fitHeight]);
 
     // Positions the "Enter Section" chip just below the Act wrapper
     const showSectionChip = (wrapperEl: HTMLElement) => {
@@ -1230,19 +1259,137 @@ function SearchBarImpl({
         document.execCommand("insertHTML", false, html);
     };
 
-    // const handleImprove = () => {
-    //     if (!input.trim() || !textareaRef.current) return;
-    //     const enhancedQuery = input.trim();
-    //     textareaRef.current.innerHTML = "";
-    //     textareaRef.current.innerText = enhancedQuery;
-    //     setInput(enhancedQuery);
-    //     requestAnimationFrame(() => {
-    //         if (textareaRef.current) {
-    //             setCursorOffset(textareaRef.current, enhancedQuery.length);
-    //             autoResize();
-    //         }
-    //     });
-    // };
+    const createTokenWrapper = useCallback((typeKey: string, rawValue: string): HTMLSpanElement | null => {
+        const config = tokenConfig[typeKey] || DEFAULT_TOKEN_CONFIG[typeKey];
+        if (!config) return null;
+
+        const parts: string[] = new Array(config.inputs.length).fill("");
+        let rest = rawValue;
+        for (let idx = config.inputs.length - 1; idx >= 1; idx -= 1) {
+            const separator = config.inputs[idx].prefix;
+            if (!separator) continue;
+            const at = rest.indexOf(separator);
+            if (at === -1) continue;
+            parts[idx] = rest.slice(at + separator.length).trim();
+            rest = rest.slice(0, at);
+        }
+        parts[0] = rest.trim();
+
+        const wrapper = document.createElement("span");
+        wrapper.className = "static-data-wrapper";
+        wrapper.style.color = "var(--color-color-text-primary-default)";
+        wrapper.style.fontWeight = "400";
+        wrapper.contentEditable = "false";
+        wrapper.setAttribute("data-type", typeKey);
+
+        const prefix = document.createElement("span");
+        prefix.textContent = config.prefix;
+        wrapper.appendChild(prefix);
+
+        config.inputs.forEach((inputConfig, idx) => {
+            const value = parts[idx] ?? "";
+            if (idx > 0 && inputConfig.prefix) {
+                const separator = document.createElement("span");
+                separator.textContent = inputConfig.prefix;
+                separator.contentEditable = "false";
+                separator.style.color = "var(--color-color-text-primary-default)";
+                separator.className = "static-section-separator";
+                separator.style.display = value ? "inline" : "none";
+                wrapper.appendChild(separator);
+            }
+
+            const inputSpan = document.createElement("span");
+            inputSpan.className = "static-value-input";
+            inputSpan.style.outline = "none";
+            inputSpan.style.minWidth = "10px";
+            inputSpan.textContent = value;
+            if (idx === 0 || value) {
+                inputSpan.contentEditable = "true";
+                inputSpan.style.display = "inline-block";
+            } else {
+                inputSpan.contentEditable = "false";
+                inputSpan.style.display = "none";
+            }
+            wrapper.appendChild(inputSpan);
+        });
+
+        const suffix = document.createElement("span");
+        suffix.textContent = config.suffix;
+        wrapper.appendChild(suffix);
+        return wrapper;
+    }, [tokenConfig]);
+
+    const renderQueryText = useCallback((text: string) => {
+        const div = textareaRef.current;
+        if (!div) return;
+        div.innerHTML = "";
+
+        for (const part of text.split(/(\[[^\]]+\]|@\S+)/g)) {
+            if (!part) continue;
+            const tokenMatch = part.match(/^\[([A-Za-z]+):-([\s\S]*)\]$/);
+            if (tokenMatch) {
+                const wrapper = createTokenWrapper(tokenMatch[1], tokenMatch[2]);
+                if (wrapper) {
+                    div.appendChild(wrapper);
+                    div.appendChild(document.createTextNode(" "));
+                    continue;
+                }
+            }
+            if (part.startsWith("@")) {
+                div.appendChild(createMentionBadge({ trigger: "@", value: part }));
+                div.appendChild(document.createTextNode(" "));
+                continue;
+            }
+            div.appendChild(document.createTextNode(part));
+        }
+    }, [createTokenWrapper]);
+
+    const setQuery = useCallback((text: string) => {
+        const div = textareaRef.current;
+        if (!div) return;
+
+        renderQueryText(text);
+        setIsCentered(false);
+        setSectionChip(null);
+        setPredictiveMatch(null);
+        setActiveDropdown(null);
+        setActiveTrigger(null);
+        setActiveWrapperType(null);
+        activeWrapperRef.current = null;
+        setInput(div.innerText);
+        requestAnimationFrame(fitHeight);
+
+        if (isTouchDevice) return;
+
+        div.focus();
+        const range = document.createRange();
+        range.selectNodeContents(div);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+    }, [renderQueryText, fitHeight, isTouchDevice]);
+
+    const handleImproveClick = async () => {
+        if (!onImprove || isImproving) return;
+        const payload = getParsedPayload();
+        if (!payload.query.trim()) return;
+
+        setIsImproving(true);
+        try {
+            const improved = await onImprove({
+                query: payload.query,
+                displayQuery: payload.displayQuery ?? payload.query,
+                filters: payload.filters,
+                mentions: payload.mentions,
+            });
+            if (improved && improved.trim()) setQuery(improved.trim());
+        } catch {
+            setIsImproving(false);
+            return;
+        }
+        setIsImproving(false);
+    };
 
     const handleOptionSelect = (option: string, isManual: boolean = false, label?: string, mentionType?: string) => {
         if (onOptionClick) {
@@ -1621,7 +1768,7 @@ function SearchBarImpl({
         });
     }, [BOTTOM_HEIGHT]);
 
-    useImperativeHandle(ref, () => ({ insertMention, restoreQuery, clearInput }), [insertMention, restoreQuery, clearInput]);
+    useImperativeHandle(ref, () => ({ insertMention, restoreQuery, setQuery, clearInput }), [insertMention, restoreQuery, setQuery, clearInput]);
 
     const runAddSourceAction = (action: () => void) => {
         setActiveDropdown(null);
@@ -1891,11 +2038,15 @@ function SearchBarImpl({
 
                     {/* Editable text area */}
                     <div
-                        contentEditable={true}
+                        contentEditable={!isImproving}
+                        aria-busy={isImproving}
                         ref={(node) => { textareaRef.current = node; }}
                         {...getReferenceProps()}
                         data-placeholder="Search anything."
-                        className="content-editable w-full text-left text-style-textblock-primary-subtext-regular resize-none focus:outline-none leading-6 transition-[height] duration-150 ease-out empty:before:content-[attr(data-placeholder)] empty:before:text-color-text-neutral-placeholder [&:empty:before]:pointer-events-none before:content-[attr(data-placeholder)] before:text-color-text-neutral-placeholder [&>br]:hidden [&:not(:empty):before]:hidden inline-block"
+                        className={cn(
+                            "content-editable w-full text-left text-style-textblock-primary-subtext-regular resize-none focus:outline-none leading-6 transition-[height] duration-150 ease-out empty:before:content-[attr(data-placeholder)] empty:before:text-color-text-neutral-placeholder [&:empty:before]:pointer-events-none before:content-[attr(data-placeholder)] before:text-color-text-neutral-placeholder [&>br]:hidden [&:not(:empty):before]:hidden inline-block",
+                            isImproving && "opacity-60 animate-pulse select-none"
+                        )}
                         style={{ height: isCentered ? CENTER_HEIGHT : BOTTOM_HEIGHT }}
                         onInput={handleTextChange}
                         onKeyDown={handleKeyDown}
@@ -1911,61 +2062,79 @@ function SearchBarImpl({
                     {/* Bottom action bar */}
                     <div className="w-full flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <IconButton
-                                onClick={() => console.log('Search in clicked')}
-                                variant="neutral"
-                                icon="setting-c"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
-                            >
-                                <Icon name="setting-c" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Search in</span>
-                            </IconButton>
-
-                            <IconButton
-                                onClick={() => toggleDropdown("folder")}
-                                ref={folderBtnRef}
-                                data-tour="search-jurisdiction"
-                                variant="neutral"
-                                icon="courthouse"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
-                                    activeDropdown === "folder" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
-                                )}`}
-                            >
-                                <Icon name="courthouse" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Jurisdiction</span>
-                            </IconButton>
-
-                            <IconButton
-                                onClick={() => {}}
-                                variant="neutral"
-                                icon="filter"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
-                            >
-                                <Icon name="filter" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Filter</span>
-                            </IconButton>
-
-                            <IconButton
-                                onClick={() => {}}
-                                variant="neutral"
-                                icon="flash-a"
-                                size="medium"
-                                corner="sharp"
-                                boundary="stroked"
-                                className="w-fit px-2 gap-1.5 sm:border-none"
-                            >
-                                <Icon name="flash-a" className="w-4 h-4" />
-                                <span className="hidden sm:inline text-style-body-default-regular">Improve</span>
-                            </IconButton>
+                            {actionOrder.map((action) => {
+                                if (action === "searchIn") {
+                                    return (
+                                        <IconButton
+                                            key={action}
+                                            onClick={() => console.log('Search in clicked')}
+                                            variant="neutral"
+                                            icon="setting-c"
+                                            size="medium"
+                                            corner="sharp"
+                                            boundary="stroked"
+                                            className="w-fit px-2 gap-1.5 sm:border-none"
+                                        >
+                                            <Icon name="setting-c" className="w-4 h-4" />
+                                            <span className="hidden sm:inline text-style-body-default-regular">Search in</span>
+                                        </IconButton>
+                                    );
+                                }
+                                if (action === "jurisdiction") {
+                                    return (
+                                        <IconButton
+                                            key={action}
+                                            onClick={() => toggleDropdown("folder")}
+                                            ref={folderBtnRef}
+                                            data-tour="search-jurisdiction"
+                                            variant="neutral"
+                                            icon="courthouse"
+                                            size="medium"
+                                            corner="sharp"
+                                            boundary="stroked"
+                                            className={`w-fit px-2 gap-1.5 sm:border-none ${cn(
+                                                activeDropdown === "folder" && "bg-color-surface-primary-subtle_bg border-color-surface-primary-subtle_bg text-color-text-primary-default"
+                                            )}`}
+                                        >
+                                            <Icon name="courthouse" className="w-4 h-4" />
+                                            <span className="hidden sm:inline text-style-body-default-regular">Jurisdiction</span>
+                                        </IconButton>
+                                    );
+                                }
+                                if (action === "filter") {
+                                    return (
+                                        <IconButton
+                                            key={action}
+                                            onClick={() => {}}
+                                            variant="neutral"
+                                            icon="filter"
+                                            size="medium"
+                                            corner="sharp"
+                                            boundary="stroked"
+                                            className="w-fit px-2 gap-1.5 sm:border-none"
+                                        >
+                                            <Icon name="filter" className="w-4 h-4" />
+                                            <span className="hidden sm:inline text-style-body-default-regular">Filter</span>
+                                        </IconButton>
+                                    );
+                                }
+                                return (
+                                    <IconButton
+                                        key={action}
+                                        onClick={() => { void handleImproveClick(); }}
+                                        variant="neutral"
+                                        icon="flash-a"
+                                        size="medium"
+                                        corner="sharp"
+                                        boundary="stroked"
+                                        disabled={!onImprove || isImproving || isLoading || !input.trim()}
+                                        className="w-fit px-2 gap-1.5 sm:border-none"
+                                    >
+                                        {isImproving ? <Spinner size="small" label="Improving" /> : <Icon name="flash-a" className="w-4 h-4" />}
+                                        <span className="hidden sm:inline text-style-body-default-regular">{isImproving ? "Improving" : "Improve"}</span>
+                                    </IconButton>
+                                );
+                            })}
                         </div>
 
                         <div className="flex items-center gap-2 ml-auto">
