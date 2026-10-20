@@ -24,14 +24,24 @@ export interface UsageMetric {
 export interface SubscriptionProps {
   planName: string
   price: string
-  renewalDate: string
-  lastPaymentDate: string
+  /** One sentence under the price: "Queries reset on 30 October 2026", "Renews on …", "Access ends on …". */
+  cycleNote: string
+  /** "Last payment of ₹1,499 on 1 September 2026." Omit to hide the row (Free plans). */
+  paymentNote?: string
+  /** Sentence under "Usage limits"; defaults to monthly wording. */
+  usageNote?: string
   usageLimits: UsageMetric[]
   fixedQuotas: UsageMetric[]
   onChangePlan?: () => void
+  /** "View Invoice" shows only when one of these is given. */
   onViewInvoice?: () => void
   invoiceUrl?: string
+  /** Hides the cancel section (Free plans, or a plan already cancelling). */
+  canCancel?: boolean
   onCancelSubscription?: () => void | Promise<void>
+  /** Link under the cycle note, e.g. "Keep current plan" while a downgrade is scheduled. Shown only with a handler. */
+  pendingChangeActionLabel?: string
+  onCancelPendingChange?: () => void | Promise<void>
   whatsappUrl?: string
   supportEmail?: string
   className?: string
@@ -98,21 +108,37 @@ function UsageCard({ metric, className }: { metric: UsageMetric, className?: str
 export function Subscription({
   planName,
   price,
-  renewalDate,
-  lastPaymentDate,
+  cycleNote,
+  paymentNote,
+  usageNote = "These usage limits are renewed every month.",
   usageLimits,
   fixedQuotas,
   onChangePlan,
   onViewInvoice,
-  invoiceUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+  invoiceUrl,
+  canCancel = true,
   onCancelSubscription,
+  pendingChangeActionLabel = "Keep current plan",
+  onCancelPendingChange,
   whatsappUrl = "https://wa.me/918076045610",
   supportEmail = "support@judix.in",
   className,
 }: SubscriptionProps) {
+  const hasInvoice = Boolean(onViewInvoice || invoiceUrl)
   const [showCancelConfirm, setShowCancelConfirm] = React.useState(false)
   const [isCancelling, setIsCancelling] = React.useState(false)
+  const [isDroppingChange, setIsDroppingChange] = React.useState(false)
   const router = useRouter()
+
+  const handleCancelPendingChange = async () => {
+    if (!onCancelPendingChange) return
+    setIsDroppingChange(true)
+    try {
+      await onCancelPendingChange()
+    } finally {
+      setIsDroppingChange(false)
+    }
+  }
 
   const handleConfirmCancel = async () => {
     setIsCancelling(true)
@@ -141,7 +167,7 @@ export function Subscription({
             <CardContent className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span className="p-1 inline-block text-style-body-title-emphasis text-color-text-neutral-default">{planName}</span>
-                <Button variant="neutral" size="extraSmall" onClick={() => router.push('/checkout')}>
+                <Button variant="neutral" size="extraSmall" onClick={() => (onChangePlan ? onChangePlan() : router.push('/checkout'))}>
                   Upgrade plan
                 </Button>
               </div>
@@ -150,30 +176,49 @@ export function Subscription({
                   {price}
                 </span>
                 <p className="p-1 text-style-body-default-regular text-color-text-neutral-tertiary">
-                  Renews at {renewalDate}
+                  {cycleNote}
+                  {onCancelPendingChange && (
+                    <>
+                      {" "}
+                      <button
+                        type="button"
+                        onClick={handleCancelPendingChange}
+                        disabled={isDroppingChange}
+                        className="italic text-color-text-feedback-info-default hover:underline cursor-pointer disabled:opacity-60"
+                      >
+                        {isDroppingChange ? "Updating…" : pendingChangeActionLabel}
+                      </button>
+                    </>
+                  )}
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex justify-end pr-1">
-            <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
-              Last payment on {lastPaymentDate}. {" "}
-              <button
-                onClick={() => {
-                  // Comment: Opens the PDF invoice of the last payment made in a new tab
-                  if (onViewInvoice) {
-                    onViewInvoice();
-                  } else if (invoiceUrl) {
-                    window.open(invoiceUrl, "_blank", "noopener,noreferrer");
-                  }
-                }}
-                className="italic text-color-text-feedback-info-default hover:underline cursor-pointer"
-              >
-                View Invoice
-              </button>
-            </p>
-          </div>
+          {paymentNote && (
+            <div className="flex justify-end pr-1">
+              <p className="p-1 text-style-label-default-regular text-color-text-neutral-tertiary">
+                {paymentNote}
+                {hasInvoice && (
+                  <>
+                    {" "}
+                    <button
+                      onClick={() => {
+                        if (onViewInvoice) {
+                          onViewInvoice();
+                        } else if (invoiceUrl) {
+                          window.open(invoiceUrl, "_blank", "noopener,noreferrer");
+                        }
+                      }}
+                      className="italic text-color-text-feedback-info-default hover:underline cursor-pointer"
+                    >
+                      View Invoice
+                    </button>
+                  </>
+                )}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Usage limits */}
@@ -181,7 +226,7 @@ export function Subscription({
           <div className="flex flex-col">
             <h2 className="p-1 text-style-body-title-emphasis text-color-text-neutral-default">Usage limits</h2>
             <p className="p-1 text-style-body-default-regular text-color-text-neutral-tertiary">
-              These usage limits are renewed every month.
+              {usageNote}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-4">
@@ -207,29 +252,31 @@ export function Subscription({
         </div>
       </div>
       {/* Cancel Subscription */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 border-color-border-neutral-default gap-4 md:gap-12">
-        <div className="flex flex-col w-full py-2">
-          <h3 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Cancel Subscription</h3>
-          <p className="p-1 text-style-textblock-primary-subtext text-color-text-neutral-tertiary">
-            This will cancel your current subscription and move to the free plan in the next billing cycle.
-          </p>
+      {canCancel && (
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 border-color-border-neutral-default gap-4 md:gap-12">
+          <div className="flex flex-col w-full py-2">
+            <h3 className="p-1 text-style-body-default-emphasis text-color-text-neutral-default">Cancel Subscription</h3>
+            <p className="p-1 text-style-textblock-primary-subtext text-color-text-neutral-tertiary">
+              This will cancel your current subscription and move to the free plan in the next billing cycle.
+            </p>
+          </div>
+          <Confirmation
+            open={showCancelConfirm}
+            onOpenChange={setShowCancelConfirm}
+            mainText="Cancel Subscription"
+            subText="Are you sure you want to cancel your subscription? This will move you to the free plan in the next billing cycle."
+            confirmVariant="destructive"
+            confirmText="Cancel Subscription"
+            confirmLoading={isCancelling}
+            onConfirmClick={handleConfirmCancel}
+            onCancelClick={() => setShowCancelConfirm(false)}
+          >
+            <Button variant="destructive" size="extraSmall">
+              Cancel
+            </Button>
+          </Confirmation>
         </div>
-        <Confirmation
-          open={showCancelConfirm}
-          onOpenChange={setShowCancelConfirm}
-          mainText="Cancel Subscription"
-          subText="Are you sure you want to cancel your subscription? This will move you to the free plan in the next billing cycle."
-          confirmVariant="destructive"
-          confirmText="Cancel Subscription"
-          confirmLoading={isCancelling}
-          onConfirmClick={handleConfirmCancel}
-          onCancelClick={() => setShowCancelConfirm(false)}
-        >
-          <Button variant="destructive" size="extraSmall">
-            Cancel
-          </Button>
-        </Confirmation>
-      </div>
+      )}
 
       {/* Footer Support */}
       <div className="flex flex-col gap-2">
