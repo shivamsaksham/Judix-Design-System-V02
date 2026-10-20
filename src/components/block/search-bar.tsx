@@ -610,6 +610,24 @@ function SearchBarImpl({
         textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
     }, [MAX_LINES, BOTTOM_HEIGHT]);
 
+    React.useEffect(() => {
+        const editor = textareaRef.current;
+        if (!editor || typeof ResizeObserver === "undefined") return;
+        let width = editor.clientWidth;
+        let frame = 0;
+        const observer = new ResizeObserver(() => {
+            if (editor.clientWidth === width) return;
+            width = editor.clientWidth;
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(() => (isCentered ? autoResize() : fitHeight()));
+        });
+        observer.observe(editor);
+        return () => {
+            observer.disconnect();
+            cancelAnimationFrame(frame);
+        };
+    }, [isCentered, autoResize, fitHeight]);
+
     const getParsedPayload = useCallback(() => {
         const div = textareaRef.current;
         if (!div) return { query: "", filters: {} };
