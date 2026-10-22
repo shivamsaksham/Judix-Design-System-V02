@@ -8,6 +8,7 @@ export interface CitationMetadata {
   yearVolume: string;
   neutralCitation: string;
   numberOfCasesCited: string;
+  citedBy?: string;
 }
 
 export interface CitationDataProps {
@@ -20,7 +21,8 @@ export function CitationData({ data, className }: CitationDataProps) {
     { label: "S.C.R. Citation", value: data.scrCitation },
     { label: "Year/Volume", value: data.yearVolume },
     { label: "Neutral Citation", value: data.neutralCitation },
-    { label: "Number of cases cited", value: data.numberOfCasesCited }
+    { label: "Number of cases cited", value: data.numberOfCasesCited },
+    ...(data.citedBy ? [{ label: "Cited by", value: data.citedBy }] : [])
   ];
 
   return (

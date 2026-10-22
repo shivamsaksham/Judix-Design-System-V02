@@ -25,6 +25,10 @@ export interface JudgmentData {
     headers: { citationNumber: string; judicialConsideration: string; caseLaw: string };
   };
   citationData?: CitationMetadata;
+  citedBy?: {
+    data: CaseCitedData[];
+    headers: { citationNumber: string; judicialConsideration: string; caseLaw: string };
+  };
   keywords?: string[];
 }
 
@@ -118,6 +122,17 @@ export function JudgmentDetailsContent({ data, className, hideEmptySections }: J
             <CasesCited
               data={data.casesCited.data}
               headers={data.casesCited.headers}
+            />
+          </div>
+        </JudgmentSection>
+      )}
+
+      {data.citedBy && (
+        <JudgmentSection title="CITED BY">
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <CasesCited
+              data={data.citedBy.data}
+              headers={data.citedBy.headers}
             />
           </div>
         </JudgmentSection>

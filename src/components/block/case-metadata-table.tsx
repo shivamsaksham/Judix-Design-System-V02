@@ -11,6 +11,8 @@ export interface CaseMetadata {
   court: string;
   disposalNature: string;
   judges: string;
+  bench?: string;
+  author?: string;
 }
 
 export interface CaseMetadataTableProps {
@@ -26,7 +28,9 @@ export function CaseMetadataTable({ data, className }: CaseMetadataTableProps) {
     { label: "Date of judgment", value: data.dateOfJudgment },
     { label: "Court", value: data.court },
     { label: "Disposal Nature", value: data.disposalNature },
-    { label: "Judges", value: data.judges }
+    { label: "Judges", value: data.judges },
+    ...(data.bench ? [{ label: "Bench", value: data.bench }] : []),
+    ...(data.author ? [{ label: "Authored by", value: data.author }] : [])
   ];
 
   return (

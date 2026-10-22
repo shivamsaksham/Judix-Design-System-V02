@@ -28,7 +28,7 @@ export interface OrderSummaryData {
     monthlyCharge?: string;
     yearlyCharge?: string;
     creditDeduction?: number;
-    action?: 'new' | 'upgrade' | 'downgrade' | 'extension';
+    action?: 'free' | 'new' | 'upgrade' | 'downgrade' | 'to_free' | 'switch' | 'same';
 }
 
 export interface OrderSummaryProps {
@@ -241,7 +241,7 @@ export const OrderSummary = ({
                 onClick={onCheckout}
                 loading={loading}
             >
-                {data.action === 'downgrade' ? 'Confirm Downgrade' : data.action === 'extension' ? 'Extend Plan' : 'Complete payment'}
+                {data.action === 'downgrade' ? 'Confirm Downgrade' : data.action === 'to_free' ? 'Move to Free at cycle end' : data.action === 'switch' ? 'Set up new plan' : data.action === 'free' ? 'Activate Free plan' : 'Complete payment'}
             </Button>
 
             {/* Secure Checkout Footer */}
