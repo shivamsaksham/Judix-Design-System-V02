@@ -99,6 +99,13 @@ export const OrderSummary = ({
     // (e.g. 967.0900000000001) — round to the nearest paisa before display.
     const formatRupees = (value: number) => Number(value.toFixed(2));
 
+    // Renewal charge for the notice. Price labels often already say "+ gst";
+    // strip that so the sentence doesn't read "+ gst + tax".
+    const renewalCharge = (data.currentFrequency === 'yearly'
+        ? (data.yearlyCharge || data.yearlyPrice)
+        : (data.monthlyCharge || data.monthlyPrice)
+    ).replace(/\s*\+\s*(gst|tax)\s*$/i, '');
+
     const total = formatRupees(Math.max(0, data.subtotal + data.gst - (data.creditDeduction || 0)));
 
     return (
@@ -162,7 +169,7 @@ export const OrderSummary = ({
             <div className="flex w-full gap-3 p-4 border border-color-border-neutral-default rounded-radius-interactiveelement bg-color-surface-neutral-default">
                 <Icon name="info-circle" className="m-1 mb-0 w-5 h-5 text-color-text-neutral-secondary shrink-0" />
                 <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-default">
-                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {data.currentFrequency === 'yearly' ? (data.yearlyCharge || data.yearlyPrice) : (data.monthlyCharge || data.monthlyPrice)} + tax.
+                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {renewalCharge} + GST.
                 </p>
             </div>
 
