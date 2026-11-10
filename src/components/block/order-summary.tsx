@@ -43,6 +43,12 @@ export interface OrderSummaryProps {
     backendPlans?: BackendPlan[];
     currentPlan?: string;
     currentPlanInterval?: 'monthly' | 'yearly';
+    /**
+     * Code to pre-fill the promo box with — e.g. one that arrived through a
+     * `?promo=` link. Shown even if validating it fails, so the user can see
+     * (and correct) what was tried.
+     */
+    initialPromoCode?: string;
 }
 
 export const OrderSummary = ({
@@ -57,8 +63,20 @@ export const OrderSummary = ({
     backendPlans = [],
     currentPlan,
     currentPlanInterval,
+    initialPromoCode,
 }: OrderSummaryProps) => {
-    const [promoInput, setPromoInput] = useState('');
+    const [promoInput, setPromoInput] = useState(initialPromoCode ?? '');
+    // Adopt a starting code that arrives after mount (e.g. once the page has read
+    // its URL), without overwriting anything the user has typed since.
+    const [seededPromo, setSeededPromo] = useState(initialPromoCode);
+    if (initialPromoCode !== seededPromo) {
+        setSeededPromo(initialPromoCode);
+        if (initialPromoCode && !promoInput) setPromoInput(initialPromoCode);
+    }
+    // While a promo is applied the box is read-only and shows the applied code,
+    // however it got applied (typed here or passed in by the page).
+    const promoFieldValue = data.isPromoApplied ? (data.promoCode ?? promoInput) : promoInput;
+    const hasBonusCredits = !!data.promoBonusCredits && data.promoBonusCredits > 0;
     const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
     const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === 'yearly' && p.discountPercentage)?.discountPercentage;
 
@@ -163,7 +181,7 @@ export const OrderSummary = ({
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">GST</span>
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {formatRupees(data.gst)}</span>
                     </div>
-                    {data.isPromoApplied && (
+                    {data.isPromoApplied && hasBonusCredits && (
                         <div className="flex justify-between items-center">
                             <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Promo applied</span>
                             <span className="p-1 text-style-body-default-regular text-color-success-default">+{data.promoBonusCredits} Credits</span>
@@ -202,7 +220,7 @@ export const OrderSummary = ({
                     <div className="flex flex-row gap-2">
                         <TextInput
                             placeholder="Enter your code"
-                            value={promoInput}
+                            value={promoFieldValue}
                             onChange={(e) => setPromoInput(e.target.value)}
                             inputSize="small"
                             className="grow"
@@ -226,9 +244,11 @@ export const OrderSummary = ({
                         <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
                             <span className="font-bold uppercase underline">{data.promoCode}</span> applied successfully!
                         </p>
-                        <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
-                            You get {data.promoBonusCredits} extra bonus credits
-                        </p>
+                        {hasBonusCredits && (
+                            <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
+                                You get {data.promoBonusCredits} extra bonus credits
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
