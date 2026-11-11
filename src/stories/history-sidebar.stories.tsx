@@ -100,6 +100,20 @@ export const EmptyChatList: Story = {
     },
 };
 
+export const EmptyChatListWithMessage: Story = {
+    args: {
+        chatHistory: [],
+        emptyState: (
+            <div className="flex flex-col gap-1 px-2 py-6 text-center">
+                <span className="text-style-label-title-emphasis text-color-text-neutral-default">No chats yet</span>
+                <span className="text-style-label-secondary-regular text-color-text-neutral-tertiary">
+                    Your research chats will appear here.
+                </span>
+            </div>
+        ),
+    },
+};
+
 export const Collapsed: Story = {
     args: {
         isExpanded: false,
