@@ -43,6 +43,12 @@ export interface OrderSummaryProps {
     backendPlans?: BackendPlan[];
     currentPlan?: string;
     currentPlanInterval?: 'monthly' | 'yearly';
+    /**
+     * Code to pre-fill the promo box with — e.g. one that arrived through a
+     * `?promo=` link. Shown even if validating it fails, so the user can see
+     * (and correct) what was tried.
+     */
+    initialPromoCode?: string;
 }
 
 export const OrderSummary = ({
@@ -57,8 +63,20 @@ export const OrderSummary = ({
     backendPlans = [],
     currentPlan,
     currentPlanInterval,
+    initialPromoCode,
 }: OrderSummaryProps) => {
-    const [promoInput, setPromoInput] = useState('');
+    const [promoInput, setPromoInput] = useState(initialPromoCode ?? '');
+    // Adopt a starting code that arrives after mount (e.g. once the page has read
+    // its URL), without overwriting anything the user has typed since.
+    const [seededPromo, setSeededPromo] = useState(initialPromoCode);
+    if (initialPromoCode !== seededPromo) {
+        setSeededPromo(initialPromoCode);
+        if (initialPromoCode && !promoInput) setPromoInput(initialPromoCode);
+    }
+    // While a promo is applied the box is read-only and shows the applied code,
+    // however it got applied (typed here or passed in by the page).
+    const promoFieldValue = data.isPromoApplied ? (data.promoCode ?? promoInput) : promoInput;
+    const hasBonusCredits = !!data.promoBonusCredits && data.promoBonusCredits > 0;
     const [isChangePlanOpen, setIsChangePlanOpen] = useState(false);
     const yearlyDiscountPercentage = backendPlans.find((p) => p.interval === 'yearly' && p.discountPercentage)?.discountPercentage;
 
@@ -80,6 +98,13 @@ export const OrderSummary = ({
     // Paise-to-rupee division upstream can leave IEEE 754 artifacts
     // (e.g. 967.0900000000001) — round to the nearest paisa before display.
     const formatRupees = (value: number) => Number(value.toFixed(2));
+
+    // Renewal charge for the notice. Price labels often already say "+ gst";
+    // strip that so the sentence doesn't read "+ gst + tax".
+    const renewalCharge = (data.currentFrequency === 'yearly'
+        ? (data.yearlyCharge || data.yearlyPrice)
+        : (data.monthlyCharge || data.monthlyPrice)
+    ).replace(/\s*\+\s*(gst|tax)\s*$/i, '');
 
     const total = formatRupees(Math.max(0, data.subtotal + data.gst - (data.creditDeduction || 0)));
 
@@ -144,7 +169,7 @@ export const OrderSummary = ({
             <div className="flex w-full gap-3 p-4 border border-color-border-neutral-default rounded-radius-interactiveelement bg-color-surface-neutral-default">
                 <Icon name="info-circle" className="m-1 mb-0 w-5 h-5 text-color-text-neutral-secondary shrink-0" />
                 <p className="p-1 text-style-textblock-primary-caption-regular text-color-text-neutral-default">
-                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {data.currentFrequency === 'yearly' ? (data.yearlyCharge || data.yearlyPrice) : (data.monthlyCharge || data.monthlyPrice)} + tax.
+                    Your subscription will auto renew on {data.autoRenewDate}. You will be charged {renewalCharge} + GST.
                 </p>
             </div>
 
@@ -163,7 +188,7 @@ export const OrderSummary = ({
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">GST</span>
                         <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">₹ {formatRupees(data.gst)}</span>
                     </div>
-                    {data.isPromoApplied && (
+                    {data.isPromoApplied && hasBonusCredits && (
                         <div className="flex justify-between items-center">
                             <span className="p-1 text-style-body-default-regular text-color-text-neutral-default">Promo applied</span>
                             <span className="p-1 text-style-body-default-regular text-color-success-default">+{data.promoBonusCredits} Credits</span>
@@ -202,7 +227,7 @@ export const OrderSummary = ({
                     <div className="flex flex-row gap-2">
                         <TextInput
                             placeholder="Enter your code"
-                            value={promoInput}
+                            value={promoFieldValue}
                             onChange={(e) => setPromoInput(e.target.value)}
                             inputSize="small"
                             className="grow"
@@ -226,9 +251,11 @@ export const OrderSummary = ({
                         <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
                             <span className="font-bold uppercase underline">{data.promoCode}</span> applied successfully!
                         </p>
-                        <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
-                            You get {data.promoBonusCredits} extra bonus credits
-                        </p>
+                        {hasBonusCredits && (
+                            <p className="p-1 text-style-body-default-regular text-color-text-feedback-success-strong">
+                                You get {data.promoBonusCredits} extra bonus credits
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
