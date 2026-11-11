@@ -97,7 +97,12 @@ export const OrderSummary = ({
 
     // Paise-to-rupee division upstream can leave IEEE 754 artifacts
     // (e.g. 967.0900000000001) — round to the nearest paisa before display.
-    const formatRupees = (value: number) => Number(value.toFixed(2));
+    // Whole rupees stay as-is (₹ 3299); anything with paise shows both digits
+    // (₹ 593.82, ₹ 5700.60 — not 5700.6).
+    const formatRupees = (value: number) => {
+        const rounded = Math.round(value * 100) / 100;
+        return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
+    };
 
     // Renewal charge for the notice. Price labels often already say "+ gst";
     // strip that so the sentence doesn't read "+ gst + tax".
