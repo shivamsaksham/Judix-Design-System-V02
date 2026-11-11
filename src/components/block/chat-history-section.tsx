@@ -18,9 +18,11 @@ export interface ChatHistorySectionProps {
     hasMore?: boolean;
     isLoadingMore?: boolean;
     isLoading?: boolean;
+    /** Shown in place of the list once loading has finished and there are no chats. */
+    emptyState?: React.ReactNode;
 }
 
-export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading }: ChatHistorySectionProps) => {
+export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, className, onLoadMore, hasMore, isLoadingMore, isLoading, emptyState }: ChatHistorySectionProps) => {
     const observerTarget = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -65,6 +67,8 @@ export const ChatHistorySection = ({ chatHistory, activeChatId, onMenuClick, cla
                             </div>
                         ))}
                     </div>
+                ) : !isLoading && chatHistory.length === 0 && emptyState ? (
+                    emptyState
                 ) : (
                     <>
                         {chatHistory.map((chat) => (

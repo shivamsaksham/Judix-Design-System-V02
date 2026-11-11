@@ -63,6 +63,8 @@ export interface HistorySidebarProps {
     hasMore?: boolean;
     isLoadingMore?: boolean;
     isLoading?: boolean;
+    /** Shown in the chats list once loading has finished and `chatHistory` is empty. */
+    emptyState?: React.ReactNode;
     historyKinds?: HistoryKindOption[];
     activeHistoryKind?: string;
     onHistoryKindChange?: (kindId: string) => void;
@@ -104,6 +106,7 @@ export const HistorySidebar = ({
     hasMore,
     isLoadingMore,
     isLoading,
+    emptyState,
     historyKinds,
     activeHistoryKind,
     onHistoryKindChange,
@@ -302,6 +305,7 @@ export const HistorySidebar = ({
                         hasMore={hasMore}
                         isLoadingMore={isLoadingMore}
                         isLoading={isLoading}
+                        emptyState={emptyState}
                     />
                 </div>
 
