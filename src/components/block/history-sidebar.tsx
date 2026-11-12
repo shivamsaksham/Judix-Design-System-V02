@@ -450,6 +450,24 @@ export const HistorySidebar = ({
                         <TooltipTrigger asChild>
                             <div className='p-1'>
                                 <IconButton
+                                    onClick={onUnlimitedChat}
+                                    icon="clock-a"
+                                    variant="neutral"
+                                    size="medium"
+                                    className="rounded-lg border-none bg-color-neutral-default hover:bg-option-color-hover transition-colors"
+                                    iconClassName='text-icon_button-color-neutral-icon'
+                                    aria-label="Free Search"
+                                />
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                            Free Search
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className='p-1'>
+                                <IconButton
                                     onClick={onNotes}
                                     icon="note-a"
                                     variant="neutral"
