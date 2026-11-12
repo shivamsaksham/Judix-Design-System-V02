@@ -45,7 +45,7 @@ export const SidebarActionButtons = ({ onNewChat, onNotes, onProjects, onLibrary
                     corner="sharp"
                     className="mr-0 pointer-events-none bg-transparent hover:bg-transparent border-none"
                 />
-                <div className="p-1 text-style-body-default-regular text-color-text-neutral-default">Free Chats</div>
+                <div className="p-1 text-style-body-default-regular text-color-text-neutral-default">Free Search</div>
             </div>
             <div
                 onClick={onNotes}
